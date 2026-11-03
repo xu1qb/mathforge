@@ -924,7 +924,7 @@ export default function LinearAlgebraPage() {
         </Card>
       </div>
 
-      <CheatsheetDialog moduleKey="linear-algebra" open={cheatsheetOpen} onOpenChange={setCheatsheetOpen} />
+      <CheatsheetDialog moduleKey="linearAlgebra" open={cheatsheetOpen} onOpenChange={setCheatsheetOpen} />
     </div>
   );
 }

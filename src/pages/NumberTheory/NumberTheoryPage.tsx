@@ -665,7 +665,7 @@ export default function NumberTheoryPage() {
         ) : null}
       </div>
 
-      <CheatsheetDialog moduleKey="number-theory" open={cheatsheetOpen} onOpenChange={setCheatsheetOpen} />
+      <CheatsheetDialog moduleKey="numberTheory" open={cheatsheetOpen} onOpenChange={setCheatsheetOpen} />
     </div>
   );
 }

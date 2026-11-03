@@ -12,7 +12,8 @@ import { cn } from '@/lib/utils';
 interface PageHeaderProps {
   title: string;
   description: string;
-  onCheatsheet: () => void;
+  /** 不传则不渲染「语法速查」按钮（该模块没有速查内容时） */
+  onCheatsheet?: () => void;
 }
 
 // 路由 → "第几讲"编号 + 模块名 + 图标
@@ -154,6 +155,7 @@ function PageHeaderInner({ title, description, onCheatsheet }: PageHeaderProps) 
           <div className="md:hidden">
             <ThemeToggle variant="header" size="icon" />
           </div>
+          {onCheatsheet && (
           <Button
             variant="outline"
             size="sm"
@@ -174,6 +176,7 @@ function PageHeaderInner({ title, description, onCheatsheet }: PageHeaderProps) 
             <BookOpen className="size-4 mr-1.5" />
             <span className="hidden sm:inline">语法速查</span>
           </Button>
+          )}
         </div>
 
         {/* 细分割线 + 简介 */}

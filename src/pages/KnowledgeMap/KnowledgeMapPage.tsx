@@ -154,7 +154,6 @@ export default function KnowledgeMapPage() {
       <PageHeader
         title="知识地图"
         description="按数学系本科课程体系组织的学习路径，从基础到高阶循序渐进"
-        onCheatsheet={() => setCheatsheetOpen(true)}
       />
 
       <main className="px-4 md:px-6 lg:px-8 py-8 max-w-6xl mx-auto">
@@ -299,7 +298,6 @@ export default function KnowledgeMapPage() {
         </section>
       </main>
 
-      <CheatsheetDialog moduleKey="knowledge-map" open={cheatsheetOpen} onOpenChange={setCheatsheetOpen} />
     </div>
   );
 }

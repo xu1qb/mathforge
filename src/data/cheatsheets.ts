@@ -241,7 +241,7 @@ export const CHEATSHEETS: Record<string, { title: string; intro: string; categor
       },
     ],
   },
-  'linear-algebra': {
+  linearAlgebra: {
     title: '线性代数',
     intro: '矩阵运算与线性代数分析。矩阵输入格式：每行输入一行元素，空格分隔列（例如 \n1 2 3\n4 5 6 表示 2×3 矩阵）。兼容旧格式 [1,2;3,4]。',
     categories: [
@@ -440,7 +440,7 @@ export const CHEATSHEETS: Record<string, { title: string; intro: string; categor
       },
     ],
   },
-  'number-theory': {
+  numberTheory: {
     title: '数论基础',
     intro: '数论相关计算：素数判断、最大公约数、质因数分解、模运算、欧拉函数等。',
     categories: [
@@ -1837,6 +1837,62 @@ export const CHEATSHEETS: Record<string, { title: string; intro: string; categor
           { syntax: '基本可行解 = 可行域顶点', description: '最优解必在顶点取到' },
           { syntax: '单纯形法：沿可行域边界迭代改善', description: '每次选入基/出基变量，向更优顶点移动' },
           { syntax: '两变量可用图解法', description: '可行域为凸多边形，顶点即基本解' },
+        ],
+      },
+    ],
+  },
+
+  plot2d: {
+    title: '二维绘图',
+    intro: '自变量统一用 x；三角函数按弧度计算；区间用两个数字表示。',
+    categories: [
+      {
+        name: '笛卡尔与区间',
+        items: [
+          { syntax: 'sin(x)/x', description: '输入 y = f(x)' },
+          { syntax: 'x^2 - 2', description: '幂用 ^，隐式乘法可直接写 2x' },
+          { syntax: '-5, 5', description: '设置绘制区间' },
+        ],
+      },
+      {
+        name: '参数与极坐标',
+        items: [
+          { syntax: 'x=cos(t), y=sin(t)', description: '参数方程，t 为参数' },
+          { syntax: 'r=1+cos(θ)', description: '极坐标，θ 为角度变量' },
+        ],
+      },
+      {
+        name: '隐函数与分析',
+        items: [
+          { syntax: 'x^2+y^2=1', description: '隐函数绘图' },
+          { syntax: '切线 / 渐近线 / 面积', description: '对应标签页按提示填点或区间' },
+        ],
+      },
+    ],
+  },
+  plot3d: {
+    title: '三维曲面',
+    intro: '显式曲面输入 z = f(x, y)；x、y 的范围分别设置，网格越密越慢。',
+    categories: [
+      {
+        name: '显式曲面',
+        items: [
+          { syntax: 'x^2 + y^2', description: '输入 z = f(x, y)' },
+          { syntax: 'sin(x)*cos(y)', description: '支持任意表达式' },
+          { syntax: 'x ∈ [-3,3]，y ∈ [-3,3]', description: '设置网格范围' },
+        ],
+      },
+      {
+        name: '参数与隐式',
+        items: [
+          { syntax: 'x=u*cos(v), y=u*sin(v), z=v', description: '参数曲面，u、v 为参数' },
+          { syntax: 'x^2+y^2+z^2=1', description: '隐式曲面' },
+        ],
+      },
+      {
+        name: '分析与识别',
+        items: [
+          { syntax: '截面 / 法向量 / 类型识别', description: '对应标签页按提示选择' },
         ],
       },
     ],
