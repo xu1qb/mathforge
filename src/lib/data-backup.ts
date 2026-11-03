@@ -191,3 +191,99 @@ export function exportFormulaFavoritesAsMarkdown(): void {
     toast.error('导出失败');
   }
 }
+
+/* ------------------------------------------------------------------ *
+ * 全量备份：把 localStorage 里所有 mathforge 键原样打包，支持完整恢复。
+ * 与上面按模块的导出不同，这里不解析数据结构，只做「整份快照」，
+ * 所以以后新增的 hook / 设置项会自动被包含进来，不需要改这里。
+ * ------------------------------------------------------------------ */
+
+const BACKUP_APP = 'mathforge';
+const BACKUP_VERSION = 2;
+const APP_KEY_PREFIXES = ['mathforge', '__mathforge'];
+
+function collectAppKeys(): string[] {
+  const keys: string[] = [];
+  for (let i = 0; i < localStorage.length; i += 1) {
+    const key = localStorage.key(i);
+    if (key && APP_KEY_PREFIXES.some((p) => key.startsWith(p))) keys.push(key);
+  }
+  return keys.sort();
+}
+
+/** 导出全部本地数据为一份 JSON 快照 */
+export function exportAllData(): void {
+  try {
+    const entries: Record<string, string> = {};
+    for (const key of collectAppKeys()) {
+      const value = localStorage.getItem(key);
+      if (value !== null) entries[key] = value;
+    }
+    const count = Object.keys(entries).length;
+    if (count === 0) {
+      toast.info('还没有可备份的数据');
+      return;
+    }
+    const payload = {
+      app: BACKUP_APP,
+      version: BACKUP_VERSION,
+      exportedAt: new Date().toISOString(),
+      keyCount: count,
+      entries,
+    };
+    downloadFile(
+      JSON.stringify(payload, null, 2),
+      'mathforge-backup-' + dateStamp() + '.json',
+      'application/json'
+    );
+    toast.success('已备份 ' + count + ' 项数据');
+  } catch {
+    toast.error('备份失败');
+  }
+}
+
+export interface AllDataImportResult {
+  ok: boolean;
+  count?: number;
+  error?: string;
+}
+
+/**
+ * 从全量备份恢复。语义是「覆盖」：先清掉现有 mathforge 键，再写入备份内容，
+ * 避免新旧数据混在一起，出现半新半旧的状态。
+ */
+export function importAllData(file: File): Promise<AllDataImportResult> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(String(reader.result)) as {
+          app?: string;
+          version?: number;
+          entries?: Record<string, unknown>;
+        };
+        if (data.app !== BACKUP_APP || !data.entries || typeof data.entries !== 'object') {
+          resolve({ ok: false, error: '这不是 MathForge 的备份文件' });
+          return;
+        }
+        const entries = data.entries;
+        const keys = Object.keys(entries);
+        if (keys.length === 0) {
+          resolve({ ok: false, error: '备份文件是空的' });
+          return;
+        }
+        for (const key of collectAppKeys()) localStorage.removeItem(key);
+        for (const key of keys) {
+          const value = entries[key];
+          localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+        }
+        resolve({ ok: true, count: keys.length });
+      } catch {
+        resolve({ ok: false, error: 'JSON 解析失败' });
+      }
+    };
+    reader.onerror = () => resolve({ ok: false, error: '文件读取失败' });
+    reader.readAsText(file);
+  });
+}
+

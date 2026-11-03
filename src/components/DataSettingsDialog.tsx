@@ -10,9 +10,12 @@ import {
   exportFavorites,
   importFavorites,
   exportFormulaFavoritesAsMarkdown,
+  exportAllData,
+  importAllData,
 } from '@/lib/data-backup';
 import { toast } from 'sonner';
 import {
+  Database,
   Download,
   Upload,
   FileJson,
@@ -30,6 +33,7 @@ interface DataSettingsDialogProps {
 export default function DataSettingsDialog({ open, onOpenChange }: DataSettingsDialogProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const favFileInputRef = useRef<HTMLInputElement>(null);
+  const allFileInputRef = useRef<HTMLInputElement>(null);
   const [importing, setImporting] = useState(false);
 
   const handleImportLearning = async (file: File) => {
@@ -62,6 +66,25 @@ export default function DataSettingsDialog({ open, onOpenChange }: DataSettingsD
     }
   };
 
+  const handleImportAll = async (file: File) => {
+    const confirmed = window.confirm(
+      '恢复会用备份覆盖当前的全部进度（错题本、掌握标记、打卡、统计、收藏等），确定继续吗？'
+    );
+    if (!confirmed) return;
+    setImporting(true);
+    try {
+      const result = await importAllData(file);
+      if (result.ok) {
+        toast.success('已恢复 ' + result.count + ' 项数据，正在刷新…');
+        window.setTimeout(() => window.location.reload(), 800);
+      } else {
+        toast.error('恢复失败：' + result.error);
+      }
+    } finally {
+      setImporting(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[560px]">
@@ -73,6 +96,51 @@ export default function DataSettingsDialog({ open, onOpenChange }: DataSettingsD
         </DialogHeader>
 
         <div className="space-y-4 py-2">
+          {/* 完整备份 */}
+          <div className="p-4 rounded-xl border border-primary/40 bg-primary/5 space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="size-10 rounded-lg bg-primary/15 text-primary flex items-center justify-center">
+                <Database className="size-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-medium text-foreground">完整备份（推荐）</div>
+                <div className="text-xs text-muted-foreground">
+                  一次性打包全部进度，换设备或清缓存前先导一份
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button size="sm" onClick={exportAllData}>
+                <Download className="size-4 mr-1.5" />
+                导出全部数据
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => allFileInputRef.current?.click()}
+                disabled={importing}
+              >
+                <Upload className="size-4 mr-1.5" />
+                从备份恢复
+              </Button>
+              <input
+                ref={allFileInputRef}
+                type="file"
+                accept=".json,application/json"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) handleImportAll(f);
+                  e.target.value = '';
+                }}
+              />
+            </div>
+            <div className="flex items-start gap-1.5 text-xs text-muted-foreground">
+              <AlertTriangle className="size-3.5 mt-0.5 shrink-0 text-amber-600" />
+              恢复会<b className="mx-0.5">覆盖</b>当前数据，请确认备份文件是最新的一份。
+            </div>
+          </div>
+
           {/* 学习数据 */}
           <div className="p-4 rounded-xl border border-border bg-card/50 space-y-3">
             <div className="flex items-center gap-3">
