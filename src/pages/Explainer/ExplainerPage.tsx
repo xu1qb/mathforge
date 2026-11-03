@@ -22,11 +22,21 @@ export default function ExplainerPage() {
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
 
-  // ?topic=lhopital 之类的深链，来自竞赛专区的入口；非法 id 回落到第一条
+  // ?topic=lhopital 之类的深链；?tag=概率 表示只看某个分支
   const activeId = params.get('topic');
+  const tagFilter = params.get('tag');
+
+  const scopedTopics = tagFilter
+    ? EXPLAINER_TOPICS.filter((t) => t.tag === tagFilter)
+    : EXPLAINER_TOPICS;
+
   const topic: ExplainerTopic =
-    EXPLAINER_TOPICS.find((t) => t.id === activeId) ?? EXPLAINER_TOPICS[0];
-  const handleSelect = (id: string) => setParams({ topic: id }, { replace: true });
+    scopedTopics.find((t) => t.id === activeId) ?? scopedTopics[0] ?? EXPLAINER_TOPICS[0];
+
+  const handleSelect = (id: string) =>
+    setParams(tagFilter ? { topic: id, tag: tagFilter } : { topic: id }, { replace: true });
+
+  const clearTagFilter = () => setParams({}, { replace: true });
 
   // 44 条平铺已经不好找，改成「搜索 + 按标签分组折叠」
   const [query, setQuery] = useState('');
@@ -35,8 +45,10 @@ export default function ExplainerPage() {
   const groups = useMemo(() => groupExplainersByTag(), []);
   const visibleGroups = useMemo(() => {
     const q = query.trim();
-    if (!q) return groups;
-    return groups
+    let result = groups;
+    if (tagFilter) result = result.filter((g) => g.tag === tagFilter);
+    if (!q) return result;
+    return result
       .map((g) => ({
         tag: g.tag,
         items: g.items.filter(
@@ -44,7 +56,7 @@ export default function ExplainerPage() {
         ),
       }))
       .filter((g) => g.items.length > 0);
-  }, [groups, query]);
+  }, [groups, query, tagFilter]);
 
   const toggleTag = (tag: string) =>
     setOpenTags((prev) => ({ ...prev, [tag]: !prev[tag] }));
@@ -98,6 +110,20 @@ export default function ExplainerPage() {
                 className="w-full rounded-lg border border-border bg-card py-2 pl-8 pr-3 text-sm outline-none transition-colors focus:border-primary"
               />
             </div>
+
+            {tagFilter && (
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="text-xs">
+                  只看：{tagFilter}
+                </Badge>
+                <button
+                  onClick={clearTagFilter}
+                  className="text-xs text-muted-foreground hover:text-foreground"
+                >
+                  显示全部
+                </button>
+              </div>
+            )}
 
             {/* 手机上只让分组列表滚动，搜索框始终可见 */}
             <div className="max-h-[42vh] space-y-1.5 overflow-y-auto pr-1 md:max-h-none md:overflow-visible">

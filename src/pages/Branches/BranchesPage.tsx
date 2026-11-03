@@ -49,7 +49,9 @@ export default function BranchesPage() {
 
   const openBranch = (b: Branch, status: ReturnType<typeof branchStatus>) => {
     if (status === 'page' && b.pagePath) navigate(b.pagePath);
-    else if (status === 'topic') navigate('/explainer');
+    else if (status === 'topic' && b.tags && b.tags.length > 0) {
+      navigate('/explainer?tag=' + encodeURIComponent(b.tags[0]));
+    }
   };
 
   return (
