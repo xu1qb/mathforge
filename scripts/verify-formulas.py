@@ -157,6 +157,25 @@ _Mb = sp.Matrix([[1, 1, 1, 1], [1, 2, 3, 2]])
 chk('r(A)=r(A|b)=2 且自由变量 1 个',
     _M.rank() == 2 and _Mb.rank() == 2 and 3 - _M.rank() == 1)
 
+# ---- 2026-11 新增：幂级数收敛域 ----
+# Σ x^n/n 的收敛半径 R = 1（系数比极限）
+_an = 1 / n
+chk('Σ x^n/n 的收敛半径 = 1',
+    sp.limit(sp.Abs(_an / (1 / (n + 1))), n, sp.oo) == 1)
+chk('端点 x=1 处调和级数发散',
+    sp.summation(1 / n, (n, 1, sp.oo)) == sp.oo)
+chk('端点 x=-1 处交错调和级数收敛到 -ln2',
+    sp.simplify(sp.summation((-1) ** n / n, (n, 1, sp.oo)) + sp.log(2)) == 0)
+
+# ---- 新增：二阶常系数方程 ----
+_yy = sp.Function('y')
+C1, C2 = sp.symbols('C1 C2')
+_sol = C1 * sp.exp(x) + C2 * sp.exp(2 * x)
+chk('y = C1 e^x + C2 e^(2x) 满足 y\'\' - 3y\' + 2y = 0',
+    sp.simplify(sp.diff(_sol, x, 2) - 3 * sp.diff(_sol, x) + 2 * _sol) == 0)
+chk('特征根为 1 和 2',
+    sorted(sp.solve(sp.Symbol('r') ** 2 - 3 * sp.Symbol('r') + 2, sp.Symbol('r'))) == [1, 2])
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:
