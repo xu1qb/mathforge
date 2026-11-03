@@ -2025,6 +2025,246 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
       result: '\\int_{0}^{1}x^{n}\\,dx=\\frac{1}{n+1}',
     },
   },
+  {
+    id: 'trig-identity',
+    title: '三角恒等变换：三组公式够用',
+    tag: '三角学',
+    essence:
+      '和差角、倍角、辅助角三组公式串起来就能覆盖九成题；看到 a sin x + b cos x 的第一反应应该是辅助角。',
+    whenToUse: [
+      '化简三角表达式',
+      '求 a sin x + b cos x 的最值',
+      '证明三角恒等式',
+    ],
+    steps: [
+      {
+        title: '和差角',
+        body: '正弦展开是「正余余正」，余弦展开是「余余正正」，符号相反。',
+        formula:
+          '\\sin(\\alpha\\pm\\beta)=\\sin\\alpha\\cos\\beta\\pm\\cos\\alpha\\sin\\beta',
+      },
+      {
+        title: '倍角与降幂',
+        body: '倍角公式反过来就是降幂公式，遇到平方优先降幂。',
+        formula: '\\sin 2\\alpha=2\\sin\\alpha\\cos\\alpha',
+      },
+      {
+        title: '辅助角',
+        body: '把同角的正余弦合成一个正弦，相位由系数决定，最值立刻可见。',
+        formula:
+          'a\\sin x+b\\cos x=\\sqrt{a^{2}+b^{2}}\\,\\sin(x+\\varphi)',
+      },
+      {
+        title: '和差化积',
+        body: '两个正弦相加，化成乘积后常常能与分母约分。',
+        formula:
+          '\\sin A+\\sin B=2\\sin\\frac{A+B}{2}\\cos\\frac{A-B}{2}',
+      },
+      {
+        title: '按结构选公式',
+        body: '见平方先降幂，见乘积化和差，见 a sin + b cos 直接辅助角——别硬套。',
+      },
+    ],
+    example: {
+      problem: '化简 sin x + √3 cos x。',
+      walkthrough: [
+        '系数 a = 1，b = √3，幅值为 √(1+3) = 2。',
+        '相位满足 cos φ = 1/2、sin φ = √3/2，即 φ = π/3。',
+        '所以原式 = 2 sin(x + π/3)。',
+        '由此可知最大值 2、最小值 −2。',
+      ],
+      result: '\\sin x+\\sqrt{3}\\cos x=2\\sin\\left(x+\\frac{\\pi}{3}\\right)',
+    },
+  },
+  {
+    id: 'euclidean-geometry',
+    title: '平面几何：相似与圆幂',
+    tag: '欧氏几何',
+    essence:
+      '平面几何题先找相似（角相等或边成比例），圆里的题则靠相交弦、切割线、弦切角三组定理把线段关系变成乘积。',
+    whenToUse: [
+      '证明线段成比例或乘积相等',
+      '圆内两条弦相交求长度',
+      '求切线与割线的关系',
+    ],
+    steps: [
+      {
+        title: '相似判定',
+        body: '两角对应相等即可相似；相似给出对应边成比例。',
+        formula: '\\frac{AB}{A\'B\'}=\\frac{BC}{B\'C\'}=\\frac{CA}{C\'A\'}',
+      },
+      {
+        title: '相交弦定理',
+        body: '圆内两弦交于一点，交点分出的两段乘积相等。',
+        formula: 'PA\\cdot PB=PC\\cdot PD',
+      },
+      {
+        title: '切割线定理',
+        body: '从圆外一点引切线与割线，切线长的平方等于割线两段的乘积。',
+        formula: 'PT^{2}=PA\\cdot PB',
+      },
+      {
+        title: '弦切角',
+        body: '弦切角等于它所夹弧对的圆周角，这是找相似最常用的入口。',
+      },
+      {
+        title: '统一成圆幂',
+        body: '点在圆内或圆外都可以用「点到两交点距离之积」表示，符号不同而已。',
+      },
+    ],
+    example: {
+      problem: '圆内两弦 AB、CD 交于 P，PA = 2，PB = 6，PC = 3，求 PD。',
+      walkthrough: [
+        '由相交弦定理：PA · PB = PC · PD。',
+        '代入：2 × 6 = 3 × PD。',
+        '解得 PD = 4。',
+      ],
+      result: 'PA\\cdot PB=PC\\cdot PD=12',
+    },
+  },
+  {
+    id: 'group-theory',
+    title: '群论入门：先看阶',
+    tag: '代数',
+    essence:
+      '群是「集合 + 运算 + 四条公理」；入门题几乎都在算元素的阶、找子群，然后用拉格朗日定理卡住可能的大小。',
+    whenToUse: [
+      '判断一个集合配运算是否构成群',
+      '求元素的阶、找子群',
+      '用拉格朗日定理排除不可能的子群大小',
+    ],
+    steps: [
+      {
+        title: '四条公理',
+        body: '封闭、结合、有单位元、每个元素有逆元，缺一不可；交换律不是必需的。',
+        formula: '(ab)c=a(bc),\\quad ae=a,\\quad aa^{-1}=e',
+      },
+      {
+        title: '元素的阶',
+        body: '最小的正整数 k 使 a^k = e，就是这个元素的阶。',
+        formula: 'a^{k}=e\\ \\Rightarrow\\ \\mathrm{ord}(a)\\mid k',
+      },
+      {
+        title: '子群判定',
+        body: '非空子集对运算与取逆都封闭，就是子群。',
+      },
+      {
+        title: '拉格朗日定理',
+        body: '子群的阶一定整除群的阶，这条能一秒排除大部分选项。',
+        formula: '|G|=|H|\\cdot[G:H]',
+      },
+      {
+        title: '循环群',
+        body: '由一个元素生成的群，元素个数等于生成元的阶。',
+      },
+    ],
+    example: {
+      problem: '在加法群 Z₆ 中，求元素 2 的阶。',
+      walkthrough: [
+        'Z₆ 的单位元是 0，运算为模 6 加法。',
+        '2×1 = 2，2×2 = 4，2×3 = 6 ≡ 0。',
+        '最小的正整数是 3，所以阶为 3。',
+        '由拉格朗日定理，3 必须整除 6，成立。',
+      ],
+      result: '\\mathrm{ord}(2)=3',
+    },
+  },
+  {
+    id: 'topology-intro',
+    title: '拓扑学入门：只看开集',
+    tag: '拓扑',
+    essence:
+      '拓扑只关心「哪些子集算开集」；连续是开集的原像仍开，同胚是双向连续的双射——距离、角度全不重要。',
+    whenToUse: [
+      '判断映射是否连续',
+      '判断两个空间是否同胚',
+      '理解连通、紧致这类不变量',
+    ],
+    steps: [
+      {
+        title: '开集公理',
+        body: '空集与全集是开集，任意并、有限交仍是开集。',
+        formula: '\\varnothing,\\ X\\in\\tau',
+      },
+      {
+        title: '连续性',
+        body: '每个开集的原像都是开集，这是连续的定义，不依赖 ε-δ。',
+        formula: 'f^{-1}(U)\\in\\tau_{X}',
+      },
+      {
+        title: '连通',
+        body: '不能拆成两个不相交的非空开集，就是连通。',
+      },
+      {
+        title: '紧致',
+        body: '任意开覆盖都有有限子覆盖；在欧氏空间里等价于有界闭集。',
+      },
+      {
+        title: '同胚',
+        body: '存在双向连续的双射，两个空间在拓扑上视为同一个。',
+        formula: 'X\\cong Y',
+      },
+    ],
+    example: {
+      problem: '证明开区间 (0,1) 与实数轴 ℝ 同胚。',
+      walkthrough: [
+        '取 f(x) = tan(π(x − 1/2))，它把 (0,1) 映到 ℝ。',
+        'f 连续且严格递增，反函数 arctan 也连续。',
+        '所以 f 是双射且双向连续，两者同胚。',
+        '这说明长度、有界性都不是拓扑性质。',
+      ],
+      result: '(0,1)\\cong\\mathbb{R}',
+    },
+  },
+  {
+    id: 'stochastic-process',
+    title: '随机过程入门：马尔可夫与泊松',
+    tag: '概率',
+    essence:
+      '随机过程是一族随机变量；入门只要抓住两条：离散状态看马尔可夫链的转移矩阵，计数事件看泊松过程。',
+    whenToUse: [
+      '求马尔可夫链的平稳分布',
+      '计算泊松过程在时间段内的事件数',
+      '判断过程是否具有无记忆性',
+    ],
+    steps: [
+      {
+        title: '马尔可夫性',
+        body: '下一步只依赖当前状态，与更早的历史无关，这就是无记忆性。',
+        formula: 'P(X_{n+1}\\mid X_{n},\\dots,X_{0})=P(X_{n+1}\\mid X_{n})',
+      },
+      {
+        title: '转移矩阵',
+        body: '把从 i 到 j 的一步转移概率排成矩阵，每行和为 1。',
+        formula: 'P_{ij}=P(X_{n+1}=j\\mid X_{n}=i)',
+      },
+      {
+        title: '平稳分布',
+        body: '解方程 πP = π 且各分量和为 1。',
+        formula: '\\pi P=\\pi,\\qquad \\sum_{i}\\pi_{i}=1',
+      },
+      {
+        title: '泊松过程',
+        body: '单位时间到达率 λ，t 时间内到达次数服从泊松分布。',
+        formula:
+          'P(N_{t}=k)=\\frac{(\\lambda t)^{k}}{k!}e^{-\\lambda t}',
+      },
+      {
+        title: '等待时间',
+        body: '相邻两次到达的间隔服从参数 λ 的指数分布，期望是 1/λ。',
+      },
+    ],
+    example: {
+      problem: '两状态马尔可夫链，转移矩阵 P = [[0.7,0.3],[0.4,0.6]]，求平稳分布。',
+      walkthrough: [
+        '设 π = (π₁, π₂)，由 πP = π 得 π₁ = 0.7π₁ + 0.4π₂。',
+        '化简：0.3π₁ = 0.4π₂，即 π₁ : π₂ = 4 : 3。',
+        '再由 π₁ + π₂ = 1，得 π = (4/7, 3/7)。',
+        '代回验证两边相等。',
+      ],
+      result: '\\pi=\\left(\\frac{4}{7},\\ \\frac{3}{7}\\right)',
+    },
+  },
 ];
 
 

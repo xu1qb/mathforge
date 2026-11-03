@@ -281,6 +281,31 @@ chk('单位圆上 ∬ x dσ = 0', sp.simplify(_int_x) == 0)
 chk('int_0^1 x^n dx = 1/(n+1)',
     sp.simplify(sp.integrate(x**_nn2, (x, 0, 1)) - 1 / (_nn2 + 1)) == 0)
 
+# ---- 2026-11 补缺口：三角辅助角 ----
+chk('sin x + sqrt3 cos x = 2 sin(x + pi/3)',
+    sp.simplify(sp.sin(x) + sp.sqrt(3) * sp.cos(x) - 2 * sp.sin(x + sp.pi / 3)) == 0)
+
+# ---- 补缺口：相交弦 ----
+chk('相交弦：2 * 6 = 3 * PD 得 PD = 4', 2 * 6 == 3 * 4)
+
+# ---- 补缺口：群论（Z6 中 2 的阶） ----
+chk('Z6 中元素 2 的阶为 3', all((2 * kk) % 6 != 0 for kk in (1, 2)) and (2 * 3) % 6 == 0)
+
+# ---- 补缺口：拓扑（(0,1) 与 R 同胚） ----
+# atan(tan(·)) 只在主值区间成立，sympy 不自动化简，用数值抽样验证
+_tmap = sp.tan(sp.pi * (x - sp.Rational(1, 2)))
+_inv = sp.atan(x) / sp.pi + sp.Rational(1, 2)
+_samples = [0.05, 0.2, 0.5, 0.8, 0.95]
+chk('tan(pi(x-1/2)) 与 atan(x)/pi+1/2 互逆（(0,1) 上抽样）',
+    all(abs(float(_inv.subs(x, _tmap.subs(x, v))) - v) < 1e-9 for v in _samples))
+
+# ---- 补缺口：马尔可夫平稳分布 ----
+_P = sp.Matrix([[sp.Rational(7, 10), sp.Rational(3, 10)],
+                [sp.Rational(4, 10), sp.Rational(6, 10)]])
+_pi = sp.Matrix([[sp.Rational(4, 7), sp.Rational(3, 7)]])
+chk('平稳分布 (4/7, 3/7) 满足 pi P = pi',
+    (_pi * _P).applyfunc(sp.nsimplify) == _pi)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:

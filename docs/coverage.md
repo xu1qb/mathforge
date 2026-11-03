@@ -3,7 +3,10 @@
 对照参考：《数学的 62 个分支 · From Concrete to Abstract》。
 用途：明确「现在有什么」，缺口写在这里，后续按需补，不重复讨论。
 
-图例：✅ 已有独立页面 · ◐ 部分覆盖（在同一页面里） · — 暂无
+图例：✅ 有独立页面 · ◐ 有专门考点/条目（原理讲解里可查） · — 暂无
+
+> 2026-11 更新：补了三角恒等变换、平面几何、群论入门、拓扑学入门、随机过程五个考点，
+> 对应分支由「—」升为「◐」。考点在「原理讲解」页按标签分组可见。
 
 ## 1. 基础数学 Foundations
 
@@ -11,9 +14,9 @@
 |---|---|---|
 | 算术 Arithmetic | ◐ | 科学计算器 |
 | 初等代数 Elementary Algebra | ◐ | 符号代数 |
-| 欧氏几何 Euclidean Geometry | — | |
+| 欧氏几何 Euclidean Geometry | ◐ | 考点「平面几何：相似与圆幂」 |
 | 初等数论 Elementary Number Theory | ✅ | 数论基础 |
-| 三角学 Trigonometry | ◐ | 公式手册 |
+| 三角学 Trigonometry | ◐ | 公式手册 + 考点「三角恒等变换」 |
 | 解析几何 Analytic Geometry | ◐ | 二维绘图 |
 | 线性代数 Linear Algebra | ✅ | 线性代数 |
 | 抽象代数 Abstract Algebra | ◐ | 现代数学 |
@@ -38,7 +41,7 @@
 | 射影几何 Projective | — | |
 | 微分几何 Differential Geometry | ✅ | 微分几何 |
 | 代数几何 Algebraic Geometry | — | |
-| 拓扑学 Topology | — | |
+| 拓扑学 Topology | ◐ | 考点「拓扑学入门：只看开集」 |
 | 代数拓扑 Algebraic Topology | — | |
 | 微分拓扑 Differential Topology | — | |
 
@@ -46,7 +49,7 @@
 
 | 分支 | 状态 | 对应页面 |
 |---|---|---|
-| 群论 Group Theory | — | |
+| 群论 Group Theory | ◐ | 考点「群论入门：先看阶」 |
 | 环论 Ring Theory | — | |
 | 域论 Field Theory | — | |
 | 伽罗瓦理论 Galois Theory | — | |
@@ -73,7 +76,7 @@
 |---|---|---|
 | 概率论 Probability Theory | ✅ | 概率统计、原理讲解（贝叶斯/数字特征） |
 | 数理统计 Mathematical Statistics | ✅ | 概率统计 |
-| 随机过程 Stochastic Processes | — | |
+| 随机过程 Stochastic Processes | ◐ | 考点「随机过程入门：马尔可夫与泊松」 |
 | 信息论 Information Theory | — | |
 | 博弈论 Game Theory | — | |
 | 金融数学 Mathematical Finance | — | |
