@@ -744,7 +744,7 @@ html.theme-transition * {
 
   /* 考前小抄：双栏密排，一页 A4 放下全部考点 */
   .cheat-page {
-    padding: 10mm 12mm;
+    padding: 6mm 9mm;
   }
 
   .cheat-header {
@@ -754,7 +754,7 @@ html.theme-transition * {
     gap: 8mm;
     border-bottom: 1.5pt solid #333;
     padding-bottom: 2mm;
-    margin-bottom: 4mm;
+    margin-bottom: 3mm;
   }
 
   .cheat-header h1 {
@@ -775,28 +775,28 @@ html.theme-transition * {
   .cheat-item {
     break-inside: avoid;
     page-break-inside: avoid;
-    margin-bottom: 3mm;
+    margin-bottom: 1.6mm;
   }
 
   .cheat-title {
-    font-size: 9.5pt;
+    font-size: 9pt;
     font-weight: 700;
-    margin-bottom: 0.6mm;
+    margin-bottom: 0.4mm;
   }
 
   .cheat-essence {
-    font-size: 8pt;
-    line-height: 1.45;
+    font-size: 7.6pt;
+    line-height: 1.3;
     color: #333;
   }
 
   .cheat-formula {
-    font-size: 8.5pt;
-    margin-top: 0.8mm;
+    font-size: 8pt;
+    margin-top: 0.5mm;
   }
 
   .cheat-footer {
-    margin-top: 4mm;
+    margin-top: 3mm;
     border-top: 0.5pt solid #999;
     padding-top: 2mm;
     font-size: 7.5pt;

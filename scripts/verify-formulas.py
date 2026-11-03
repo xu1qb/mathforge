@@ -88,6 +88,32 @@ A = sp.Matrix([[1, 1, 0], [1, 2, 0], [0, 0, 3]])
 chk('顺序主子式 (1,1,3) 且正定',
     (A[:1, :1].det(), A[:2, :2].det(), A.det()) == (1, 1, 3))
 
+# ---- 2026-11 新增考点：数列极限 ----
+a_n = sp.Rational(1)
+for _ in range(40):
+    a_n = sp.sqrt(2 + a_n)
+chk('递推 a_{n+1}=sqrt(2+a_n) 收敛到 2', abs(float(a_n) - 2) < 1e-9)
+
+# ---- 新增考点：定积分区间再现 ----
+# 注意：sympy 对这个积分给不出闭式，只能数值比对（结果确实是 pi^2/4）
+_int_val = sp.N(sp.integrate(x * sp.sin(x) / (1 + sp.cos(x) ** 2), (x, 0, sp.pi)), 20)
+chk('int_0^pi x sin x/(1+cos^2 x) = pi^2/4', abs(float(_int_val - sp.pi ** 2 / 4)) < 1e-12)
+
+# ---- 新增考点：特征值与相似对角化 ----
+M2 = sp.Matrix([[2, 1], [1, 2]])
+P2 = sp.Matrix([[1, 1], [1, -1]])
+chk('A^n = P diag(3^n,1) P^-1',
+    all(sp.simplify(P2 * sp.diag(3 ** kk, 1) * P2.inv() - M2 ** kk) == sp.zeros(2, 2)
+        for kk in (1, 2, 3)))
+
+# ---- 新增考点：随机变量函数的分布 ----
+yy = sp.Symbol('y', positive=True)
+fY = 1 / (2 * sp.sqrt(yy))
+chk('f_Y(y)=1/(2 sqrt y) 在 (0,1) 上积分为 1',
+    sp.simplify(sp.integrate(fY, (yy, 0, 1)) - 1) == 0)
+chk('F_Y(1/4) = 1/2',
+    sp.simplify(sp.integrate(fY, (yy, 0, sp.Rational(1, 4))) - sp.Rational(1, 2)) == 0)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:
