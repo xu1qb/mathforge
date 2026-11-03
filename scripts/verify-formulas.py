@@ -176,6 +176,26 @@ chk('y = C1 e^x + C2 e^(2x) 满足 y\'\' - 3y\' + 2y = 0',
 chk('特征根为 1 和 2',
     sorted(sp.solve(sp.Symbol('r') ** 2 - 3 * sp.Symbol('r') + 2, sp.Symbol('r'))) == [1, 2])
 
+# ---- 2026-11 新增：空间线面夹角 ----
+_s = sp.Matrix([1, 2, 1])
+_nv = sp.Matrix([1, 1, 1])
+_sin_theta = sp.Abs(_s.dot(_nv)) / (_s.norm() * _nv.norm())
+chk('直线 (1,2,1) 与平面法向 (1,1,1) 的线面夹角 sin = 2sqrt2/3',
+    sp.simplify(_sin_theta - 2 * sp.sqrt(2) / 3) == 0)
+
+# ---- 新增：经典不等式 ----
+_aa, _bb, _cc = sp.symbols('a b c', real=True)
+chk('a^2+b^2+c^2-ab-bc-ca = [(a-b)^2+(b-c)^2+(c-a)^2]/2',
+    sp.simplify((_aa**2 + _bb**2 + _cc**2 - _aa*_bb - _bb*_cc - _cc*_aa)
+                - ((_aa-_bb)**2 + (_bb-_cc)**2 + (_cc-_aa)**2) / 2) == 0)
+chk('均值不等式：a+b >= 2sqrt(ab)（抽样验证）',
+    all((_u + _v) >= 2 * sp.sqrt(_u * _v)
+        for _u, _v in [(1, 1), (4, 9), (0.25, 2), (10, 10)]))
+
+# ---- 新增：定积分几何应用 ----
+chk('y=x^2 在 [0,1] 绕 x 轴旋转体积 = pi/5',
+    sp.simplify(sp.pi * sp.integrate(x**4, (x, 0, 1)) - sp.pi / 5) == 0)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:

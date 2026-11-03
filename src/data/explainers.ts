@@ -1300,6 +1300,149 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
       result: 'y=C_{1}e^{x}+C_{2}e^{2x}',
     },
   },
+  {
+    id: 'line-plane-angle',
+    title: '空间直线与平面：夹角与距离',
+    tag: '空间几何',
+    essence:
+      '直线靠一个点加方向向量，平面靠一个点加法向量；所有夹角、距离问题都是在这两个向量之间做点积和叉积。',
+    whenToUse: [
+      '求直线与平面的夹角',
+      '求两直线或两平面的夹角',
+      '求点到直线的距离',
+    ],
+    steps: [
+      {
+        title: '写出方向向量与法向量',
+        body: '对称式 (x−x₀)/m = (y−y₀)/n = (z−z₀)/p 的方向向量是 (m,n,p)；平面 Ax+By+Cz+D=0 的法向量是 (A,B,C)。',
+      },
+      {
+        title: '线面夹角用正弦',
+        body: '方向向量与法向量的夹角是线面夹角的余角，所以取正弦。',
+        formula: '\\sin\\theta=\\frac{|\\vec{s}\\cdot\\vec{n}|}{|\\vec{s}|\\,|\\vec{n}|}',
+      },
+      {
+        title: '线线、面面夹角用余弦',
+        body: '两个方向向量之间、两个法向量之间都用点积求余弦，取绝对值保证是锐角。',
+        formula: '\\cos\\theta=\\frac{|\\vec{s}_{1}\\cdot\\vec{s}_{2}|}{|\\vec{s}_{1}|\\,|\\vec{s}_{2}|}',
+      },
+      {
+        title: '点到直线距离用叉积',
+        body: '向量 AP 与方向向量的叉积模长，就是平行四边形的面积，除以底边长度即得高。',
+        formula: 'd=\\frac{|\\overrightarrow{AP}\\times\\vec{s}|}{|\\vec{s}|}',
+      },
+      {
+        title: '平行与垂直的判断',
+        body: '线面平行看方向向量与法向量是否垂直；线面垂直看它们是否平行。',
+      },
+    ],
+    example: {
+      problem: '求直线 (x−1)/1 = y/2 = z/1 与平面 x+y+z=1 的夹角。',
+      walkthrough: [
+        '直线的方向向量 s = (1,2,1)，平面的法向量 n = (1,1,1)。',
+        '点积 s·n = 1+2+1 = 4。',
+        '模长 |s| = √6，|n| = √3。',
+        'sin θ = 4/(√6·√3) = 4/√18 = 2√2/3。',
+      ],
+      result: '\\sin\\theta=\\frac{2\\sqrt{2}}{3}',
+    },
+  },
+  {
+    id: 'classic-inequalities',
+    title: '三个经典不等式：均值、柯西、琴生',
+    tag: '不等式',
+    essence:
+      '均值管「和与积」，柯西管「平方和与内积」，琴生管「凸函数的平均」；竞赛里的不等式题九成是这三个的变形。',
+    whenToUse: [
+      '证明含 a+b 与 ab 的不等式',
+      '证明平方和与乘积的不等式',
+      '证明对称的多元不等式',
+    ],
+    steps: [
+      {
+        title: '均值不等式',
+        body: '两个正数的算术平均不小于几何平均，取等当且仅当两数相等。',
+        formula: '\\frac{a+b}{2}\\ge\\sqrt{ab}\\quad(a,b>0)',
+      },
+      {
+        title: '柯西不等式',
+        body: '内积的平方不超过各自平方和的乘积，取等当两组数成比例。',
+        formula:
+          '\\left(\\sum_{i=1}^{n}a_{i}b_{i}\\right)^{2}\\le\\left(\\sum_{i=1}^{n}a_{i}^{2}\\right)\\left(\\sum_{i=1}^{n}b_{i}^{2}\\right)',
+      },
+      {
+        title: '琴生不等式',
+        body: 'f 为凸函数时，函数值的平均不小于平均值的函数值；凹函数方向相反。',
+        formula:
+          'f\\!\\left(\\frac{x_{1}+\\cdots+x_{n}}{n}\\right)\\le\\frac{f(x_{1})+\\cdots+f(x_{n})}{n}',
+      },
+      {
+        title: '别忘了写取等条件',
+        body: '三个不等式都有等号成立的条件，证明题里不写会扣分。',
+      },
+      {
+        title: '配成平方和',
+        body: '竞赛题最常见的收尾方式：把差写成若干平方之和，非负性一目了然。',
+      },
+    ],
+    example: {
+      problem: '证明对任意实数 a、b、c，都有 a²+b²+c² ≥ ab+bc+ca。',
+      walkthrough: [
+        '移项：a²+b²+c² − ab − bc − ca ≥ 0。',
+        '乘以 2 并配方：2(a²+b²+c²−ab−bc−ca) = (a−b)²+(b−c)²+(c−a)²。',
+        '右边是三个平方之和，恒非负。',
+        '所以原不等式成立，且 a=b=c 时取等号。',
+      ],
+      result: 'a^{2}+b^{2}+c^{2}\\ge ab+bc+ca',
+    },
+  },
+  {
+    id: 'integral-applications',
+    title: '定积分的几何应用',
+    tag: '积分',
+    essence:
+      '面积、体积、弧长都是「写微元再累加」：先想清楚一片微元是什么形状，再定上下限积分。',
+    whenToUse: [
+      '求曲边梯形的面积',
+      '求旋转体的体积',
+      '求平面曲线的弧长',
+    ],
+    steps: [
+      {
+        title: '面积：上减下',
+        body: '两条曲线围成的区域，用上边界减下边界，交叉处要分段。',
+        formula: 'S=\\int_{a}^{b}\\left|f(x)-g(x)\\right|dx',
+      },
+      {
+        title: '绕 x 轴旋转：圆盘法',
+        body: '微元是一个薄圆盘，半径是 f(x)，面积 πf²，厚度 dx。',
+        formula: 'V=\\pi\\int_{a}^{b}f^{2}(x)\\,dx',
+      },
+      {
+        title: '绕 y 轴旋转：柱壳法',
+        body: '微元是一个薄圆柱壳，周长 2πx、高 f(x)、厚 dx。',
+        formula: 'V=2\\pi\\int_{a}^{b}x\\,f(x)\\,dx',
+      },
+      {
+        title: '弧长',
+        body: '用勾股定理把 ds 写成 √(1+(y′)²) dx；参数方程时换成 t 的微分。',
+        formula: 'L=\\int_{a}^{b}\\sqrt{1+\\left(f\'(x)\\right)^{2}}\\,dx',
+      },
+      {
+        title: '先画图再定限',
+        body: '区域形状决定用哪种公式，定限永远从图上读，不要凭记忆写。',
+      },
+    ],
+    example: {
+      problem: '求 y = x² 在 [0,1] 上绕 x 轴旋转所得旋转体的体积。',
+      walkthrough: [
+        '用圆盘法：微元半径是 x²，面积是 πx⁴。',
+        '在 [0,1] 上积分：V = π∫₀¹ x⁴ dx。',
+        '原函数是 x⁵/5，代入上下限得 π/5。',
+      ],
+      result: 'V=\\frac{\\pi}{5}',
+    },
+  },
 ];
 
 
