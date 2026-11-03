@@ -2028,3 +2028,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
 ];
 
 
+
+/** 按 tag 分组，顺序按标签首次出现的顺序 */
+export interface ExplainerGroup {
+  tag: string;
+  items: ExplainerTopic[];
+}
+
+export function groupExplainersByTag(): ExplainerGroup[] {
+  const groups: ExplainerGroup[] = [];
+  for (const topic of EXPLAINER_TOPICS) {
+    const hit = groups.find((g) => g.tag === topic.tag);
+    if (hit) hit.items.push(topic);
+    else groups.push({ tag: topic.tag, items: [topic] });
+  }
+  return groups;
+}

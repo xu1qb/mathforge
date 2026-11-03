@@ -4,24 +4,9 @@
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Lightbulb } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { EXPLAINER_TOPICS, type ExplainerTopic } from '@/data/explainers';
+import { EXPLAINER_TOPICS, groupExplainersByTag } from '@/data/explainers';
 
-interface TagGroup {
-  tag: string;
-  items: ExplainerTopic[];
-}
-
-function groupByTag(): TagGroup[] {
-  const groups: TagGroup[] = [];
-  for (const t of EXPLAINER_TOPICS) {
-    const hit = groups.find((g) => g.tag === t.tag);
-    if (hit) hit.items.push(t);
-    else groups.push({ tag: t.tag, items: [t] });
-  }
-  return groups;
-}
-
-const GROUPS = groupByTag();
+const GROUPS = groupExplainersByTag();
 
 export default function ExplainerShortcuts() {
   const navigate = useNavigate();

@@ -1,12 +1,21 @@
-import { useEffect, useState } from 'react';
-import { ArrowLeft, Lightbulb, CheckCircle2, ListChecks, Printer } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  ArrowLeft,
+  Lightbulb,
+  CheckCircle2,
+  ListChecks,
+  Printer,
+  Search,
+  ChevronDown,
+  ChevronRight,
+} from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import MathRenderer from '@/components/MathRenderer';
 import ExplainersCheatsheet from '@/components/print/ExplainersCheatsheet';
-import { EXPLAINER_TOPICS, type ExplainerTopic } from '@/data/explainers';
+import { EXPLAINER_TOPICS, groupExplainersByTag, type ExplainerTopic } from '@/data/explainers';
 import { cn } from '@/lib/utils';
 
 export default function ExplainerPage() {
@@ -18,6 +27,27 @@ export default function ExplainerPage() {
   const topic: ExplainerTopic =
     EXPLAINER_TOPICS.find((t) => t.id === activeId) ?? EXPLAINER_TOPICS[0];
   const handleSelect = (id: string) => setParams({ topic: id }, { replace: true });
+
+  // 44 条平铺已经不好找，改成「搜索 + 按标签分组折叠」
+  const [query, setQuery] = useState('');
+  const [openTags, setOpenTags] = useState<Record<string, boolean>>({});
+
+  const groups = useMemo(() => groupExplainersByTag(), []);
+  const visibleGroups = useMemo(() => {
+    const q = query.trim();
+    if (!q) return groups;
+    return groups
+      .map((g) => ({
+        tag: g.tag,
+        items: g.items.filter(
+          (t) => t.title.includes(q) || t.tag.includes(q) || t.essence.includes(q)
+        ),
+      }))
+      .filter((g) => g.items.length > 0);
+  }, [groups, query]);
+
+  const toggleTag = (tag: string) =>
+    setOpenTags((prev) => ({ ...prev, [tag]: !prev[tag] }));
 
   // 打印小抄：先挂载打印版，再唤起打印对话框
   const [printing, setPrinting] = useState(false);
@@ -36,7 +66,7 @@ export default function ExplainerPage() {
     <>
     <div className={cn('mx-auto w-full max-w-6xl px-4 py-6', printing && 'print:hidden')}>
       {/* 头部 */}
-      <div className="mb-5 flex items-center gap-3">
+      <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2">
         <button
           onClick={() => navigate(-1)}
           className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
@@ -56,24 +86,70 @@ export default function ExplainerPage() {
       </div>
 
       <div className="flex flex-col gap-5 md:flex-row">
-        {/* 左侧知识点列表 */}
-        <aside className="md:w-60 md:shrink-0">
-          <div className="flex flex-col gap-2">
-            {EXPLAINER_TOPICS.map((t) => (
-              <button
-                key={t.id}
-                onClick={() => handleSelect(t.id)}
-                className={cn(
-                  'rounded-lg border p-3 text-left transition-colors',
-                  t.id === topic.id
-                    ? 'border-primary bg-primary/10'
-                    : 'border-border bg-card hover:bg-accent'
-                )}
-              >
-                <div className="text-sm font-medium">{t.title}</div>
-                <div className="mt-0.5 text-xs text-muted-foreground">{t.tag}</div>
-              </button>
-            ))}
+        {/* 左侧：搜索 + 按标签折叠 */}
+        <aside className="md:w-64 md:shrink-0">
+          <div className="space-y-3 md:sticky md:top-4">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="搜索考点…"
+                className="w-full rounded-lg border border-border bg-card py-2 pl-8 pr-3 text-sm outline-none transition-colors focus:border-primary"
+              />
+            </div>
+
+            {/* 手机上只让分组列表滚动，搜索框始终可见 */}
+            <div className="max-h-[42vh] space-y-1.5 overflow-y-auto pr-1 md:max-h-none md:overflow-visible">
+              {visibleGroups.map((g) => {
+                // 搜索时全部展开；否则展开用户点开的和当前考点所在的分组
+                const isOpen = Boolean(query.trim()) || !!openTags[g.tag] || g.tag === topic.tag;
+                return (
+                  <div
+                    key={g.tag}
+                    className="overflow-hidden rounded-lg border border-border bg-card"
+                  >
+                    <button
+                      onClick={() => toggleTag(g.tag)}
+                      className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left"
+                    >
+                      <span className="text-sm font-medium text-foreground">{g.tag}</span>
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        {g.items.length}
+                        {isOpen ? (
+                          <ChevronDown className="h-3.5 w-3.5" />
+                        ) : (
+                          <ChevronRight className="h-3.5 w-3.5" />
+                        )}
+                      </span>
+                    </button>
+
+                    {isOpen && (
+                      <div className="space-y-0.5 px-1.5 pb-1.5">
+                        {g.items.map((t) => (
+                          <button
+                            key={t.id}
+                            onClick={() => handleSelect(t.id)}
+                            className={cn(
+                              'block w-full rounded-md px-2 py-1.5 text-left text-xs transition-colors',
+                              t.id === topic.id
+                                ? 'bg-primary/10 font-medium text-foreground'
+                                : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                            )}
+                          >
+                            {t.title.replace(/：.*$/, '')}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              {visibleGroups.length === 0 && (
+                <p className="px-1 text-xs text-muted-foreground">没有匹配的考点</p>
+              )}
+            </div>
           </div>
         </aside>
 
