@@ -11,7 +11,7 @@ DST="$HOME/Desktop/mathforge-source"
 [ -d "$SRC" ] || { echo "源目录不存在：$SRC"; exit 1; }
 [ -d "$DST" ] || { echo "桌面镜像不存在：$DST"; exit 1; }
 
-FLAGS=(-a --delete --exclude '.DS_Store' --exclude '.git')
+FLAGS=(-a --delete --exclude '.DS_Store' --exclude '.git' --exclude 'dist*' --exclude 'node_modules')
 [ "${1:-}" = "--dry-run" ] && FLAGS+=(--dry-run -v)
 
 echo "==> $SRC"
