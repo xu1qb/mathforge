@@ -1,8 +1,11 @@
-import { ArrowLeft, Lightbulb, CheckCircle2, ListChecks } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ArrowLeft, Lightbulb, CheckCircle2, ListChecks, Printer } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import MathRenderer from '@/components/MathRenderer';
+import ExplainersCheatsheet from '@/components/print/ExplainersCheatsheet';
 import { EXPLAINER_TOPICS, type ExplainerTopic } from '@/data/explainers';
 import { cn } from '@/lib/utils';
 
@@ -16,8 +19,22 @@ export default function ExplainerPage() {
     EXPLAINER_TOPICS.find((t) => t.id === activeId) ?? EXPLAINER_TOPICS[0];
   const handleSelect = (id: string) => setParams({ topic: id }, { replace: true });
 
+  // 打印小抄：先挂载打印版，再唤起打印对话框
+  const [printing, setPrinting] = useState(false);
+  useEffect(() => {
+    if (!printing) return;
+    const timer = window.setTimeout(() => window.print(), 80);
+    const reset = () => setPrinting(false);
+    window.addEventListener('afterprint', reset);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('afterprint', reset);
+    };
+  }, [printing]);
+
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-6">
+    <>
+    <div className={cn('mx-auto w-full max-w-6xl px-4 py-6', printing && 'print:hidden')}>
       {/* 头部 */}
       <div className="mb-5 flex items-center gap-3">
         <button
@@ -28,6 +45,14 @@ export default function ExplainerPage() {
         </button>
         <h1 className="text-xl font-semibold">原理讲解</h1>
         <Badge variant="secondary">数竞高频考点拆解</Badge>
+        <Button
+          variant="outline"
+          size="sm"
+          className="ml-auto gap-1.5"
+          onClick={() => setPrinting(true)}
+        >
+          <Printer className="h-4 w-4" /> 打印小抄
+        </Button>
       </div>
 
       <div className="flex flex-col gap-5 md:flex-row">
@@ -132,5 +157,7 @@ export default function ExplainerPage() {
         </main>
       </div>
     </div>
+    {printing && <ExplainersCheatsheet />}
+    </>
   );
 }
