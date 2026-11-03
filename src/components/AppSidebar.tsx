@@ -65,70 +65,75 @@ export interface NavGroup {
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    name: '基础计算',
+    name: '备考主线',
     items: [
       { path: '/', label: '首页', icon: Home },
-      { path: '/formulas', label: '公式手册', icon: BookOpenText },
+      { path: '/competition', label: '竞赛备战中心', icon: Trophy },
+      { path: '/practice', label: '练习训练', icon: GraduationCap },
+      { path: '/explainer', label: '原理讲解', icon: Lightbulb },
+      { path: '/flow', label: '解题流程图', icon: Workflow },
+    ],
+  },
+  {
+    name: '计算工具',
+    items: [
       { path: '/calculator', label: '科学计算器', icon: Calculator },
       { path: '/symbolic', label: '符号代数', icon: Sigma },
-      { path: '/number-theory', label: '数论基础', icon: Hash },
-    ],
-  },
-  {
-    name: '分析类',
-    items: [
-      { path: '/calculus', label: '微积分', icon: FunctionSquare },
-      { path: '/integral-visualization', label: '微积分可视化', icon: AreaChart },
-      { path: '/multivariable', label: '多元微积分', icon: Layers },
-      { path: '/ode', label: '常微分方程', icon: GitBranch },
-      { path: '/fourier', label: '傅里叶级数', icon: Activity },
-    ],
-  },
-  {
-    name: '代数与几何',
-    items: [
-      { path: '/linear-algebra', label: '线性代数', icon: Grid3x3 },
-      { path: '/plot-2d', label: '二维绘图', icon: LineChart },
-      { path: '/plot-3d', label: '三维曲面', icon: Box },
-      { path: '/data-chart', label: '数据图表', icon: PieChart },
-    ],
-  },
-  {
-    name: '应用与概率',
-    items: [
-      { path: '/probability', label: '概率统计', icon: BarChart3 },
-      { path: '/numerical', label: '数值分析', icon: Target },
-      { path: '/complex', label: '复变函数', icon: PlusSquare },
-    ],
-  },
-  {
-    name: '离散与现代',
-    items: [
-      { path: '/discrete', label: '离散数学', icon: ToggleLeft },
-      { path: '/modern', label: '现代数学', icon: Sparkles },
-    ],
-  },
-  {
-    name: '实用工具',
-    items: [
+      { path: '/formulas', label: '公式手册', icon: BookOpenText },
       { path: '/photo-solve', label: '拍照识题', icon: Camera },
       { path: '/tools', label: '实用工具', icon: Wrench },
     ],
   },
   {
-    name: '进阶专题',
+    name: '基础数学',
     items: [
+      { path: '/number-theory', label: '数论基础', icon: Hash },
+      { path: '/linear-algebra', label: '线性代数', icon: Grid3x3 },
+    ],
+  },
+  {
+    name: '分析学',
+    items: [
+      { path: '/calculus', label: '微积分', icon: FunctionSquare },
+      { path: '/multivariable', label: '多元微积分', icon: Layers },
+      { path: '/ode', label: '常微分方程', icon: GitBranch },
       { path: '/pde', label: '偏微分方程', icon: Waves },
+      { path: '/fourier', label: '傅里叶级数', icon: Activity },
+      { path: '/complex', label: '复变函数', icon: PlusSquare },
+    ],
+  },
+  {
+    name: '几何 · 离散 · 现代',
+    items: [
       { path: '/diff-geo', label: '微分几何', icon: Globe },
-      { path: '/competition', label: '竞赛备战中心', icon: Trophy },
-      { path: '/explainer', label: '原理讲解', icon: Lightbulb },
-      { path: '/flow', label: '解题流程图', icon: Workflow },
-      { path: '/practice', label: '练习训练', icon: GraduationCap },
-      { path: '/teacher', label: '我当老师', icon: PenSquare },
-      { path: '/blind-box', label: '每日盲盒', icon: Gift },
-      { path: '/mathematician-quiz', label: '数学家测试', icon: Brain },
-      { path: '/spellbook', label: '公式咒语', icon: BookMarked },
+      { path: '/discrete', label: '离散数学', icon: ToggleLeft },
+      { path: '/modern', label: '现代数学', icon: Sparkles },
+    ],
+  },
+  {
+    name: '概率 · 计算',
+    items: [
+      { path: '/probability', label: '概率统计', icon: BarChart3 },
+      { path: '/numerical', label: '数值分析', icon: Target },
+    ],
+  },
+  {
+    name: '可视化',
+    items: [
+      { path: '/plot-2d', label: '二维绘图', icon: LineChart },
+      { path: '/plot-3d', label: '三维曲面', icon: Box },
+      { path: '/data-chart', label: '数据图表', icon: PieChart },
+      { path: '/integral-visualization', label: '微积分可视化', icon: AreaChart },
       { path: '/knowledge-map', label: '知识地图', icon: Map },
+    ],
+  },
+  {
+    name: '成长与趣味',
+    items: [
+      { path: '/blind-box', label: '每日盲盒', icon: Gift },
+      { path: '/spellbook', label: '公式咒语', icon: BookMarked },
+      { path: '/mathematician-quiz', label: '数学家测试', icon: Brain },
+      { path: '/teacher', label: '我当老师', icon: PenSquare },
     ],
   },
 ];
@@ -139,7 +144,10 @@ function AppSidebarInner() {
   const collapsed = state === 'collapsed';
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(() => {
     const init: Record<string, boolean> = {};
-    NAV_GROUPS.forEach((g) => { init[g.name] = true; });
+    // 默认只展开「备考主线」和当前页面所在分组，其余收起，避免侧栏过长
+    NAV_GROUPS.forEach((g) => {
+      init[g.name] = g.name === '备考主线' || g.items.some((i) => i.path === pathname);
+    });
     return init;
   });
   const { dockItems, isPinned, pinToDock, removeFromDock, limit: dockLimit } = useDock();
