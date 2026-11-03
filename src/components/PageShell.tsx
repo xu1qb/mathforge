@@ -12,6 +12,7 @@
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 import { cn } from '@/lib/utils';
 
 export type PageWidth = 'reading' | 'tool' | 'wide';
@@ -30,8 +31,12 @@ interface PageShellProps {
   back?: boolean;
   /** 右侧动作区（语法速查、打印、切换等） */
   actions?: ReactNode;
-  /** 标题下方的额外一行（标签、筛选等） */
+  /** 标题下方/上方的额外一行（标签、筛选等） */
   subheader?: ReactNode;
+  /** 标题上的小字前缀，如「第三讲 · 分析学」 */
+  eyebrow?: string;
+  /** 是否在右侧显示主题切换（默认显示，与旧 PageHeader 对齐） */
+  showThemeToggle?: boolean;
   children: ReactNode;
   className?: string;
 }
@@ -43,6 +48,8 @@ export default function PageShell({
   back = false,
   actions,
   subheader,
+  eyebrow,
+  showThemeToggle = true,
   children,
   className,
 }: PageShellProps) {
@@ -61,8 +68,27 @@ export default function PageShell({
 
       <header className="mb-5">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <h1 className="text-xl font-semibold text-foreground">{title}</h1>
-          {actions && <div className="ml-auto flex items-center gap-2">{actions}</div>}
+          <div className="min-w-0">
+            {eyebrow && (
+              <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                {eyebrow}
+              </div>
+            )}
+            <h1 className="text-xl font-semibold text-foreground">{title}</h1>
+          </div>
+          <div className="ml-auto flex items-center gap-2">
+            {actions}
+            {showThemeToggle && (
+              <>
+                <div className="hidden md:block">
+                  <ThemeToggle variant="header" />
+                </div>
+                <div className="md:hidden">
+                  <ThemeToggle variant="header" size="icon" />
+                </div>
+              </>
+            )}
+          </div>
         </div>
         {description && (
           <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{description}</p>

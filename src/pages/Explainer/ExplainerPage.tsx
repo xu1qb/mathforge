@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  ArrowLeft,
   Lightbulb,
   CheckCircle2,
   ListChecks,
@@ -9,17 +8,17 @@ import {
   ChevronDown,
   ChevronRight,
 } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import MathRenderer from '@/components/MathRenderer';
+import PageShell from '@/components/PageShell';
 import ExplainersCheatsheet from '@/components/print/ExplainersCheatsheet';
 import { EXPLAINER_TOPICS, groupExplainersByTag, type ExplainerTopic } from '@/data/explainers';
 import { cn } from '@/lib/utils';
 
 export default function ExplainerPage() {
-  const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
 
   // ?topic=lhopital 之类的深链；?tag=概率 表示只看某个分支
@@ -76,26 +75,18 @@ export default function ExplainerPage() {
 
   return (
     <>
-    <div className={cn('mx-auto w-full max-w-6xl px-4 py-6', printing && 'print:hidden')}>
-      {/* 头部 */}
-      <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> 返回
-        </button>
-        <h1 className="text-xl font-semibold">原理讲解</h1>
-        <Badge variant="secondary">数竞高频考点拆解</Badge>
-        <Button
-          variant="outline"
-          size="sm"
-          className="ml-auto gap-1.5"
-          onClick={() => setPrinting(true)}
-        >
+    <PageShell
+      title="原理讲解"
+      description="数竞高频考点拆解：一句话本质、什么时候用、完整例子"
+      width="wide"
+      back
+      className={printing ? 'print:hidden' : undefined}
+      actions={
+        <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setPrinting(true)}>
           <Printer className="h-4 w-4" /> 打印小抄
         </Button>
-      </div>
+      }
+    >
 
       <div className="flex flex-col gap-5 md:flex-row">
         {/* 左侧：搜索 + 按标签折叠 */}
@@ -258,7 +249,7 @@ export default function ExplainerPage() {
           </Card>
         </main>
       </div>
-    </div>
+    </PageShell>
     {printing && <ExplainersCheatsheet />}
     </>
   );

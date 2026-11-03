@@ -10,7 +10,7 @@ import {
   Network, Orbit, Trophy, ChevronRight, Sparkle, Link2, BookMarked, Map
 } from 'lucide-react';
 import { KNOWLEDGE_MAP, KNOWLEDGE_LEVELS, type KnowledgeCourse, type KnowledgeLevel } from '@/data/knowledge-map';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import KnowledgeContinentMap from '@/components/KnowledgeContinentMap';
 
@@ -150,13 +150,12 @@ export default function KnowledgeMapPage() {
   const advancedCount = KNOWLEDGE_MAP.filter((c) => c.level === 'advanced').length;
 
   return (
-    <div className="min-h-screen">
-      <PageHeader
-        title="知识地图"
-        description="按数学系本科课程体系组织的学习路径，从基础到高阶循序渐进"
-      />
-
-      <main className="px-4 md:px-6 lg:px-8 py-8 max-w-6xl mx-auto">
+    <PageShell
+      title="知识地图"
+      description="按数学系本科课程体系组织的学习路径，从基础到高阶循序渐进"
+      eyebrow="学科 · 可视化"
+      width="wide"
+    >
         {/* 知识大陆全景地图 */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -296,8 +295,6 @@ export default function KnowledgeMapPage() {
             </Card>
           </div>
         </section>
-      </main>
-
-    </div>
+    </PageShell>
   );
 }
