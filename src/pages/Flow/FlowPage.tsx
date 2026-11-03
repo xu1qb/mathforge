@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowRight, CheckCircle2, Printer, XCircle } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { ArrowRight, CheckCircle2, Printer, XCircle } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import MathRenderer from '@/components/MathRenderer';
+import PageShell from '@/components/PageShell';
 import { FLOW_CHARTS, getFlowChart, type FlowKind } from '@/data/flows';
 import { cn } from '@/lib/utils';
 
@@ -88,7 +89,6 @@ function PrintableCharts() {
 }
 
 export default function FlowPage() {
-  const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
 
   // ?chart=limit 之类的深链，来自竞赛专区的入口；非法 id 自动回落到第一张
@@ -110,17 +110,13 @@ export default function FlowPage() {
   }, [printScope]);
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-6">
-      <div className="mb-5 flex flex-wrap items-center gap-3">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> 返回
-        </button>
-        <h1 className="text-xl font-semibold">解题流程图</h1>
-        <Badge variant="secondary">按题型给思路</Badge>
-        <div className="ml-auto flex items-center gap-2">
+    <PageShell
+      title="解题流程图"
+      description="按题型给思路，考前可以一键打印成 A4"
+      width="reading"
+      back
+      actions={
+        <>
           <Button
             variant="outline"
             size="sm"
@@ -137,8 +133,9 @@ export default function FlowPage() {
           >
             <Printer className="h-4 w-4" /> 打印全部
           </Button>
-        </div>
-      </div>
+        </>
+      }
+    >
 
       {/* 屏幕上看到的交互版；打印“全部”时整块隐藏 */}
       <div className={printScope === 'all' ? 'print:hidden' : undefined}>
@@ -207,6 +204,6 @@ export default function FlowPage() {
 
       {/* 只在“打印全部”时挂载，避免平时多渲染一份 */}
       {printScope === 'all' && <PrintableCharts />}
-    </div>
+    </PageShell>
   );
 }

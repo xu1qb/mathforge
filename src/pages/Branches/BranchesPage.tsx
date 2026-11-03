@@ -3,8 +3,9 @@
 
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, BookOpen, Circle, CircleDot, CircleSlash } from 'lucide-react';
+import { BookOpen, Circle, CircleDot, CircleSlash } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import PageShell from '@/components/PageShell';
 import { Badge } from '@/components/ui/badge';
 import { BRANCH_CATEGORIES, branchStatus, type Branch } from '@/data/branches';
 import { EXPLAINER_TOPICS } from '@/data/explainers';
@@ -55,20 +56,12 @@ export default function BranchesPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-6">
-      <button
-        onClick={() => navigate(-1)}
-        className="mb-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" /> 返回
-      </button>
-
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold">学科总览</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          按 11 个大类浏览全部分支，看得见边界，也看得见还没做的部分
-        </p>
-      </div>
+    <PageShell
+      title="学科总览"
+      description="按 11 个大类浏览全部分支，看得见边界，也看得见还没做的部分"
+      width="wide"
+      back
+    >
 
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
@@ -153,6 +146,6 @@ export default function BranchesPage() {
           );
         })}
       </div>
-    </div>
+    </PageShell>
   );
 }
