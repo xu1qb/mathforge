@@ -1015,6 +1015,99 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
       result: 'f_{Y}(y)=\\frac{1}{2\\sqrt{y}},\\quad 0<y<1',
     },
   },
+  {
+    id: 'inequality-proof',
+    title: '不等式证明：三条主线',
+    tag: '不等式',
+    essence:
+      '证不等式只有三条主线：移项求导看单调、用中值定理把差值换成导数、或者直接求最值；选哪条看式子里有没有 f(b)−f(a)。',
+    whenToUse: [
+      '题目要求「证明 f(x) ≥ g(x)」',
+      '式子里出现 f(b) − f(a) 或 b − a',
+      '含积分、级数的不等式估计',
+    ],
+    steps: [
+      {
+        title: '移项构造函数',
+        body: '令 F = f − g，把要证的不等式变成 F ≥ 0，问题就转成了求下界。',
+        formula: 'F(x)=f(x)-g(x)',
+      },
+      {
+        title: '求导看单调',
+        body: '算出 F′，判断符号；单调加上端点值，下界立刻出来。',
+        formula: 'F\'(x)',
+      },
+      {
+        title: '取端点或驻点',
+        body: 'F 在端点或驻点处取到最小值，那个值就是不等式的下界。',
+      },
+      {
+        title: '有差值就用中值定理',
+        body: '看到 f(b) − f(a) 与 b − a 同时出现，直接用拉格朗日中值定理把差换成导数。',
+        formula: 'f(b)-f(a)=f\'(\\xi)(b-a)',
+      },
+      {
+        title: '积分不等式放缩',
+        body: '被积函数能被常数或其他函数界住时，直接对积分放缩；也可以用单调性比较。',
+      },
+    ],
+    example: {
+      problem: '证明对任意实数 a、b，都有 |sin a − sin b| ≤ |a − b|。',
+      walkthrough: [
+        '不妨设 a ≠ b，在 [a,b]（或 [b,a]）上用拉格朗日中值定理。',
+        '存在 ξ 使 sin a − sin b = cos ξ · (a − b)。',
+        '两边取绝对值：|sin a − sin b| = |cos ξ| · |a − b|。',
+        '而 |cos ξ| ≤ 1，所以不等式成立；a = b 时取等号显然成立。',
+      ],
+      result: '|\\sin a-\\sin b|\\le|a-b|',
+    },
+  },
+  {
+    id: 'series-sum',
+    title: '级数求和：先裂项，再幂级数',
+    tag: '级数',
+    essence:
+      '求和先看能不能裂成 telescoping，部分和会只剩首尾几项；裂不动就走幂级数，在收敛区间内逐项求导或积分把系数化掉。',
+    whenToUse: [
+      '求 Σ 1/(n(n+1)) 这类分式级数',
+      '求含 x 的幂级数和函数',
+      '已知 Σxⁿ 想推出带 n 系数的和',
+    ],
+    steps: [
+      {
+        title: '先试着裂项',
+        body: '把通项拆成相邻两项之差，求和时中间项会相互抵消。',
+        formula: '\\frac{1}{n(n+1)}=\\frac{1}{n}-\\frac{1}{n+1}',
+      },
+      {
+        title: '写部分和取极限',
+        body: 'S_N 展开后只剩首尾，令 N 趋于无穷即得和。',
+      },
+      {
+        title: '幂级数先定收敛半径',
+        body: '用比值法求出 R，后面所有逐项操作都只能在收敛区间内进行。',
+        formula: 'R=\\lim_{n\\to\\infty}\\left|\\frac{a_{n}}{a_{n+1}}\\right|',
+      },
+      {
+        title: '逐项求导或积分',
+        body: '把 n 系数通过求导造出来，或通过积分消掉分母。',
+        formula: '\\left(\\sum a_{n}x^{n}\\right)\'=\\sum na_{n}x^{n-1}',
+      },
+      {
+        title: '端点单独判断',
+        body: '收敛区间端点上的敛散性要单独用数项级数判别法确认，再写进答案。',
+      },
+    ],
+    example: {
+      problem: '求幂级数 Σₙ≥₁ n xⁿ⁻¹ 的和函数（|x| < 1），并求 Σ n/2ⁿ⁻¹。',
+      walkthrough: [
+        '由几何级数 Σ xⁿ = 1/(1−x)，收敛半径 R = 1。',
+        '在收敛区间内逐项求导：Σ n xⁿ⁻¹ = 1/(1−x)²。',
+        '代入 x = 1/2 得 Σ n/2ⁿ⁻¹ = 1/(1/2)² = 4。',
+      ],
+      result: '\\sum_{n=1}^{\\infty}nx^{n-1}=\\frac{1}{(1-x)^{2}}',
+    },
+  },
 ];
 
 

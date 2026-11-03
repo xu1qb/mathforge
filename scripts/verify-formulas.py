@@ -114,6 +114,31 @@ chk('f_Y(y)=1/(2 sqrt y) 在 (0,1) 上积分为 1',
 chk('F_Y(1/4) = 1/2',
     sp.simplify(sp.integrate(fY, (yy, 0, sp.Rational(1, 4))) - sp.Rational(1, 2)) == 0)
 
+# ---- 2026-11 新增：不等式证明 ----
+import random as _random
+_ok_lip = True
+_rng = _random.Random(11)
+for _ in range(200):
+    _a = _rng.uniform(-6, 6)
+    _b = _rng.uniform(-6, 6)
+    if abs(sp.sin(_a) - sp.sin(_b)) > abs(_a - _b) + 1e-12:
+        _ok_lip = False
+        break
+chk('|sin a - sin b| <= |a - b|（抽样 200 组）', _ok_lip)
+
+# ---- 新增：级数求和 ----
+chk('sum 1/(n(n+1)) = 1',
+    sp.summation(1 / (n * (n + 1)), (n, 1, sp.oo)) == 1)
+
+_xx = sp.Symbol('x', real=True)
+# sympy 对含参数的无穷和给的是分段表达式，直接相减不可靠；
+# 改成比较泰勒系数：1/(1-x)^2 的 x^(n-1) 系数应当是 n
+_taylor = sp.expand(sp.series(1 / (1 - _xx) ** 2, _xx, 0, 6).removeO())
+# 逐项比系数：x^k 的系数应当等于 k+1（即通项 n x^(n-1) 中 n=k+1）
+chk('sum n x^(n-1) = 1/(1-x)^2（前 6 项系数逐个比对）',
+    all(_taylor.coeff(_xx, kk) == kk + 1 for kk in range(6)))
+chk('sum n/2^(n-1) = 4', sp.summation(n / 2 ** (n - 1), (n, 1, sp.oo)) == 4)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:
