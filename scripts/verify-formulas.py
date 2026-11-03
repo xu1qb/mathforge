@@ -139,6 +139,24 @@ chk('sum n x^(n-1) = 1/(1-x)^2（前 6 项系数逐个比对）',
     all(_taylor.coeff(_xx, kk) == kk + 1 for kk in range(6)))
 chk('sum n/2^(n-1) = 4', sp.summation(n / 2 ** (n - 1), (n, 1, sp.oo)) == 4)
 
+# ---- 2026-11 新增：多元可微 ----
+# f(x,y)=sqrt(|xy|) 在原点沿 y=x 方向：增量 / rho = |t| / (sqrt2 |t|) = 1/sqrt2 != 0
+_t_vals = [1e-3, 1e-4, 1e-5, 1e-6]
+_ratios = [abs(t) / ((2 * t * t) ** 0.5) for t in _t_vals]
+chk('sqrt(|xy|) 沿 y=x 的增量比恒为 1/sqrt2（不可微）',
+    all(abs(r0 - 1 / sp.sqrt(2)) < 1e-9 for r0 in _ratios))
+
+# ---- 新增：线性方程组通解 ----
+_t = sp.Symbol('t', real=True)
+_x1, _x2, _x3 = _t, 1 - 2 * _t, _t
+_eq1 = sp.simplify(_x1 + _x2 + _x3 - 1)
+_eq2 = sp.simplify(_x1 + 2 * _x2 + 3 * _x3 - 2)
+chk('通解 (t, 1-2t, t) 同时满足两个方程', _eq1 == 0 and _eq2 == 0)
+_M = sp.Matrix([[1, 1, 1], [1, 2, 3]])
+_Mb = sp.Matrix([[1, 1, 1, 1], [1, 2, 3, 2]])
+chk('r(A)=r(A|b)=2 且自由变量 1 个',
+    _M.rank() == 2 and _Mb.rank() == 2 and 3 - _M.rank() == 1)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:

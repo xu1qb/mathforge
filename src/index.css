@@ -775,7 +775,7 @@ html.theme-transition * {
   .cheat-item {
     break-inside: avoid;
     page-break-inside: avoid;
-    margin-bottom: 1.3mm;
+    margin-bottom: 1.4mm;
   }
 
   .cheat-title {
@@ -785,8 +785,8 @@ html.theme-transition * {
   }
 
   .cheat-essence {
-    font-size: 7.2pt;
-    line-height: 1.25;
+    font-size: 7.4pt;
+    line-height: 1.28;
     color: #333;
   }
 

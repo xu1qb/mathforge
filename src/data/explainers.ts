@@ -1108,6 +1108,103 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
       result: '\\sum_{n=1}^{\\infty}nx^{n-1}=\\frac{1}{(1-x)^{2}}',
     },
   },
+  {
+    id: 'multivar-differentiability',
+    title: '多元可微：偏导存在还不够',
+    tag: '多元',
+    essence:
+      '偏导存在推不出可微；判可微要用定义式看 Δz 减去全微分后是不是比 ρ 高阶，而「偏导连续」只是充分条件。',
+    whenToUse: [
+      '判断分段函数在原点是否可微',
+      '区分连续、偏导存在、可微、偏导连续四者',
+      '选择题里给一个分段函数让你判断',
+    ],
+    steps: [
+      {
+        title: '先看连续性',
+        body: '不连续一定不可微，这一步能快速排除一批选项。',
+      },
+      {
+        title: '用定义求偏导',
+        body: '在原点求偏导必须用定义，不能直接对表达式求导。',
+        formula:
+          'f_{x}(0,0)=\\lim_{\\Delta x\\to 0}\\frac{f(\\Delta x,0)-f(0,0)}{\\Delta x}',
+      },
+      {
+        title: '套可微定义式',
+        body: '把增量减掉全微分，看剩下的部分是不是比 ρ 高阶。',
+        formula:
+          '\\Delta z-(A\\Delta x+B\\Delta y)=o(\\rho),\\quad \\rho=\\sqrt{\\Delta x^{2}+\\Delta y^{2}}',
+      },
+      {
+        title: '沿特殊路径反证',
+        body: '想证明不可微，取一条路径（如 Δy = Δx）让比值极限不为 0 即可。',
+      },
+      {
+        title: '记住充分条件',
+        body: '偏导在邻域内连续 ⇒ 可微；反过来不成立，所以不能用「偏导存在」去推可微。',
+      },
+    ],
+    example: {
+      problem: 'f(x,y) = √|xy|，判断它在原点是否可微。',
+      walkthrough: [
+        'f 连续，且 f(x,0) = 0 说明两个偏导都存在且等于 0。',
+        '于是全微分为 0，只需看 Δz 是不是 o(ρ)。',
+        '取 Δy = Δx = t，则 Δz = |t|，ρ = √2|t|，比值为 1/√2。',
+        '极限不为 0，所以不可微。',
+      ],
+      result:
+        '\\lim_{\\rho\\to 0}\\frac{\\sqrt{|\\Delta x\\,\\Delta y|}}{\\rho}\\ge\\frac{1}{\\sqrt{2}}\\neq 0',
+    },
+  },
+  {
+    id: 'linear-system',
+    title: '线性方程组：先判解再求通解',
+    tag: '线代',
+    essence:
+      '先比 r(A) 与 r(A|b) 定有没有解，再用 n − r(A) 定自由变量个数；非齐次通解 = 一个特解 + 齐次的基础解系。',
+    whenToUse: [
+      '讨论含参数方程组何时有解',
+      '求方程组通解',
+      '判断解唯一还是无穷多',
+    ],
+    steps: [
+      {
+        title: '写增广矩阵做行变换',
+        body: '化成阶梯形，秩一目了然；含参数时注意分类讨论。',
+        formula: '(A\\mid b)\\ \\longrightarrow\\ (\\text{row echelon form})',
+      },
+      {
+        title: '判解的存在性',
+        body: 'r(A) 与 r(A|b) 不等则无解；相等才有解，等于 n 时唯一，小于 n 时无穷多。',
+      },
+      {
+        title: '数自由变量',
+        body: '自由变量个数 = n − r(A)，也就是基础解系里向量的个数。',
+        formula: 'n-r(A)',
+      },
+      {
+        title: '求齐次基础解系',
+        body: '自由变量轮流取 1、其余取 0，解出对应的基础解向量。',
+      },
+      {
+        title: '拼出通解',
+        body: '一个特解加上齐次通解，就是全部解。',
+        formula: 'x=\\eta+c_{1}\\xi_{1}+\\cdots+c_{k}\\xi_{k}',
+      },
+    ],
+    example: {
+      problem: '解方程组 x₁+x₂+x₃=1，x₁+2x₂+3x₃=2。',
+      walkthrough: [
+        '增广矩阵行变换后有两行非零，r(A)=r(A|b)=2，未知数 n=3。',
+        '自由变量 1 个，取 x₃ = t。',
+        '两式相减得 x₂ + 2x₃ = 1，即 x₂ = 1 − 2t。',
+        '代回得 x₁ = t，故通解为 (0,1,0)ᵀ + t(1,−2,1)ᵀ。',
+      ],
+      result:
+        'x=\\begin{pmatrix}0\\\\1\\\\0\\end{pmatrix}+t\\begin{pmatrix}1\\\\-2\\\\1\\end{pmatrix}',
+    },
+  },
 ];
 
 
