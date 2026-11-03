@@ -1,0 +1,744 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "./tailwind-theme.css";
+@import "./typography.css";
+
+/* ===== 全局排版与间距 Token ===== */
+:root {
+  /* 字号层级 */
+  --fs-page-title: 22px;
+  --fs-section-title: 16px;
+  --fs-body: 14px;
+  --fs-muted: 12px;
+  /* 行高 */
+  --lh-page-title: 1.3;
+  --lh-body: 1.7;
+  /* 圆角 */
+  --radius-card: 12px;
+  /* 间距 */
+  --gap-card: 16px;
+  --space-section: 24px;
+  /* 主内容区 */
+  --content-max-w: 80rem; /* 1280px = max-w-7xl */
+  --content-px: 1.25rem; /* 20px = px-5 */
+}
+
+/* 全局基础字号与行高 */
+html, body {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+/* 数学场景正文默认不加粗，层级靠字号和颜色区分 */
+body {
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Card 圆角统一 12px（覆盖 shadcn 默认 8px 的 rounded-lg） */
+[data-slot="card"] {
+  border-radius: 12px !important;
+}
+
+/* 主内容区统一宽度（SidebarInset 内的 main） */
+main .page-content {
+  max-width: var(--content-max-w);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--content-px);
+  padding-right: var(--content-px);
+}
+
+/* 页面标题统一 */
+.page-title {
+  font-size: var(--fs-page-title);
+  line-height: var(--lh-page-title);
+  font-weight: 600;
+}
+
+/* 模块/节标题统一 */
+.section-title {
+  font-size: var(--fs-section-title);
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+/* 辅助说明 */
+.text-muted {
+  font-size: var(--fs-muted);
+  color: var(--muted-foreground);
+}
+
+/* 数学正文不加粗（公式渲染区域、结果展示正文） */
+.math-body {
+  font-weight: 400;
+}
+
+/* ===== 移动端响应式优化（< 640px） ===== */
+@media (max-width: 640px) {
+  /* 卡片内边距收紧 */
+  [data-slot="card"] > [data-slot="card-header"] {
+    padding: 1rem !important;
+  }
+  [data-slot="card"] > [data-slot="card-content"] {
+    padding: 1rem !important;
+  }
+  [data-slot="card"] > [data-slot="card-footer"] {
+    padding: 1rem !important;
+  }
+
+  /* 表格外层强制横向滚动，防止撑破布局 */
+  .overflow-x-auto table,
+  [data-slot="card"] table {
+    min-width: 100%;
+  }
+
+  /* 主滚动容器隐藏横向滚动条视觉，但保留滚动能力 */
+  main {
+    overflow-x: hidden;
+  }
+
+  /* plotly / echarts 图表容器在手机端全宽不溢出 */
+  .js-plotly-plot,
+  .plot-container {
+    max-width: 100% !important;
+  }
+
+  /* 代码块横向滚动 */
+  pre,
+  code.block {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+}
+
+/* ===== 全局滚动条美化 ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.25);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.45);
+}
+::-webkit-scrollbar-thumb:active {
+  background: hsl(var(--primary) / 0.6);
+}
+
+/* ===== 主题切换平滑过渡 ===== */
+html,
+body,
+.card,
+button,
+input,
+textarea,
+select {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* 深色模式滚动条 */
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.3);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.5);
+}
+.dark ::-webkit-scrollbar-thumb:active {
+  background: hsl(var(--primary) / 0.7);
+}
+
+/* 防止主题切换时闪烁 */
+html {
+  transition: none;
+}
+html.theme-transition,
+html.theme-transition * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* 暗色区域滚动条 */
+.dark-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.2);
+}
+.dark-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.35);
+}
+
+/* ===== 页面淡入过渡 ===== */
+.page-fade-in {
+  animation: pageFadeIn 0.35s ease-out;
+}
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Tab 内容淡入 ===== */
+.tab-fade-in {
+  animation: tabFadeIn 0.25s ease-out;
+}
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== 选择文本颜色 ===== */
+::selection {
+  background: hsl(var(--primary) / 0.25);
+  color: hsl(var(--primary));
+}
+
+/* ===== 深色模式变量 ===== */
+.dark {
+  --background: hsl(210 20% 12%);
+  --foreground: hsl(40 15% 92%);
+  --card: hsl(210 18% 16%);
+  --card-foreground: hsl(40 15% 92%);
+  --popover: hsl(210 18% 16%);
+  --popover-foreground: hsl(40 15% 92%);
+  --muted: hsl(210 15% 22%);
+  --muted-foreground: hsl(40 10% 60%);
+  --accent: hsl(170 30% 22%);
+  --accent-foreground: hsl(165 40% 85%);
+  --border: hsl(210 15% 28%);
+  --input: hsl(210 15% 28%);
+  --ring: hsl(160 50% 50%);
+  --sidebar: hsl(210 25% 8%);
+  --sidebar-foreground: hsl(40 15% 85%);
+  --sidebar-accent: hsl(210 20% 16%);
+  --sidebar-accent-foreground: hsl(160 40% 70%);
+  --sidebar-border: hsl(210 18% 20%);
+  --chart-1: hsl(160 50% 55%);
+  --chart-2: hsl(200 50% 60%);
+  --chart-3: hsl(230 50% 65%);
+  --chart-4: hsl(280 50% 70%);
+  --chart-5: hsl(320 50% 65%);
+}
+
+/* 深色模式下主区域背景 */
+.dark body {
+  background-color: hsl(210 20% 12%);
+  color: hsl(40 15% 92%);
+}
+
+/* 深色模式侧边栏强化 */
+.dark [data-sidebar] {
+  background-color: hsl(210 28% 7%) !important;
+}/* KaTeX base - minimal styles */
+@import "katex/dist/katex.min.css";
+
+/* ===== 公式容器横向滚动（小屏长公式） ===== */
+.question-katex-scroll,
+.formula-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+  max-width: 100%;
+}
+.question-katex-scroll::-webkit-scrollbar,
+.formula-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+/* KaTeX 跟随主题 currentColor，不硬编码颜色 */
+.katex {
+  color: currentColor;
+}
+.katex .mord.textcolor {
+  color: inherit !important;
+}
+
+/* display 公式行高与上下间距统一 */
+.katex-display {
+  line-height: 1.9;
+  margin-block: 0.5em;
+}
+
+/* 深色模式下确保公式颜色对比度足够（继承 foreground） */
+.dark .katex {
+  color: var(--foreground);
+}
+
+/* ============================================================ */
+/* 打印样式：A4 友好，黑白打印，隐藏导航/按钮/侧边栏             */
+/* ============================================================ */
+@media print {
+  /* 重置所有过渡与阴影，避免打印拖慢/灰度异常 */
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* 隐藏侧边栏、顶栏、按钮、Toast 等交互元素 */
+  [data-slot="sidebar"],
+  .sidebar,
+  .app-sidebar,
+  [data-sidebar],
+  header,
+  nav,
+  .no-print,
+  button,
+  [role="button"],
+  .toaster,
+  [data-sonner-toaster],
+  .favorites-panel,
+  .page-header,
+  .tabs-list,
+  [role="tablist"] {
+    display: none !important;
+  }
+
+  /* Dialog / Modal 打印时：隐藏遮罩，内容全屏展开，去掉边框阴影 */
+  body,
+  html {
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  [data-slot="dialog-overlay"],
+  [data-radix-dialog-overlay] {
+    display: none !important;
+    opacity: 0 !important;
+    background: transparent !important;
+  }
+
+  [data-slot="dialog-content"],
+  [role="dialog"] {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    overflow: visible !important;
+    transform: none !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+  }
+
+  /* SidebarInset / main 占满整页 */
+  [data-slot="sidebar-inset"],
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* 打印内容容器：A4 留白 */
+  .print-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .print-page {
+    page-break-after: always;
+    break-after: page;
+    padding: 12mm 16mm;
+    box-sizing: border-box;
+    min-height: 270mm;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .print-page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  /* 打印页眉 */
+  .print-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: baseline !important;
+    border-bottom: 1.5pt solid #333 !important;
+    padding-bottom: 6pt !important;
+    margin-bottom: 16pt !important;
+    font-size: 10pt !important;
+    color: #333 !important;
+    background: #ffffff !important;
+  }
+
+  .print-header .print-title {
+    font-size: 14pt !important;
+    font-weight: 700 !important;
+    color: #000 !important;
+  }
+
+  /* 打印页脚（页码） */
+  .print-footer {
+    display: flex !important;
+    justify-content: space-between !important;
+    border-top: 0.5pt solid #999 !important;
+    padding-top: 6pt !important;
+    margin-top: 12pt !important;
+    font-size: 9pt !important;
+    color: #666 !important;
+  }
+
+  /* 错题：题目区 */
+  .print-problem {
+    margin-bottom: 14pt !important;
+    padding-bottom: 10pt !important;
+    border-bottom: 0.5pt dashed #bbb !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .print-problem:last-child {
+    border-bottom: none !important;
+  }
+
+  .print-problem-index {
+    font-weight: 700 !important;
+    font-size: 12pt !important;
+    color: #000 !important;
+    margin-bottom: 4pt !important;
+  }
+
+  .print-problem-topic {
+    font-size: 9pt !important;
+    color: #555 !important;
+    margin-left: 6pt !important;
+    font-weight: normal !important;
+  }
+
+  .print-problem-body {
+    font-size: 12pt !important;
+    line-height: 1.8 !important;
+    color: #000 !important;
+    padding-left: 4pt !important;
+  }
+
+  /* 我的答案 */
+  .print-user-answer {
+    margin-top: 6pt !important;
+    font-size: 10.5pt !important;
+    color: #c0392b !important;
+  }
+
+  .print-user-answer .label {
+    font-weight: 600 !important;
+  }
+
+  /* 留白横线（做题模式） */
+  .print-blank-lines {
+    margin-top: 10pt !important;
+    border-bottom: 0.5pt solid #999 !important;
+    height: 40mm !important;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 19px,
+      #e0e0e0 19px,
+      #e0e0e0 20px
+    ) !important;
+  }
+
+  /* 答案解析（答案模式） */
+  .print-solution {
+    margin-top: 8pt !important;
+    font-size: 11pt !important;
+    line-height: 1.7 !important;
+    color: #111 !important;
+    background: #f7f7f7 !important;
+    padding: 8pt 10pt !important;
+    border-left: 3pt solid #333 !important;
+  }
+
+  .print-solution .label {
+    font-weight: 700 !important;
+    color: #000 !important;
+    margin-bottom: 4pt !important;
+    display: block !important;
+  }
+
+  /* 公式手册：双列布局 */
+  .print-formula-book {
+    column-count: 2 !important;
+    column-gap: 12mm !important;
+    column-rule: 0.5pt solid #ccc !important;
+    font-size: 11pt !important;
+    color: #000 !important;
+  }
+
+  .print-formula-category {
+    break-inside: avoid;
+    margin-bottom: 14pt !important;
+  }
+
+  .print-formula-category h3 {
+    font-size: 13pt !important;
+    font-weight: 700 !important;
+    color: #000 !important;
+    border-bottom: 1pt solid #333 !important;
+    padding-bottom: 3pt !important;
+    margin: 0 0 8pt 0 !important;
+  }
+
+  .print-formula-item {
+    break-inside: avoid;
+    margin-bottom: 8pt !important;
+    padding: 4pt 0 !important;
+  }
+
+  .print-formula-name {
+    font-size: 10.5pt !important;
+    font-weight: 600 !important;
+    color: #222 !important;
+    margin-bottom: 2pt !important;
+  }
+
+  .print-formula-latex {
+    font-size: 13pt !important;
+    color: #000 !important;
+    overflow-x: visible !important;
+    padding: 3pt 0 !important;
+  }
+
+  /* 确保 KaTeX 在打印模式下正常显示、不溢出 */
+  .katex,
+  .katex-display {
+    color: #000000 !important;
+  }
+
+  .katex-display {
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    margin: 6pt 0 !important;
+  }
+
+  .katex-html {
+    color: #000000 !important;
+  }
+
+  /* 滚动容器打印时展开 */
+  .overflow-x-auto,
+  .overflow-y-auto,
+  .overflow-auto {
+    overflow: visible !important;
+  }
+
+  /* 卡片 / 边框在打印中弱化 */
+  .border,
+  [class*="border-"] {
+    border-color: #cccccc !important;
+  }
+
+  .bg-card,
+  .bg-background,
+  .bg-muted,
+  .bg-accent,
+  .bg-secondary {
+    background: #ffffff !important;
+  }
+
+  .text-muted-foreground,
+  .text-secondary-foreground {
+    color: #555555 !important;
+  }
+
+  .text-foreground {
+    color: #000000 !important;
+  }
+
+  .text-primary,
+  .text-primary-foreground {
+    color: #000000 !important;
+  }
+
+  /* 徽章/标签在打印中改为空心边框 */
+  .badge,
+  [class*="badge-"] {
+    background: #ffffff !important;
+    color: #333333 !important;
+    border: 1pt solid #666 !important;
+  }
+}
+
+/* A4 纸张设置 */
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+/* ===== 桌角学习搭子 ===== */
+.study-buddy {
+  width: 44px;
+  height: 56px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: block;
+  transition: transform 0.15s ease;
+}
+.study-buddy:hover {
+  transform: translateY(-2px);
+}
+.buddy-figure {
+  position: relative;
+  width: 44px;
+  height: 56px;
+}
+.buddy-head {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 22px;
+  background: var(--primary, #6ee7b7);
+  border-radius: 50%;
+}
+.buddy-eye {
+  position: absolute;
+  top: 9px;
+  left: 5px;
+  width: 3px;
+  height: 3px;
+  background: #1a1a1a;
+  border-radius: 50%;
+}
+.buddy-eye-r {
+  left: 14px;
+}
+.buddy-body {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 28px;
+  background: var(--primary, #6ee7b7);
+  border-radius: 6px 6px 2px 2px;
+}
+.buddy-book {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 12px;
+  background: #f5f5dc;
+  border: 1px solid #999;
+  border-radius: 1px;
+}
+/* 伸懒腰：书举过头顶 */
+.buddy-stretching .buddy-book {
+  bottom: 30px;
+  transform: translateX(-50%) rotate(-15deg);
+}
+.buddy-stretching .buddy-head {
+  animation: buddy-wave 1.2s ease-in-out infinite;
+}
+@keyframes buddy-wave {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-2px); }
+}
+/* 打瞌睡：眼睛变线，头歪 */
+.buddy-sleeping .buddy-eye,
+.buddy-sleeping .buddy-eye-r {
+  width: 4px;
+  height: 1px;
+  border-radius: 0;
+  top: 10px;
+}
+.buddy-sleeping .buddy-head {
+  transform: translateX(-50%) rotate(12deg);
+}
+.buddy-sleeping .buddy-book {
+  opacity: 0.4;
+}
+/* 答对题：小人蹦一下 */
+.buddy-cheer .buddy-figure {
+  animation: buddy-jump 0.5s ease-in-out infinite;
+}
+@keyframes buddy-jump {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.buddy-cheer .buddy-book {
+  transform: translateX(-50%) rotate(20deg);
+}
+/* pixel 皮肤：8-bit 硬边方块 */
+[data-skin="pixel"] .buddy-head,
+[data-skin="pixel"] .buddy-body {
+  border-radius: 0;
+}
+[data-skin="pixel"] .buddy-eye {
+  border-radius: 0;
+}
+[data-skin="pixel"] .buddy-book {
+  border-radius: 0;
+}
+/* journal 皮肤：圆润贴纸感 */
+[data-skin="journal"] .buddy-head {
+  box-shadow: 1px 1px 0 #c0392b;
+}
+[data-skin="journal"] .buddy-body {
+  box-shadow: 1px 1px 0 #c0392b;
+}
+
+/* 解题流程图打印：节点不跨页，标题不与正文分离 */
+@media print {
+  .flow-node {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .flow-print-title {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* 每张图自己撑一页，但不锁死到 270mm —— 那样会贴着纸张高度溢出成空白页 */
+  .flow-print-section {
+    min-height: 0 !important;
+  }
+}

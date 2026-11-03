@@ -1,0 +1,12 @@
+#!/bin/bash
+# MathForge 启动脚本
+
+# 启动 vite dev server（如果没在运行）
+if ! lsof -i :5176 > /dev/null 2>&1; then
+  cd "$(dirname "$0")/../../.."
+  npx vite --port 5176 &
+  sleep 3
+fi
+
+# 打开浏览器
+open "http://localhost:5176"

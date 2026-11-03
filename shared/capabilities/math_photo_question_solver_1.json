@@ -1,0 +1,36 @@
+{
+  "id": "math_photo_question_solver_1",
+  "pluginKey": "@official-plugins/ai-image-understanding",
+  "pluginVersion": "1.0.22",
+  "name": "拍照识题AI解答",
+  "description": "用户上传数学题目图片，AI自动识别题目内容并提供详细解答，包含分步解题过程、最终答案、专题分类和难度判断。",
+  "icon": "",
+  "paramsSchema": {
+    "required": [
+      "question_image"
+    ],
+    "type": "object",
+    "properties": {
+      "question_image": {
+        "type": "array",
+        "format": "plugin-image-url",
+        "description": "待识别解答的数学题目图片",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "formValue": {
+    "images": "{{input.question_image}}",
+    "modelID": "2015",
+    "modelParams": {
+      "maxTokens": 8192,
+      "temperature": 0.5
+    },
+    "prompt": "你是一位专业的中小学数学学科教师，拥有丰富的教学经验和解题能力。请识别图片中的数学题目，按照以下要求给出完整解答：\n\n1. 题目内容识别：准确提取并复述题目原文\n2. 分步解题过程：按步骤清晰展示解题思路和推导过程，每一步标注关键知识点\n3. 最终答案：明确给出题目最终结果，格式清晰易读\n4. 专题分类：标注本题所属的数学知识点类别（如代数、几何、函数、概率等）\n5. 难度判断：根据题目复杂度给出难度评级（简单/中等/困难）\n\n输出要求：\n- 解答过程逻辑严谨，步骤详细，适合学生理解学习\n- 数学公式使用标准数学符号表示\n- 语言通俗易懂，避免过于专业的晦涩术语\n- 如题目存在多种解法，优先展示最通用、最易理解的解法\n- 若图片内容不是数学题目或无法识别，请明确说明原因"
+  },
+  "createdAt": 1792725619909,
+  "updatedAt": 1792725619909,
+  "createdBy": 7579749587091492045
+}

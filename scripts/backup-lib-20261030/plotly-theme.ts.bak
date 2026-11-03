@@ -1,0 +1,226 @@
+import { useMemo } from 'react';
+import { useTheme } from '@/hooks/useTheme';
+
+/**
+ * Plotly 图表主题配色工具
+ * 根据当前皮肤（paper / night / pixel / journal）返回适配的 layout 配色
+ */
+
+interface PlotlyPalette {
+  plot_bgcolor: string;
+  paper_bgcolor: string;
+  gridcolor: string;
+  zerolinecolor: string;
+  font_color: string;
+  tickfont_color: string;
+  line_colors: string[];
+  surface_color: string;
+}
+
+// 草稿纸皮肤（米黄浅底）
+const paperPalette: PlotlyPalette = {
+  plot_bgcolor: '#faf8f0',
+  paper_bgcolor: 'rgba(0,0,0,0)',
+  gridcolor: '#e8e0cc',
+  zerolinecolor: '#b8ad92',
+  font_color: '#4a3f35',
+  tickfont_color: '#7a6b5d',
+  line_colors: ['#c0392b', '#2980b9', '#27ae60', '#d68910', '#8e44ad', '#c0392b'],
+  surface_color: '#c0392b',
+};
+
+// 夜航皮肤（墨蓝黑 + 琥珀）
+const nightPalette: PlotlyPalette = {
+  plot_bgcolor: '#1a1f2e',
+  paper_bgcolor: 'rgba(0,0,0,0)',
+  gridcolor: '#2a3045',
+  zerolinecolor: '#3d4560',
+  font_color: '#e8dcc4',
+  tickfont_color: '#a09070',
+  line_colors: ['#f5a623', '#4fc3f7', '#81c784', '#ff8a65', '#ba68c8', '#f06292'],
+  surface_color: '#f5a623',
+};
+
+// 像素皮肤（深绿 + 荧光绿 + 像素黄）
+const pixelPalette: PlotlyPalette = {
+  plot_bgcolor: '#141a16',
+  paper_bgcolor: 'rgba(0,0,0,0)',
+  gridcolor: '#1f3a2b',
+  zerolinecolor: '#2a4a36',
+  font_color: '#7dff9a',
+  tickfont_color: '#5db877',
+  line_colors: ['#7dff9a', '#ffd93d', '#ff4d4d', '#4dc9ff', '#c97dff', '#ff9f43'],
+  surface_color: '#7dff9a',
+};
+
+// 手账皮肤（奶油纸 + 朱红）
+const journalPalette: PlotlyPalette = {
+  plot_bgcolor: '#fffdf5',
+  paper_bgcolor: 'rgba(0,0,0,0)',
+  gridcolor: '#e8dcc4',
+  zerolinecolor: '#d9cbaf',
+  font_color: '#4a3f35',
+  tickfont_color: '#7a6b5d',
+  line_colors: ['#c0392b', '#2980b9', '#27ae60', '#d68910', '#8e44ad', '#e67e22'],
+  surface_color: '#c0392b',
+};
+
+/**
+ * 获取当前皮肤的 Plotly 调色板
+ * 完全按 4 套皮肤区分，不再依赖 light/dark 模式
+ */
+export function usePlotlyPalette() {
+  const { skin } = useTheme();
+  return useMemo(() => {
+    switch (skin) {
+      case 'night':
+        return nightPalette;
+      case 'pixel':
+        return pixelPalette;
+      case 'journal':
+        return journalPalette;
+      case 'paper':
+      default:
+        return paperPalette;
+    }
+  }, [skin]);
+}
+
+/**
+ * 获取通用 2D 绘图的 layout 基础配置
+ */
+export function usePlotly2DBaseLayout() {
+  const palette = usePlotlyPalette();
+  return useMemo(
+    () => ({
+      plot_bgcolor: palette.plot_bgcolor,
+      paper_bgcolor: palette.paper_bgcolor,
+      font: {
+        color: palette.font_color,
+        family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+        size: 12,
+      },
+      xaxis: {
+        gridcolor: palette.gridcolor,
+        zerolinecolor: palette.zerolinecolor,
+        tickfont: { color: palette.tickfont_color, size: 11 },
+        linecolor: palette.zerolinecolor,
+        mirror: false,
+      },
+      yaxis: {
+        gridcolor: palette.gridcolor,
+        zerolinecolor: palette.zerolinecolor,
+        tickfont: { color: palette.tickfont_color, size: 11 },
+        linecolor: palette.zerolinecolor,
+        mirror: false,
+      },
+      margin: { l: 50, r: 20, t: 30, b: 40 },
+      showlegend: true,
+      legend: {
+        bgcolor: 'rgba(128,128,128,0.1)',
+        bordercolor: palette.gridcolor,
+        borderwidth: 1,
+        font: { color: palette.font_color, size: 11 },
+        orientation: 'h' as const,
+        y: -0.15,
+      },
+      hovermode: 'closest' as const,
+    }),
+    [palette],
+  );
+}
+
+/**
+ * 获取 3D 绘图的 layout 基础配置
+ */
+export function usePlotly3DBaseLayout() {
+  const palette = usePlotlyPalette();
+  return useMemo(
+    () => ({
+      plot_bgcolor: palette.plot_bgcolor,
+      paper_bgcolor: palette.paper_bgcolor,
+      font: {
+        color: palette.font_color,
+        family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+        size: 12,
+      },
+      scene: {
+        bgcolor: palette.plot_bgcolor,
+        xaxis: {
+          gridcolor: palette.gridcolor,
+          zerolinecolor: palette.zerolinecolor,
+          tickfont: { color: palette.tickfont_color, size: 10 },
+          showbackground: true,
+          backgroundcolor: palette.plot_bgcolor,
+        },
+        yaxis: {
+          gridcolor: palette.gridcolor,
+          zerolinecolor: palette.zerolinecolor,
+          tickfont: { color: palette.tickfont_color, size: 10 },
+          showbackground: true,
+          backgroundcolor: palette.plot_bgcolor,
+        },
+        zaxis: {
+          gridcolor: palette.gridcolor,
+          zerolinecolor: palette.zerolinecolor,
+          tickfont: { color: palette.tickfont_color, size: 10 },
+          showbackground: true,
+          backgroundcolor: palette.plot_bgcolor,
+        },
+      },
+      margin: { l: 10, r: 10, t: 30, b: 10 },
+      showlegend: true,
+      legend: {
+        bgcolor: 'rgba(128,128,128,0.1)',
+        bordercolor: palette.gridcolor,
+        borderwidth: 1,
+        font: { color: palette.font_color, size: 11 },
+        orientation: 'h' as const,
+        y: -0.1,
+      },
+    }),
+    [palette],
+  );
+}
+
+/**
+ * 获取极坐标/雷达图 layout 基础配置
+ */
+export function usePlotlyPolarBaseLayout() {
+  const palette = usePlotlyPalette();
+  return useMemo(
+    () => ({
+      plot_bgcolor: palette.plot_bgcolor,
+      paper_bgcolor: palette.paper_bgcolor,
+      font: {
+        color: palette.font_color,
+        family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+        size: 12,
+      },
+      polar: {
+        bgcolor: palette.plot_bgcolor,
+        radialaxis: {
+          gridcolor: palette.gridcolor,
+          tickfont: { color: palette.tickfont_color, size: 10 },
+          linecolor: palette.zerolinecolor,
+        },
+        angularaxis: {
+          gridcolor: palette.gridcolor,
+          tickfont: { color: palette.tickfont_color, size: 10 },
+          linecolor: palette.zerolinecolor,
+        },
+      },
+      margin: { l: 10, r: 10, t: 30, b: 10 },
+      showlegend: true,
+      legend: {
+        bgcolor: 'rgba(128,128,128,0.1)',
+        bordercolor: palette.gridcolor,
+        borderwidth: 1,
+        font: { color: palette.font_color, size: 11 },
+        orientation: 'h' as const,
+        y: -0.1,
+      },
+    }),
+    [palette],
+  );
+}

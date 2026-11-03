@@ -1,0 +1,54 @@
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+import { fileURLToPath } from 'url'
+import { dirname, resolve } from 'path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  base: './',
+  // plotly.js 按需源码包的 WebGL 内核在浏览器里裸用 Node 全局 global，
+  // 统一映射到 globalThis（浏览器即 window），避免 ReferenceError: Can't find variable: global
+  define: {
+    global: 'globalThis',
+  },
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src'),
+      '@shared': resolve(__dirname, 'shared'),
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id: string) {
+          if (!id.includes('node_modules')) return undefined;
+          // React 运行时与路由
+          if (/[\\/]node_modules[\\/](react|react-dom|react-router-dom|react-router|scheduler)[\\/]/.test(id)) {
+            return 'vendor-react';
+          }
+          // 数学引擎与公式排版
+          if (/[\\/]node_modules[\\/](mathjs|katex)[\\/]/.test(id)) {
+            return 'vendor-math';
+          }
+          // 动画库
+          if (/[\\/]node_modules[\\/]framer-motion[\\/]/.test(id)) {
+            return 'vendor-animation';
+          }
+          // 日期工具
+          if (/[\\/]node_modules[\\/]date-fns[\\/]/.test(id)) {
+            return 'vendor-date';
+          }
+          // 其余通用 UI 基础库（radix、图标、表单、组件原语）
+          if (/[\\/]node_modules[\\/](@radix-ui|lucide-react|sonner|class-variance-authority|clsx|tailwind-merge|react-hook-form|@hookform|zod|cmdk|embla-carousel-react|react-day-picker|react-resizable-panels|vaul|input-otp)[\\/]/.test(id)) {
+            return 'vendor-ui';
+          }
+          return undefined;
+        },
+      },
+    },
+  },
+})

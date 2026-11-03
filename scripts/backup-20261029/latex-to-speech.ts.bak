@@ -1,0 +1,594 @@
+// EXPORTS: latexToSpeech, extractLatexAndConvert
+
+/**
+ * LaTeX → 中文语音文本转换
+ * 覆盖常见命令：分数/积分/极限/求和/根号/上下标/希腊字母/常用函数/比较符号/箭头
+ */
+
+// 希腊字母映射
+const GREEK_MAP: Record<string, string> = {
+  alpha: '阿尔法',
+  beta: '贝塔',
+  gamma: '伽马',
+  delta: '德尔塔',
+  epsilon: '艾普西隆',
+  zeta: '泽塔',
+  eta: '伊塔',
+  theta: '西塔',
+  iota: '约塔',
+  kappa: '卡帕',
+  lambda: '拉姆达',
+  mu: '缪',
+  nu: '纽',
+  xi: '克西',
+  omicron: '奥密克戎',
+  pi: '派',
+  rho: '柔',
+  sigma: '西格马',
+  tau: '陶',
+  upsilon: '宇普西隆',
+  phi: '斐',
+  chi: '凯',
+  psi: '普西',
+  omega: '欧米伽',
+  Gamma: '伽马',
+  Delta: '德尔塔',
+  Theta: '西塔',
+  Lambda: '拉姆达',
+  Xi: '克西',
+  Pi: '派',
+  Sigma: '西格马',
+  Phi: '斐',
+  Psi: '普西',
+  Omega: '欧米伽',
+};
+
+// 常用函数映射
+const FUNCTION_MAP: Record<string, string> = {
+  sin: '正弦',
+  cos: '余弦',
+  tan: '正切',
+  cot: '余切',
+  sec: '正割',
+  csc: '余割',
+  arcsin: '反正弦',
+  arccos: '反余弦',
+  arctan: '反正切',
+  sinh: '双曲正弦',
+  cosh: '双曲余弦',
+  tanh: '双曲正切',
+  ln: '自然对数',
+  log: '对数',
+  exp: '指数',
+  abs: '绝对值',
+  sqrt: '根号下',
+  sum: '求和',
+  lim: '极限',
+  int: '积分',
+  prod: '连乘',
+  max: '最大值',
+  min: '最小值',
+  inf: '下确界',
+  sup: '上确界',
+};
+
+// 比较与关系符号
+const RELATION_MAP: Record<string, string> = {
+  '\\leq': '小于等于',
+  '\\le': '小于等于',
+  '\\geq': '大于等于',
+  '\\ge': '大于等于',
+  '\\neq': '不等于',
+  '\\ne': '不等于',
+  '\\approx': '约等于',
+  '\\sim': '相似于',
+  '\\equiv': '恒等于',
+  '\\pm': '加减',
+  '\\mp': '减加',
+  '\\times': '乘以',
+  '\\cdot': '乘以',
+  '\\div': '除以',
+  '\\infty': '无穷大',
+  '\\to': '趋近于',
+  '\\rightarrow': '右箭头',
+  '\\leftarrow': '左箭头',
+  '\\Rightarrow': '推出',
+  '\\Leftarrow': '被推出',
+  '\\leftrightarrow': '等价于',
+  '\\partial': '偏',
+  '\\nabla': '梯度算子',
+  '\\exists': '存在',
+  '\\forall': '对任意',
+  '\\in': '属于',
+  '\\notin': '不属于',
+  '\\subset': '包含于',
+  '\\supset': '包含',
+  '\\cup': '并集',
+  '\\cap': '交集',
+  '\\emptyset': '空集',
+  '\\mathbb{R}': '实数集',
+  '\\mathbb{N}': '自然数集',
+  '\\mathbb{Z}': '整数集',
+  '\\mathbb{Q}': '有理数集',
+  '\\mathbb{C}': '复数集',
+};
+
+/**
+ * 把花括号里的内容取出来（不包含最外层花括号）
+ * 例如 {1}{2} 从 index=0 取第一个 → "1"，返回 { content: "1", end: 2 }
+ */
+function extractBraced(s: string, start: number): { content: string; end: number } {
+  if (s[start] !== '{') return { content: '', end: start };
+  let depth = 1;
+  let i = start + 1;
+  while (i < s.length && depth > 0) {
+    if (s[i] === '{') depth++;
+    else if (s[i] === '}') depth--;
+    i++;
+  }
+  return { content: s.slice(start + 1, i - 1), end: i };
+}
+
+/**
+ * 把方括号里的内容取出来（不包含最外层方括号）
+ */
+function extractBracketed(s: string, start: number): { content: string; end: number } {
+  if (s[start] !== '[') return { content: '', end: start };
+  let depth = 1;
+  let i = start + 1;
+  while (i < s.length && depth > 0) {
+    if (s[i] === '[') depth++;
+    else if (s[i] === ']') depth--;
+    i++;
+  }
+  return { content: s.slice(start + 1, i - 1), end: i };
+}
+
+/**
+ * 中文数字（100 以内）
+ */
+function chineseNumber(n: number): string {
+  if (n === 0) return '零';
+  const digits = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+  if (n < 10) return digits[n];
+  if (n < 20) return n === 10 ? '十' : '十' + digits[n % 10];
+  if (n < 100) {
+    const tens = Math.floor(n / 10);
+    const ones = n % 10;
+    return digits[tens] + '十' + (ones === 0 ? '' : digits[ones]);
+  }
+  return String(n);
+}
+
+/**
+ * 把纯数字转成中文读法（简单处理整数 + 小数 + 分数）
+ */
+function numToChinese(numStr: string): string {
+  // 负数
+  if (numStr.startsWith('-')) return '负' + numToChinese(numStr.slice(1));
+  // 小数
+  if (numStr.includes('.')) {
+    const [intPart, decPart] = numStr.split('.');
+    let result = intPart ? intToChinese(parseInt(intPart, 10)) : '零';
+    result += '点';
+    for (const ch of decPart) {
+      if (/[0-9]/.test(ch)) result += ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'][parseInt(ch, 10)];
+      else result += ch;
+    }
+    return result;
+  }
+  // 整数
+  const n = parseInt(numStr, 10);
+  if (!isNaN(n)) return intToChinese(n);
+  return numStr;
+}
+
+function intToChinese(n: number): string {
+  if (n === 0) return '零';
+  if (n < 0) return '负' + intToChinese(-n);
+  if (n < 10) return ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'][n];
+  if (n < 20) return '十' + (n % 10 === 0 ? '' : ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'][n % 10]);
+  if (n < 100) {
+    const tens = Math.floor(n / 10);
+    const ones = n % 10;
+    return ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'][tens] + '十' + (ones === 0 ? '' : ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'][ones]);
+  }
+  if (n < 10000) {
+    const wan = Math.floor(n / 10000);
+    const rest = n % 10000;
+    if (wan === 0) return thousandToChinese(rest);
+    if (rest === 0) return intToChinese(wan) + '万';
+    if (rest < 1000) return intToChinese(wan) + '万零' + thousandToChinese(rest);
+    return intToChinese(wan) + '万' + thousandToChinese(rest);
+  }
+  return String(n);
+}
+
+function thousandToChinese(n: number): string {
+  if (n === 0) return '';
+  const digits = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+  const q = Math.floor(n / 1000);
+  const b = Math.floor((n % 1000) / 100);
+  const s = Math.floor((n % 100) / 10);
+  const g = n % 10;
+  let result = '';
+  if (q > 0) result += digits[q] + '千';
+  if (b > 0) result += digits[b] + '百';
+  else if (q > 0 && (s > 0 || g > 0)) result += '零';
+  if (s > 0) result += digits[s] + '十';
+  else if (b > 0 && g > 0) result += '零';
+  if (g > 0) result += digits[g];
+  return result;
+}
+
+/**
+ * 处理上标 ^ 中的指数 → "x 的 n 次方"
+ */
+function exponentToChinese(expr: string): string {
+  // 特殊：x^2 → x 的平方, x^3 → x 的立方
+  if (expr === '2') return '平方';
+  if (expr === '3') return '立方';
+  if (expr === '-1') return '负一次方';
+  // 数字指数
+  const num = parseInt(expr, 10);
+  if (!isNaN(num) && num > 0 && num < 100) return chineseNumber(num) + '次方';
+  return expr + ' 次方';
+}
+
+/**
+ * 核心：LaTeX 片段 → 中文语音文本
+ */
+export function latexToSpeech(latex: string): string {
+  if (!latex) return '';
+  let s = latex.trim();
+
+  // 先处理关系符号（含反斜杠命令的，放在 \ 命令解析之前避免冲突）
+  for (const [cmd, zh] of Object.entries(RELATION_MAP)) {
+    s = s.split(cmd).join(zh);
+  }
+
+  // 处理分数 \frac{a}{b} → "b 分之 a"
+  s = s.replace(/\\frac\s*\{/g, (match, offset) => {
+    const numResult = extractBraced(s, offset + match.length - 1); // { 在 match 末尾
+    const denStart = numResult.end;
+    if (s[denStart] !== '{') return match;
+    const denResult = extractBraced(s, denStart);
+    const numZh = latexToSpeech(numResult.content);
+    const denZh = latexToSpeech(denResult.content);
+    return `${denZh}分之${numZh}`;
+    // 注意：这里只替换了匹配到的 \frac{ 开头，整个 \frac{num}{den} 的替换需要特殊处理
+  });
+
+  // 更稳健的分数处理（使用循环）
+  s = replaceLatexFrac(s);
+
+  // 处理根号 \sqrt{x} → "根号下 x"
+  s = replaceSqrt(s);
+
+  // 处理积分 \int_a^b → "积分从 a 到 b"
+  s = replaceIntegral(s);
+
+  // 处理极限 \lim_{x\to a} → "当 x 趋近于 a 时"
+  s = replaceLimit(s);
+
+  // 处理求和 \sum_{i=1}^n → "i 从 1 到 n 求和"
+  s = replaceSum(s);
+
+  // 处理上标 x^{...} / x^2 → "x 的 ... 次方"
+  s = replaceSuperscript(s);
+
+  // 处理下标 x_{...} / x_1 → "x 的下标 ..."
+  s = replaceSubscript(s);
+
+  // 处理希腊字母 \alpha → "阿尔法"
+  for (const [name, zh] of Object.entries(GREEK_MAP)) {
+    const re = new RegExp(`\\\\${name}(?![a-zA-Z])`, 'g');
+    s = s.replace(re, zh);
+  }
+
+  // 处理常用函数 \sin → "正弦", \cos → "余弦" 等
+  // 按长度从长到短排序，避免 \sin 匹配到 \arcsin
+  const funcEntries = Object.entries(FUNCTION_MAP).sort((a, b) => b[0].length - a[0].length);
+  for (const [name, zh] of funcEntries) {
+    const re = new RegExp(`\\\\${name}(?![a-zA-Z])`, 'g');
+    s = s.replace(re, zh);
+  }
+
+  // 清理剩余的反斜杠命令（简单兜底）
+  s = s.replace(/\\[a-zA-Z]+/g, '');
+
+  // 清理多余花括号
+  s = s.replace(/[{}]/g, '');
+
+  // 清理多余空格
+  s = s.replace(/\s+/g, ' ').trim();
+
+  return s;
+}
+
+// ===== 专用替换函数 =====
+
+function replaceLatexFrac(s: string): string {
+  const result: string[] = [];
+  let i = 0;
+  while (i < s.length) {
+    // 匹配 \frac 或 \dfrac 或 \tfrac
+    const fracMatch = s.slice(i).match(/^\\(?:d|t)?frac/);
+    if (fracMatch) {
+      const fracEnd = i + fracMatch[0].length;
+      // 跳过空格
+      let j = fracEnd;
+      while (j < s.length && s[j] === ' ') j++;
+      if (s[j] === '{') {
+        const num = extractBraced(s, j);
+        const denStart = num.end;
+        let k = denStart;
+        while (k < s.length && s[k] === ' ') k++;
+        if (s[k] === '{') {
+          const den = extractBraced(s, k);
+          const numZh = latexToSpeech(num.content);
+          const denZh = latexToSpeech(den.content);
+          result.push(`${denZh}分之${numZh}`);
+          i = den.end;
+          continue;
+        }
+      }
+      result.push(fracMatch[0]);
+      i = fracEnd;
+    } else {
+      result.push(s[i]);
+      i++;
+    }
+  }
+  return result.join('');
+}
+
+function replaceSqrt(s: string): string {
+  const result: string[] = [];
+  let i = 0;
+  while (i < s.length) {
+    if (s.slice(i).startsWith('\\sqrt')) {
+      const sqrtEnd = i + 5;
+      let j = sqrtEnd;
+      // 可选的 n 次方根：\sqrt[n]{x}
+      let nth = '';
+      if (s[j] === '[') {
+        const brack = extractBracketed(s, j);
+        nth = brack.content;
+        j = brack.end;
+      }
+      while (j < s.length && s[j] === ' ') j++;
+      if (s[j] === '{') {
+        const inner = extractBraced(s, j);
+        const innerZh = latexToSpeech(inner.content);
+        if (nth) {
+          const nthZh = latexToSpeech(nth);
+          result.push(`${nthZh}次根号下${innerZh}`);
+        } else {
+          result.push(`根号下${innerZh}`);
+        }
+        i = inner.end;
+        continue;
+      }
+      result.push('\\sqrt');
+      i = sqrtEnd;
+    } else {
+      result.push(s[i]);
+      i++;
+    }
+  }
+  return result.join('');
+}
+
+function replaceIntegral(s: string): string {
+  const result: string[] = [];
+  let i = 0;
+  while (i < s.length) {
+    if (s.slice(i).startsWith('\\int')) {
+      const intEnd = i + 4;
+      let j = intEnd;
+      // 下标 \int_a^b
+      let lower = '';
+      let upper = '';
+      if (s[j] === '_') {
+        j++;
+        if (s[j] === '{') {
+          const low = extractBraced(s, j);
+          lower = low.content;
+          j = low.end;
+        } else {
+          lower = s[j];
+          j++;
+        }
+      }
+      if (s[j] === '^') {
+        j++;
+        if (s[j] === '{') {
+          const up = extractBraced(s, j);
+          upper = up.content;
+          j = up.end;
+        } else {
+          upper = s[j];
+          j++;
+        }
+      }
+      const lowerZh = lower ? latexToSpeech(lower) : '';
+      const upperZh = upper ? latexToSpeech(upper) : '';
+      if (lowerZh && upperZh) {
+        result.push(`积分从${lowerZh}到${upperZh}`);
+      } else {
+        result.push('积分');
+      }
+      i = j;
+    } else {
+      result.push(s[i]);
+      i++;
+    }
+  }
+  return result.join('');
+}
+
+function replaceLimit(s: string): string {
+  const result: string[] = [];
+  let i = 0;
+  while (i < s.length) {
+    if (s.slice(i).startsWith('\\lim')) {
+      const limEnd = i + 4;
+      let j = limEnd;
+      // 下标 \lim_{x\to 0}
+      let sub = '';
+      if (s[j] === '_') {
+        j++;
+        if (s[j] === '{') {
+          const low = extractBraced(s, j);
+          sub = low.content;
+          j = low.end;
+        } else {
+          sub = s[j];
+          j++;
+        }
+      }
+      if (sub) {
+        // 把 x \to a 转成 "x 趋近于 a"
+        const subZh = sub.replace(/\\to/g, '趋近于').replace(/\\rightarrow/g, '趋近于');
+        const subClean = latexToSpeech(subZh);
+        result.push(`当${subClean}时`);
+      } else {
+        result.push('极限');
+      }
+      i = j;
+    } else {
+      result.push(s[i]);
+      i++;
+    }
+  }
+  return result.join('');
+}
+
+function replaceSum(s: string): string {
+  const result: string[] = [];
+  let i = 0;
+  while (i < s.length) {
+    if (s.slice(i).startsWith('\\sum')) {
+      const sumEnd = i + 4;
+      let j = sumEnd;
+      let lower = '';
+      let upper = '';
+      if (s[j] === '_') {
+        j++;
+        if (s[j] === '{') {
+          const low = extractBraced(s, j);
+          lower = low.content;
+          j = low.end;
+        } else {
+          lower = s[j];
+          j++;
+        }
+      }
+      if (s[j] === '^') {
+        j++;
+        if (s[j] === '{') {
+          const up = extractBraced(s, j);
+          upper = up.content;
+          j = up.end;
+        } else {
+          upper = s[j];
+          j++;
+        }
+      }
+      const lowerZh = lower ? latexToSpeech(lower).replace(/=/g, '等于') : '';
+      const upperZh = upper ? latexToSpeech(upper) : '';
+      if (lowerZh && upperZh) {
+        result.push(`求和，从${lowerZh}到${upperZh}`);
+      } else {
+        result.push('求和');
+      }
+      i = j;
+    } else {
+      result.push(s[i]);
+      i++;
+    }
+  }
+  return result.join('');
+}
+
+function replaceSuperscript(s: string): string {
+  const result: string[] = [];
+  let i = 0;
+  while (i < s.length) {
+    if (s[i] === '^' && i > 0) {
+      // 前一个字符是 base
+      const base = result.pop() || '';
+      i++;
+      let exp = '';
+      if (s[i] === '{') {
+        const expBraced = extractBraced(s, i);
+        exp = expBraced.content;
+        i = expBraced.end;
+      } else {
+        // 单字符指数
+        exp = s[i] || '';
+        i++;
+      }
+      const expZh = exponentToChinese(exp);
+      // base 可能已经是中文或表达式，直接拼
+      result.push(`${base}的${expZh}`);
+    } else {
+      result.push(s[i]);
+      i++;
+    }
+  }
+  return result.join('');
+}
+
+function replaceSubscript(s: string): string {
+  const result: string[] = [];
+  let i = 0;
+  while (i < s.length) {
+    if (s[i] === '_' && i > 0 && s[i - 1] !== '\\') {
+      const base = result.pop() || '';
+      i++;
+      let sub = '';
+      if (s[i] === '{') {
+        const subBraced = extractBraced(s, i);
+        sub = subBraced.content;
+        i = subBraced.end;
+      } else {
+        sub = s[i] || '';
+        i++;
+      }
+      const subZh = latexToSpeech(sub);
+      // 数字下标：x_1 → "x 下标一"，但更自然的说法是 "x 一"
+      if (/^\d+$/.test(sub)) {
+        result.push(`${base}第${chineseNumber(parseInt(sub, 10))}`);
+      } else {
+        result.push(`${base}下标${subZh}`);
+      }
+    } else {
+      result.push(s[i]);
+      i++;
+    }
+  }
+  return result.join('');
+}
+
+/**
+ * 提取文本中的 LaTeX 片段并转换为中文语音
+ * - $...$ / \(...\) 行内公式
+ * - $$...$$ / \[...\] 块级公式
+ * - 纯文本直接保留
+ */
+export function extractLatexAndConvert(text: string): string {
+  if (!text) return '';
+  // 先处理 $$...$$ 和 \[...\]
+  let result = text;
+  // $$...$$
+  result = result.replace(/\$\$([\s\S]*?)\$\$/g, (_, math) => latexToSpeech(math));
+  // \[...\]
+  result = result.replace(/\\\[([\s\S]*?)\\\]/g, (_, math) => latexToSpeech(math));
+  // $...$
+  result = result.replace(/\$([^$\n]+?)\$/g, (_, math) => latexToSpeech(math));
+  // \(...\)
+  result = result.replace(/\\\(([\s\S]*?)\\\)/g, (_, math) => latexToSpeech(math));
+  return result;
+}

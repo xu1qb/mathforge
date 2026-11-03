@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-27T23:10:00+08:00",
+  "title": "Design System: MathForge 数学计算工作台",
+  "extensions": {
+    "colorMeta": {
+      "bg-light": { "role": "neutral", "displayName": "冷灰白纸", "canonical": "hsl(210 25% 97%)" },
+      "surface-light": { "role": "neutral", "displayName": "纯白卡片", "canonical": "hsl(0 0% 100%)" },
+      "fg-light": { "role": "neutral", "displayName": "深蓝灰正文", "canonical": "hsl(217 33% 17%)" },
+      "bg-dark": { "role": "neutral", "displayName": "深夜墨蓝", "canonical": "hsl(222 47% 8%)" },
+      "surface-dark": { "role": "neutral", "displayName": "深灰卡片", "canonical": "hsl(222 40% 12%)" },
+      "danger": { "role": "semantic", "displayName": "错误红", "canonical": "hsl(0 72% 51%)" },
+      "success": { "role": "semantic", "displayName": "掌握绿", "canonical": "hsl(142 71% 40%)" },
+      "warning": { "role": "semantic", "displayName": "警示橙", "canonical": "hsl(32 95% 44%)" }
+    },
+    "typographyMeta": {
+      "page-title": { "displayName": "页面标题", "purpose": "每个页面顶部大标题，22px/600" },
+      "section-title": { "displayName": "模块标题", "purpose": "卡片标题、区块标题，16px/600" },
+      "body": { "displayName": "正文", "purpose": "题目、推导、说明，14px/400/1.7" },
+      "muted": { "displayName": "辅助说明", "purpose": "提示、来源、时间戳，12px/400" }
+    },
+    "shadows": [
+      { "name": "card-rest", "value": "0px 2px 12px 0px hsl(0 0% 0% / 0.02)", "purpose": "默认卡片静止，几乎不可见" },
+      { "name": "card-hover", "value": "0px 4px 16px 0px hsl(0 0% 0% / 0.25)", "purpose": "悬浮抬升" },
+      { "name": "pixel-hard", "value": "4px 4px 0 0 #141a16", "purpose": "像素皮肤 8-bit 硬阴影" }
+    ],
+    "motion": [
+      { "name": "theme-fade", "value": "0.3s ease", "purpose": "深浅主题切换颜色过渡" },
+      { "name": "page-in", "value": "0.35s ease-out", "purpose": "页面淡入 translateY(6px)" },
+      { "name": "tab-in", "value": "0.25s ease-out", "purpose": "Tab 内容淡入" }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "基础卡片容器，12px 圆角，16px 内边距，1px 边框",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-title\">模块标题</div><div class=\"ds-card-body\">正文内容，公式 KaTeX 渲染。</div></div>",
+      "css": ".ds-card { background: var(--card); color: var(--card-foreground); border: 1px solid var(--border); border-radius: 12px; padding: 16px; } .ds-card-title { font-size: 16px; font-weight: 600; line-height: 1.5; margin-bottom: 8px; } .ds-card-body { font-size: 14px; font-weight: 400; line-height: 1.7; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "主操作按钮，填充 primary 色",
+      "html": "<button class=\"ds-btn-primary\">开始练习</button>",
+      "css": ".ds-btn-primary { background: var(--primary); color: var(--primary-foreground); border: none; border-radius: 8px; padding: 8px 16px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background-color 0.3s ease, transform 0.15s ease; } .ds-btn-primary:hover { filter: brightness(1.08); } .ds-btn-primary:active { transform: scale(0.98); }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "次要按钮，透明底 hover 提亮",
+      "html": "<button class=\"ds-btn-ghost\">取消</button>",
+      "css": ".ds-btn-ghost { background: transparent; color: var(--foreground); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; font-size: 14px; cursor: pointer; transition: background-color 0.2s ease; } .ds-btn-ghost:hover { background: rgba(128,128,128,0.08); }"
+    },
+    {
+      "name": "KaTeX Block",
+      "kind": "custom",
+      "refersTo": "katex-display",
+      "description": "块级公式容器，行高 1.9，横向滚动",
+      "html": "<div class=\"ds-katex\"><span class=\"ds-katex-formula\">∫₀¹ f(x) dx = F(1) − F(0)</span></div>",
+      "css": ".ds-katex { overflow-x: auto; overflow-y: hidden; max-width: 100%; padding: 4px 0; } .ds-katex-formula { font-size: 16px; line-height: 1.9; color: currentColor; }"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "文本输入框，focus 切 ring 色",
+      "html": "<input class=\"ds-input\" placeholder=\"输入函数 f(x)\" />",
+      "css": ".ds-input { background: transparent; border: 1px solid var(--input); border-radius: 8px; padding: 8px 12px; font-size: 14px; color: var(--foreground); outline: none; transition: border-color 0.2s ease; } .ds-input:focus { border-color: var(--ring); } .ds-input::placeholder { color: var(--muted-foreground); }"
+    },
+    {
+      "name": "Chip / Tag",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "难度/标签徽章",
+      "html": "<span class=\"ds-chip ds-chip-basic\">基础</span> <span class=\"ds-chip ds-chip-advanced\">进阶</span>",
+      "css": ".ds-chip { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; } .ds-chip-basic { background: rgba(39,174,96,0.12); color: hsl(142 71% 40%); } .ds-chip-advanced { background: rgba(214,137,16,0.12); color: hsl(32 95% 44%); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Exam-Day Desk",
+    "overview": "MathForge 是一张陪考的书桌：白天是草稿纸，夜里是台灯下的坐标纸。所有界面都为算得快、看得清、坐得住服务。系统有四套皮肤（夜航/草稿纸/像素闯关/手账拼贴），但共享同一套 12px 圆角、16px 卡片间距、22/16/14/12 字号层级和 KaTeX 渲染规则。",
+    "keyCharacteristics": [
+      "数学场景正文默认 font-weight 400，层级靠字号和颜色不靠加粗",
+      "所有公式走 KaTeX，绝不出裸 LaTeX 源码",
+      "主内容区居中 1280px，两侧留白 20px",
+      "light/dark/system 三模式，KaTeX 颜色 currentColor 跟随",
+      "四套皮肤通过 data-skin 切换，颜色走 CSS 变量"
+    ],
+    "rules": [
+      { "name": "The No-Gradient Rule", "body": "全站禁用紫/靛色渐变", "section": "colors" },
+      { "name": "The KaTeX Color Rule", "body": "公式颜色 currentColor 或 --katex-color，跟随皮肤", "section": "colors" },
+      { "name": "The No-Bold Rule", "body": "数学场景正文默认 400，层级靠字号和颜色", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "卡片静止不用阴影，靠边框和背景分层", "section": "elevation" }
+    ],
+    "dos": [
+      "所有公式走 KaTeX，渲染失败只显示公式渲染失败",
+      "卡片圆角 12px，间距 16px，模块 24px，主内容居中 1280px",
+      "字号 22/16/14/12 四级，数学正文 400 不加粗",
+      "light/dark/system 三模式跟随",
+      "长公式包横向滚动容器，手机端不溢出",
+      "颜色走 CSS 变量 token"
+    ],
+    "donts": [
+      "用紫/靛色渐变背景",
+      "吐裸 LaTeX 源码给用户",
+      "数学场景正文用 font-weight 700",
+      "引 Google Fonts CDN",
+      "硬编码颜色值到组件",
+      "浅色模式死白 #ffffff 作正文背景"
+    ]
+  }
+}

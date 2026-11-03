@@ -1,0 +1,1128 @@
+import { useState, useMemo } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Slider } from '@/components/ui/slider';
+import { Checkbox } from '@/components/ui/checkbox';
+import MathInputField from '@/components/MathInputField';
+import PageHeader from '@/components/PageHeader';
+import CheatsheetDialog from '@/components/CheatsheetDialog';
+import { Plus, Trash2, Sparkles, Eye, EyeOff } from 'lucide-react';
+import Plot from 'react-plotly.js';
+import { usePlotlyPalette } from '@/lib/plotly-theme';
+import { evaluate, parse } from 'mathjs';
+import {
+  sampleFunction, sampleParametric, samplePolar,
+  identifyConic, tangentLine, asymptotes,
+  areaBetweenCurves, inverseFunction, samplePolarRose,
+  formatResult, adaptiveSamplePoints2D,
+  findFunctionZeros, findExtrema, findInflectionPoints,
+  findYIntercept, computeDerivativeSamples,
+  findIntersections, computeDefiniteIntegral,
+} from '@/lib/math-utils';
+
+interface PlotItem {
+  id: number;
+  expr: string;
+  color: string;
+  visible: boolean;
+}
+
+// 注意：实际曲线颜色来自 usePlotlyPalette().line_colors（按皮肤切换），
+// 此处仅作为 fallback / 初始占位，运行时会被 palette 覆盖。
+const FALLBACK_COLORS = ['#059669', '#0891b2', '#dc2626', '#d97706', '#7c3aed', '#db2777'];
+
+const PRESETS = [
+  { name: 'sin(x)', expr: 'sin(x)' },
+  { name: 'x²', expr: 'x^2' },
+  { name: 'e^-x²', expr: 'exp(-x^2)' },
+  { name: 'sin(x)/x', expr: 'sin(x)/x' },
+  { name: 'ln(x)', expr: 'log(x)' },
+];
+
+const PARAM_PRESETS = [
+  { name: '圆', xExpr: 'cos(t)', yExpr: 'sin(t)', tMin: '0', tMax: '2*pi' },
+  { name: '椭圆', xExpr: '3*cos(t)', yExpr: '2*sin(t)', tMin: '0', tMax: '2*pi' },
+  { name: '摆线', xExpr: 't - sin(t)', yExpr: '1 - cos(t)', tMin: '0', tMax: '4*pi' },
+  { name: '星形线', xExpr: 'cos(t)^3', yExpr: 'sin(t)^3', tMin: '0', tMax: '2*pi' },
+];
+
+const POLAR_PRESETS = [
+  { name: '3瓣玫瑰', expr: 'cos(3*t)', tMin: '0', tMax: '2*pi' },
+  { name: '4瓣玫瑰', expr: 'cos(2*t)', tMin: '0', tMax: '2*pi' },
+  { name: '心形线', expr: '1 + cos(t)', tMin: '0', tMax: '2*pi' },
+  { name: '阿基米德螺线', expr: 't', tMin: '0', tMax: '4*pi' },
+  { name: '双纽线', expr: 'sqrt(cos(2*t))', tMin: '0', tMax: '2*pi' },
+];
+
+const IMPLICIT_PRESETS = [
+  { name: '圆 x²+y²=4', expr: 'x^2 + y^2 - 4' },
+  { name: '椭圆', expr: 'x^2/4 + y^2/9 - 1' },
+  { name: '双曲线', expr: 'x^2 - y^2 - 1' },
+  { name: '抛物线 y=x²', expr: 'y - x^2' },
+];
+
+const CONIC_PRESETS = [
+  { name: '椭圆', A: 1, B: 0, C: 4, D: 0, E: 0, F: -4, desc: 'x²+4y²=4' },
+  { name: '抛物线', A: 0, B: 0, C: 1, D: -4, E: 0, F: 0, desc: 'y²=4x' },
+  { name: '双曲线', A: 1, B: 0, C: -1, D: 0, E: 0, F: -1, desc: 'x²-y²=1' },
+  { name: '圆', A: 1, B: 0, C: 1, D: 0, E: 0, F: -9, desc: 'x²+y²=9' },
+];
+
+export default function Plot2DPage() {
+  const [activeTab, setActiveTab] = useState('cartesian');
+  const [plots, setPlots] = useState<PlotItem[]>([
+    { id: 1, expr: 'sin(x)', color: FALLBACK_COLORS[0], visible: true },
+  ]);
+  const [xMin, setXMin] = useState('-10');
+  const [xMax, setXMax] = useState('10');
+
+  // parametric
+  const [paramX, setParamX] = useState('cos(t)');
+  const [paramY, setParamY] = useState('sin(t)');
+  const [tMin, setTMin] = useState('0');
+  const [tMax, setTMax] = useState('2*pi');
+
+  // polar
+  const [polarExpr, setPolarExpr] = useState('sin(3*t)');
+  const [polarTMin, setPolarTMin] = useState('0');
+  const [polarTMax, setPolarTMax] = useState('2*pi');
+
+  // implicit
+  const [implicitExpr, setImplicitExpr] = useState('x^2 + y^2 - 4');
+  const [impXMin, setImpXMin] = useState('-5');
+  const [impXMax, setImpXMax] = useState('5');
+  const [impYMin, setImpYMin] = useState('-5');
+  const [impYMax, setImpYMax] = useState('5');
+
+  // conic
+  const [conicA, setConicA] = useState('1');
+  const [conicB, setConicB] = useState('0');
+  const [conicC, setConicC] = useState('4');
+  const [conicD, setConicD] = useState('0');
+  const [conicE, setConicE] = useState('0');
+  const [conicF, setConicF] = useState('-4');
+
+  // tangent
+  const [tangentExpr, setTangentExpr] = useState('sin(x)');
+  const [tangentX0, setTangentX0] = useState('1');
+
+  // asymptotes
+  const [asymExpr, setAsymExpr] = useState('1/(x^2-1)');
+
+  // area between
+  const [areaF, setAreaF] = useState('sin(x)');
+  const [areaG, setAreaG] = useState('cos(x)');
+  const [areaA, setAreaA] = useState('0');
+  const [areaB, setAreaB] = useState('pi');
+
+  // ===== 笛卡尔分析功能 =====
+  const [showZeros, setShowZeros] = useState(true);       // 零点标注
+  const [showExtrema, setShowExtrema] = useState(true);   // 极值点标注
+  const [showInflection, setShowInflection] = useState(false); // 拐点标注
+  const [showYIntercept, setShowYIntercept] = useState(true); // y轴截距
+  const [showDerivative1, setShowDerivative1] = useState(false); // 一阶导数曲线
+  const [showDerivative2, setShowDerivative2] = useState(false); // 二阶导数曲线
+  const [showIntegral, setShowIntegral] = useState(false);     // 定积分面积
+  const [integralA, setIntegralA] = useState('0');             // 积分左端点
+  const [integralB, setIntegralB] = useState('2');             // 积分右端点
+  const [showIntersections, setShowIntersections] = useState(false); // 函数交点
+
+  // inverse
+  const [invExpr, setInvExpr] = useState('x^2');
+
+  // multi window (2x2)
+  const [mw1, setMw1] = useState('sin(x)');
+  const [mw2, setMw2] = useState('cos(x)');
+  const [mw3, setMw3] = useState('x^2');
+  const [mw4, setMw4] = useState('exp(x)');
+
+  // param animation slider
+  const [animX, setAnimX] = useState('cos(t)');
+  const [animY, setAnimY] = useState('sin(t)');
+  const [animTMax, setAnimTMax] = useState(3.14);
+
+  // rose
+  const [roseExpr, setRoseExpr] = useState('sin(4*t)');
+
+  const [cheatsheetOpen, setCheatsheetOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const addPlot = () => {
+    const newId = plots.length > 0 ? Math.max(...plots.map((p) => p.id)) + 1 : 1;
+    const colorIdx = plots.length % palette.line_colors.length;
+    setPlots([...plots, { id: newId, expr: '', color: palette.line_colors[colorIdx], visible: true }]);
+  };
+
+  const removePlot = (id: number) => {
+    setPlots(plots.filter((p) => p.id !== id));
+  };
+
+  const updatePlot = (id: number, expr: string) => {
+    setPlots(plots.map((p) => (p.id === id ? { ...p, expr } : p)));
+  };
+
+  const togglePlot = (id: number) => {
+    setPlots(plots.map((p) => (p.id === id ? { ...p, visible: !p.visible } : p)));
+  };
+
+  const getRange = (mn: string, mx: string) => {
+    const a = parseFloat(evaluate(mn) as unknown as string);
+    const b = parseFloat(evaluate(mx) as unknown as string);
+    return [isNaN(a) ? -10 : a, isNaN(b) ? 10 : b];
+  };
+
+  const cartesianData = useMemo(() => {
+    if (activeTab !== 'cartesian') return [];
+    setError(null);
+    const data: any[] = [];
+    const [xmin, xmax] = getRange(xMin, xMax);
+    const n = adaptiveSamplePoints2D(xmin, xmax, 800, 100);
+
+    const visiblePlots = plots.filter((p) => p.visible && p.expr.trim());
+
+    for (let idx = 0; idx < visiblePlots.length; idx++) {
+      const p = visiblePlots[idx];
+      const colorIdx = plots.findIndex((pp) => pp.id === p.id);
+      try {
+        const pts = sampleFunction(p.expr, xmin, xmax, n);
+        data.push({
+          x: pts.x, y: pts.y, name: `y = ${p.expr}`, type: 'scatter', mode: 'lines',
+          line: { color: palette.line_colors[colorIdx % palette.line_colors.length], width: 2 },
+          legendgroup: `plot-${p.id}`,
+        });
+
+        // ===== 关键点标注（只对第一个可见函数标注，避免混乱） =====
+        if (idx === 0) {
+          const color = palette.line_colors[colorIdx % palette.line_colors.length];
+
+          // 零点
+          if (showZeros) {
+            try {
+              const zeros = findFunctionZeros(p.expr, xmin, xmax, 1000, 10);
+              if (zeros.length > 0) {
+                data.push({
+                  x: zeros.map((z) => z.x),
+                  y: zeros.map(() => 0),
+                  name: '零点',
+                  type: 'scatter',
+                  mode: 'markers',
+                  marker: { color: '#dc2626', size: 8, symbol: 'circle' },
+                  text: zeros.map((z) => `零点 (${formatResult(z.x)}, 0)`),
+                  hoverinfo: 'text',
+                  legendgroup: 'analysis-zeros',
+                  showlegend: true,
+                });
+              }
+            } catch { /* ignore */ }
+          }
+
+          // 极值点
+          if (showExtrema) {
+            try {
+              const extrema = findExtrema(p.expr, xmin, xmax, 1000);
+              if (extrema.length > 0) {
+                data.push({
+                  x: extrema.map((e) => e.x),
+                  y: extrema.map((e) => e.y),
+                  name: '极值点',
+                  type: 'scatter',
+                  mode: 'markers+text',
+                  marker: {
+                    color: extrema.map((e) => e.type === 'max' ? '#dc2626' : e.type === 'min' ? '#059669' : '#d97706'),
+                    size: 9,
+                    symbol: 'diamond',
+                  },
+                  text: extrema.map((e) => `${e.type === 'max' ? '极大' : e.type === 'min' ? '极小' : '驻点'}`),
+                  textposition: 'top center',
+                  textfont: { size: 10, color: color },
+                  hovertext: extrema.map((e) => `${e.type === 'max' ? '极大值' : e.type === 'min' ? '极小值' : '驻点'}(${formatResult(e.x)}, ${formatResult(e.y)})`),
+                  hoverinfo: 'text',
+                  legendgroup: 'analysis-extrema',
+                  showlegend: true,
+                });
+              }
+            } catch { /* ignore */ }
+          }
+
+          // 拐点
+          if (showInflection) {
+            try {
+              const infl = findInflectionPoints(p.expr, xmin, xmax, 1000);
+              if (infl.length > 0) {
+                data.push({
+                  x: infl.map((i) => i.x),
+                  y: infl.map((i) => i.y),
+                  name: '拐点',
+                  type: 'scatter',
+                  mode: 'markers',
+                  marker: { color: '#7c3aed', size: 8, symbol: 'square' },
+                  text: infl.map((i) => `拐点 (${formatResult(i.x)}, ${formatResult(i.y)})`),
+                  hoverinfo: 'text',
+                  legendgroup: 'analysis-inflection',
+                  showlegend: true,
+                });
+              }
+            } catch { /* ignore */ }
+          }
+
+          // y轴截距
+          if (showYIntercept && xmin <= 0 && xmax >= 0) {
+            try {
+              const yint = findYIntercept(p.expr);
+              if (yint) {
+                data.push({
+                  x: [0],
+                  y: [yint.y],
+                  name: 'y截距',
+                  type: 'scatter',
+                  mode: 'markers',
+                  marker: { color: '#0891b2', size: 8, symbol: 'triangle-down' },
+                  text: [`y截距 (0, ${formatResult(yint.y)})`],
+                  hoverinfo: 'text',
+                  legendgroup: 'analysis-yint',
+                  showlegend: true,
+                });
+              }
+            } catch { /* ignore */ }
+          }
+
+          // 一阶导数曲线（虚线）
+          if (showDerivative1) {
+            try {
+              const deriv = computeDerivativeSamples(p.expr, xmin, xmax, n);
+              data.push({
+                x: deriv.x,
+                y: deriv.y1,
+                name: "f'(x)（一阶导）",
+                type: 'scatter',
+                mode: 'lines',
+                line: { color: '#0891b2', width: 1.5, dash: 'dash' },
+                legendgroup: 'deriv-1',
+                showlegend: true,
+              });
+            } catch { /* ignore */ }
+          }
+
+          // 二阶导数曲线（点线）
+          if (showDerivative2) {
+            try {
+              const deriv = computeDerivativeSamples(p.expr, xmin, xmax, n);
+              data.push({
+                x: deriv.x,
+                y: deriv.y2,
+                name: "f''(x)（二阶导）",
+                type: 'scatter',
+                mode: 'lines',
+                line: { color: '#7c3aed', width: 1.5, dash: 'dot' },
+                legendgroup: 'deriv-2',
+                showlegend: true,
+              });
+            } catch { /* ignore */ }
+          }
+
+          // 定积分面积
+          if (showIntegral) {
+            try {
+              const a = evaluate(integralA) as number;
+              const b = evaluate(integralB) as number;
+              if (Number.isFinite(a) && Number.isFinite(b) && a < b) {
+                const ptsInt = sampleFunction(p.expr, a, b, Math.max(200, Math.floor(n * (b - a) / (xmax - xmin))));
+                // 填充面积：上边界曲线 + 下边界 y=0
+                data.push({
+                  x: ptsInt.x,
+                  y: ptsInt.y,
+                  name: '积分上边界',
+                  type: 'scatter',
+                  mode: 'lines',
+                  line: { color: 'transparent', width: 0 },
+                  fill: 'tozeroy',
+                  fillcolor: `${palette.line_colors[0]}33`, // ~20% opacity hex
+                  legendgroup: 'integral',
+                  showlegend: false,
+                  hoverinfo: 'skip',
+                });
+              }
+            } catch { /* ignore */ }
+          }
+        }
+
+        // ===== 交点计算（两个及以上可见函数时）=====
+        if (showIntersections && idx === 1 && visiblePlots.length >= 2) {
+          try {
+            const p0 = visiblePlots[0];
+            const intersects = findIntersections(p0.expr, p.expr, xmin, xmax, 1000, 8);
+            if (intersects.length > 0) {
+              data.push({
+                x: intersects.map((i) => i.x),
+                y: intersects.map((i) => i.y),
+                name: '交点',
+                type: 'scatter',
+                mode: 'markers',
+                marker: { color: '#dc2626', size: 10, symbol: 'x' },
+                text: intersects.map((i) => `交点 (${formatResult(i.x)}, ${formatResult(i.y)})`),
+                hoverinfo: 'text',
+                legendgroup: 'analysis-intersections',
+                showlegend: true,
+              });
+            }
+          } catch { /* ignore */ }
+        }
+      } catch (e) {
+        setError(`函数 "${p.expr}" 错误: ${(e as Error).message}`);
+      }
+    }
+    return data;
+  }, [plots, xMin, xMax, activeTab, showZeros, showExtrema, showInflection, showYIntercept, showDerivative1, showDerivative2, showIntegral, integralA, integralB, showIntersections]);
+
+  // 第一个可见函数的定积分值
+  const cartesianIntegralValue = useMemo(() => {
+    if (activeTab !== 'cartesian' || !showIntegral) return null;
+    const firstVisible = plots.find((p) => p.visible && p.expr.trim());
+    if (!firstVisible) return null;
+    try {
+      const a = evaluate(integralA) as number;
+      const b = evaluate(integralB) as number;
+      if (!Number.isFinite(a) || !Number.isFinite(b) || a >= b) return null;
+      const val = computeDefiniteIntegral(firstVisible.expr, a, b, 2000);
+      return Number.isFinite(val) ? formatResult(val) : null;
+    } catch { return null; }
+  }, [plots, showIntegral, integralA, integralB, activeTab]);
+
+  const parametricData = useMemo(() => {
+    if (activeTab !== 'parametric') return [];
+    setError(null);
+    try {
+      const tMinVal = evaluate(tMin) as number;
+      const tMaxVal = evaluate(tMax) as number;
+      const n = adaptiveSamplePoints2D(tMinVal, tMaxVal, 800, 100);
+      const pts = sampleParametric(paramX, paramY, tMinVal, tMaxVal, n);
+      return [{ x: pts.x, y: pts.y, name: '参数方程', type: 'scatter', mode: 'lines', line: { color: palette.line_colors[0], width: 2 } }];
+    } catch (e) {
+      setError(`参数方程错误: ${(e as Error).message}`);
+      return [];
+    }
+  }, [paramX, paramY, tMin, tMax, activeTab]);
+
+  const polarData = useMemo(() => {
+    if (activeTab !== 'polar') return [];
+    setError(null);
+    try {
+      const tMinVal = evaluate(polarTMin) as number;
+      const tMaxVal = evaluate(polarTMax) as number;
+      const n = adaptiveSamplePoints2D(tMinVal, tMaxVal, 800, 100);
+      const pts = samplePolar(polarExpr, tMinVal, tMaxVal, n);
+      return [{ x: pts.x, y: pts.y, name: `r = ${polarExpr}`, type: 'scatter', mode: 'lines', line: { color: palette.line_colors[0], width: 2 } }];
+    } catch (e) {
+      setError(`极坐标错误: ${(e as Error).message}`);
+      return [];
+    }
+  }, [polarExpr, polarTMin, polarTMax, activeTab]);
+
+  const implicitData = useMemo(() => {
+    if (activeTab !== 'implicit') return [];
+    setError(null);
+    try {
+      const [xmin, xmax] = getRange(impXMin, impXMax);
+      const [ymin, ymax] = getRange(impYMin, impYMax);
+      // 自适应网格：范围≤10时 220×220；范围越大网格越疏，最少 40×40
+      const span = Math.max(Math.abs(xmax - xmin), Math.abs(ymax - ymin));
+      const ratio = span / 10;
+      let nx = 220, ny = 220;
+      if (ratio > 1) {
+        const scale = Math.max(1, Math.log10(ratio) * 1.5 + 1);
+        nx = Math.max(40, Math.round(220 / scale));
+        ny = Math.max(40, Math.round(220 / scale));
+      }
+      // 用 plotly 的 contour 画零值等高线 = 隐函数曲线
+      // 先采样网格
+      const node = parse(implicitExpr);
+      const xs: number[] = [];
+      const ys: number[] = [];
+      const dx = (xmax - xmin) / (nx - 1);
+      const dy = (ymax - ymin) / (ny - 1);
+      for (let i = 0; i < nx; i++) xs.push(xmin + i * dx);
+      for (let j = 0; j < ny; j++) ys.push(ymin + j * dy);
+      const z: number[][] = [];
+      for (let j = 0; j < ny; j++) {
+        const row: number[] = [];
+        for (let i = 0; i < nx; i++) {
+          try {
+            const v = node.evaluate({ x: xs[i], y: ys[j] }) as number;
+            row.push(isFinite(v) ? v : NaN);
+          } catch { row.push(NaN); }
+        }
+        z.push(row);
+      }
+      return [{
+        x: xs, y: ys, z,
+        type: 'contour',
+        colorscale: [[0, palette.line_colors[0]], [1, palette.line_colors[0]]],
+        showscale: false,
+        contours: { start: 0, end: 0, size: 0.01, coloring: 'lines' as const },
+        line: { width: 2 },
+        name: `f(x,y)=0`,
+        ncontours: 1,
+      }];
+    } catch (e) {
+      setError(`隐函数错误: ${(e as Error).message}`);
+      return [];
+    }
+  }, [implicitExpr, impXMin, impXMax, impYMin, impYMax, activeTab]);
+
+  const conicResult = useMemo(() => {
+    if (activeTab !== 'conic') return null;
+    try {
+      const A = evaluate(conicA) as number;
+      const B = evaluate(conicB) as number;
+      const C = evaluate(conicC) as number;
+      const D = evaluate(conicD) as number;
+      const E = evaluate(conicE) as number;
+      const F = evaluate(conicF) as number;
+      return identifyConic(A, B, C, D, E, F);
+    } catch (e) {
+      setError(`二次曲线识别错误: ${(e as Error).message}`);
+      return null;
+    }
+  }, [conicA, conicB, conicC, conicD, conicE, conicF, activeTab]);
+
+  const conicPlotData = useMemo(() => {
+    if (activeTab !== 'conic') return [];
+    try {
+      const A = evaluate(conicA) as number;
+      const B = evaluate(conicB) as number;
+      const C = evaluate(conicC) as number;
+      const D = evaluate(conicD) as number;
+      const E = evaluate(conicE) as number;
+      const F = evaluate(conicF) as number;
+      const node = parse(`${A}*x^2 + ${B}*x*y + ${C}*y^2 + ${D}*x + ${E}*y + ${F}`);
+      const nx = 220, ny = 220;
+      const xmin = -10, xmax = 10, ymin = -10, ymax = 10;
+      const xs: number[] = [];
+      const ys: number[] = [];
+      const dx = (xmax - xmin) / (nx - 1);
+      const dy = (ymax - ymin) / (ny - 1);
+      for (let i = 0; i < nx; i++) xs.push(xmin + i * dx);
+      for (let j = 0; j < ny; j++) ys.push(ymin + j * dy);
+      const z: number[][] = [];
+      for (let j = 0; j < ny; j++) {
+        const row: number[] = [];
+        for (let i = 0; i < nx; i++) {
+          try {
+            const v = node.evaluate({ x: xs[i], y: ys[j] }) as number;
+            row.push(isFinite(v) ? v : NaN);
+          } catch { row.push(NaN); }
+        }
+        z.push(row);
+      }
+      return [{
+        x: xs, y: ys, z,
+        type: 'contour',
+        colorscale: [[0, palette.line_colors[0]], [1, palette.line_colors[0]]],
+        showscale: false,
+        contours: { start: 0, end: 0, size: 0.01, coloring: 'lines' as const },
+        line: { width: 2 },
+        name: '二次曲线',
+        ncontours: 1,
+      }];
+    } catch { return []; }
+  }, [conicA, conicB, conicC, conicD, conicE, conicF, activeTab]);
+
+  const tangentData = useMemo(() => {
+    if (activeTab !== 'tangent') return [];
+    setError(null);
+    try {
+      const [xmin, xmax] = getRange(xMin, xMax);
+      const x0 = evaluate(tangentX0) as number;
+      const n = adaptiveSamplePoints2D(xmin, xmax, 800, 100);
+      const t = tangentLine(tangentExpr, x0, xmin, xmax, Math.round(n * 0.6));
+      const func = sampleFunction(tangentExpr, xmin, xmax, n);
+      return [
+        { x: func.x, y: func.y, name: 'f(x)', type: 'scatter', mode: 'lines', line: { color: palette.line_colors[0], width: 2 } },
+        { x: t.line.x, y: t.line.y, name: `切线 (x₀=${formatResult(x0)})`, type: 'scatter', mode: 'lines', line: { color: palette.line_colors[2], width: 2, dash: 'dash' as const } },
+        { x: [x0], y: [t.y0], name: '切点', type: 'scatter', mode: 'markers', marker: { color: palette.line_colors[2], size: 10 } },
+      ];
+    } catch (e) {
+      setError(`切线错误: ${(e as Error).message}`);
+      return [];
+    }
+  }, [tangentExpr, tangentX0, xMin, xMax, activeTab]);
+
+  const asymptoteData = useMemo(() => {
+    if (activeTab !== 'asymptote') return [];
+    setError(null);
+    try {
+      const [xmin, xmax] = getRange(xMin, xMax);
+      const n = adaptiveSamplePoints2D(xmin, xmax, 800, 100);
+      const func = sampleFunction(asymExpr, xmin, xmax, n);
+      const asym = asymptotes(asymExpr, xmin, xmax);
+      const traces: any[] = [
+        { x: func.x, y: func.y, name: 'f(x)', type: 'scatter', mode: 'lines', line: { color: palette.line_colors[0], width: 2 } },
+      ];
+      asym.vertical.forEach((v, i) => {
+        traces.push({
+          x: [v, v], y: [-10, 10], name: i === 0 ? '垂直渐近线' : '',
+          type: 'scatter', mode: 'lines', line: { color: palette.line_colors[2], width: 1.5, dash: 'dash' as const },
+        });
+      });
+      asym.horizontal.forEach((h, i) => {
+        traces.push({
+          x: [xmin, xmax], y: [h, h], name: i === 0 ? '水平渐近线' : '',
+          type: 'scatter', mode: 'lines', line: { color: palette.line_colors[3], width: 1.5, dash: 'dash' as const },
+        });
+      });
+      asym.oblique.forEach((o, i) => {
+        const y1 = o.a * xmin + o.b;
+        const y2 = o.a * xmax + o.b;
+        traces.push({
+          x: [xmin, xmax], y: [y1, y2], name: i === 0 ? '斜渐近线' : '',
+          type: 'scatter', mode: 'lines', line: { color: palette.line_colors[4], width: 1.5, dash: 'dot' as const },
+        });
+      });
+      return traces;
+    } catch (e) {
+      setError(`渐近线错误: ${(e as Error).message}`);
+      return [];
+    }
+  }, [asymExpr, xMin, xMax, activeTab]);
+
+  const areaData = useMemo(() => {
+    if (activeTab !== 'area') return [];
+    setError(null);
+    try {
+      const a = evaluate(areaA) as number;
+      const b = evaluate(areaB) as number;
+      const nArea = adaptiveSamplePoints2D(a, b, 800, 100);
+      const result = areaBetweenCurves(areaF, areaG, a, b, nArea);
+      return [
+        { x: result.upper.x, y: result.upper.y, name: '上边界', type: 'scatter', mode: 'lines', line: { color: palette.line_colors[0], width: 2 }, fill: 'tonexty' as const, fillcolor: `${palette.line_colors[0]}33` },
+        { x: result.lower.x, y: result.lower.y, name: '下边界', type: 'scatter', mode: 'lines', line: { color: palette.line_colors[1], width: 2 }, fill: 'tozeroy' as const, fillcolor: 'rgba(0,0,0,0)' },
+      ];
+    } catch (e) {
+      setError(`面积错误: ${(e as Error).message}`);
+      return [];
+    }
+  }, [areaF, areaG, areaA, areaB, activeTab]);
+
+  const areaValue = useMemo(() => {
+    if (activeTab !== 'area') return '';
+    try {
+      const a = evaluate(areaA) as number;
+      const b = evaluate(areaB) as number;
+      const nArea = adaptiveSamplePoints2D(a, b, 800, 100);
+      const r = areaBetweenCurves(areaF, areaG, a, b, nArea);
+      return formatResult(r.area);
+    } catch { return ''; }
+  }, [areaF, areaG, areaA, areaB, activeTab]);
+
+  const inverseData = useMemo(() => {
+    if (activeTab !== 'inverse') return [];
+    setError(null);
+    try {
+      const [xmin, xmax] = getRange(xMin, xMax);
+      const nPts = adaptiveSamplePoints2D(xmin, xmax, 800, 100);
+      const orig = sampleFunction(invExpr, xmin, xmax, nPts);
+      const inv = inverseFunction(invExpr, xmin, xmax, nPts);
+      const yx = [Math.min(xmin, ...inv.x.filter(isFinite)), Math.max(xmax, ...inv.x.filter(isFinite))];
+      return [
+        { x: orig.x, y: orig.y, name: 'f(x)', type: 'scatter', mode: 'lines', line: { color: palette.line_colors[0], width: 2 } },
+        { x: inv.x, y: inv.y, name: 'f⁻¹(x)', type: 'scatter', mode: 'lines', line: { color: palette.line_colors[1], width: 2 } },
+        { x: yx, y: yx, name: 'y = x', type: 'scatter', mode: 'lines', line: { color: palette.line_colors[3], width: 1.5, dash: 'dash' as const } },
+      ];
+    } catch (e) {
+      setError(`反函数错误: ${(e as Error).message}`);
+      return [];
+    }
+  }, [invExpr, xMin, xMax, activeTab]);
+
+  const multiWindowData = useMemo(() => {
+    if (activeTab !== 'multi') return [];
+    setError(null);
+    try {
+      const [xmin, xmax] = getRange(xMin, xMax);
+      const nPts = adaptiveSamplePoints2D(xmin, xmax, 600, 100);
+      const f1 = sampleFunction(mw1, xmin, xmax, nPts);
+      const f2 = sampleFunction(mw2, xmin, xmax, nPts);
+      const f3 = sampleFunction(mw3, xmin, xmax, nPts);
+      const f4 = sampleFunction(mw4, xmin, xmax, nPts);
+      return [
+        { x: f1.x, y: f1.y, name: mw1, type: 'scatter', mode: 'lines', xaxis: 'x', yaxis: 'y', line: { color: palette.line_colors[0] } },
+        { x: f2.x, y: f2.y, name: mw2, type: 'scatter', mode: 'lines', xaxis: 'x2', yaxis: 'y2', line: { color: palette.line_colors[1] } },
+        { x: f3.x, y: f3.y, name: mw3, type: 'scatter', mode: 'lines', xaxis: 'x3', yaxis: 'y3', line: { color: palette.line_colors[2] } },
+        { x: f4.x, y: f4.y, name: mw4, type: 'scatter', mode: 'lines', xaxis: 'x4', yaxis: 'y4', line: { color: palette.line_colors[3] } },
+      ];
+    } catch (e) {
+      setError(`多窗口错误: ${(e as Error).message}`);
+      return [];
+    }
+  }, [mw1, mw2, mw3, mw4, xMin, xMax, activeTab]);
+
+  const animData = useMemo(() => {
+    if (activeTab !== 'animation') return [];
+    setError(null);
+    try {
+      const tMaxVal = animTMax;
+      const nAnim = adaptiveSamplePoints2D(0, tMaxVal, 800, 100);
+      const pts = sampleParametric(animX, animY, 0, tMaxVal, nAnim);
+      return [{ x: pts.x, y: pts.y, name: '参数曲线', type: 'scatter', mode: 'lines', line: { color: palette.line_colors[0], width: 2.5 } }];
+    } catch (e) {
+      setError(`参数动画错误: ${(e as Error).message}`);
+      return [];
+    }
+  }, [animX, animY, animTMax, activeTab]);
+
+  const roseData = useMemo(() => {
+    if (activeTab !== 'rose') return [];
+    setError(null);
+    try {
+      const pts = samplePolarRose(roseExpr, 0, 2 * Math.PI, 1000);
+      return [{ x: pts.x, y: pts.y, name: `r = ${roseExpr}`, type: 'scatter', mode: 'lines', line: { color: palette.line_colors[0], width: 2 } }];
+    } catch (e) {
+      setError(`极坐标玫瑰线错误: ${(e as Error).message}`);
+      return [];
+    }
+  }, [roseExpr, activeTab]);
+
+  const palette = usePlotlyPalette();
+
+  const layout = useMemo(() => {
+    const base: any = {
+      autosize: true,
+      height: activeTab === 'multi' ? 550 : 450,
+      margin: { l: 60, r: 20, t: 30, b: 50 },
+      plot_bgcolor: palette.plot_bgcolor,
+      paper_bgcolor: palette.paper_bgcolor,
+      legend: { orientation: 'h' as const, y: -0.2, font: { family: 'inherit', size: 12, color: palette.font_color } },
+      font: { family: 'inherit', color: palette.font_color },
+    };
+    // 统一刻度格式
+    const tickStyle = {
+      exponentformat: 'power',
+      showexponent: 'all',
+      nticks: 8,
+      tickfont: { size: 11, color: palette.tickfont_color },
+      titlefont: { size: 12, color: palette.font_color },
+    };
+    if (activeTab === 'multi') {
+      base.grid = { rows: 2, columns: 2, pattern: 'independent' };
+      base.xaxis = { domain: [0, 0.46], title: 'x', gridcolor: palette.gridcolor, zerolinecolor: palette.zerolinecolor, zerolinewidth: 1.2, ...tickStyle };
+      base.yaxis = { domain: [0.54, 1], title: 'y', gridcolor: palette.gridcolor, zerolinecolor: palette.zerolinecolor, zerolinewidth: 1.2, ...tickStyle };
+      base.xaxis2 = { domain: [0.54, 1], title: 'x', gridcolor: palette.gridcolor, zerolinecolor: palette.zerolinecolor, zerolinewidth: 1.2, ...tickStyle };
+      base.yaxis2 = { domain: [0.54, 1], title: 'y', gridcolor: palette.gridcolor, zerolinecolor: palette.zerolinecolor, zerolinewidth: 1.2, ...tickStyle };
+      base.xaxis3 = { domain: [0, 0.46], title: 'x', gridcolor: palette.gridcolor, zerolinecolor: palette.zerolinecolor, zerolinewidth: 1.2, ...tickStyle };
+      base.yaxis3 = { domain: [0, 0.46], title: 'y', gridcolor: palette.gridcolor, zerolinecolor: palette.zerolinecolor, zerolinewidth: 1.2, ...tickStyle };
+      base.xaxis4 = { domain: [0.54, 1], title: 'x', gridcolor: palette.gridcolor, zerolinecolor: palette.zerolinecolor, zerolinewidth: 1.2, ...tickStyle };
+      base.yaxis4 = { domain: [0, 0.46], title: 'y', gridcolor: palette.gridcolor, zerolinecolor: palette.zerolinecolor, zerolinewidth: 1.2, ...tickStyle };
+    } else {
+      base.xaxis = { gridcolor: palette.gridcolor, zerolinecolor: palette.zerolinecolor, zerolinewidth: 1.2, title: { text: 'x' }, ...tickStyle };
+      base.yaxis = { gridcolor: palette.gridcolor, zerolinecolor: palette.zerolinecolor, zerolinewidth: 1.2, title: { text: 'y' }, ...tickStyle };
+      if (['parametric', 'polar', 'implicit', 'conic', 'rose', 'animation'].includes(activeTab)) {
+        base.yaxis.scaleanchor = 'x';
+        base.yaxis.scaleratio = 1;
+      }
+    }
+    return base;
+  }, [activeTab, palette]);
+
+  const getData = () => {
+    switch (activeTab) {
+      case 'cartesian': return cartesianData;
+      case 'parametric': return parametricData;
+      case 'polar': return polarData;
+      case 'implicit': return implicitData;
+      case 'conic': return conicPlotData;
+      case 'tangent': return tangentData;
+      case 'asymptote': return asymptoteData;
+      case 'area': return areaData;
+      case 'inverse': return inverseData;
+      case 'multi': return multiWindowData;
+      case 'animation': return animData;
+      case 'rose': return roseData;
+      default: return [];
+    }
+  };
+
+  const RangeInput = ({ minVal, setMinVal, maxVal, setMaxVal, xLabel, yLabel }: any) => (
+    <div className="grid grid-cols-2 gap-3 max-w-xs">
+      <div>
+        <label className="text-sm font-medium text-muted-foreground mb-2 block">{xLabel || 'x 最小值'}</label>
+        <Input value={minVal} onChange={(e) => setMinVal(e.target.value)} className="font-mono" />
+      </div>
+      <div>
+        <label className="text-sm font-medium text-muted-foreground mb-2 block">{yLabel || 'x 最大值'}</label>
+        <Input value={maxVal} onChange={(e) => setMaxVal(e.target.value)} className="font-mono" />
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen page-fade-in">
+      <PageHeader
+        title="二维绘图"
+        description="数学函数可视化：笛卡尔、参数方程、极坐标、隐函数、二次曲线、切线、渐近线、积分面积、反函数、多窗口对比、参数动画、玫瑰线。"
+        onCheatsheet={() => setCheatsheetOpen(true)}
+      />
+
+      <div className="px-4 md:px-6 lg:px-8 py-8 md:py-10 max-w-6xl mx-auto space-y-8">
+        <Card className="shadow-sm">
+          <CardContent className="p-5 space-y-4">
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="w-full flex-wrap h-auto">
+                <TabsTrigger value="cartesian">笛卡尔</TabsTrigger>
+                <TabsTrigger value="parametric">参数方程</TabsTrigger>
+                <TabsTrigger value="polar">极坐标</TabsTrigger>
+                <TabsTrigger value="implicit">隐函数</TabsTrigger>
+                <TabsTrigger value="conic">二次曲线</TabsTrigger>
+                <TabsTrigger value="tangent">切线</TabsTrigger>
+                <TabsTrigger value="asymptote">渐近线</TabsTrigger>
+                <TabsTrigger value="area">曲线面积</TabsTrigger>
+                <TabsTrigger value="inverse">反函数</TabsTrigger>
+                <TabsTrigger value="multi">2×2子图</TabsTrigger>
+                <TabsTrigger value="animation">参数动画</TabsTrigger>
+                <TabsTrigger value="rose">玫瑰线</TabsTrigger>
+              </TabsList>
+
+              <div className="mt-5 space-y-4">
+                <TabsContent value="cartesian" className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-muted-foreground">函数列表 y = f(x)</span>
+                    <Button variant="outline" size="sm" onClick={addPlot}>
+                      <Plus className="size-3.5 mr-1" />添加
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    {plots.map((p, idx) => (
+                      <div key={p.id} className="flex items-center gap-2">
+                        <div
+                          className="w-3 h-3 rounded-full shrink-0"
+                          style={{ backgroundColor: palette.line_colors[idx % palette.line_colors.length] }}
+                        />
+                        <div className="flex-1 min-w-0">
+                          {idx === 0 ? (
+                            <MathInputField
+                              value={p.expr}
+                              onChange={(v) => updatePlot(p.id, v)}
+                              placeholder="输入表达式，如 sin(x) 或 sqrt(x^2+1)"
+                              showPalette
+                              defaultPreview
+                              label={plots.length > 1 ? '函数 f(x)' : ''}
+                            />
+                          ) : (
+                            <Input
+                              value={p.expr}
+                              onChange={(e) => updatePlot(p.id, e.target.value)}
+                              placeholder="输入表达式，如 sin(x) 或 √(x²+1)"
+                              className="font-mono flex-1"
+                            />
+                          )}
+                        </div>
+                        <Button variant="ghost" size="icon" onClick={() => togglePlot(p.id)} className="shrink-0">
+                          {p.visible ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => removePlot(p.id)} className="shrink-0 text-red-500">
+                          <Trash2 className="size-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  <RangeInput minVal={xMin} setMinVal={setXMin} maxVal={xMax} setMaxVal={setXMax} />
+
+                  {/* 分析功能区 */}
+                  <div className="border border-border/60 rounded-xl p-4 space-y-3 bg-muted/30">
+                    <div className="text-sm font-semibold text-foreground flex items-center gap-2">
+                      <Sparkles className="size-4 text-primary" />函数分析
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                      <label className="flex items-center gap-2 cursor-pointer transition-colors">
+                        <Checkbox checked={showZeros} onCheckedChange={(v) => setShowZeros(v === true)} />
+                        <span>零点标注</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer transition-colors">
+                        <Checkbox checked={showExtrema} onCheckedChange={(v) => setShowExtrema(v === true)} />
+                        <span>极值点</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer transition-colors">
+                        <Checkbox checked={showInflection} onCheckedChange={(v) => setShowInflection(v === true)} />
+                        <span>拐点</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer transition-colors">
+                        <Checkbox checked={showYIntercept} onCheckedChange={(v) => setShowYIntercept(v === true)} />
+                        <span>y轴截距</span>
+                      </label>
+                    </div>
+                    <div className="border-t border-border/50 pt-3 grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+                      <label className="flex items-center gap-2 cursor-pointer transition-colors">
+                        <Checkbox checked={showDerivative1} onCheckedChange={(v) => setShowDerivative1(v === true)} />
+                        <span>一阶导数（虚线）</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer transition-colors">
+                        <Checkbox checked={showDerivative2} onCheckedChange={(v) => setShowDerivative2(v === true)} />
+                        <span>二阶导数（点线）</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer transition-colors">
+                        <Checkbox checked={showIntersections} onCheckedChange={(v) => setShowIntersections(v === true)} />
+                        <span>两函数交点</span>
+                      </label>
+                    </div>
+
+                    {/* 定积分 */}
+                    <div className="border-t border-border/50 pt-3 space-y-2">
+                      <label className="flex items-center gap-2 cursor-pointer text-xs transition-colors">
+                        <Checkbox checked={showIntegral} onCheckedChange={(v) => setShowIntegral(v === true)} />
+                        <span className="font-medium">定积分可视化（面积着色）</span>
+                      </label>
+                      {showIntegral && (
+                        <div className="grid grid-cols-2 gap-3 max-w-xs pl-5">
+                          <div>
+                            <label className="text-xs text-muted-foreground mb-1 block">下限 a</label>
+                            <Input value={integralA} onChange={(e) => setIntegralA(e.target.value)} className="font-mono h-8 text-sm" />
+                          </div>
+                          <div>
+                            <label className="text-xs text-muted-foreground mb-1 block">上限 b</label>
+                            <Input value={integralB} onChange={(e) => setIntegralB(e.target.value)} className="font-mono h-8 text-sm" />
+                          </div>
+                        </div>
+                      )}
+                      {cartesianIntegralValue && (
+                        <div className="pl-5 text-sm bg-primary/10 p-2 rounded-lg font-mono text-primary">
+                          ∫f(x)dx ≈ {cartesianIntegralValue}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+                      <Sparkles className="size-4 text-primary" />快速预设
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {PRESETS.map((preset, i) => (
+                        <Button key={i} variant="outline" size="sm" onClick={() => {
+                          setPlots([{ id: Date.now(), expr: preset.expr, color: palette.line_colors[0], visible: true }]);
+                        }}>{preset.name}</Button>
+                      ))}
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="parametric" className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <MathInputField value={paramX} onChange={setParamX} label="x(t)" showPalette defaultPreview={false} />
+                      <MathInputField value={paramY} onChange={setParamY} label="y(t)" showPalette defaultPreview={false} />
+                    </div>
+                  <RangeInput minVal={tMin} setMinVal={setTMin} maxVal={tMax} setMaxVal={setTMax} xLabel="t 最小值" yLabel="t 最大值" />
+                  <div className="flex flex-wrap gap-2">
+                    {PARAM_PRESETS.map((p, i) => (
+                      <Button key={i} variant="outline" size="sm" onClick={() => {
+                        setParamX(p.xExpr); setParamY(p.yExpr); setTMin(p.tMin); setTMax(p.tMax);
+                      }}>{p.name}</Button>
+                    ))}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="polar" className="space-y-4">
+                  <MathInputField value={polarExpr} onChange={setPolarExpr} label="r = f(θ) （变量用 t 表示 θ）" showPalette defaultPreview={false} />
+                  <RangeInput minVal={polarTMin} setMinVal={setPolarTMin} maxVal={polarTMax} setMaxVal={setPolarTMax} xLabel="θ 最小值" yLabel="θ 最大值" />
+                  <div className="flex flex-wrap gap-2">
+                    {POLAR_PRESETS.map((p, i) => (
+                      <Button key={i} variant="outline" size="sm" onClick={() => {
+                        setPolarExpr(p.expr); setPolarTMin(p.tMin); setPolarTMax(p.tMax);
+                      }}>{p.name}</Button>
+                    ))}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="implicit" className="space-y-4">
+                  <MathInputField value={implicitExpr} onChange={setImplicitExpr} label="f(x, y) = 0 （输入左侧表达式）" showPalette defaultPreview={false} />
+                  <div className="grid grid-cols-2 gap-3 max-w-sm">
+                    <RangeInput minVal={impXMin} setMinVal={setImpXMin} maxVal={impXMax} setMaxVal={setImpXMax} />
+                    <RangeInput minVal={impYMin} setMinVal={setImpYMin} maxVal={impYMax} setMaxVal={setImpYMax} xLabel="y 最小值" yLabel="y 最大值" />
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {IMPLICIT_PRESETS.map((p, i) => (
+                      <Button key={i} variant="outline" size="sm" onClick={() => setImplicitExpr(p.expr)}>{p.name}</Button>
+                    ))}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="conic" className="space-y-4">
+                  <div className="text-sm text-muted-foreground">
+                    一般二次方程：<span className="font-mono">Ax² + Bxy + Cy² + Dx + Ey + F = 0</span>
+                  </div>
+                  <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+                    {[
+                      { label: 'A', val: conicA, set: setConicA },
+                      { label: 'B', val: conicB, set: setConicB },
+                      { label: 'C', val: conicC, set: setConicC },
+                      { label: 'D', val: conicD, set: setConicD },
+                      { label: 'E', val: conicE, set: setConicE },
+                      { label: 'F', val: conicF, set: setConicF },
+                    ].map((f) => (
+                      <div key={f.label}>
+                        <label className="text-sm font-medium text-muted-foreground mb-2 block">{f.label}</label>
+                        <Input value={f.val} onChange={(e) => f.set(e.target.value)} className="font-mono text-center" />
+                      </div>
+                    ))}
+                  </div>
+                  {conicResult && (
+                    <Card className="bg-muted/60">
+                      <CardContent className="p-4 space-y-1 text-sm">
+                        <div><span className="font-semibold text-foreground">曲线类型：</span><span className="text-primary font-semibold">{conicResult.type}</span></div>
+                        {conicResult.center && <div className="text-foreground">中心：({formatResult(conicResult.center[0])}, {formatResult(conicResult.center[1])})</div>}
+                        <div className="text-foreground whitespace-pre-line font-mono text-xs mt-1">{conicResult.standardForm}</div>
+                        <div className="text-muted-foreground text-xs font-mono">{conicResult.details}</div>
+                      </CardContent>
+                    </Card>
+                  )}
+                  <div className="flex flex-wrap gap-2">
+                    {CONIC_PRESETS.map((p, i) => (
+                      <Button key={i} variant="outline" size="sm" onClick={() => {
+                        setConicA(String(p.A)); setConicB(String(p.B)); setConicC(String(p.C));
+                        setConicD(String(p.D)); setConicE(String(p.E)); setConicF(String(p.F));
+                      }}>{p.name} ({p.desc})</Button>
+                    ))}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="tangent" className="space-y-4">
+                    <MathInputField value={tangentExpr} onChange={setTangentExpr} label="函数 f(x)" showPalette defaultPreview={false} />
+                  <div className="max-w-xs">
+                    <label className="text-sm font-medium text-muted-foreground mb-2 block">切点 x₀</label>
+                    <Input value={tangentX0} onChange={(e) => setTangentX0(e.target.value)} className="font-mono" />
+                  </div>
+                  <RangeInput minVal={xMin} setMinVal={setXMin} maxVal={xMax} setMaxVal={setXMax} />
+                </TabsContent>
+
+                <TabsContent value="asymptote" className="space-y-4">
+                    <MathInputField value={asymExpr} onChange={setAsymExpr} label="函数 f(x)" showPalette defaultPreview={false} />
+                  <RangeInput minVal={xMin} setMinVal={setXMin} maxVal={xMax} setMaxVal={setXMax} />
+                  <div className="text-xs text-muted-foreground">支持检测：垂直渐近线（分母零点）、水平渐近线（x→±∞）、斜渐近线</div>
+                </TabsContent>
+
+                <TabsContent value="area" className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground mb-2 block">上函数 f(x)</label>
+                      <Input value={areaF} onChange={(e) => setAreaF(e.target.value)} className="font-mono" />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground mb-2 block">下函数 g(x)</label>
+                      <Input value={areaG} onChange={(e) => setAreaG(e.target.value)} className="font-mono" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 max-w-xs">
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground mb-2 block">左端点 a</label>
+                      <Input value={areaA} onChange={(e) => setAreaA(e.target.value)} className="font-mono" />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground mb-2 block">右端点 b</label>
+                      <Input value={areaB} onChange={(e) => setAreaB(e.target.value)} className="font-mono" />
+                    </div>
+                  </div>
+                  {areaValue && (
+                    <div className="text-sm bg-muted p-3 rounded-lg border border-border">
+                      曲线间面积 S ≈ <span className="font-semibold text-primary">{areaValue}</span>
+                    </div>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="inverse" className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground mb-2 block">函数 f(x) （需在区间内单调才有良好反函数）</label>
+                    <Input value={invExpr} onChange={(e) => setInvExpr(e.target.value)} className="font-mono" />
+                  </div>
+                  <RangeInput minVal={xMin} setMinVal={setXMin} maxVal={xMax} setMaxVal={setXMax} />
+                  <div className="text-xs text-muted-foreground">同时绘制 f(x)（绿）、f⁻¹(x)（青）和对称轴 y = x（橙虚线）</div>
+                </TabsContent>
+
+                <TabsContent value="multi" className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground mb-2 block">左上 f₁(x)</label>
+                      <Input value={mw1} onChange={(e) => setMw1(e.target.value)} className="font-mono" />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground mb-2 block">右上 f₂(x)</label>
+                      <Input value={mw2} onChange={(e) => setMw2(e.target.value)} className="font-mono" />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground mb-2 block">左下 f₃(x)</label>
+                      <Input value={mw3} onChange={(e) => setMw3(e.target.value)} className="font-mono" />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground mb-2 block">右下 f₄(x)</label>
+                      <Input value={mw4} onChange={(e) => setMw4(e.target.value)} className="font-mono" />
+                    </div>
+                  </div>
+                  <RangeInput minVal={xMin} setMinVal={setXMin} maxVal={xMax} setMaxVal={setXMax} />
+                </TabsContent>
+
+                <TabsContent value="animation" className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground mb-2 block">x(t)</label>
+                      <Input value={animX} onChange={(e) => setAnimX(e.target.value)} className="font-mono" />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground mb-2 block">y(t)</label>
+                      <Input value={animY} onChange={(e) => setAnimY(e.target.value)} className="font-mono" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground mb-2 block">t 上限滑块 (0 ~ 6.28)</label>
+                    <Slider
+                      value={[animTMax]}
+                      min={0.1}
+                      max={6.28}
+                      step={0.05}
+                      onValueChange={(v) => setAnimTMax(v[0])}
+                      className="max-w-md"
+                    />
+                    <div className="text-xs text-muted-foreground mt-1">t ∈ [0, {animTMax.toFixed(3)}]</div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="rose" className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground mb-2 block">r = f(θ) （玫瑰线/心形线/螺线等）</label>
+                    <Input value={roseExpr} onChange={(e) => setRoseExpr(e.target.value)} className="font-mono" />
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {POLAR_PRESETS.map((p, i) => (
+                      <Button key={i} variant="outline" size="sm" onClick={() => setRoseExpr(p.expr)}>{p.name}</Button>
+                    ))}
+                  </div>
+                </TabsContent>
+              </div>
+            </Tabs>
+          </CardContent>
+        </Card>
+
+        {error && (
+          <Card className="bg-destructive/10 border-destructive/30">
+            <CardContent className="p-4 text-red-700 text-sm">{error}</CardContent>
+          </Card>
+        )}
+
+        <Card className="shadow-sm overflow-hidden">
+           <CardContent className="p-0">
+             <div className="w-full min-h-[450px] md:min-h-[500px]">
+               <Plot
+                 data={getData() as any[]}
+                 layout={layout}
+                 config={{ responsive: true, displayModeBar: true, displaylogo: false }}
+                 style={{ width: '100%', height: '100%' }}
+                 useResizeHandler
+                 className="w-full h-full"
+               />
+             </div>
+           </CardContent>
+         </Card>
+      </div>
+
+      <CheatsheetDialog moduleKey="plot2d" open={cheatsheetOpen} onOpenChange={setCheatsheetOpen} />
+    </div>
+  );
+}
