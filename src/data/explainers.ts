@@ -1814,6 +1814,217 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
       result: 'x=2\\sum_{n=1}^{\\infty}\\frac{(-1)^{n+1}}{n}\\sin nx',
     },
   },
+  {
+    id: 'one-to-infinity',
+    title: '1 的无穷次型：三步取对数',
+    tag: '极限',
+    essence:
+      '底数趋于 1、指数趋于无穷时，直接算会得出「1」，必须取对数或改写成 (1+u)^{1/u} 的形式，答案通常是 e 的某个幂。',
+    whenToUse: [
+      '代入后底数 → 1、指数 → ∞',
+      '式子形如 (1+f(x))^{g(x)}',
+      'n 次方根、连乘的极限',
+    ],
+    steps: [
+      {
+        title: '先定型',
+        body: '确认是 1^∞；其他型别乱用这套。',
+        formula: 'u^{v},\\quad u\\to 1,\\ v\\to\\infty',
+      },
+      {
+        title: '取对数',
+        body: '设 L 为原极限，则 ln L = lim v·ln u，把指数搬下来。',
+        formula: '\\ln L=\\lim v\\ln u',
+      },
+      {
+        title: '用等价无穷小',
+        body: 'u → 1 时 ln u ~ u − 1，于是 ln L = lim v(u−1)。',
+        formula: '\\ln u\\sim u-1\\ (u\\to 1)',
+      },
+      {
+        title: '指数回代',
+        body: '最后别忘了把 ln L 变回 L。',
+        formula: 'L=e^{\\lim v(u-1)}',
+      },
+    ],
+    example: {
+      problem: '求 lim (1 + 1/n)ⁿ。',
+      walkthrough: [
+        '底数 → 1，指数 → ∞，是 1^∞ 型。',
+        '取对数：ln L = lim n·ln(1 + 1/n)。',
+        '用等价：ln(1 + 1/n) ~ 1/n，故 ln L = lim n·(1/n) = 1。',
+        '所以 L = e。',
+      ],
+      result: '\\lim_{n\\to\\infty}\\left(1+\\frac{1}{n}\\right)^{n}=e',
+    },
+  },
+  {
+    id: 'radical-difference',
+    title: '根式差：有理化再算',
+    tag: '极限',
+    essence:
+      '遇到 √A − √B 直接代会得到 0/0 或 ∞−∞，先乘共轭把根号差变成商，往往一步就能约掉因子。',
+    whenToUse: [
+      '式子含 √(a+x) − √a',
+      '∞ − ∞ 型且出现根号',
+      '分母也是根式差',
+    ],
+    steps: [
+      {
+        title: '乘共轭',
+        body: '分子分母同乘 √A + √B，差就变成了平方差。',
+        formula: '\\sqrt{A}-\\sqrt{B}=\\frac{A-B}{\\sqrt{A}+\\sqrt{B}}',
+      },
+      {
+        title: '约掉公因子',
+        body: '分子通常是 x 的一次式，正好和分母的 x 约掉。',
+      },
+      {
+        title: '代入或再用等价',
+        body: '约完之后直接代入；仍不确定就用等价无穷小。',
+      },
+      {
+        title: '留意单侧极限',
+        body: '平方根要求被开方式非负，定义域可能只允许单侧趋近。',
+      },
+    ],
+    example: {
+      problem: '求 lim (√(1+x) − 1)/x。',
+      walkthrough: [
+        '分子分母同乘 √(1+x) + 1。',
+        '分子变成 (1+x) − 1 = x。',
+        '与分母的 x 约掉，剩下 1/(√(1+x) + 1)。',
+        '代入 x = 0 得 1/2。',
+      ],
+      result: '\\lim_{x\\to 0}\\frac{\\sqrt{1+x}-1}{x}=\\frac{1}{2}',
+    },
+  },
+  {
+    id: 'infinitesimal-order',
+    title: '无穷小阶的比较',
+    tag: '极限',
+    essence:
+      '两个无穷小之比的极限决定它们的阶：趋于 0 是高阶，趋于无穷是低阶，趋于非零常数是同阶，等于 1 才是等价。',
+    whenToUse: [
+      '题目问「是几阶无穷小」',
+      '需要在多个无穷小之间排序',
+      '泰勒展开后判断主导项',
+    ],
+    steps: [
+      {
+        title: '写比值',
+        body: '把两个无穷小相除，求 x → 0 时的极限。',
+        formula: '\\lim_{x\\to 0}\\frac{\\alpha(x)}{\\beta(x)}=c',
+      },
+      {
+        title: '按 c 分类',
+        body: 'c = 0 高阶；c = ∞ 低阶；0 < c < ∞ 同阶；c = 1 等价。',
+      },
+      {
+        title: '求阶数',
+        body: '找最大的 k 使 α 与 β^k 同阶，k 就是阶。',
+        formula: '\\alpha\\sim C\\beta^{k}',
+      },
+      {
+        title: '用泰勒确认',
+        body: '展开到第一个非零项，那一项的幂次就是阶，系数给出等价关系。',
+      },
+    ],
+    example: {
+      problem: '判断 1 − cos x 是 x 的几阶无穷小。',
+      walkthrough: [
+        '计算 (1 − cos x)/x² 的极限。',
+        '用 1 − cos x ~ x²/2，比值极限为 1/2。',
+        '极限是非零常数，说明与 x² 同阶。',
+        '由于系数是 1/2，写成 1 − cos x ~ x²/2。',
+      ],
+      result: '1-\\cos x\\sim\\frac{x^{2}}{2}',
+    },
+  },
+  {
+    id: 'double-integral-symmetry',
+    title: '二重积分：先用对称性砍一半',
+    tag: '多元',
+    essence:
+      '区域关于坐标轴对称时，被积函数对相应变量是奇函数就直接得 0，是偶函数就翻倍——先看对称性能省掉大半计算。',
+    whenToUse: [
+      '积分区域是圆、椭圆、正方形等对称图形',
+      '被积函数含 x 或 y 的奇次幂',
+      '被积函数关于 x、y 可交换',
+    ],
+    steps: [
+      {
+        title: '画区域看对称轴',
+        body: '先判断区域关于 x 轴、y 轴还是原点对称。',
+      },
+      {
+        title: '关于 y 轴对称',
+        body: '此时被积函数里 x 的奇函数部分积分为 0；偶函数部分可以取右半区域乘 2。',
+      },
+      {
+        title: '关于 x 轴对称',
+        body: '同理，y 的奇函数部分为 0。',
+      },
+      {
+        title: '轮换对称性',
+        body: '区域关于 y = x 对称时，f(x,y) 与 f(y,x) 的积分相等，可用来配对化简。',
+        formula: '\\iint_{D}f(x,y)\\,d\\sigma=\\iint_{D}f(y,x)\\,d\\sigma',
+      },
+    ],
+    example: {
+      problem: 'D 是单位圆，求 ∬_D x dσ。',
+      walkthrough: [
+        'D 关于 y 轴对称。',
+        '被积函数 x 是 x 的奇函数。',
+        '由对称性，积分值为 0。',
+        '换成极坐标算也一样：∫₀^{2π}cos θ dθ 本身为 0。',
+      ],
+      result: '\\iint_{D}x\\,d\\sigma=0',
+    },
+  },
+  {
+    id: 'integral-estimate',
+    title: '定积分不等式：放缩估界',
+    tag: '积分',
+    essence:
+      '估界不用算出原函数：用被积函数的最值、单调性或柯西–施瓦茨，把积分夹在两个数之间即可。',
+    whenToUse: [
+      '题目要求「估计积分的值」或「证明不等式」',
+      '被积函数没有初等原函数',
+      '积分区间与函数单调性已知',
+    ],
+    steps: [
+      {
+        title: '最值放缩',
+        body: '被积函数在区间上的最大值 M、最小值 m 给出上下界。',
+        formula: 'm(b-a)\\le\\int_{a}^{b}f(x)\\,dx\\le M(b-a)',
+      },
+      {
+        title: '单调性放缩',
+        body: 'f 单调时用端点值代替最值，估计更粗但更快。',
+      },
+      {
+        title: '柯西–施瓦茨',
+        body: '两个函数乘积的积分，用平方积分来界。',
+        formula:
+          '\\left(\\int_{a}^{b}f g\\,dx\\right)^{2}\\le\\left(\\int_{a}^{b}f^{2}\\,dx\\right)\\left(\\int_{a}^{b}g^{2}\\,dx\\right)',
+      },
+      {
+        title: '检查取等条件',
+        body: '柯西取等要求 f 与 g 成比例；写证明时要说明等号能否取到。',
+      },
+    ],
+    example: {
+      problem: '估计 ∫₀¹ xⁿ dx（n 为正整数）的值。',
+      walkthrough: [
+        '在 [0,1] 上 xⁿ 单调递增，最小值 0、最大值 1。',
+        '由最值放缩：0 ≤ ∫₀¹ xⁿ dx ≤ 1。',
+        '直接算更精确：原函数是 xⁿ⁺¹/(n+1)，积分值等于 1/(n+1)。',
+        'n 越大积分越小，符合直觉。',
+      ],
+      result: '\\int_{0}^{1}x^{n}\\,dx=\\frac{1}{n+1}',
+    },
+  },
 ];
 
 

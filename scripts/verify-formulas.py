@@ -258,6 +258,29 @@ chk('f(x)=x 的傅里叶正弦系数 b_n = 2(-1)^(n+1)/n',
 _an = sp.integrate(x * sp.cos(_nn * x), (x, -sp.pi, sp.pi)) / sp.pi
 chk('f(x)=x 的余弦系数 a_n = 0（奇函数）', sp.simplify(_an) == 0)
 
+# ---- 2026-11 细化题型：1 的无穷次 ----
+_nn2 = sp.Symbol('n2', positive=True, integer=True)
+chk('lim (1+1/n)^n = e',
+    sp.simplify(sp.limit((1 + 1 / _nn2) ** _nn2, _nn2, sp.oo) - sp.E) == 0)
+
+# ---- 细化题型：根式差有理化 ----
+chk('lim (sqrt(1+x)-1)/x = 1/2',
+    sp.limit((sp.sqrt(1 + x) - 1) / x, x, 0) == sp.Rational(1, 2))
+
+# ---- 细化题型：无穷小阶 ----
+chk('1-cos x 与 x^2/2 等价',
+    sp.limit((1 - sp.cos(x)) / (x**2 / 2), x, 0) == 1)
+
+# ---- 细化题型：二重积分对称性 ----
+# 单位圆上对 x 积分：极坐标下 r 从 0 到 1，θ 从 0 到 2π
+_int_x = sp.integrate(sp.integrate((sp.Symbol('r') * sp.cos(sp.Symbol('th'))) * sp.Symbol('r'),
+                                   (sp.Symbol('r'), 0, 1)), (sp.Symbol('th'), 0, 2 * sp.pi))
+chk('单位圆上 ∬ x dσ = 0', sp.simplify(_int_x) == 0)
+
+# ---- 细化题型：定积分估计 ----
+chk('int_0^1 x^n dx = 1/(n+1)',
+    sp.simplify(sp.integrate(x**_nn2, (x, 0, 1)) - 1 / (_nn2 + 1)) == 0)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:
