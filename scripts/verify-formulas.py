@@ -215,6 +215,16 @@ chk('y = x 满足 x^2 y\'\' - 2x y\' + 2y = 0',
 chk('y = x^2 满足 x^2 y\'\' - 2x y\' + 2y = 0',
     sp.simplify(x**2 * sp.diff(_y2, x, 2) - 2 * x * sp.diff(_y2, x) + 2 * _y2) == 0)
 
+# ---- 2026-11 新增：向量代数 ----
+_va = sp.Matrix([1, 0, 0])
+_vb = sp.Matrix([0, 1, 0])
+_vc = sp.Matrix([0, 0, 1])
+chk('|a x b| = 1（单位正交向量）', sp.simplify(_va.cross(_vb).norm() - 1) == 0)
+chk('混合积 [a b c] = 1',
+    sp.simplify(_va.cross(_vb).dot(_vc) - 1) == 0)
+chk('三向量共面时混合积为 0',
+    sp.simplify(_va.cross(_vb).dot(sp.Matrix([1, 1, 0]))) == 0)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:
