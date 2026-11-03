@@ -432,7 +432,7 @@ export default function AreaSection() {
       {/* 顶部栏 */}
       <div className="flex items-center gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">定积分面积可视化</h1>
+          <h2 className="text-2xl font-bold text-foreground">定积分面积可视化</h2>
           <p className="text-sm text-muted-foreground mt-1">
             直观理解定积分的几何意义：曲线下面积、黎曼和逼近
           </p>
