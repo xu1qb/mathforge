@@ -409,7 +409,9 @@ function AppSidebarInner() {
       </SidebarFooter>
     </Sidebar>
     <Suspense fallback={null}>
-      <GlobalSearchDialogLazy open={searchOpen} onOpenChange={setSearchOpen} />
+      {/* 只在真正打开时才挂载：它会把 search-index 乃至 math.js 一并拉进来，
+          常驻挂载等于让首屏多背 2MB+ */}
+      {searchOpen && <GlobalSearchDialogLazy open={searchOpen} onOpenChange={setSearchOpen} />}
     </Suspense>
     <Suspense fallback={null}>
       <DataSettingsDialogLazy open={dataSettingsOpen} onOpenChange={setDataSettingsOpen} />
