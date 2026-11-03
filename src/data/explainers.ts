@@ -1582,6 +1582,238 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
       result: '\\left[\\vec{a}\\,\\vec{b}\\,\\vec{c}\\right]=1',
     },
   },
+  {
+    id: 'implicit-diff',
+    title: '隐函数求导：两边求导再解出',
+    tag: '多元',
+    essence:
+      '方程 F(x,y)=0 确定 y=y(x) 时，两边对 x 求导并把 y 当复合函数，再解出 y′；二元情形用 F 的偏导直接写。',
+    whenToUse: [
+      '方程没有解出 y，但要求 y′',
+      '求曲面 z=z(x,y) 的偏导',
+      '求隐函数的二阶导数',
+    ],
+    steps: [
+      {
+        title: '一元隐函数公式',
+        body: '由 F(x,y)=0 得 y′ 等于负的 F 对 x 偏导除以对 y 偏导。',
+        formula: 'y\'=-\\frac{F_{x}}{F_{y}}',
+      },
+      {
+        title: '二元隐函数',
+        body: 'F(x,y,z)=0 确定 z=z(x,y) 时，两个偏导都按同样的方式写。',
+        formula: 'z_{x}=-\\frac{F_{x}}{F_{z}},\\qquad z_{y}=-\\frac{F_{y}}{F_{z}}',
+      },
+      {
+        title: '全微分形式不变性',
+        body: '不论 x、y 是否独立，dz = z_x dx + z_y dy 都成立，这是推公式最省事的工具。',
+        formula: 'dz=z_{x}\\,dx+z_{y}\\,dy',
+      },
+      {
+        title: '求二阶导',
+        body: '对一阶结果再对 x 求导，记得 y 仍然是 x 的函数，要把 y′ 代进去。',
+      },
+      {
+        title: '验算',
+        body: '把结果代回原方程应恒成立，尤其是含参数的题。',
+      },
+    ],
+    example: {
+      problem: 'x² + y² = 1 确定 y = y(x)，求 y′。',
+      walkthrough: [
+        '两边对 x 求导：2x + 2y·y′ = 0。',
+        '解出 y′ = −x/y。',
+        '等价写法：F = x² + y² − 1，F_x = 2x，F_y = 2y，故 y′ = −F_x/F_y = −x/y。',
+      ],
+      result: 'y\'=-\\frac{x}{y}',
+    },
+  },
+  {
+    id: 'directional-derivative',
+    title: '方向导数与梯度',
+    tag: '多元',
+    essence:
+      '梯度是函数增长最快的方向，方向导数是梯度在该方向单位向量上的投影；两者用点积一串就完了。',
+    whenToUse: [
+      '求函数在某点沿某方向的变化率',
+      '求函数增长最快的方向',
+      '解释梯度与等值线的关系',
+    ],
+    steps: [
+      {
+        title: '先求梯度',
+        body: '梯度是由各偏导组成的向量，指向函数增长最快的方向。',
+        formula: '\\nabla f=(f_{x},\\,f_{y})',
+      },
+      {
+        title: '再乘单位方向向量',
+        body: '方向必须是单位向量，没单位化是最常见的错。',
+        formula: '\\frac{\\partial f}{\\partial l}=\\nabla f\\cdot\\vec{e}_{l}',
+      },
+      {
+        title: '最大值就是梯度模长',
+        body: '沿梯度方向方向导数取到最大值 |∇f|，沿反方向取到最小值。',
+        formula: '\\max\\frac{\\partial f}{\\partial l}=|\\nabla f|',
+      },
+      {
+        title: '与等值线垂直',
+        body: '梯度垂直于等值线（等值面），这是几何意义，也是最快下降法的基础。',
+      },
+      {
+        title: '三元同理',
+        body: '三元函数只是多一个分量，公式形式完全一样。',
+      },
+    ],
+    example: {
+      problem: 'f(x,y) = x² + y²，求在点 (1,1) 沿方向 (1,1) 的方向导数。',
+      walkthrough: [
+        '梯度：∇f = (2x, 2y)，在 (1,1) 处为 (2,2)。',
+        '方向 (1,1) 单位化后是 (1/√2, 1/√2)。',
+        '点积：(2,2)·(1/√2,1/√2) = 4/√2 = 2√2。',
+        '这等于 |∇f| = 2√2，说明该方向正好是梯度方向。',
+      ],
+      result: '\\frac{\\partial f}{\\partial l}=2\\sqrt{2}',
+    },
+  },
+  {
+    id: 'numeric-characteristics',
+    title: '数字特征：期望与方差',
+    tag: '概率',
+    essence:
+      '期望是加权平均，方差是偏离程度的平方平均；记住 D(X)=E(X²)−[E(X)]² 和线性变换的两条性质，八成题就够了。',
+    whenToUse: [
+      '求随机变量的期望与方差',
+      '已知分布求数字特征',
+      '判断独立与不独立时的方差可加性',
+    ],
+    steps: [
+      {
+        title: '期望',
+        body: '离散型按取值加权求和，连续型换成积分。',
+        formula: 'E(X)=\\sum_{i}x_{i}p_{i}',
+      },
+      {
+        title: '方差的计算式',
+        body: '先算 E(X²) 再减去期望的平方，通常比按定义算快。',
+        formula: 'D(X)=E(X^{2})-\\left[E(X)\\right]^{2}',
+      },
+      {
+        title: '线性变换',
+        body: '常数可以提出，但方差提出去要平方。',
+        formula: 'E(aX+b)=aE(X)+b,\\qquad D(aX+b)=a^{2}D(X)',
+      },
+      {
+        title: '独立才可加',
+        body: 'X 与 Y 独立时方差相加；不独立时要加上 2Cov(X,Y)。',
+        formula: 'D(X\\pm Y)=D(X)+D(Y)\\pm 2\\mathrm{Cov}(X,Y)',
+      },
+      {
+        title: '常见分布记牢',
+        body: '二项 B(n,p)：np 与 np(1−p)；泊松：λ 与 λ；正态：μ 与 σ²；指数：1/λ 与 1/λ²。',
+      },
+    ],
+    example: {
+      problem: 'X 服从 B(10, 0.3)，求 E(X) 与 D(X)。',
+      walkthrough: [
+        '二项分布期望 E(X) = np = 10 × 0.3 = 3。',
+        '方差 D(X) = np(1−p) = 10 × 0.3 × 0.7 = 2.1。',
+        '也可用 E(X²) − [E(X)]² 验证：E(X²) = D + E² = 2.1 + 9 = 11.1。',
+      ],
+      result: 'E(X)=3,\\qquad D(X)=2.1',
+    },
+  },
+  {
+    id: 'linear-dependence',
+    title: '向量组的线性相关性',
+    tag: '线代',
+    essence:
+      '一组向量线性相关，等价于存在不全为零的系数让它们的线性组合为零，也等价于以它们为列的矩阵秩小于向量个数。',
+    whenToUse: [
+      '判断向量组线性相关还是无关',
+      '求极大线性无关组与秩',
+      '判断矩阵是否可逆（列向量是否无关）',
+    ],
+    steps: [
+      {
+        title: '定义式',
+        body: '存在不全为零的 k 使得组合为零，就是线性相关。',
+        formula: 'k_{1}\\alpha_{1}+\\cdots+k_{s}\\alpha_{s}=0',
+      },
+      {
+        title: '秩判据',
+        body: '把向量按列排成矩阵，秩小于向量个数即相关；相等即无关。',
+      },
+      {
+        title: '行列式判据',
+        body: 'n 个 n 维向量，行列式为零等价于线性相关。',
+        formula: '\\det A=0\\iff\\text{singular}',
+      },
+      {
+        title: '极大无关组',
+        body: '秩就是极大无关组中向量的个数，也是这个向量组的「有效维数」。',
+      },
+      {
+        title: '含参数时分类讨论',
+        body: '令行列式为零解出参数，再逐一代回判断，别只写一个临界值。',
+      },
+    ],
+    example: {
+      problem: '判断 α₁=(1,2)、α₂=(2,4) 是否线性相关。',
+      walkthrough: [
+        '显然 α₂ = 2α₁，存在不全为零的系数使 2α₁ − α₂ = 0。',
+        '用行列式：两向量组成的矩阵行列式为 1×4 − 2×2 = 0。',
+        '行列式为零，所以线性相关，秩为 1。',
+      ],
+      result: '\\begin{vmatrix}1&2\\\\2&4\\end{vmatrix}=0',
+    },
+  },
+  {
+    id: 'fourier-series',
+    title: '傅里叶级数：系数怎么算',
+    tag: '级数',
+    essence:
+      '周期函数展开成三角级数，系数靠正交性积分求出；奇函数只剩正弦项，偶函数只剩余弦项，先看奇偶性能省一半计算。',
+    whenToUse: [
+      '把周期函数展开成傅里叶级数',
+      '求傅里叶系数 aₙ、bₙ',
+      '判断级数在某点的收敛值',
+    ],
+    steps: [
+      {
+        title: '先看奇偶性',
+        body: '奇函数的 aₙ 全为 0，偶函数的 bₙ 全为 0，这一眼就能省一半积分。',
+      },
+      {
+        title: '余弦系数',
+        body: 'f 乘以 cos nx 后在整周期上积分再除以 π。',
+        formula: 'a_{n}=\\frac{1}{\\pi}\\int_{-\\pi}^{\\pi}f(x)\\cos nx\\,dx',
+      },
+      {
+        title: '正弦系数',
+        body: 'f 乘以 sin nx 后同样积分。',
+        formula: 'b_{n}=\\frac{1}{\\pi}\\int_{-\\pi}^{\\pi}f(x)\\sin nx\\,dx',
+      },
+      {
+        title: '收敛到哪一点',
+        body: '狄利克雷条件下，级数在间断点收敛到左右极限的平均值，不是 f 本身。',
+        formula: 'S(x)=\\frac{f(x^{+})+f(x^{-})}{2}',
+      },
+      {
+        title: '系数衰减看光滑性',
+        body: '函数越光滑系数衰减越快：方波是 1/n，抛物线是 1/n²。',
+      },
+    ],
+    example: {
+      problem: '把 f(x) = x 在 (−π, π) 上展开成傅里叶级数。',
+      walkthrough: [
+        'f 是奇函数，所以全部 aₙ = 0。',
+        'bₙ = (1/π)∫_{-π}^{π} x sin nx dx，分部积分得 2(−1)ⁿ⁺¹/n。',
+        '所以展开式为 2Σ(−1)ⁿ⁺¹ sin nx / n。',
+        '在端点 x = ±π 处收敛到 0，等于左右极限的平均值。',
+      ],
+      result: 'x=2\\sum_{n=1}^{\\infty}\\frac{(-1)^{n+1}}{n}\\sin nx',
+    },
+  },
 ];
 
 

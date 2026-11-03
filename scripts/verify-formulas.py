@@ -225,6 +225,39 @@ chk('混合积 [a b c] = 1',
 chk('三向量共面时混合积为 0',
     sp.simplify(_va.cross(_vb).dot(sp.Matrix([1, 1, 0]))) == 0)
 
+# ---- 2026-11 新增：隐函数求导 ----
+_yv = sp.Symbol('y', real=True)
+chk('x^2+y^2=1 的隐函数导数 y\' = -x/y',
+    sp.simplify(sp.idiff(x**2 + _yv**2 - 1, _yv, x) + x / _yv) == 0)
+
+# ---- 新增：方向导数 ----
+_fxy = x**2 + _yv**2
+_grad = sp.Matrix([sp.diff(_fxy, x), sp.diff(_fxy, _yv)]).subs({x: 1, _yv: 1})
+_dir = sp.Matrix([1, 1]) / sp.sqrt(2)
+chk('f=x^2+y^2 在 (1,1) 沿 (1,1) 方向导数 = 2sqrt2',
+    sp.simplify(_grad.dot(_dir) - 2 * sp.sqrt(2)) == 0)
+
+# ---- 新增：数字特征 ----
+_pp = sp.Rational(3, 10)
+_kk = sp.Symbol('k', integer=True, nonnegative=True)
+_ex = sp.summation(_kk * sp.binomial(10, _kk) * _pp**_kk * (1 - _pp)**(10 - _kk), (_kk, 0, 10))
+_ex2 = sp.summation(_kk**2 * sp.binomial(10, _kk) * _pp**_kk * (1 - _pp)**(10 - _kk), (_kk, 0, 10))
+chk('B(10,0.3) 的 E(X)=3 且 D(X)=2.1',
+    sp.simplify(_ex - 3) == 0 and sp.simplify(_ex2 - _ex**2 - sp.Rational(21, 10)) == 0)
+
+# ---- 新增：向量组线性相关 ----
+_m2 = sp.Matrix([[1, 2], [2, 4]])
+chk('α1=(1,2), α2=(2,4) 线性相关（det=0, rank=1）',
+    _m2.det() == 0 and _m2.rank() == 1)
+
+# ---- 新增：傅里叶系数 ----
+_nn = sp.Symbol('n', integer=True, positive=True)
+_bn = sp.integrate(x * sp.sin(_nn * x), (x, -sp.pi, sp.pi)) / sp.pi
+chk('f(x)=x 的傅里叶正弦系数 b_n = 2(-1)^(n+1)/n',
+    sp.simplify(_bn - 2 * (-1)**(_nn + 1) / _nn) == 0)
+_an = sp.integrate(x * sp.cos(_nn * x), (x, -sp.pi, sp.pi)) / sp.pi
+chk('f(x)=x 的余弦系数 a_n = 0（奇函数）', sp.simplify(_an) == 0)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:
