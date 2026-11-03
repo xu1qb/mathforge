@@ -101,6 +101,7 @@ const SpellbookLazy = lazy(() => import("@/pages/Spellbook/SpellbookPage"));
 const TeacherLazy = lazy(() => import("@/pages/Teacher/TeacherPage"));
 const AIQuizLazy = lazy(() => import("@/pages/AIQuiz/AIQuizPage"));
 const ExplainerLazy = lazy(() => import("@/pages/Explainer/ExplainerPage"));
+const BranchesLazy = lazy(() => import("@/pages/Branches/BranchesPage"));
 const FlowLazy = lazy(() => import("@/pages/Flow/FlowPage"));
 
 function ModuleFallback() {
@@ -235,6 +236,7 @@ export default function App() {
           <Route path="spellbook" element={<SpellbookPage />} />
           <Route path="teacher" element={<TeacherPage />} />
           <Route path="ai-quiz" element={<Suspense fallback={<ModuleFallback />}><AIQuizLazy /></Suspense>} />
+          <Route path="branches" element={<Suspense fallback={<ModuleFallback />}><BranchesLazy /></Suspense>} />
           <Route path="explainer" element={<Suspense fallback={<ModuleFallback />}><ExplainerLazy /></Suspense>} />
           <Route path="flow" element={<Suspense fallback={<ModuleFallback />}><FlowLazy /></Suspense>} />
         </Route>

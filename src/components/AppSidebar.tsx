@@ -41,6 +41,7 @@ import {
   Gift,
   Brain,
   BookMarked,
+  Library,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ThemeToggle from './ThemeToggle';
@@ -65,7 +66,7 @@ export interface NavGroup {
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    name: '备考主线',
+    name: '学习与备考',
     items: [
       { path: '/', label: '首页', icon: Home },
       { path: '/competition', label: '竞赛备战中心', icon: Trophy },
@@ -83,6 +84,10 @@ const NAV_GROUPS: NavGroup[] = [
       { path: '/photo-solve', label: '拍照识题', icon: Camera },
       { path: '/tools', label: '实用工具', icon: Wrench },
     ],
+  },
+  {
+    name: '学科',
+    items: [{ path: '/branches', label: '分支总览', icon: Library }],
   },
   {
     name: '基础数学',
