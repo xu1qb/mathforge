@@ -17,7 +17,7 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { PRACTICE_TOPICS } from '@/lib/math-practice';
+import { PRACTICE_TOPICS } from '@/data/practice-topics';
 import { useMastery } from '@/hooks/use-mastery';
 import { useWrongBook, useLearningStats } from '@/hooks/use-learning';
 import { cn } from '@/lib/utils';

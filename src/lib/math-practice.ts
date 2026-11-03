@@ -29,48 +29,9 @@ export interface PracticeQuestion {
   hints?: string[];
 }
 
-export interface PracticeTopic {
-  key: string;
-  label: string;
-  icon: string;
-  description: string;
-  /** 答案输入提示 placeholder */
-  answerPlaceholder: string;
-  /** 分类：algebra/geometry/analysis/probability/number-theory/equations/application */
-  category: string;
-}
+export type { PracticeTopic } from '@/data/practice-topics';
 
-export const PRACTICE_TOPICS: PracticeTopic[] = [
-  { key: 'algebra-quad', label: '一元二次方程', icon: 'Sigma', description: '随机系数一元二次方程求根', answerPlaceholder: '如：x=2 或 x=2, x=-3', category: 'algebra' },
-  { key: 'algebra-factor', label: '因式分解', icon: 'Puzzle', description: '二次三项式因式分解', answerPlaceholder: '如：(x+2)(x-3)', category: 'algebra' },
-  { key: 'exp-power', label: '幂指函数', icon: 'TrendingUp', description: '指数/幂函数求值与化简', answerPlaceholder: '如：8 或 e^2', category: 'algebra' },
-  { key: 'log-equation', label: '对数方程', icon: 'LogIn', description: '对数方程求解', answerPlaceholder: '如：x=3 或 10', category: 'algebra' },
-  { key: 'inequality-solve', label: '不等式求解', icon: 'NotEqual', description: '一元二次、分式、绝对值、指对不等式', answerPlaceholder: '如：x>2 或 -1<x<3', category: 'algebra' },
-  { key: 'function-property', label: '函数性质与图像', icon: 'Spline', description: '定义域、值域、奇偶性、单调性、反函数', answerPlaceholder: '如：奇函数 或 y=ln(x)', category: 'algebra' },
-  { key: 'sequence-recurrence', label: '递推数列', icon: 'Repeat', description: '一阶/二阶线性递推、分式递推、累加累乘', answerPlaceholder: '如：a_n=2^n 或 5', category: 'algebra' },
-  { key: 'trig-special', label: '特殊角三角函数', icon: 'Activity', description: 'sin/cos/tan 特殊角精确值', answerPlaceholder: '如：√2/2 或 1/2', category: 'trigonometry' },
-  { key: 'trig-identity', label: '三角函数恒等式', icon: 'Activity', description: '特殊角、和差倍半、辅助角、积化和差、和差化积', answerPlaceholder: '如：1/2 或 √3/2', category: 'trigonometry' },
-  { key: 'geometry-basic', label: '平面几何', icon: 'Shapes', description: '海伦公式、正余弦定理、面积计算', answerPlaceholder: '如：6 或 12', category: 'geometry' },
-  { key: 'coordinate-geometry', label: '坐标几何', icon: 'MoveHorizontal', description: '距离、中点、直线方程、点线距离、圆方程', answerPlaceholder: '如：5 或 y=2x+1', category: 'geometry' },
-  { key: 'conic-sections', label: '圆锥曲线', icon: 'Circle', description: '椭圆、双曲线、抛物线、焦点离心率', answerPlaceholder: '如：2 或 x²/4+y²/3=1', category: 'geometry' },
-  { key: 'solid-geometry', label: '立体几何', icon: 'Box', description: '体积、表面积、球、柱锥台', answerPlaceholder: '如：36π 或 64', category: 'geometry' },
-  { key: 'vector-op', label: '向量运算', icon: 'MoveUpRight', description: '向量加减、点积、模长', answerPlaceholder: '如：(1,2) 或 5', category: 'geometry' },
-  { key: 'derivative-basic', label: '函数求导', icon: 'FunctionSquare', description: '常见函数（幂/三角/指数/复合）求导', answerPlaceholder: '如：2x 或 cos(x)', category: 'analysis' },
-  { key: 'integral-basic', label: '不定积分', icon: 'Integral', description: '幂/三角/指数函数不定积分', answerPlaceholder: '如：x^2 + C 或 sin(x) + C', category: 'analysis' },
-  { key: 'limit-basic', label: '极限计算', icon: 'Target', description: '常见极限（0/0 型、∞/∞ 型、重要极限）', answerPlaceholder: '如：1 或 0 或 ∞', category: 'analysis' },
-  { key: 'sequence-limit', label: '数列极限', icon: 'TrendingUp', description: '等比极限、裂项、夹逼、重要极限、递推数列', answerPlaceholder: '如：1 或 e 或 ∞', category: 'analysis' },
-  { key: 'series-convergence', label: '级数与收敛', icon: 'ListOrdered', description: '等比级数、p级数、比值判别、幂级数收敛半径', answerPlaceholder: '如：2 或 收敛', category: 'analysis' },
-  { key: 'hyperbolic-func', label: '双曲函数', icon: 'Waves', description: '双曲正弦/余弦、恒等式、反双曲函数', answerPlaceholder: '如：1 或 (e+1/e)/2', category: 'analysis' },
-  { key: 'ode-solving', label: '常微分方程求解', icon: 'GitBranch', description: '可分离变量、一阶线性、齐次、二阶常系数', answerPlaceholder: '如：y=Ce^(x²) 或 y=C1e^x+C2e^(2x)', category: 'equations' },
-  { key: 'fourier-basic', label: '傅里叶基础', icon: 'Activity', description: '周期判断、傅里叶系数、奇偶函数展开', answerPlaceholder: '如：π 或 a0=2', category: 'analysis' },
-  { key: 'probability-classical', label: '古典概型', icon: 'Dices', description: '基本事件计数、互斥对立、条件概率、全概率贝叶斯', answerPlaceholder: '如：1/6 或 0.5', category: 'probability' },
-  { key: 'random-variable', label: '随机变量与统计', icon: 'BarChart3', description: '分布列、期望、方差、二项分布、均值标准差', answerPlaceholder: '如：2 或 1.5', category: 'probability' },
-  { key: 'nt-gcd', label: '数论基础', icon: 'Hash', description: 'gcd / lcm / 模运算', answerPlaceholder: '如：6 或 24', category: 'number-theory' },
-  { key: 'matrix-op', label: '矩阵运算', icon: 'Grid3x3', description: '2×2 矩阵加减、乘法、行列式', answerPlaceholder: '如：5 或 [[1,2],[3,4]]', category: 'algebra' },
-  { key: 'complex-equation', label: '复数方程', icon: 'PlusSquare', description: '复数运算与方程求解', answerPlaceholder: '如：1+2i 或 3-i', category: 'algebra' },
-  { key: 'combinatorics-basic', label: '组合数学', icon: 'Puzzle', description: '鸽巢原理、容斥原理、计数基础', answerPlaceholder: '如：10 或 24', category: 'probability' },
-  { key: 'inequality-amgm', label: '均值不等式', icon: 'Trophy', description: 'AM-GM 最值应用题', answerPlaceholder: '如：25 或 10', category: 'algebra' },
-];
+export { PRACTICE_TOPICS } from '@/data/practice-topics';
 
 /** 生成指定范围 [min,max] 的随机整数 */
 function randInt(min: number, max: number): number {

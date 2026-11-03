@@ -24,7 +24,7 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { computeAnnualReport, type StatsRecord } from '@/hooks/use-learning';
-import { PRACTICE_TOPICS } from '@/lib/math-practice';
+import { PRACTICE_TOPICS } from '@/data/practice-topics';
 import { toast } from 'sonner';
 
 interface AnnualReportCardProps {

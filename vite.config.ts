@@ -30,9 +30,14 @@ export default defineConfig({
           if (/[\\/]node_modules[\\/](react|react-dom|react-router-dom|react-router|scheduler)[\\/]/.test(id)) {
             return 'vendor-react';
           }
-          // 数学引擎与公式排版
-          if (/[\\/]node_modules[\\/](mathjs|katex)[\\/]/.test(id)) {
-            return 'vendor-math';
+          // 公式排版：几乎每个页面都要（MathRenderer），必须是独立小 chunk
+          if (/[\\/]node_modules[\\/]katex[\\/]/.test(id)) {
+            return 'vendor-katex';
+          }
+          // 数学引擎：只有计算器/求导/积分这类页面需要，绝不能和 katex 混在一起，
+          // 否则首屏为了 katex 会把 1.5MB 的 mathjs 一起拉下来
+          if (/[\\/]node_modules[\\/]mathjs[\\/]/.test(id)) {
+            return 'vendor-mathjs';
           }
           // 动画库
           if (/[\\/]node_modules[\\/]framer-motion[\\/]/.test(id)) {
