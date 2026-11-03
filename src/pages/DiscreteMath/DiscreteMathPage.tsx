@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import MathInputField from '@/components/MathInputField';
 import { Textarea } from '@/components/ui/textarea';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Play, Info, Calculator, Type } from 'lucide-react';
 import MathRenderer from '@/components/MathRenderer';
@@ -965,9 +965,10 @@ export default function DiscreteMathPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="离散数学"
         description="数理逻辑、集合论、图论、代数结构——完整的离散数学计算工具集。"
+        eyebrow="学科 · 几何与离散"
         onCheatsheet={() => setCheatsheetOpen(true)}
       />
 

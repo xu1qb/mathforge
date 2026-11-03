@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import PageShell from '@/components/PageShell';
 
 interface BankItem {
   id: number;
@@ -121,12 +122,12 @@ export default function TeacherPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 py-6">
-      <div>
-        <h1 className="page-title">我当老师</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          你出题，AI 限时作答，你批改。抓它翻车有成就。
-        </p>
-      </div>
+      <PageShell
+        title="我当老师"
+        description="你出题，AI 限时作答，你批改。抓它翻车有成就。"
+        eyebrow="成长与趣味"
+        width="reading"
+      />
 
       <div className="rounded-xl border border-border bg-card p-5 space-y-3">
         <label className="text-sm font-medium block">出一道题</label>

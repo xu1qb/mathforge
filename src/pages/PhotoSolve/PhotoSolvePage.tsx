@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
+import PageShell from '@/components/PageShell';
 import { Camera, Upload, Loader2, RefreshCw, BookMarked, CheckCircle2, XCircle, MinusCircle, History, Trash2, ChevronRight } from 'lucide-react';
 import { capabilityClient, scopedStorage, logger } from '@/lib/lark-mock';
 
@@ -326,11 +327,12 @@ export default function PhotoSolvePage() {
   return (
     <div className="min-h-screen">
       <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8">
-        {/* 页面标题 */}
-        <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">拍照识题</h1>
-          <p className="text-muted-foreground text-sm">上传题目图片，AI 自动识别并给出详细解答</p>
-        </div>
+        <PageShell
+          title="拍照识题"
+          description="上传题目图片，AI 自动识别并给出详细解答"
+          eyebrow="计算工具"
+          width="tool"
+        />
 
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'solve' | 'history')}>
           <TabsList className="mb-4">

@@ -17,7 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import {
   MATHEMATICIAN_QUIZ,
   MATHEMATICIAN_TYPES,
@@ -195,10 +195,11 @@ export default function MathematicianQuizPage() {
             返回
           </button>
         </div>
-        <PageHeader
+        <PageShell
           title="测试结果"
           description="你的数学家人格"
-          onCheatsheet={() => {}}
+          eyebrow="成长与趣味"
+          width="reading"
         />
 
         <main className="px-4 md:px-6 lg:px-8 py-6 md:py-8 max-w-3xl mx-auto space-y-6">
@@ -463,10 +464,11 @@ export default function MathematicianQuizPage() {
           返回
         </button>
       </div>
-      <PageHeader
+      <PageShell
         title="你是哪种数学家？"
         description="10 道小测试，发现你的数学人格"
-        onCheatsheet={() => {}}
+        eyebrow="成长与趣味"
+        width="reading"
       />
 
       <main className="px-4 md:px-6 lg:px-8 py-6 md:py-8 max-w-2xl mx-auto">

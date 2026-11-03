@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Play, Sparkles, Dices, Calculator, Type, ListOrdered } from 'lucide-react';
 import MathRenderer from '@/components/MathRenderer';
@@ -357,9 +357,10 @@ export default function NumberTheoryPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="数论基础"
         description="数论计算：素数、最大公约数、质因数分解、模运算、同余方程、数论函数等。"
+        eyebrow="学科 · 基础数学"
         onCheatsheet={() => setCheatsheetOpen(true)}
       />
 

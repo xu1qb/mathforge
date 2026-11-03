@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import MathInputField from '@/components/MathInputField';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Play, Sparkles, Info, Calculator, Type, ListOrdered } from 'lucide-react';
 import MathRenderer from '@/components/MathRenderer';
@@ -893,9 +893,10 @@ export default function ComplexNumbersPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="复变函数"
         description="复数运算、C-R方程、调和函数、复积分、级数、留数、共形映射、拉普拉斯变换。"
+        eyebrow="学科 · 分析学"
         onCheatsheet={() => setCheatsheetOpen(true)}
       />
 

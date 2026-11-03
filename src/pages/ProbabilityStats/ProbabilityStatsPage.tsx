@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import RelatedExplainers from '@/components/RelatedExplainers';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Play, Sparkles, Calculator, Type } from 'lucide-react';
@@ -438,9 +438,10 @@ export default function ProbabilityStatsPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="概率统计"
         description="描述性统计、概率分布、参数估计、假设检验与回归分析。"
+        eyebrow="学科 · 概率与统计"
         onCheatsheet={() => setCheatsheetOpen(true)}
       />
 

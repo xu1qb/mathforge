@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import MathInputField from '@/components/MathInputField';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Play, Sparkles, History, Trash2, Clock, Calculator, Type, Lightbulb, ChevronDown, ChevronUp, ListOrdered } from 'lucide-react';
@@ -374,9 +374,11 @@ export default function CalculusPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="微积分"
         description="单变量与多元微积分：导数、高阶导数、隐函数求导、参数方程求导、极值、凹凸性、渐近线、不定积分、定积分、反常积分、面积/体积/弧长、极限、洛必达、泰勒展开、级数、收敛半径、对数求导、原函数验证。"
+        eyebrow="学科 · 分析学"
+        width="tool"
         onCheatsheet={() => setCheatsheetOpen(true)}
       />
 

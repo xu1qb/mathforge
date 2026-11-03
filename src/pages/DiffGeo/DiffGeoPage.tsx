@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Play, Info, Calculator, Type } from 'lucide-react';
 import MathRenderer from '@/components/MathRenderer';
@@ -567,7 +567,12 @@ export default function DiffGeoPage() {
 
   return (
     <div className="min-h-screen bg-background page-fade-in">
-      <PageHeader title="微分几何" description="曲线论与曲面论的完整计算工具——正则性、曲率挠率、Frenet标架、第一/第二基本形式、高斯曲率与平均曲率" onCheatsheet={() => setCheatsheetOpen(true)} />
+      <PageShell
+        title="微分几何"
+        description="曲线论与曲面论的完整计算工具——正则性、曲率挠率、Frenet标架、第一/第二基本形式、高斯曲率与平均曲率"
+        eyebrow="学科 · 几何与拓扑"
+        onCheatsheet={() => setCheatsheetOpen(true)}
+      />
       <div className="max-w-4xl mx-auto px-4 md:px-6 py-6">
         <Card className="border-border/60 shadow-sm">
           <CardContent className="p-5 md:p-6">

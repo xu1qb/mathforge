@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import { BarChart3, LineChart as LineChartIcon, PieChart as PieChartIcon, ScatterChart as ScatterChartIcon, Sparkles, Wand2 } from 'lucide-react';
 
 // 示例数据：月度销售对比
@@ -176,10 +176,11 @@ export default function DataChartPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="数据图表"
         description="粘贴 CSV 数据，一键生成柱状图、折线图、饼图、散点图。支持多系列对比。"
-        onCheatsheet={() => {}}
+        eyebrow="工具 · 可视化"
+        width="wide"
       />
 
       <div className="px-4 md:px-6 lg:px-8 py-8 md:py-10 max-w-6xl mx-auto space-y-6">

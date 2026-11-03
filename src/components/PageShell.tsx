@@ -11,7 +11,8 @@
 
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, BookOpen } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import { cn } from '@/lib/utils';
 
@@ -35,9 +36,12 @@ interface PageShellProps {
   subheader?: ReactNode;
   /** 标题上的小字前缀，如「第三讲 · 分析学」 */
   eyebrow?: string;
+  /** 语法速查回调：传入则在右侧渲染按钮（旧 PageHeader 的能力） */
+  onCheatsheet?: () => void;
   /** 是否在右侧显示主题切换（默认显示，与旧 PageHeader 对齐） */
   showThemeToggle?: boolean;
-  children: ReactNode;
+  /** 不传 children 时进入「仅页头」模式：不包外层 padding/宽度，供沿用自有内容容器的页面使用 */
+  children?: ReactNode;
   className?: string;
 }
 
@@ -49,14 +53,23 @@ export default function PageShell({
   actions,
   subheader,
   eyebrow,
+  onCheatsheet,
   showThemeToggle = true,
   children,
   className,
 }: PageShellProps) {
   const navigate = useNavigate();
+  const headerOnly = children === undefined;
 
   return (
-    <div className={cn('mx-auto w-full px-4 py-6 md:px-6', WIDTH[width], className)}>
+    <div
+      className={cn(
+        'mx-auto w-full px-4 md:px-6',
+        WIDTH[width],
+        !headerOnly && 'py-6',
+        className
+      )}
+    >
       {back && (
         <button
           onClick={() => navigate(-1)}
@@ -77,6 +90,12 @@ export default function PageShell({
             <h1 className="text-xl font-semibold text-foreground">{title}</h1>
           </div>
           <div className="ml-auto flex items-center gap-2">
+            {onCheatsheet && (
+              <Button variant="outline" size="sm" className="gap-1.5" onClick={onCheatsheet}>
+                <BookOpen className="size-4" />
+                <span className="hidden sm:inline">语法速查</span>
+              </Button>
+            )}
             {actions}
             {showThemeToggle && (
               <>

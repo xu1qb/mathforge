@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import MathInputField from '@/components/MathInputField';
 import Plot from '@/lib/plotly-instance';
 import { usePlotlyPalette } from '@/lib/plotly-theme';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import ComputationResult from '@/components/ComputationResult';
 import { Play, Sparkles } from 'lucide-react';
@@ -350,9 +350,10 @@ export default function MultiVarCalcPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="多元微积分"
         description="偏导数、梯度、全微分、方向导数、多元泰勒、极值与拉格朗日、二重/三重积分、曲线积分、格林/高斯/斯托克斯公式、梯度场可视化。"
+        eyebrow="学科 · 分析学"
         onCheatsheet={() => setCheatsheetOpen(true)}
       />
 

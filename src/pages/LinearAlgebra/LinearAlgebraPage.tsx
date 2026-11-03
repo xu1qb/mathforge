@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import RelatedExplainers from '@/components/RelatedExplainers';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Play, Sparkles, History, Trash2, Clock, Calculator, Type, Lightbulb, ListOrdered } from 'lucide-react';
@@ -510,9 +510,10 @@ export default function LinearAlgebraPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="线性代数"
         description="矩阵运算、线性方程组、向量空间、二次型、矩阵分解。每行输入一行元素，空格分隔列。"
+        eyebrow="学科 · 基础数学"
         onCheatsheet={() => setCheatsheetOpen(true)}
       />
 

@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import MathInputField from '@/components/MathInputField';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import LearningSection from '@/components/LearningSection';
 import { Play, Sparkles, Plus, Minus } from 'lucide-react';
@@ -364,9 +364,10 @@ export default function FourierSeriesPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="傅里叶分析"
         description="傅里叶级数展开、傅里叶变换与逆变换、FFT 频谱分析、Parseval 等式、吉布斯现象、傅里叶级数解微分方程。"
+        eyebrow="学科 · 分析学"
         onCheatsheet={() => setCheatsheetOpen(true)}
       />
 

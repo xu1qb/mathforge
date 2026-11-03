@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import MathInputField from '@/components/MathInputField';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import ComputationResult from '@/components/ComputationResult';
 import LearningSection from '@/components/LearningSection';
@@ -534,9 +534,10 @@ export default function ODEPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="常微分方程"
         description="常微分方程求解：数值解法（欧拉法/RK4）、解析解法（可分离变量、一阶线性、伯努利、二阶常系数等）、线性方程组与稳定性分析。"
+        eyebrow="学科 · 分析学"
         onCheatsheet={() => setCheatsheetOpen(true)}
       />
 

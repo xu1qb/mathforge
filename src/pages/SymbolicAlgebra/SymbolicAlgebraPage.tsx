@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import MathInputField from '@/components/MathInputField';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Play, Sparkles, History, Trash2, Clock, Calculator, Type, Lightbulb, ChevronDown, ChevronUp, ListOrdered } from 'lucide-react';
 import MathRenderer from '@/components/MathRenderer';
@@ -273,9 +273,10 @@ export default function SymbolicAlgebraPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="符号代数"
         description="符号代数运算：展开、因式分解、化简、解方程、多项式除法、部分分式、拉格朗日插值、不等式、方程组、反函数、复合函数、判别式、韦达定理、二项式、余数定理。"
+        eyebrow="计算工具"
         onCheatsheet={() => setCheatsheetOpen(true)}
       />
 

@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Lightbulb, ArrowRightLeft, Dice5, CalendarPlus, ShieldCheck, Percent, Banknote } from 'lucide-react';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import ResultCard from '@/components/ResultCard';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -1195,9 +1195,11 @@ export default function ToolsPage() {
 
   return (
     <div className="page-fade-in min-h-screen">
-      <PageHeader
+      <PageShell
         title="实用工具"
         description="进制转换、单位换算、日期计算等日常实用工具"
+        eyebrow="计算工具"
+        width="tool"
         onCheatsheet={handleCheatsheet}
       />
 

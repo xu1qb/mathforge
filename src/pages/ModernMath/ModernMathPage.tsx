@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Play, Info, Lock, Calculator, Type } from 'lucide-react';
 import MathRenderer from '@/components/MathRenderer';
@@ -1070,9 +1070,10 @@ export default function ModernMathPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="现代数学"
         description="组合数学、图论算法、数论高级、博弈论、置换群——前沿数学工具集。"
+        eyebrow="学科 · 几何与离散"
         onCheatsheet={() => setCheatsheetOpen(true)}
       />
 

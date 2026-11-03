@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
 import MathInputField from '@/components/MathInputField';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Plus, Trash2, Sparkles, Eye, EyeOff } from 'lucide-react';
 import ReactEChartsImport from 'echarts-for-react/lib/core';
@@ -981,9 +981,11 @@ export default function Plot2DPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="二维绘图"
         description="数学函数可视化：笛卡尔、参数方程、极坐标、隐函数、二次曲线、切线、渐近线、积分面积、反函数、多窗口对比、参数动画、玫瑰线。"
+        eyebrow="工具 · 可视化"
+        width="wide"
         onCheatsheet={() => setCheatsheetOpen(true)}
       />
 

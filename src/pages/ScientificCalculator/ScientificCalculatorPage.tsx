@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import MathRenderer from '@/components/MathRenderer';
 import { Trash2, Clock, RefreshCw, Eye, EyeOff } from 'lucide-react';
@@ -678,9 +678,10 @@ export default function ScientificCalculatorPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="科学计算器"
         description="通用表达式求值：算术、三角函数、对数、指数、复数 i、阶乘、组合、概率分布函数……输入后回车或点 =，结果实时显示。支持 DEG/RAD 切换、Fix 精度、多项式求解、方程组求解、DMS 转换。"
+        eyebrow="计算工具"
         onCheatsheet={() => setCheatsheetOpen(true)}
       />
 

@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import MathInputField from '@/components/MathInputField';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Play, Calculator, Type } from 'lucide-react';
 import MathRenderer from '@/components/MathRenderer';
@@ -486,9 +486,10 @@ export default function NumericalAnalysisPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="数值分析"
         description="数值方法大全：方程求根（二分法、牛顿法、弦截法、不动点），数值积分（梯形/辛普森/高斯/龙贝格），插值与拟合，线性方程组迭代，特征值计算。"
+        eyebrow="学科 · 概率与计算"
         onCheatsheet={() => setCheatsheetOpen(true)}
       />
 

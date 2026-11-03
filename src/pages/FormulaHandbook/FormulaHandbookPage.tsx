@@ -41,7 +41,7 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { FORMULA_CATEGORIES, type IFormulaItem } from '@/data/formulas';
 import { normalizeMathInput } from '@/lib/math-normalize';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import { cn } from '@/lib/utils';
 import { useFormulaFavorites } from '@/hooks/useFormulaFavorites';
 import { copyAsText, copyAsLatex, copyAsMarkdown, exportTextFile } from '@/lib/export-utils';
@@ -267,7 +267,12 @@ export default function FormulaHandbookPage() {
   return (
     <TooltipProvider>
       <div className="page-fade-in min-h-screen">
-        <PageHeader title="公式手册" description={`${totalFormulas} 条数学公式速查 · 支持分类浏览、搜索、收藏与跳转`} onCheatsheet={handleCheatsheet} />
+      <PageShell
+        title="公式手册"
+        eyebrow="计算工具"
+        width="tool"
+        onCheatsheet={handleCheatsheet}
+      />
 
         <div className="px-4 md:px-6 lg:px-8 py-8 md:py-10 max-w-[1400px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-6">

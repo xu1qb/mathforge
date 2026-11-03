@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import MathInputField from '@/components/MathInputField';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import PageHeader from '@/components/PageHeader';
+import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Sparkles } from 'lucide-react';
 import Plot from '@/lib/plotly-instance';
@@ -369,9 +369,11 @@ export default function Plot3DPage() {
 
   return (
     <div className="min-h-screen page-fade-in">
-      <PageHeader
+      <PageShell
         title="三维曲面"
         description="二元函数 3D 可视化：显式曲面、二次曲面库、旋转曲面、参数曲面、截面切片、法向量场、二次曲面类型识别。"
+        eyebrow="工具 · 可视化"
+        width="wide"
         onCheatsheet={() => setCheatsheetOpen(true)}
       />
 
