@@ -196,6 +196,25 @@ chk('均值不等式：a+b >= 2sqrt(ab)（抽样验证）',
 chk('y=x^2 在 [0,1] 绕 x 轴旋转体积 = pi/5',
     sp.simplify(sp.pi * sp.integrate(x**4, (x, 0, 1)) - sp.pi / 5) == 0)
 
+# ---- 2026-11 新增：拉格朗日 / 柯西 ----
+_ok_arctan = True
+_rng2 = _random.Random(23)
+for _ in range(200):
+    _a2 = _rng2.uniform(-8, 8)
+    _b2 = _rng2.uniform(-8, 8)
+    if abs(sp.atan(_a2) - sp.atan(_b2)) > abs(_a2 - _b2) + 1e-12:
+        _ok_arctan = False
+        break
+chk('|arctan a - arctan b| <= |a - b|（抽样 200 组）', _ok_arctan)
+
+# ---- 新增：欧拉方程 ----
+_y1 = x
+_y2 = x ** 2
+chk('y = x 满足 x^2 y\'\' - 2x y\' + 2y = 0',
+    sp.simplify(x**2 * sp.diff(_y1, x, 2) - 2 * x * sp.diff(_y1, x) + 2 * _y1) == 0)
+chk('y = x^2 满足 x^2 y\'\' - 2x y\' + 2y = 0',
+    sp.simplify(x**2 * sp.diff(_y2, x, 2) - 2 * x * sp.diff(_y2, x) + 2 * _y2) == 0)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:

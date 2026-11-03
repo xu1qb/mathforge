@@ -1443,6 +1443,98 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
       result: 'V=\\frac{\\pi}{5}',
     },
   },
+  {
+    id: 'lagrange-cauchy',
+    title: '拉格朗日与柯西：把差值换成导数',
+    tag: '中值定理',
+    essence:
+      '罗尔定理是最底层那根钉子；拉格朗日把函值之差换成导数乘区间长，柯西把两个函数的增量比换成导数比。',
+    whenToUse: [
+      '出现 f(b) − f(a) 与 b − a',
+      '要估计函数值之差的上界',
+      '两个函数同时出现且要求比值',
+    ],
+    steps: [
+      {
+        title: '拉格朗日中值定理',
+        body: '把弦的斜率换成某点的切线斜率。',
+        formula: 'f(b)-f(a)=f\'(\\xi)(b-a)',
+      },
+      {
+        title: '柯西中值定理',
+        body: '两个函数各自的增量之比，等于某点导数值之比；要求 g′ 在区间内不为零。',
+        formula: '\\frac{f(b)-f(a)}{g(b)-g(a)}=\\frac{f\'(\\xi)}{g\'(\\xi)}',
+      },
+      {
+        title: '怎么选',
+        body: '只有一个函数出现就用拉格朗日；式子里有两个函数且要求比值，才用柯西。',
+      },
+      {
+        title: '和罗尔的关系',
+        body: '罗尔是 f(a) = f(b) 时的特例；拉格朗日可以由罗尔构造辅助函数证出。',
+      },
+      {
+        title: '估计不等式的标准动作',
+        body: '先用中值定理把差写成导数乘区间长，再用导数的界去放缩。',
+      },
+    ],
+    example: {
+      problem: '证明对任意实数 a、b，都有 |arctan a − arctan b| ≤ |a − b|。',
+      walkthrough: [
+        '设 f(x) = arctan x，在 a、b 之间用拉格朗日中值定理。',
+        '存在 ξ 使 arctan a − arctan b = (a − b)/(1 + ξ²)。',
+        '因为 1/(1 + ξ²) ≤ 1，两边取绝对值即得。',
+      ],
+      result: '|\\arctan a-\\arctan b|\\le|a-b|',
+    },
+  },
+  {
+    id: 'reducible-ode',
+    title: '可降阶方程与欧拉方程',
+    tag: '微分方程',
+    essence:
+      '缺 y 的令 y′ = p(x)，缺 x 的令 y′ = p(y)；欧拉方程用 x = eᵗ 换成常系数，本质都是「换元降阶」。',
+    whenToUse: [
+      '方程里不显含 y 或不显含 x',
+      '形如 x²y″ + pxy′ + qy = 0 的欧拉方程',
+      '高阶但可以逐步降阶的方程',
+    ],
+    steps: [
+      {
+        title: '缺 y：令 p = y′',
+        body: 'y″ 直接写成 dp/dx，方程降成一阶。',
+        formula: 'y\'\'=\\frac{dp}{dx}',
+      },
+      {
+        title: '缺 x：令 p = y′',
+        body: '此时 y″ 要写成 p·dp/dy，方程同样降成一阶。',
+        formula: 'y\'\'=p\\frac{dp}{dy}',
+      },
+      {
+        title: '欧拉方程换元',
+        body: '令 x = eᵗ，把 x 的幂次与导数合并成对 t 的常系数方程。',
+        formula: 'x^{2}y\'\'=\\frac{d^{2}y}{dt^{2}}-\\frac{dy}{dt}',
+      },
+      {
+        title: '解完再换回原变量',
+        body: '按二阶常系数解出 y(t)，最后把 t 换成 ln x。',
+      },
+      {
+        title: '别忘了回代 p',
+        body: '降阶解出的是 p = y′，还要再积分一次才得到 y。',
+      },
+    ],
+    example: {
+      problem: '解欧拉方程 x²y″ − 2xy′ + 2y = 0（x > 0）。',
+      walkthrough: [
+        '令 x = eᵗ，方程化为 y″ − 3y′ + 2y = 0（对 t 求导）。',
+        '特征根为 1 与 2，故 y = C₁eᵗ + C₂e^{2t}。',
+        '把 eᵗ 换回 x，得 y = C₁x + C₂x²。',
+        '代回验证：两个解分别满足原方程。',
+      ],
+      result: 'y=C_{1}x+C_{2}x^{2}',
+    },
+  },
 ];
 
 
