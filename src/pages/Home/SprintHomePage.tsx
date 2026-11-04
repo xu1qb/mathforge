@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { COMPETITION_TOPICS } from '@/data/competition';
 import { BRANCH_CATEGORIES } from '@/data/branches';
+import { useRecentModules } from '@/hooks/use-recent-modules';
 import { MUST_MEMO_ITEMS, KNOWLEDGE_CARDS } from '@/data/competition-knowledge';
 import { computeDashboardData } from '@/data/competition-dashboard';
 import { useWrongBook } from '@/hooks/use-learning';
@@ -69,6 +70,7 @@ function getPhase(daysLeft: number): { label: string; color: string; messages: s
 export default function SprintHomePage() {
   const navigate = useNavigate();
   const { dueToday, wrongReasonStats } = useWrongBook();
+  const recentModules = useRecentModules(6);
   const examDate = startOfDay(new Date(EXAM_DATE));
   const today = startOfDay(new Date());
   const daysLeft = Math.max(0, differenceInDays(examDate, today));
@@ -200,40 +202,38 @@ export default function SprintHomePage() {
           transition={{ duration: 0.5 }}
         >
           <Card className="bg-primary/5 border-primary/20 overflow-hidden">
-            <CardContent className="p-6 md:p-8">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="flex items-center gap-5">
-                  <div className="text-center">
-                    <div className="text-5xl md:text-6xl font-black text-primary tabular-nums tracking-tight">
+            <CardContent className="p-4 md:p-5">
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div className="flex min-w-0 items-center gap-4">
+                  <div className="flex shrink-0 items-baseline gap-1.5">
+                    <span className="text-3xl font-black tabular-nums tracking-tight text-primary md:text-4xl">
                       {daysLeft}
-                    </div>
-                    <div className="text-sm text-muted-foreground mt-1">天 · 倒计时</div>
+                    </span>
+                    <span className="text-xs text-muted-foreground">天</span>
                   </div>
-                  <div className="h-16 w-px bg-border/60 hidden md:block" />
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
+                  <div className="h-9 w-px shrink-0 bg-border/60" />
+                  <div className="min-w-0 space-y-1">
+                    <div className="flex flex-wrap items-center gap-1.5">
                       <Badge variant="outline" className={phase.color}>
                         <Zap className="size-3 mr-1" />
-                        {phase.label}阶段
+                        {phase.label}
                       </Badge>
-                      <Badge variant="outline">
+                      <Badge variant="outline" className="text-xs">
                         <Calendar className="size-3 mr-1" />
-                        考试 11 月 14 日
+                        11 月 14 日
                       </Badge>
                     </div>
-                    <div className="text-base md:text-lg text-foreground font-medium">
-                      「{dailyMessage}」
-                    </div>
+                    <div className="truncate text-sm text-foreground">「{dailyMessage}」</div>
                   </div>
                 </div>
 
                 <Button
-                  size="lg"
+                  size="sm"
                   onClick={() => navigate('/competition?tab=countdown')}
-                  className="bg-primary hover:bg-primary/90"
+                  className="shrink-0 bg-primary hover:bg-primary/90"
                 >
-                  查看完整计划
-                  <ArrowRight className="size-4 ml-1.5" />
+                  完整计划
+                  <ArrowRight className="size-3.5 ml-1" />
                 </Button>
               </div>
             </CardContent>
@@ -258,6 +258,22 @@ export default function SprintHomePage() {
             );
           })}
         </div>
+
+        {/* 最近访问：只在有记录时出现 */}
+        {recentModules.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-muted-foreground">最近</span>
+            {recentModules.map((m) => (
+              <button
+                key={m.path}
+                onClick={() => navigate(m.path)}
+                className="rounded-full border border-border bg-card px-3 py-1 text-xs text-foreground transition-colors hover:border-primary/40 hover:bg-accent"
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* 左列：知识大陆 + 今日任务 + 薄弱模块 */}
