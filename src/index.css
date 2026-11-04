@@ -706,24 +706,6 @@ html.theme-transition * {
 .buddy-cheer .buddy-book {
   transform: translateX(-50%) rotate(20deg);
 }
-/* pixel 皮肤：8-bit 硬边方块 */
-[data-skin="pixel"] .buddy-head,
-[data-skin="pixel"] .buddy-body {
-  border-radius: 0;
-}
-[data-skin="pixel"] .buddy-eye {
-  border-radius: 0;
-}
-[data-skin="pixel"] .buddy-book {
-  border-radius: 0;
-}
-/* journal 皮肤：圆润贴纸感 */
-[data-skin="journal"] .buddy-head {
-  box-shadow: 1px 1px 0 #c0392b;
-}
-[data-skin="journal"] .buddy-body {
-  box-shadow: 1px 1px 0 #c0392b;
-}
 
 /* 解题流程图打印：节点不跨页，标题不与正文分离 */
 @media print {
