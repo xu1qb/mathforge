@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useTheme } from '@/hooks/useTheme';
+import { useChallengeMode } from '@/hooks/use-challenge-mode';
 import { scopedStorage, logger } from '@/lib/lark-mock';
 import { computeDashboardData } from '@/data/competition-dashboard';
 import { Heart, Skull, FlaskConical } from 'lucide-react';
@@ -151,12 +151,12 @@ export function usePixelHp() {
 }
 
 export default function PixelHud() {
-  const { skin } = useTheme();
+  const [challengeMode] = useChallengeMode();
   const { level, currentExp, expNeeded } = useLevel();
   const { coins, bump } = useCoins();
   const { hp, maxHp, damageFlash, healFlash, dead, restHeal } = usePixelHp();
 
-  if ((skin as string) !== 'pixel') return null;
+  if (!challengeMode) return null;
 
   // 经验条分段（8-bit 跳跃式，每 10% 一格）
   const expSegments = 10;

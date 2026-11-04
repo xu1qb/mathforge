@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useTheme } from '@/hooks/useTheme';
+import { useChallengeMode } from '@/hooks/use-challenge-mode';
 import { COMPETITION_TOPICS, type CompetitionTopic } from '@/data/competition';
 import { computeDashboardData, type TopicStat } from '@/data/competition-dashboard';
 import {
@@ -46,7 +46,7 @@ interface DungeonMapSectionProps {
 }
 
 export default function DungeonMapSection({ masteredTopics, onSelectTopic }: DungeonMapSectionProps) {
-  const { skin } = useTheme();
+  const [challengeMode] = useChallengeMode();
   const [stats, setStats] = useState<TopicStat[]>([]);
 
   // 读取统计数据（会刷新）
@@ -122,7 +122,7 @@ export default function DungeonMapSection({ masteredTopics, onSelectTopic }: Dun
     });
   }, [stats, masteredTopics]);
 
-  if ((skin as string) !== 'pixel') return null;
+  if (!challengeMode) return null;
 
   const handleNodeClick = (node: DungeonNode) => {
     if (node.state === 'locked') {

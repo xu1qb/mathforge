@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTheme } from '@/hooks/useTheme';
+import { useChallengeMode } from '@/hooks/use-challenge-mode';
 import type { CompetitionQuestion } from '@/data/competition-questions';
 import { COMPETITION_TOPICS } from '@/data/competition';
 import RichTextRenderer from '@/components/RichTextRenderer';
@@ -33,10 +33,10 @@ interface PixelBattlePanelProps {
 }
 
 export default function PixelBattlePanel(props: PixelBattlePanelProps) {
-  const { skin } = useTheme();
+  const [challengeMode] = useChallengeMode();
   const { dead } = usePixelHp();
 
-  if ((skin as string) !== 'pixel') return null;
+  if (!challengeMode) return null;
   if (dead) return null; // HP 耗尽时不显示题目
 
   return (
@@ -587,7 +587,7 @@ function PixelWrongReasonPicker({
 
 // ========== 战斗反馈覆盖层（金星 + HIT/MISS 文字） ==========
 export function BattleFeedbackOverlay() {
-  const { skin } = useTheme();
+  const [challengeMode] = useChallengeMode();
   const [showHit, setShowHit] = useState<'hit' | 'critical' | 'miss' | null>(null);
   const [stars, setStars] = useState(0);
   const [answerTime, setAnswerTime] = useState(0);
@@ -618,7 +618,7 @@ export function BattleFeedbackOverlay() {
     return () => window.removeEventListener('mathforge:answer-result', onResult);
   }, []);
 
-  if ((skin as string) !== 'pixel') return null;
+  if (!challengeMode) return null;
   if (!showHit) return null;
 
   const isCritical = showHit === 'critical';
@@ -792,7 +792,7 @@ export function PixelBattleResult({
   onRestart,
   onBack,
 }: BattleResultProps) {
-  const { skin } = useTheme();
+  const [challengeMode] = useChallengeMode();
   const victory = accuracy >= 60;
   const m = Math.floor(elapsed / 60);
   const sec = Math.floor(elapsed % 60);
@@ -803,7 +803,7 @@ export function PixelBattleResult({
   const rankStars = accuracy >= 90 ? 3 : accuracy >= 70 ? 2 : accuracy >= 50 ? 1 : 0;
   const rankText = accuracy >= 90 ? 'S' : accuracy >= 70 ? 'A' : accuracy >= 50 ? 'B' : 'C';
 
-  if ((skin as string) !== 'pixel') return null;
+  if (!challengeMode) return null;
 
   return (
     <div

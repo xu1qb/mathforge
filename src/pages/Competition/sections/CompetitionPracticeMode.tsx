@@ -32,7 +32,7 @@ import {
   Dumbbell,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useTheme } from '@/hooks/useTheme';
+import { useChallengeMode } from '@/hooks/use-challenge-mode';
 import RichTextRenderer from '@/components/RichTextRenderer';
 import { COMPETITION_QUESTIONS } from '@/data/competition-questions';
 import type { CompetitionQuestion, CompetitionDifficulty } from '@/data/competition-questions';
@@ -67,7 +67,7 @@ export default function CompetitionPracticeMode({
   onBack: () => void;
   answerMode: AnswerMode;
 }) {
-  const { skin } = useTheme();
+  const [challengeMode] = useChallengeMode();
   const [mode, setMode] = useState<CompMode>('setup');
   const [topicKey, setTopicKey] = useState('all');
   const [difficulty, setDifficulty] = useState<CompetitionDifficulty | 'all'>('all');
@@ -97,9 +97,9 @@ export default function CompetitionPracticeMode({
     return () => clearInterval(interval);
   }, [mode, startTime]);
 
-  // 像素皮肤 HP 耗尽 → 强制结束本组练习
+  // 闯关模式 HP 耗尽 → 强制结束本组练习
   useEffect(() => {
-    if ((skin as string) !== 'pixel' || mode !== 'practicing') return;
+    if (!challengeMode || mode !== 'practicing') return;
     const onHpDead = () => {
       // 延迟一下，让玩家看到 MISS 动画和 HP 弹窗
       setTimeout(() => {
@@ -108,7 +108,7 @@ export default function CompetitionPracticeMode({
     };
     window.addEventListener('mathforge:hp-dead', onHpDead);
     return () => window.removeEventListener('mathforge:hp-dead', onHpDead);
-  }, [skin, mode]);
+  }, [challengeMode, mode]);
 
   // GeneratedProblem → CompetitionQuestion 适配
   const adaptGenerated = useCallback(
@@ -433,7 +433,7 @@ export default function CompetitionPracticeMode({
       )}
 
       {mode === 'practicing' && q && (
-        (skin as string) === 'pixel' ? (
+        challengeMode ? (
           <PixelBattlePanel
             question={q}
             index={currentIdx}
@@ -476,7 +476,7 @@ export default function CompetitionPracticeMode({
       )}
 
       {mode === 'result' && (
-        (skin as string) === 'pixel' ? (
+        challengeMode ? (
           <PixelBattleResult
             total={questions.length}
             correct={correctCount}

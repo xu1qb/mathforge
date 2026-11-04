@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useCallback, lazy, Suspense } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useTheme } from '@/hooks/useTheme';
+import { useChallengeMode } from '@/hooks/use-challenge-mode';
 import DungeonMapSection from '@/components/DungeonMapSection';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -108,6 +108,12 @@ const KNOWLEDGE_PROGRESS_KEY = 'mathforge:competition:knowledge-progress';
 export default function CompetitionOverview() {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('overview');
+  const [challengeMode] = useChallengeMode();
+
+  // 开启闯关模式时直接落在专题地图，避免开了开关却看不到变化
+  useEffect(() => {
+    if (challengeMode) setActiveTab('topics');
+  }, [challengeMode]);
   const [selectedTopic, setSelectedTopic] = useState<CompetitionTopic | null>(null);
   // 知识卡片 + 必背结论 的掌握状态（旧版二进制）
   const [masteredCards, setMasteredCards] = useState<string[]>(() => {
@@ -1053,9 +1059,9 @@ function TopicsTabContent({ topics, mastered, onSelect }: {
   mastered: string[];
   onSelect: (t: CompetitionTopic) => void;
 }) {
-  const { skin } = useTheme();
+  const [challengeMode] = useChallengeMode();
 
-  if ((skin as string) === 'pixel') {
+  if (challengeMode) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 10 }}

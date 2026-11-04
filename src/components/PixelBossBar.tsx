@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useTheme } from '@/hooks/useTheme';
+import { useChallengeMode } from '@/hooks/use-challenge-mode';
 import { scopedStorage } from '@/lib/lark-mock';
 import { Skull, Swords, Trophy, Coins, Star, RefreshCcw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -31,7 +31,7 @@ function getWeekStart(): number {
 }
 
 export default function PixelBossBar({ totalWrong, pendingWrong }: PixelBossBarProps) {
-  const { skin } = useTheme();
+  const [challengeMode] = useChallengeMode();
   const [bossState, setBossState] = useState<BossState>(() => {
     try {
       const raw = scopedStorage.getItem(STORAGE_KEY);
@@ -112,7 +112,7 @@ export default function PixelBossBar({ totalWrong, pendingWrong }: PixelBossBarP
     setShowVictory(false);
   }, [totalWrong]);
 
-  if ((skin as string) !== 'pixel') return null;
+  if (!challengeMode) return null;
 
   return (
     <>
