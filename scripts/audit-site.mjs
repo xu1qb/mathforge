@@ -60,6 +60,8 @@ const PROBE = [
   '  const vw = window.innerWidth;',
   '  const sw = document.documentElement.scrollWidth;',
   '  const h1s = [...document.querySelectorAll("h1")].map(e => e.textContent.trim().slice(0, 18));',
+  '  const katexErrors = [...document.querySelectorAll(".katex-error")].map(e => (e.textContent || "").slice(0, 40));',
+  '  const rawLatex = [...document.querySelectorAll("p,span,div,li")].filter(e => e.children.length === 0 && /\\\\[a-zA-Z]{2,}/.test(e.textContent || "")).map(e => (e.textContent || "").trim().slice(0, 40)).slice(0, 3);',
   '  const fixed = [...document.querySelectorAll("body *")].filter(e => {',
   '    const s = getComputedStyle(e);',
   '    if (s.position !== "fixed" || s.display === "none" || s.visibility === "hidden" || Number(s.opacity) === 0) return false;',
@@ -74,7 +76,7 @@ const PROBE = [
   '    const h = Math.min(a.b, b.b) - Math.max(a.t, b.t);',
   '    if (w > 6 && h > 6) overlaps.push([a.cls, b.cls]);',
   '  }',
-  '  return JSON.stringify({ vw, sw, h1s, overlaps: overlaps.slice(0, 3) });',
+  '  return JSON.stringify({ vw, sw, h1s, overlaps: overlaps.slice(0, 3), katexErrors, rawLatex });',
   '})()',
 ].join('\n');
 
@@ -98,6 +100,8 @@ for (const width of WIDTHS) {
       overflow: (d.sw || 0) > (d.vw || 0) + 1,
       h1: d.h1s || [],
       overlaps: d.overlaps || [],
+      katexErrors: d.katexErrors || [],
+      rawLatex: d.rawLatex || [],
       errors: errors.slice(0, 2),
     };
     out.push(rec);
@@ -110,6 +114,8 @@ for (const width of WIDTHS) {
     if (rec.overflow) flags.push('OVERFLOW(' + rec.sw + '>' + rec.vw + ')');
     if (rec.h1.length > 1) flags.push('DUP-H1(' + rec.h1.length + ')');
     if (rec.overlaps.length) flags.push('FIXED-OVERLAP ' + JSON.stringify(rec.overlaps[0]));
+    if (rec.katexErrors.length) flags.push('KATEX-ERR(' + rec.katexErrors.length + '): ' + rec.katexErrors[0]);
+    if (rec.rawLatex.length) flags.push('RAW-LATEX: ' + rec.rawLatex[0]);
     if (rec.errors.length) flags.push('ERR:' + rec.errors[0]);
     if (flags.length) console.log(width + 'px ' + route + '  ' + flags.join(' | '));
   }
