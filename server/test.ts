@@ -4,6 +4,9 @@ import { validateQuestion, parseModelJson } from './validate.ts';
 import { generateQuestions } from './generate.ts';
 import { savePending, listQueue, reviewQuestion } from './store.ts';
 import { answersEquivalent, verifyAvailable } from './verify.ts';
+import { classifyIssues, buildRepairPrompt } from './feedback.ts';
+import { executeTool } from './tools.ts';
+import { runAgent } from './agent.ts';
 
 let pass = 0;
 function check(name: string, fn: () => void | Promise<void>) {
@@ -75,6 +78,41 @@ await check('入库 → 审核 → 通过 全链路', async () => {
   const updated = reviewQuestion(target.id, 'approve');
   assert.equal(updated?.status, 'approved');
   assert.ok(listQueue('approved', topic).some((q) => q.id === target.id));
+});
+
+await check('失败分类：书写问题 → notation', () => {
+  const c = classifyIssues(['书写不规范：幂次未加花括号（x^2）']);
+  assert.deepEqual(c.kinds, ['notation']);
+  assert.ok(c.repairs[0].includes('x^{2}'));
+});
+
+await check('失败分类：答案不一致 → answer', () => {
+  const c = classifyIssues(['答案与独立求解不一致（独立解为 7）']);
+  assert.deepEqual(c.kinds, ['answer']);
+  assert.ok(c.repairs[0].includes('唯一答案'));
+});
+
+await check('修复提示包含两个答案', () => {
+  const p = buildRepairPrompt({ questionLatex: 'x+1=3', answer: '3', secondAnswer: '2', attempts: 2 });
+  assert.ok(p.includes('独立求解得到的答案：2'));
+  assert.ok(p.includes('第 2 次尝试'));
+});
+
+await check('工具：等价判定', async () => {
+  const r = JSON.parse(await executeTool('check_equivalent', { a: '1/2', b: '0.5' })) as { equal: boolean };
+  assert.equal(r.equal, true);
+});
+
+await check('工具：LaTeX 检查能发现 x^2', async () => {
+  const r = JSON.parse(await executeTool('check_latex', { latex: 'x^2+1' })) as { ok: boolean; issues: string[] };
+  assert.equal(r.ok, false);
+  assert.ok(r.issues.length > 0);
+});
+
+await check('agent 循环在 mock 下返回内容', async () => {
+  const r = await runAgent('system', 'user');
+  assert.ok(r.content.includes('questions'));
+  assert.equal(r.toolCalls.length, 0);
 });
 
 if (verifyAvailable()) {

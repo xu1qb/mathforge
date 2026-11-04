@@ -19,6 +19,10 @@ export interface ServerConfig {
   pythonPath: string;
   /** 是否启用「双解一致」校验 */
   dualSolve: boolean;
+  /** 是否启用 C2：模型自主调用工具 */
+  agentMode: boolean;
+  /** 工具调用最大轮数 */
+  agentMaxRounds: number;
 }
 
 function env(key: string, fallback = ''): string {
@@ -37,4 +41,6 @@ export const config: ServerConfig = {
   cacheDir: env('CACHE_DIR', '.cache/ai'),
   pythonPath: env('MATH_PYTHON_PATH', ''),
   dualSolve: env('DUAL_SOLVE', '1') !== '0',
+  agentMode: env('AGENT_MODE', '0') === '1',
+  agentMaxRounds: Number(env('AGENT_MAX_ROUNDS', '6')),
 };

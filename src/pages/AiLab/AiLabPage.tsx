@@ -33,6 +33,7 @@ export default function AiLabPage() {
   const [error, setError] = useState('');
   const [questions, setQuestions] = useState<AiQuestion[]>([]);
   const [savedIds, setSavedIds] = useState<string[]>([]);
+  const [meta, setMeta] = useState<{ agent: boolean; toolCalls: number }>({ agent: false, toolCalls: 0 });
 
   const topics = useMemo(() => PRACTICE_TOPICS.map((t) => t.label), []);
 
@@ -54,6 +55,7 @@ export default function AiLabPage() {
         style: style.trim() || undefined,
       });
       setQuestions(batch.questions);
+      setMeta({ agent: Boolean(batch.agent), toolCalls: batch.toolCalls ?? 0 });
       if (batch.cached > 0) toast('命中缓存，没有重复调用模型');
     } catch (e) {
       setError(e instanceof Error ? e.message : '生成失败');
@@ -184,7 +186,10 @@ export default function AiLabPage() {
                 {loading ? '生成中…' : '生成题目'}
               </Button>
               {questions.length > 0 && (
-                <span className="text-xs text-muted-foreground">本次 {questions.length} 道</span>
+                <span className="text-xs text-muted-foreground">
+                  本次 {questions.length} 道
+                  {meta.agent && meta.toolCalls > 0 && ' · 工具调用 ' + meta.toolCalls + ' 次'}
+                </span>
               )}
             </div>
 

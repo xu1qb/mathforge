@@ -29,6 +29,8 @@ export interface AiQuestionBatch {
   mode: 'live' | 'mock';
   cached: number;
   generatedAt: string;
+  agent?: boolean;
+  toolCalls?: number;
 }
 
 export interface AiHealth {

@@ -1,16 +1,18 @@
 // EXPORTS: generateQuestions
-// 生成流水线：提示词 → 模型 → 解析 → 校验 → 不合格就带反馈重试 → 缓存
+// 生成流水线：提示词 → 模型（或带工具的 agent）→ 解析 → 形式校验 → 双解一致 → 定向修复重试 → 缓存
 
 import { config } from './config.ts';
 import { chat, llmMode, type ChatMessage } from './llm.ts';
+import { runAgent } from './agent.ts';
 import { cacheKey, readCache, writeCache } from './cache.ts';
 import { buildQuestionPrompt } from './prompts.ts';
 import { parseModelJson, validateQuestion, type RawQuestion } from './validate.ts';
 import { answersEquivalent } from './verify.ts';
 import { independentSolve } from './solve.ts';
+import { classifyIssues } from './feedback.ts';
 import type { AiQuestion, AiQuestionBatch, AiQuestionRequest } from './types.ts';
 
-const PROMPT_VERSION = 3;
+const PROMPT_VERSION = 4;
 
 function normalize(req: AiQuestionRequest): Required<AiQuestionRequest> {
   return {
@@ -24,7 +26,8 @@ function normalize(req: AiQuestionRequest): Required<AiQuestionRequest> {
 
 export async function generateQuestions(input: AiQuestionRequest): Promise<AiQuestionBatch> {
   const req = normalize(input);
-  const key = cacheKey({ req, model: config.model, provider: config.provider, v: PROMPT_VERSION });
+  const useAgent = config.agentMode && llmMode() === 'live';
+  const key = cacheKey({ req, model: config.model, provider: config.provider, v: PROMPT_VERSION, agent: useAgent });
 
   const cached = readCache<AiQuestionBatch>(key);
   if (cached) {
@@ -32,45 +35,59 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
   }
 
   const { system, user } = buildQuestionPrompt(req);
-  const messages: ChatMessage[] = [
-    { role: 'system', content: system },
-    { role: 'user', content: user },
-  ];
-
   const accepted: AiQuestion[] = [];
-  let lastIssues: string[] = [];
+  let repairNotes: string[] = [];
+  let totalToolCalls = 0;
   let attempts = 0;
+  let lastIssues: string[] = [];
 
   for (let i = 0; i <= config.maxRetries; i++) {
     attempts = i + 1;
-    const reply = await chat(messages);
+    const prompt =
+      repairNotes.length > 0
+        ? user + '\n\n上一版存在这些问题，请逐条修正：\n- ' + repairNotes.join('\n- ')
+        : user;
+
+    let reply: string;
+    if (useAgent) {
+      const agentResult = await runAgent(system, prompt);
+      reply = agentResult.content;
+      totalToolCalls += agentResult.toolCalls.length;
+    } else {
+      const messages: ChatMessage[] = [
+        { role: 'system', content: system },
+        { role: 'user', content: prompt },
+      ];
+      reply = await chat(messages);
+    }
+
     let parsed: unknown;
     try {
       parsed = parseModelJson(reply);
     } catch (err) {
       lastIssues = ['JSON 解析失败：' + (err instanceof Error ? err.message : '未知')];
-      messages.push({ role: 'assistant', content: reply.slice(0, 500) });
-      messages.push({ role: 'user', content: '上面不是合法 JSON。请只输出 JSON 对象，不要解释。' });
+      repairNotes = classifyIssues(lastIssues).repairs;
       continue;
     }
 
     const list = (parsed as { questions?: RawQuestion[] }).questions;
     if (!Array.isArray(list) || list.length === 0) {
       lastIssues = ['返回里没有 questions 数组'];
+      repairNotes = classifyIssues(lastIssues).repairs;
       continue;
     }
 
+    lastIssues = [];
     for (const raw of list.slice(0, req.count)) {
       const v = validateQuestion(raw);
       if (!v.ok) {
         lastIssues.push(...v.issues);
         continue;
       }
-      // 重试时模型可能重复给出同一道题，按题干去重
+
       const duplicate = accepted.some((x) => x.questionLatex === String(raw.questionLatex));
       if (duplicate) continue;
 
-      // 双解一致：模型独立再解一遍，答案必须与原答案等价（mock 模式跳过）
       let dualSolve: 'match' | 'mismatch' | 'skipped' = 'skipped';
       let secondAnswer: string | undefined;
       let method: string | undefined;
@@ -82,11 +99,15 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
           method = eq.method;
           dualSolve = eq.equal ? 'match' : 'mismatch';
           if (!eq.equal) {
-            lastIssues.push('答案与独立求解不一致（独立解为 ' + second.answer + '）');
+            lastIssues.push(
+              '答案与独立求解不一致（题面：' + String(raw.questionLatex).slice(0, 60) +
+                '；你的答案 ' + String(raw.answer) + '，独立解 ' + second.answer + '）'
+            );
             continue;
           }
         }
       }
+
       accepted.push({
         id: 'ai-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6),
         topic: req.topic,
@@ -98,25 +119,26 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
         answerType: raw.answerType === 'expression' ? 'expression' : 'numeric',
         steps: (raw.steps as string[]).map(String),
         fusion: Array.isArray(raw.fusion) ? raw.fusion.map(String) : undefined,
-        validation: { latexOk: v.latexOk, notationOk: v.notationOk, issues: [], attempts, dualSolve, secondAnswer, method },
+        validation: {
+          latexOk: v.latexOk,
+          notationOk: v.notationOk,
+          issues: [],
+          attempts,
+          dualSolve,
+          secondAnswer,
+          method,
+        },
       });
     }
 
     if (accepted.length >= req.count) break;
-
-    // 把失败原因反馈给模型，让它修正后重出
-    messages.push({ role: 'assistant', content: JSON.stringify({ questions: list }) });
-    messages.push({
-      role: 'user',
-      content:
-        '以上题目有这些问题：' + lastIssues.slice(0, 8).join('；') +
-        '。请修正后重新输出完整的 JSON，仍然只要 JSON。',
-    });
-    lastIssues = [];
+    repairNotes = classifyIssues(lastIssues.length ? lastIssues : ['未产出合格题目']).repairs;
   }
 
   if (accepted.length === 0) {
-    throw new Error('模型连续 ' + attempts + ' 次没有产出合格题目：' + (lastIssues.slice(0, 5).join('；') || '未知原因'));
+    throw new Error(
+      '模型连续 ' + attempts + ' 次没有产出合格题目：' + (lastIssues.slice(0, 5).join('；') || '未知原因')
+    );
   }
 
   const batch: AiQuestionBatch = {
@@ -125,6 +147,8 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
     mode: llmMode(),
     cached: 0,
     generatedAt: new Date().toISOString(),
+    agent: useAgent,
+    toolCalls: totalToolCalls,
   };
   writeCache(key, batch);
   return batch;
