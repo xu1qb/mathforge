@@ -1950,10 +1950,10 @@ function mkFusion(p: {
 }
 
 export function genFusion(diff: Difficulty): PracticeQuestion {
-  const kinds = [
-    'seqMod', 'seqDigit', 'coprimeCount', 'seqMax', 'fibMatrix',
-    'probCombo', 'limitExp', 'complexDemoivre', 'derivMin', 'geoExpect', 'seqDivisible',
-  ];
+  // 两科融合（进阶）/ 两科或三科融合（竞赛）
+  const twoTopic = ['seqMod', 'seqDigit', 'seqMax', 'probCombo', 'complexDemoivre', 'derivMin', 'limitExp'];
+  const threeTopic = ['countPowMod', 'fibRatio', 'cosSum', 'oddMultiple', 'matrixIterate', 'coprimeCount', 'fibMatrix', 'geoExpect', 'seqDivisible'];
+  const kinds = diff === 'competition' ? twoTopic.concat(threeTopic) : twoTopic;
   const kind = kinds[Math.floor(Math.random() * kinds.length)];
 
   if (kind === 'seqMod') {
@@ -2143,6 +2143,92 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
         '这是几何分布，E(X) = 1/p',
         '也可由级数求和：Σ k·(1−p)^(k−1)·p = 1/p',
         'p = 1/' + p + '，所以 E(X) = ' + p,
+      ],
+    });
+  }
+
+  if (kind === 'countPowMod') {
+    const N = rndFusion(10, 120);
+    const cnt = Math.floor(N / 3);
+    return mkFusion({
+      diff,
+      tag: '数列 × 数论 × 组合',
+      question: '1 到 ' + N + ' 中有多少个 n 使 2ⁿ 除以 7 余 1？',
+      latex: '@@left@@{n @@le ' + N + ' : 2^{n} @@equiv 1 @@pmod{7}@@right@@}@@text{ 的个数}',
+      answer: String(cnt),
+      steps: [
+        '先找周期：2¹=2，2²=4，2³≡1 (mod 7)，周期为 3',
+        '所以 n 必须是 3 的倍数',
+        '1 到 ' + N + ' 中 3 的倍数有 ⌊' + N + '/3⌋ = ' + cnt + ' 个',
+      ],
+    });
+  }
+
+  if (kind === 'fibRatio') {
+    const n = rndFusion(8, 20);
+    return mkFusion({
+      diff,
+      tag: '矩阵 × 递推 × 极限',
+      question: 'Fibonacci 数列相邻两项之比 Fₙ₊₁/Fₙ 当 n→∞ 时的极限',
+      latex: '@@lim_{n @@to @@infty} @@dfrac{F_{n+1}}{F_{n}}',
+      answer: '(1+sqrt(5))/2',
+      steps: [
+        '设极限为 L，由 Fₙ₊₁ = Fₙ + Fₙ₋₁ 得 L = 1 + 1/L',
+        '解得 L² − L − 1 = 0，L = (1 ± √5)/2',
+        '取正根 L = (1+√5)/2（黄金分割比）',
+      ],
+      type: 'expression',
+    });
+  }
+
+  if (kind === 'cosSum') {
+    const m = rndFusion(1, 6);
+    const n = 6 * m;
+    return mkFusion({
+      diff,
+      tag: '三角 × 复数 × 数列',
+      question: '求 cos(π/3) + cos(2π/3) + … + cos(' + n + 'π/3)',
+      latex: '@@sum_{k=1}^{' + n + '} @@cos@@left(@@dfrac{k@@pi}{3}@@right)',
+      answer: '0',
+      steps: [
+        'cos(kπ/3) 以 6 为周期，一个周期内六项之和为 0',
+        'n = ' + n + ' 恰好是 ' + m + ' 个完整周期',
+        '所以总和为 0',
+      ],
+    });
+  }
+
+  if (kind === 'oddMultiple') {
+    const N = rndFusion(20, 200);
+    const cnt = Math.floor((N + 3) / 6);
+    return mkFusion({
+      diff,
+      tag: '数论 × 组合 × 数列',
+      question: '1 到 ' + N + ' 中，既是 3 的倍数又是奇数的整数有多少个？',
+      latex: '@@left@@{n @@le ' + N + ' : 3 @@mid n,@@ 2 @@nmid n@@right@@}@@text{ 的个数}',
+      answer: String(cnt),
+      steps: [
+        '3 的倍数为 3, 6, 9, 12, …，其中奇数的是 3, 9, 15, …（每隔 6 一个）',
+        '个数 = ⌊(' + N + ' + 3)/6⌋',
+        '= ' + cnt,
+      ],
+    });
+  }
+
+  if (kind === 'matrixIterate') {
+    const x = rndFusion(-5, 5);
+    const yv = rndFusion(1, 5);
+    const n = rndFusion(2, 12);
+    return mkFusion({
+      diff,
+      tag: '向量 × 矩阵 × 数列',
+      question: '向量 v₁ = (' + x + ', ' + yv + ')，每次左乘 M = [[1,1],[0,1]]，求 v_' + n + ' 的第一个分量',
+      latex: '@@vec{v}_{k+1} = @@begin{pmatrix} 1 & 1 @@ 0 & 1 @@end{pmatrix}@@vec{v}_k，@@vec{v}_1 = (' + x + ', ' + yv + ')，求 v_{' + n + ',1}',
+      answer: String(x + (n - 1) * yv),
+      steps: [
+        '每次乘 M 相当于 (a, b) ↦ (a + b, b)',
+        '第二个分量不变，第一个分量每次加 ' + yv,
+        '经过 ' + (n - 1) + ' 次：' + x + ' + ' + (n - 1) + '×' + yv + ' = ' + (x + (n - 1) * yv),
       ],
     });
   }
