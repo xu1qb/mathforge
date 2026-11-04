@@ -121,7 +121,8 @@ export default function AiReviewPage() {
                 )}
                 {q.validation.secondAnswer && (
                   <span className="ml-2 text-[11px] text-muted-foreground">
-                    独立解：{q.validation.secondAnswer}
+                    独立解：
+                    <RichTextRenderer text={q.validation.secondAnswer} />
                   </span>
                 )}
                 {q.validation.noveltyScore != null && (

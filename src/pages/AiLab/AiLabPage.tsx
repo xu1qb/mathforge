@@ -222,6 +222,29 @@ export default function AiLabPage() {
           </CardContent>
         </Card>
 
+        {/* 结果去向 */}
+        {questions.length > 0 && (
+          <Card className="border-primary/30 bg-primary/5">
+            <CardContent className="flex flex-wrap items-center gap-3 p-3 text-sm">
+              <span className="text-foreground">
+                本批 {questions.length} 道已入库
+                {meta.autoApproved ? '（机器验证通过，可直接练习）' : '（待人工审核）'}
+              </span>
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5"
+                onClick={() => navigate('/practice?topic=' + (PRACTICE_TOPICS.find((t) => t.label === topic)?.key ?? 'limit-basic'))}
+              >
+                去练习这个知识点
+              </Button>
+              <Button size="sm" variant="ghost" className="gap-1.5" onClick={() => navigate('/ai-review')}>
+                查看题库
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
         {/* 结果 */}
         <div className="space-y-3">
           {questions.map((q) => (

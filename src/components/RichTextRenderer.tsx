@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import MathRenderer from './MathRenderer';
+import { wrapNakedLatex } from '@/lib/math-text';
 
 interface RichTextRendererProps {
   /** 支持 $...$ 公式 + **粗体** + 换行的富文本 */
@@ -13,8 +14,10 @@ interface RichTextRendererProps {
  * 通用富文本渲染器：解析 $...$（KaTeX）+ **粗体** + 多行换行
  * 用于解析、答案、解题过程等混排文本
  */
-function RichTextRenderer({ text, displayMath = false, className }: RichTextRendererProps) {
-  if (!text) return null;
+function RichTextRenderer({ text: rawText, displayMath = false, className }: RichTextRendererProps) {
+  if (!rawText) return null;
+  // 中文里夹着的裸 LaTeX 片段先包成 $...$，避免显示成源码
+  const text = wrapNakedLatex(rawText);
 
   // 启发式：文本不含 $ 且包含典型 LaTeX 命令 → 整段是裸 LaTeX，直接公式渲染
   const LATEX_CMD_PATTERN = /\\(frac|dfrac|cfrac|lim|sin|cos|tan|cot|sec|csc|arcsin|arccos|arctan|sinh|cosh|tanh|log|ln|lg|sqrt|int|oint|sum|prod|mathbf|mathbb|mathcal|mathrm|text|textrm|textit|textbf|binom|begin|end|alpha|beta|gamma|delta|epsilon|zeta|eta|theta|vartheta|iota|kappa|lambda|mu|nu|xi|pi|varpi|rho|varrho|sigma|varsigma|tau|upsilon|phi|varphi|chi|psi|omega|Gamma|Delta|Theta|Lambda|Xi|Pi|Sigma|Upsilon|Phi|Psi|Omega|infty|cdots|ldots|vdots|ddots|ge|le|neq|ne|approx|equiv|pm|mp|times|div|cdot|circ|partial|nabla|to|rightarrow|leftarrow|leftrightarrow|Rightarrow|Leftarrow|Leftrightarrow|uparrow|downarrow|updownarrow|forall|exists|neg|land|lor|implies|iff|in|notin|subset|supset|subseteq|supseteq|cup|cap|emptyset|varnothing|mathbb|mathcal|mathfrak|mathtt|mathit|mathbf|mathrm|left\.|right\.|\{|\}|\||\||\[|\])/.test(text);
