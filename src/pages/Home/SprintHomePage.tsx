@@ -17,6 +17,7 @@ import {
   ArrowRight,
   Flame,
   BookMarked,
+  GraduationCap,
   NotebookPen,
   Sparkles,
 } from 'lucide-react';
@@ -258,6 +259,25 @@ export default function SprintHomePage() {
             );
           })}
         </div>
+
+        {/* 课程入口 */}
+        <button
+          onClick={() => navigate('/course/linear-algebra')}
+          className="flex w-full items-center gap-3 rounded-xl border border-primary/25 bg-primary/5 p-3 text-left transition-colors hover:border-primary/50 hover:bg-primary/10"
+        >
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+            <GraduationCap className="size-4.5" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-medium text-foreground">
+              线性代数课程 · 对齐同济第七版
+            </span>
+            <span className="block text-xs text-muted-foreground">
+              6 章 · 29 个知识点 · 46 道带解答的练习
+            </span>
+          </span>
+          <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
+        </button>
 
         {/* 最近访问：只在有记录时出现 */}
         {recentModules.length > 0 && (

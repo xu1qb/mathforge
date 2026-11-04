@@ -152,7 +152,12 @@ export default function CoursePage() {
                             {ch.textbookRef}
                           </Badge>
                         </div>
-                        <div className="truncate text-xs text-muted-foreground">{ch.summary}</div>
+                        <div className="truncate text-xs text-muted-foreground">
+                          {ch.summary}
+                        </div>
+                        <div className="mt-0.5 text-[11px] text-muted-foreground/70">
+                          {ch.lessonIds.length} 个知识点 · {ch.exercises.length} 道题
+                        </div>
                       </div>
                       <ChevronRight
                         className={cn('size-4 shrink-0 text-muted-foreground transition-transform', isActive && 'rotate-90')}
