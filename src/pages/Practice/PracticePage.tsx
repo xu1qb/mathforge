@@ -76,6 +76,7 @@ import {
   type PracticeQuestion,
   type Difficulty,
 } from '@/lib/math-practice';
+import { fetchQueue, type AiQuestion } from '@/lib/ai-client';
 import { toast } from 'sonner';
 import { scopedStorage } from '@/lib/lark-mock';
 import { useWrongBook, useLearningStats, usePracticeSettings, useQuestionFavorites, WRONG_REASON_LABELS } from '@/hooks/use-learning';
@@ -142,6 +143,10 @@ export default function PracticePage() {
   });
   const [difficulty, setDifficulty] = useState<Difficulty>('basic');
   const [question, setQuestion] = useState<PracticeQuestion | null>(null);
+  // AI 题库：只使用审核通过的题
+  const [aiEnabled, setAiEnabled] = useState(false);
+  const [aiPool, setAiPool] = useState<AiQuestion[]>([]);
+  const [aiCursor, setAiCursor] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -217,7 +222,24 @@ export default function PracticePage() {
 
   // 生成新题目
   const newQuestion = useCallback(() => {
-    const q = generatePracticeQuestion(activeTopic, difficulty);
+    let q: PracticeQuestion;
+    if (aiEnabled && aiPool.length > 0) {
+      const item = aiPool[aiCursor % aiPool.length];
+      q = {
+        id: item.id,
+        topicKey: activeTopic,
+        question: item.question,
+        questionLatex: item.questionLatex,
+        answer: item.answer,
+        answerDisplay: item.answerDisplay ?? item.answer,
+        answerType: item.answerType,
+        steps: item.steps,
+        difficulty: item.difficulty,
+      };
+      setAiCursor((c) => c + 1);
+    } else {
+      q = generatePracticeQuestion(activeTopic, difficulty);
+    }
     setQuestion(q);
     setUserAnswer('');
     setIsChecked(false);
@@ -231,7 +253,28 @@ export default function PracticePage() {
     setTimeLeft(180);
     questionStartTimeRef.current = Date.now();
     recordQuestion(activeTopic);
-  }, [activeTopic, difficulty, recordQuestion]);
+  }, [activeTopic, difficulty, recordQuestion, aiEnabled, aiPool, aiCursor]);
+
+  // 拉取「当前知识点」审核通过的 AI 题
+  const loadAiPool = useCallback(async () => {
+    const label = PRACTICE_TOPICS.find((t) => t.key === activeTopic)?.label;
+    if (!label) return;
+    try {
+      const data = await fetchQueue('approved');
+      const mine = data.questions.filter((q) => q.topic === label);
+      setAiPool(mine);
+      setAiCursor(0);
+      if (mine.length === 0) {
+        setAiEnabled(false);
+        toast('这个知识点还没有审核通过的 AI 题');
+      } else {
+        setAiEnabled(true);
+        toast('已切换到 AI 题库（' + mine.length + ' 题）');
+      }
+    } catch {
+      toast('后端未启动，无法加载 AI 题库');
+    }
+  }, [activeTopic]);
 
   // 切换知识点时生成新题
   useEffect(() => {
@@ -841,6 +884,27 @@ export default function PracticePage() {
                     </button>
                   ))}
                 </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    if (aiEnabled) {
+                      setAiEnabled(false);
+                      newQuestion();
+                    } else {
+                      void loadAiPool();
+                    }
+                  }}
+                  className={`px-3 py-1.5 text-sm rounded-lg font-medium transition-all ${
+                    aiEnabled
+                      ? 'bg-violet-600 text-white'
+                      : 'text-muted-foreground hover:bg-accent'
+                  }`}
+                  title="只使用已审核通过的 AI 生成题"
+                >
+                  AI 题{aiEnabled ? '（开）' : ''}
+                </button>
               </div>
 
               <div className="flex items-center gap-2">
