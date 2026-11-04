@@ -52,7 +52,28 @@ javac → d8 → aapt2 → zipalign → apksigner
 npm run build:android    # = vite build + 打包 APK
 ```
 
-## 五、当前边界
+## 五、为什么只有 3.4 MB
+
+APK 里只有两样东西：一个 WebView Activity（dex 几 KB）+ 打好的静态前端。
+
+| 组成 | 压缩后 |
+|---|---|
+| plotly 图表 | 1.77 MB |
+| math.js | 1.60 MB |
+| echarts | 0.68 MB |
+| 题目生成器 | 0.57 MB |
+| 样式与字体（KaTeX） | 0.55 MB |
+| 其他 chunk + 图标 | 余下 |
+| 合计 | **3.39 MB**（解压后 9.62 MB） |
+
+对比桌面端 608 MB：Electron 自带 Chromium + Node 运行时，安卓这里是**复用系统 WebView**，等于「把浏览器让给系统装」，所以只装业务代码。
+
+静态文本压缩率约 2.8 倍（9.62 → 3.39 MB）。
+
+⚠️ 之前一版是 4.9 MB，因为 `vite build` 反复写同一个 `dist/` 不清空，历史 hash chunk 越积越多。
+现在脚本每次构建到全新的临时目录，体积稳定在 3.4 MB。
+
+## 六、当前边界
 
 | 项 | 状态 |
 |---|---|
@@ -62,7 +83,7 @@ npm run build:android    # = vite build + 打包 APK
 | 正式签名上架 | ❌ 目前是 debug 签名 |
 | 横竖屏适配 | 走 WebView，随网页响应式 |
 
-## 六、后续可选
+## 七、后续可选
 
 1. 用 Capacitor 的 Gradle 构建做正式版（需要能访问 GitHub 的网络）
 2. 把后端部署到公网，App 内置固定地址，免去手动配置

@@ -11,12 +11,16 @@ JAR="$PLATFORM/android.jar"
 OUT="$ROOT/android-native"
 PKG="com.mathforge.app"
 
-# 沙箱内不能删目录，每次用新的 build 目录
+# 沙箱内不能删目录：构建目录和静态资源都放在 /tmp 的新目录里，保证每次都是干净的
 BUILD="$OUT/build-$(date +%s)"
-mkdir -p "$BUILD/classes" "$BUILD/res" "$BUILD/dex" "$OUT/assets/public"
+mkdir -p "$BUILD/classes" "$BUILD/res" "$BUILD/dex"
 
-# 1) 前端产物作为 assets（覆盖写入，不删除旧文件）
-cp -R "$ROOT/dist/." "$OUT/assets/public/"
+# 1) 前端产物：先构建到全新的临时目录，再拷进 assets 暂存区
+WEB_OUT="/tmp/mf-web-$(date +%s)"
+ASSETS="/tmp/mf-assets-$(date +%s)/public"
+mkdir -p "$ASSETS"
+(cd "$ROOT" && npx vite build --outDir "$WEB_OUT" >/tmp/vite-android.log 2>&1)
+cp -R "$WEB_OUT/." "$ASSETS/"
 
 # 2) 编译 Java
 javac -source 8 -target 8 -bootclasspath "$JAR" -classpath "$JAR" \
@@ -30,7 +34,7 @@ javac -source 8 -target 8 -bootclasspath "$JAR" -classpath "$JAR" \
 "$BT/aapt2" link -o "$BUILD/base.apk" -I "$JAR" \
   --manifest "$OUT/AndroidManifest.xml" \
   --min-sdk-version 24 --target-sdk-version 34 \
-  -A "$OUT/assets" \
+  -A "$(dirname "$ASSETS")" \
   "$BUILD/res/compiled.zip"
 
 # 5) 把 dex 并入 apk（不能原地改 zip，重建一份）
@@ -56,6 +60,7 @@ if [ ! -f "$KS" ]; then
     -dname "CN=Android Debug,O=Android,C=US" >/dev/null 2>&1
 fi
 "$BT/apksigner" sign --ks "$KS" --ks-pass pass:android --key-pass pass:android \
-  --out "$OUT/mathforge-debug.apk" "$BUILD/aligned.apk"
+  --out "$BUILD/signed.apk" "$BUILD/aligned.apk"
+cp "$BUILD/signed.apk" "$OUT/mathforge-debug.apk"
 "$BT/apksigner" verify --print-certs "$OUT/mathforge-debug.apk" | head -3
 ls -lh "$OUT/mathforge-debug.apk"
