@@ -226,12 +226,12 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       let detail = '';
       if (type === 'tan-sin') {
         answer = `${a * a * a}/2`;
-        problem = String.raw`$\displaystyle \\lim_{x \\to 0} \\frac{\\tan ${a}x - \\sin ${a}x}{x^3} = $`;
+        problem = String.raw`$\displaystyle \\lim_{x \\to 0} \\frac{\\tan ${a}x - \\sin ${a}x}{x^{3}} = $`;
         equiv = 'tanx - sinx ~ x³/2';
         detail = `tan(${a}x) - sin(${a}x) ~ (${a}x)³/2 = ${a * a * a}x³/2`;
       } else if (type === '1-cos') {
         answer = `${a * a}/2`;
-        problem = String.raw`$\displaystyle \\lim_{x \\to 0} \\frac{1 - \\cos ${a}x}{x^2} = $`;
+        problem = String.raw`$\displaystyle \\lim_{x \\to 0} \\frac{1 - \\cos ${a}x}{x^{2}} = $`;
         equiv = '1 - cosx ~ x²/2';
         detail = `1 - cos(${a}x) ~ (${a}x)²/2 = ${a * a}x²/2`;
       } else if (type === 'ln1x') {
@@ -242,7 +242,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       } else {
         answer = String(a);
         problem = String.raw`$\displaystyle \\lim_{x \\to 0} \\frac{e^{${a}x} - 1}{x} = $`;
-        equiv = 'e^x - 1 ~ x';
+        equiv = 'e^{x} - 1 ~ x';
         detail = `e^(${a}x) - 1 ~ ${a}x`;
       }
       const problemStr = joinLines(['计算极限（等价无穷小）：', '', problem]);
@@ -270,11 +270,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     name: '泰勒展开求极限',
     type: 'fill-blank' as QuestionType,
     difficultyRange: [2, 3],
-    tags: ['极限', '泰勒展开', 'e^x/sinx/cosx'],
+    tags: ['极限', '泰勒展开', 'e^{x}/sinx/cosx'],
     variantCount: 54,
     generate(rand, diff) {
       const fns = [
-        { fn: 'e^x - 1 - x', tail: 'x²/2', den: 2, ans: '1/2' },
+        { fn: 'e^{x} - 1 - x', tail: 'x²/2', den: 2, ans: '1/2' },
         { fn: 'x - sinx', tail: 'x³/6', den: 3, ans: '1/6' },
         { fn: '1 - cosx', tail: 'x²/2', den: 2, ans: '1/2' },
         { fn: 'tanx - x', tail: 'x³/3', den: 3, ans: '1/3' },
@@ -314,7 +314,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '用夹逼准则求极限：',
         '',
-        String.raw`$\displaystyle \\lim_{n \\to \\infty} \\left( \\frac{1}{\\sqrt{n^2+1}} + \\frac{1}{\\sqrt{n^2+2}} + \\cdots + \\frac{1}{\\sqrt{n^2+${k}}} \\right) = $`,
+        String.raw`$\displaystyle \\lim_{n \\to \\infty} \\left( \\frac{1}{\\sqrt{n^{2}+1}} + \\frac{1}{\\sqrt{n^{2}+2}} + \\cdots + \\frac{1}{\\sqrt{n^{2}+${k}}} \\right) = $`,
       ]);
       const solution = joinLines([
         '**夹逼准则：两端放缩**',
@@ -357,13 +357,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `原式 = limₙ→∞ Σᵏ (k/n)^${p} · (1/n)`,
         '',
-        String.raw`$= \\int_0^1 x^${p} dx = \\frac{1}{${p + 1}}$`,
+        String.raw`$= \\int_0^{1} x^${p} dx = \\frac{1}{${p + 1}}$`,
       ]);
       return {
         type: 'fill-blank' as QuestionType,
         score: diff === 2 ? 7 : 8,
         problem, answer, solution,
-        hint: 'lim Σ (k/n)^p · (1/n) = ∫₀¹ x^p dx',
+        hint: 'lim Σ (k/n)^{p} · (1/n) = ∫₀¹ x^{p} dx',
       };
     },
   },
@@ -418,7 +418,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '设函数',
         '',
-        String.raw`f(x) = $\\begin{cases} \dfrac{x^2 - ${a}^2}{x - ${a}}, & x \\neq ${a} \\ A, & x = ${a} \\end{cases}$`,
+        String.raw`f(x) = $\\begin{cases} \dfrac{x^{2} - ${a}^{2}}{x - ${a}}, & x \\neq ${a} \\ A, & x = ${a} \\end{cases}$`,
         '',
         `若 f(x) 在 x = ${a} 处连续，求 A = `,
       ]);
@@ -571,14 +571,14 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '计算极限：',
         '',
-        String.raw`$\displaystyle \\lim_{x \\to +\\infty} \\left(\\sqrt{x^2 + ${a}x} - x\\right) = $`,
+        String.raw`$\displaystyle \\lim_{x \\to +\\infty} \\left(\\sqrt{x^{2} + ${a}x} - x\\right) = $`,
       ]);
       const solution = joinLines([
         '**根式差 → 有理化（分子分母同乘共轭根式）**',
         '',
-        String.raw`原式 $= \\lim_{x \\to +\\infty} \\frac{(\\sqrt{x^2+${a}x} - x)(\\sqrt{x^2+${a}x} + x)}{\\sqrt{x^2+${a}x} + x}$`,
+        String.raw`原式 $= \\lim_{x \\to +\\infty} \\frac{(\\sqrt{x^{2}+${a}x} - x)(\\sqrt{x^{2}+${a}x} + x)}{\\sqrt{x^{2}+${a}x} + x}$`,
         '',
-        String.raw`$= \\lim_{x \\to +\\infty} \\frac{${a}x}{\\sqrt{x^2+${a}x} + x}$`,
+        String.raw`$= \\lim_{x \\to +\\infty} \\frac{${a}x}{\\sqrt{x^{2}+${a}x} + x}$`,
         '',
         '分子分母同除 x：',
         '',
@@ -614,13 +614,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         String.raw`$\displaystyle \\lim_{n \\to \\infty} \\left(1 + \\frac{${a}}{n}\\right)^{${b}n} = $`,
       ]);
       const solution = joinLines([
-        '**重要极限：lim(n→∞) (1 + 1/n)^n = e**',
+        '**重要极限：lim(n→∞) (1 + 1/n)^{n} = e**',
         '',
         '构造标准形式：',
         '',
         String.raw`令 $t = \\frac{n}{${a}}$，则 $n \\to \\infty$ 时 $t \\to \\infty$`,
         '',
-        String.raw`原式 $= \\lim_{t \\to \\infty} \\left[(1 + \\frac{1}{t})^t\\right]^{${a} \\cdot ${b}}$`,
+        String.raw`原式 $= \\lim_{t \\to \\infty} \\left[(1 + \\frac{1}{t})^{t}\\right]^{${a} \\cdot ${b}}$`,
         '',
         `= e^(${a}×${b}) = e^${k}`,
       ]);
@@ -628,7 +628,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'fill-blank' as QuestionType,
         score: diff === 2 ? 6 : 7,
         problem, answer, solution,
-        hint: '凑 (1+1/n)^n 的形式，指数 = a·b',
+        hint: '凑 (1+1/n)^{n} 的形式，指数 = a·b',
       };
     },
   },
@@ -643,7 +643,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 36,
     generate(rand, diff) {
       const a = randInt(rand, 1, 4);
-      // lim(x→0) ∫₀ˣ sin(at²)dt / x^m
+      // lim(x→0) ∫₀ˣ sin(at²)dt / x^{m}
       // sin(at²) ~ at²，积分 ~ a·x³/3
       // 取 m = 3，则极限 = a/3
       const m = 3;
@@ -651,7 +651,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '计算极限：',
         '',
-        String.raw`$\displaystyle \\lim_{x \\to 0} \\frac{\\int_0^x \\sin(${a}t^2)\,dt}{x^${m}} = $`,
+        String.raw`$\displaystyle \\lim_{x \\to 0} \\frac{\\int_0^{x} \\sin(${a}t^{2})\,dt}{x^${m}} = $`,
       ]);
       const solution = joinLines([
         '**0/0 型，洛必达法则 + 变上限积分求导**',
@@ -660,11 +660,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '由洛必达法则：',
         '',
-        String.raw`原式 $= \\lim_{x \\to 0} \\frac{\\sin(${a}x^2)}{${m}x^${m - 1}}$`,
+        String.raw`原式 $= \\lim_{x \\to 0} \\frac{\\sin(${a}x^{2})}{${m}x^${m - 1}}$`,
         '',
         `sin(${a}x²) ~ ${a}x²（等价无穷小替换）`,
         '',
-        String.raw`$= \\lim_{x \\to 0} \\frac{${a}x^2}{${m}x^${m - 1}} = \\frac{${a}}{${m}}$`,
+        String.raw`$= \\lim_{x \\to 0} \\frac{${a}x^{2}}{${m}x^${m - 1}} = \\frac{${a}}{${m}}$`,
         '',
         `= ${fracLatex(a, m)}`,
       ]);
@@ -742,20 +742,20 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 18,
     generate(rand, diff) {
       const a = randInt(rand, 1, 3);
-      // lim(n→∞) (1/n) Σ(k=1..n) (k/n)^a = ∫₀¹ x^a dx = 1/(a+1)
+      // lim(n→∞) (1/n) Σ(k=1..n) (k/n)^{a} = ∫₀¹ x^{a} dx = 1/(a+1)
       const denom = a + 1;
       const answer = `1/${denom}`;
       const problem = joinLines([
         '用定积分定义计算极限：',
         '',
-        String.raw`$\displaystyle \\lim_{n \\to \\infty} \\frac{1}{n} \\sum_{k=1}^{n} \\left( \\frac{k}{n} \\right)^${a}$`,
+        String.raw`$\displaystyle \\lim_{n \\to \\infty} \\frac{1}{n} \\sum_{k=1}^{n}} \\left( \\frac{k}{n} \\right)^${a}$`,
       ]);
       const solution = joinLines([
-        '**定积分定义：lim(n→∞) (1/n) Σ_{k=1}^n f(k/n) = ∫₀¹ f(x) dx**',
+        '**定积分定义：lim(n→∞) (1/n) Σ_{k=1}^{n} f(k/n) = ∫₀¹ f(x) dx**',
         '',
         `取 f(x) = x^${a}，则`,
         '',
-        `lim(n→∞) (1/n) Σ_{k=1}^n (k/n)^${a} = ∫₀¹ x^${a} dx`,
+        `lim(n→∞) (1/n) Σ_{k=1}^{n} (k/n)^${a} = ∫₀¹ x^${a} dx`,
         '',
         `= [x^${a + 1}/(${a + 1})]₀¹ = 1/${denom} − 0 = 1/${denom}`,
         '',
@@ -780,17 +780,17 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 20,
     generate(rand, diff) {
       const a = randInt(rand, 2, 5);
-      // lim(x→∞) (1 + a/x)^x = e^a
+      // lim(x→∞) (1 + a/x)^{x} = e^{a}
       const answer = `e^${a}`;
       const problem = joinLines([
         '计算下列极限：',
         '',
-        String.raw`$\displaystyle \\lim_{x \\to \\infty} \\left(1 + \\frac{${a}}{x}\\right)^x$`,
+        String.raw`$\displaystyle \\lim_{x \\to \\infty} \\left(1 + \\frac{${a}}{x}\\right)^{x}$`,
       ]);
       const solution = joinLines([
         '**1^∞ 型极限：取对数转化为 0·∞ 型，再用洛必达或等价无穷小**',
         '',
-        `设 y = (1 + ${a}/x)^x`,
+        `设 y = (1 + ${a}/x)^{x}`,
         '',
         `取对数：ln y = x · ln(1 + ${a}/x)`,
         '',
@@ -806,7 +806,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `所以 lim(x→∞) y = e^${a}`,
         '',
-        '（注：这是重要极限 (1+a/x)^x → e^a 的直接应用）',
+        '（注：这是重要极限 (1+a/x)^{x} → e^{a} 的直接应用）',
       ]);
       return {
         type: 'fill-blank' as QuestionType,
@@ -916,7 +916,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
   {
     id: 'diff-power-chain',
     topic: 'single-var-diff',
-    name: '复合函数求导 (ax+b)^n',
+    name: '复合函数求导 (ax+b)^{n}',
     type: 'fill-blank' as QuestionType,
     difficultyRange: [1, 2],
     tags: ['导数', '链式法则', '幂函数'],
@@ -952,25 +952,25 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     name: '乘积求导法则',
     type: 'fill-blank' as QuestionType,
     difficultyRange: [1, 2],
-    tags: ['导数', '乘积法则', 'e^x·sinx'],
+    tags: ['导数', '乘积法则', 'e^{x}·sinx'],
     variantCount: 40,
     generate(rand, diff) {
-      const fns = ['e^x·sinx', 'e^x·cosx', 'x·lnx', 'x²·e^x'];
+      const fns = ['e^{x}·sinx', 'e^{x}·cosx', 'x·lnx', 'x²·e^{x}'];
       const fn = randPick(rand, fns);
       let answer = '';
       let sol = '';
-      if (fn === 'e^x·sinx') {
-        answer = 'e^x(sinx + cosx)';
-        sol = ' (e^x·sinx)\' = (e^x)\'·sinx + e^x·(sinx)\' = e^x·sinx + e^x·cosx = e^x(sinx+cosx)';
-      } else if (fn === 'e^x·cosx') {
-        answer = 'e^x(cosx - sinx)';
-        sol = ' (e^x·cosx)\' = e^x·cosx + e^x·(-sinx) = e^x(cosx-sinx)';
+      if (fn === 'e^{x}·sinx') {
+        answer = 'e^{x}(sinx + cosx)';
+        sol = ' (e^{x}·sinx)\' = (e^{x})\'·sinx + e^{x}·(sinx)\' = e^{x}·sinx + e^{x}·cosx = e^{x}(sinx+cosx)';
+      } else if (fn === 'e^{x}·cosx') {
+        answer = 'e^{x}(cosx - sinx)';
+        sol = ' (e^{x}·cosx)\' = e^{x}·cosx + e^{x}·(-sinx) = e^{x}(cosx-sinx)';
       } else if (fn === 'x·lnx') {
         answer = 'lnx + 1';
         sol = ' (x·lnx)\' = 1·lnx + x·(1/x) = lnx + 1';
       } else {
-        answer = 'x(2+x)·e^x';
-        sol = ' (x²e^x)\' = 2x·e^x + x²·e^x = x(2+x)e^x';
+        answer = 'x(2+x)·e^{x}';
+        sol = ' (x²e^{x})\' = 2x·e^{x} + x²·e^{x} = x(2+x)e^{x}';
       }
       const problem = joinLines([
         String.raw`求导：$(${fn})' = $`,
@@ -996,7 +996,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const fns = [
         { fn: 'tanx', disp: '\\tan x', ans: 'sec²x', sol: 'tanx = sinx/cosx，(sinx/cosx)\' = (cos²x+sin²x)/cos²x = 1/cos²x = sec²x' },
         { fn: 'cotx', disp: '\\cot x', ans: '-csc²x', sol: 'cotx = cosx/sinx，(cosx/sinx)\' = (-sin²x-cos²x)/sin²x = -csc²x' },
-        { fn: 'x/e^x', disp: '\\dfrac{x}{e^x}', ans: '(1-x)/e^x', sol: '(x/e^x)\' = (1·e^x - x·e^x)/e^(2x) = (1-x)/e^x' },
+        { fn: 'x/e^{x}', disp: '\\dfrac{x}{e^{x}}', ans: '(1-x)/e^{x}', sol: '(x/e^{x})\' = (1·e^{x} - x·e^{x})/e^(2x) = (1-x)/e^{x}' },
       ];
       const f = randPick(rand, fns);
       const problem = joinLines([
@@ -1018,14 +1018,14 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     name: '高阶导数 (n阶)',
     type: 'fill-blank' as QuestionType,
     difficultyRange: [2, 3],
-    tags: ['导数', '高阶导数', 'e^x/sinx'],
+    tags: ['导数', '高阶导数', 'e^{x}/sinx'],
     variantCount: 36,
     generate(rand, diff) {
       const fns = [
-        { fn: 'e^(ax)', n: 4, ans: 'a^4·e^(ax)', sol: '每阶导数乘 a，n 阶 = a^n·e^(ax)' },
-        { fn: 'sin(ax)', n: 4, ans: 'a^4·sin(ax)', sol: '四阶一个周期：sin → cos → -sin → -cos → sin，第4阶回到 sin' },
-        { fn: 'cos(ax)', n: 3, ans: 'a^3·sin(ax)', sol: '三阶：cos → -sin → -cos → sin，三阶 = a³·sin(ax)' },
-        { fn: 'ln(1+x)', n: 3, ans: '2/(1+x)^3', sol: '(ln(1+x))^(n) = (-1)^(n+1)·(n-1)!/(1+x)^n，三阶 = 2/(1+x)³' },
+        { fn: 'e^(ax)', n: 4, ans: 'a^{4}·e^(ax)', sol: '每阶导数乘 a，n 阶 = a^{n}·e^(ax)' },
+        { fn: 'sin(ax)', n: 4, ans: 'a^{4}·sin(ax)', sol: '四阶一个周期：sin → cos → -sin → -cos → sin，第4阶回到 sin' },
+        { fn: 'cos(ax)', n: 3, ans: 'a^{3}·sin(ax)', sol: '三阶：cos → -sin → -cos → sin，三阶 = a³·sin(ax)' },
+        { fn: 'ln(1+x)', n: 3, ans: '2/(1+x)^{3}', sol: '(ln(1+x))^(n) = (-1)^(n+1)·(n-1)!/(1+x)^{n}，三阶 = 2/(1+x)³' },
       ];
       const f = randPick(rand, fns);
       const a = randInt(rand, 2, 4);
@@ -1169,10 +1169,10 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['导数', '对数求导', '幂指函数'],
     variantCount: 28,
     generate(_rand, diff) {
-      // y = x^x 的导数 = x^x·(1+lnx)
-      const answer = 'x^x·(1+lnx)';
+      // y = x^{x} 的导数 = x^{x}·(1+lnx)
+      const answer = 'x^{x}·(1+lnx)';
       const problem = joinLines([
-        String.raw`用对数求导法求 $y = x^x$ 的导数 $y' = $`,
+        String.raw`用对数求导法求 $y = x^{x}$ 的导数 $y' = $`,
       ]);
       const solution = joinLines([
         '**对数求导法**',
@@ -1326,10 +1326,10 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         String.raw`$$\\begin{cases}
   x = ${a}t \\
-  y = t^2
+  y = t^{2}
 \\end{cases}$$`,
         '',
-        String.raw`则 $\dfrac{d^2 y}{dx^2} = $`,
+        String.raw`则 $\dfrac{d^{2} y}{dx^{2}} = $`,
       ]);
       const solution = joinLines([
         '**参数方程二阶导：d²y/dx² = (d/dt)(dy/dx) / (dx/dt)**',
@@ -1340,9 +1340,9 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '二阶导数：',
         '',
-        String.raw`$\dfrac{d^2y}{dx^2} = \dfrac{d}{dt}\\left(\dfrac{2t}{${a}}\\right) \bigg/ \dfrac{dx}{dt}$`,
+        String.raw`$\dfrac{d^{2y}}{dx^{2}} = \dfrac{d}{dt}\\left(\dfrac{2t}{${a}}\\right) \bigg/ \dfrac{dx}{dt}$`,
         '',
-        String.raw`$= \dfrac{2/${a}}{${a}} = \dfrac{2}{${a}^2} = ${fracLatex(2, a * a)}$`,
+        String.raw`$= \dfrac{2/${a}}{${a}} = \dfrac{2}{${a}^{2}} = ${fracLatex(2, a * a)}$`,
       ]);
       return {
         type: 'fill-blank' as QuestionType,
@@ -1370,9 +1370,9 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '设隐函数 y = y(x) 由方程确定：',
         '',
-        `$x^2 + y^2 = ${a}^2$`,
+        `$x^{2} + y^{2} = ${a}^{2}$`,
         '',
-        String.raw`求二阶导数 $\dfrac{d^2 y}{dx^2}$（用 y 表示）。`,
+        String.raw`求二阶导数 $\dfrac{d^{2} y}{dx^{2}}$（用 y 表示）。`,
       ]);
       const solution = joinLines([
         '**隐函数求导：两边对 x 求导，y 看作 x 的函数**',
@@ -1395,7 +1395,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `由 x² + y² = ${a}²：`,
         '',
-        String.raw`$y'' = -\dfrac{${a}^2}{y^3} = -\dfrac{${a*a}}{y^3}$`,
+        String.raw`$y'' = -\dfrac{${a}^{2}}{y^{3}} = -\dfrac{${a*a}}{y^{3}}$`,
       ]);
       return {
         type: 'calculation' as QuestionType,
@@ -1418,13 +1418,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const a = randInt(rand, 1, 3);
       const b = a + randInt(rand, 1, 2);
       // 证明：存在 ξ ∈ (a,b) 使 f'(ξ) + f(ξ) = 0
-      // 构造 F(x) = e^x · f(x)
+      // 构造 F(x) = e^{x} · f(x)
       const problem = joinLines([
         `设函数 f(x) 在 [${a}, ${b}] 上连续，在 (${a}, ${b}) 内可导，且 f(${a}) = f(${b}) = 0。`,
         '',
         `证明：存在 ξ ∈ (${a}, ${b})，使得 f'(ξ) + f(ξ) = 0。`,
       ]);
-      const answer = '构造 F(x)=e^x·f(x)，由罗尔定理得证';
+      const answer = '构造 F(x)=e^{x}·f(x)，由罗尔定理得证';
       const solution = joinLines([
         '**思路：凑导数形式 → 构造辅助函数 → 罗尔定理**',
         '',
@@ -1432,15 +1432,15 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         'e^ξ · f\'(ξ) + e^ξ · f(ξ) = 0',
         '',
-        '即 [e^x · f(x)]\'|_{x=ξ} = 0',
+        '即 [e^{x} · f(x)]\'|_{x=ξ} = 0',
         '',
-        '**构造辅助函数**：F(x) = e^x · f(x)',
+        '**构造辅助函数**：F(x) = e^{x} · f(x)',
         '',
         '**验证条件：**',
         '',
-        `1. F(x) 在 [${a}, ${b}] 上连续（e^x 连续，f(x) 连续）`,
+        `1. F(x) 在 [${a}, ${b}] 上连续（e^{x} 连续，f(x) 连续）`,
         '',
-        `2. F(x) 在 (${a}, ${b}) 内可导（e^x 可导，f(x) 可导）`,
+        `2. F(x) 在 (${a}, ${b}) 内可导（e^{x} 可导，f(x) 可导）`,
         '',
         `3. F(${a}) = e^${a} · f(${a}) = 0`,
         '',
@@ -1458,7 +1458,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'proof' as QuestionType,
         score: 14,
         problem, answer, solution,
-        hint: '构造 F(x) = e^x·f(x)，用罗尔定理',
+        hint: '构造 F(x) = e^{x}·f(x)，用罗尔定理',
       };
     },
   },
@@ -1588,7 +1588,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate(rand, diff) {
       const a = randInt(rand, 2, 5);
       const n = randInt(rand, 2, 4);
-      // ∫ (ax+b)^n dx = (ax+b)^(n+1) / (a(n+1)) + C
+      // ∫ (ax+b)^{n} dx = (ax+b)^(n+1) / (a(n+1)) + C
       const b = randInt(rand, 1, 4);
       const realAnsDen = a * (n + 1);
       const realAnswer = `(${a}x+${b})^${n + 1}/${realAnsDen} + C`;
@@ -1625,7 +1625,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const a = randInt(rand, 2, 5);
       const types = [
         { fn: 'sin(ax)·cos(ax)', ans: 'sin²(ax)/(2a)', sol: '凑微分：令 u=sin(ax), du=a·cos(ax)dx，∫u·du/a = u²/(2a)' },
-        { fn: 'e^x · sin(e^x)', ans: '-cos(e^x)', sol: '凑微分：令 u=e^x, du=e^x·dx，∫sinu·du = -cosu' },
+        { fn: 'e^{x} · sin(e^{x})', ans: '-cos(e^{x})', sol: '凑微分：令 u=e^{x}, du=e^{x}·dx，∫sinu·du = -cosu' },
         { fn: 'lnx / x', ans: 'ln²x/2', sol: '凑微分：令 u=lnx, du=dx/x，∫u·du = u²/2' },
       ];
       const t = randPick(rand, types);
@@ -1649,11 +1649,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     name: '分部积分法',
     type: 'fill-blank' as QuestionType,
     difficultyRange: [2, 3],
-    tags: ['积分', '分部积分', 'x·e^x'],
+    tags: ['积分', '分部积分', 'x·e^{x}'],
     variantCount: 42,
     generate(rand, diff) {
       const types = [
-        { fn: 'x·e^x', ans: '(x-1)e^x + C', sol: 'u=x, dv=e^xdx, du=dx, v=e^x → uv-∫vdu = xe^x - e^x + C' },
+        { fn: 'x·e^{x}', ans: '(x-1)e^{x} + C', sol: 'u=x, dv=e^{xdx}, du=dx, v=e^{x} → uv-∫vdu = xe^{x} - e^{x} + C' },
         { fn: 'x·sinx', ans: '-x·cosx + sinx + C', sol: 'u=x, dv=sinxdx → -xcosx + ∫cosxdx = -xcosx + sinx + C' },
         { fn: 'lnx', ans: 'x·lnx - x + C', sol: 'u=lnx, dv=dx → xlnx - ∫x·(1/x)dx = xlnx - x + C' },
         { fn: 'x·lnx', ans: 'x²/2·lnx - x²/4 + C', sol: 'u=lnx, dv=xdx → x²/2·lnx - ∫x²/2·(1/x)dx = x²lnx/2 - x²/4 + C' },
@@ -1684,7 +1684,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const a = randInt(rand, 1, 3);
       const b = randInt(rand, a + 2, a + 5);
       const n = randInt(rand, 2, 4);
-      // ∫_a^b x^n dx = (b^(n+1) - a^(n+1))/(n+1)
+      // ∫_a^{b} x^{n} dx = (b^(n+1) - a^(n+1))/(n+1)
       const ansNum = Math.pow(b, n + 1) - Math.pow(a, n + 1);
       const answer = `${ansNum}/${n + 1}`;
       const problem = joinLines([
@@ -1797,7 +1797,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const solution = joinLines([
         '**无穷限反常积分：∫ₐ^∞ f(x)dx = lim(b→∞) ∫ₐᵇ f(x)dx**',
         '',
-        `∫₀^b e^(-${a}x)dx = [-e^(-${a}x)/${a}]₀ᵇ = (1 - e^(-${a}b))/${a}`,
+        `∫₀^{b} e^(-${a}x)dx = [-e^(-${a}x)/${a}]₀ᵇ = (1 - e^(-${a}b))/${a}`,
         '',
         `取极限 b→∞：e^(-${a}b) → 0`,
         '',
@@ -1825,7 +1825,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // ∫√(a²-x²)dx 从 0 到 a = πa²/4（1/4 圆面积）
       const answer = `π${a}²/4`;
       const problem = joinLines([
-        String.raw`$displaystyle int_{0}^{${a}} sqrt{${a}^2 - x^2} dx = $`,
+        String.raw`$displaystyle int_{0}^{${a}} sqrt{${a}^{2} - x^{2}} dx = $`,
         '',
         '（提示：几何意义 / 三角代换）',
       ]);
@@ -1926,15 +1926,15 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
   {
     id: 'int-xn-lnx',
     topic: 'single-var-int',
-    name: 'x^n·lnx 分部积分',
+    name: 'x^{n}·lnx 分部积分',
     type: 'fill-blank' as QuestionType,
     difficultyRange: [2, 3],
     tags: ['积分', '分部积分', '对数函数'],
     variantCount: 36,
     generate(rand, diff) {
       const n = randInt(rand, 1, 4);
-      // ∫ x^n · lnx dx
-      // 分部：u = lnx, dv = x^n dx
+      // ∫ x^{n} · lnx dx
+      // 分部：u = lnx, dv = x^{n} dx
       // = x^(n+1)·lnx/(n+1) - ∫ x^(n+1)/(n+1) · 1/x dx
       // = x^(n+1)·lnx/(n+1) - x^(n+1)/(n+1)² + C
       const np1 = n + 1;
@@ -1955,13 +1955,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         String.raw`$= \dfrac{x^{${np1}} \\ln x}{${np1}} - \dfrac{1}{${np1}} \\int x^${n} dx$`,
         '',
-        String.raw`$= \dfrac{x^{${np1}} \\ln x}{${np1}} - \dfrac{x^{${np1}}}{${np1}^2} + C$`,
+        String.raw`$= \dfrac{x^{${np1}} \\ln x}{${np1}} - \dfrac{x^{${np1}}}{${np1}^{2}} + C$`,
       ]);
       return {
         type: 'fill-blank' as QuestionType,
         score: diff === 2 ? 6 : 7,
         problem, answer, solution,
-        hint: '分部积分，u=lnx（让对数消失），dv=x^n dx',
+        hint: '分部积分，u=lnx（让对数消失），dv=x^{n} dx',
       };
     },
   },
@@ -2043,7 +2043,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         const problem = joinLines([
           '利用华里士公式计算定积分：',
           '',
-          String.raw`$\displaystyle \\int_0^{\\frac{\\pi}{2}} \\sin^4 x \, dx = $`,
+          String.raw`$\displaystyle \\int_0^{\\frac{\\pi}{2}} \\sin^{4} x \, dx = $`,
         ]);
         const answer = '3π/16';
         const solution = joinLines([
@@ -2070,7 +2070,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         const problem = joinLines([
           '利用华里士公式计算定积分：',
           '',
-          String.raw`$\displaystyle \\int_0^{\\frac{\\pi}{2}} \\sin^3 x \, dx = $`,
+          String.raw`$\displaystyle \\int_0^{\\frac{\\pi}{2}} \\sin^{3} x \, dx = $`,
         ]);
         const answer = '2/3';
         const solution = joinLines([
@@ -2106,7 +2106,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 30,
     generate(rand, diff) {
       const a = randInt(rand, 1, 3);
-      // ∫_{-a}^{a} [x³ + x²] dx
+      // ∫_{-a}^{a}} [x³ + x²] dx
       // 奇函数部分 x³ 在对称区间积分 = 0
       // 偶函数部分 x² = 2∫₀ᵃ x²dx = 2·a³/3 = 2a³/3
       const ansNum = 2 * a * a * a;
@@ -2114,18 +2114,18 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '计算定积分（利用奇偶性简化）：',
         '',
-        String.raw`$\displaystyle \\int_{-${a}}^{${a}} (x^3 + x^2) \, dx = $`,
+        String.raw`$\displaystyle \\int_{-${a}}^{${a}} (x^{3} + x^{2}) \, dx = $`,
       ]);
       const solution = joinLines([
         '**对称区间性质：奇函数积分 = 0，偶函数积分 = 2 倍半区间**',
         '',
-        String.raw`原式 $= \\int_{-${a}}^{${a}} x^3 dx + \\int_{-${a}}^{${a}} x^2 dx$`,
+        String.raw`原式 $= \\int_{-${a}}^{${a}} x^{3} dx + \\int_{-${a}}^{${a}} x^{2} dx$`,
         '',
         `第一个积分：f(x) = x³，f(-x) = -x³ = -f(x) → 奇函数，在对称区间积分为 0`,
         '',
         `第二个积分：g(x) = x²，g(-x) = x² = g(x) → 偶函数`,
         '',
-        String.raw`$\\int_{-${a}}^{${a}} x^2 dx = 2\\int_0^{${a}} x^2 dx$`,
+        String.raw`$\\int_{-${a}}^{${a}} x^{2} dx = 2\\int_0^{${a}} x^{2} dx$`,
         '',
         `     = 2 · [x³/3]₀^${a} = 2 · ${a}³/3 = ${ansNum}/3`,
         '',
@@ -2160,7 +2160,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         String.raw`$\displaystyle \\int x^${n} e^{${a}x} \, dx$`,
       ]);
       const solution = joinLines([
-        '**分部积分：∫u dv = uv - ∫v du，取 u = x^n，dv = e^(ax)dx**',
+        '**分部积分：∫u dv = uv - ∫v du，取 u = x^{n}，dv = e^(ax)dx**',
         '',
         String.raw`设 $u = x^{${n}}$，$dv = e^{${a}x}dx$，则 $du = ${n}x^{${n - 1}}dx$，$v = \\frac{1}{${a}}e^{${a}x}$`,
         '',
@@ -2171,7 +2171,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
           '',
           '第二次分部：∫xe^(ax)dx = (x/a)e^(ax) - (1/a²)e^(ax)',
           '',
-          String.raw`所以 $\\int x^2 e^{${a}x}dx = \\left(\\frac{x^2}{${a}} - \\frac{2x}{${a * a}} + \\frac{2}{${a ** 3}}\\right)e^{${a}x} + C$`,
+          String.raw`所以 $\\int x^{2} e^{${a}x}dx = \\left(\\frac{x^{2}}{${a}} - \\frac{2x}{${a * a}} + \\frac{2}{${a ** 3}}\\right)e^{${a}x} + C$`,
         ] : []),
         '',
         `答案：${answer}`,
@@ -2180,7 +2180,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'fill-blank' as QuestionType,
         score: diff === 2 ? 6 : 7,
         problem, answer, solution,
-        hint: '取 u = x^n，dv = e^(ax)dx，n=2 需分部两次',
+        hint: '取 u = x^{n}，dv = e^(ax)dx，n=2 需分部两次',
       };
     },
   },
@@ -2204,8 +2204,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '计算不定积分：',
         '',
         isDirect
-          ? String.raw`$\displaystyle \\int \\frac{dx}{x^2 + ${aSq}}$`
-          : String.raw`$\displaystyle \\int \\frac{dx}{x^2 + 2x + ${aSq + 1}}$`,
+          ? String.raw`$\displaystyle \\int \\frac{dx}{x^{2} + ${aSq}}$`
+          : String.raw`$\displaystyle \\int \\frac{dx}{x^{2} + 2x + ${aSq + 1}}$`,
       ]);
       const solution = joinLines([
         '**基本公式：∫dx/(x²+a²) = (1/a)arctan(x/a) + C**',
@@ -2214,7 +2214,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
           '分母配方：x² + 2x + ' + (aSq + 1) + ' = (x + 1)² + ' + aSq,
           '',
         ]),
-        String.raw`原式 $= \\int \\frac{d${isDirect ? 'x' : '(x+1)'}}{${isDirect ? 'x' : '(x+1)'}^2 + ${aSq}} = \\frac{1}{${a}}\\arctan\\frac{${isDirect ? 'x' : 'x+1'}}{${a}} + C$`,
+        String.raw`原式 $= \\int \\frac{d${isDirect ? 'x' : '(x+1)'}}{${isDirect ? 'x' : '(x+1)'}^{2} + ${aSq}} = \\frac{1}{${a}}\\arctan\\frac{${isDirect ? 'x' : 'x+1'}}{${a}} + C$`,
         '',
         `答案：${answer}`,
       ]);
@@ -2279,7 +2279,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '利用定积分的几何意义计算：',
         '',
-        String.raw`$\displaystyle \\int_0^{${a}} \\sqrt{${a * a} - x^2} \, dx = $`,
+        String.raw`$\displaystyle \\int_0^{${a}} \\sqrt{${a * a} - x^{2}} \, dx = $`,
       ]);
       const solution = joinLines([
         '**几何意义：y = √(a² - x²) 是上半圆，∫₀ᵃ 是四分之一圆的面积**',
@@ -2288,7 +2288,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `积分区间 [0, ${a}] 对应第一象限，即四分之一圆`,
         '',
-        String.raw`$\\int_0^{${a}} \\sqrt{${a * a} - x^2}\,dx = \\frac{1}{4}\\pi \\cdot ${a}^2 = \\frac{${a * a}\\pi}{4}$`,
+        String.raw`$\\int_0^{${a}} \\sqrt{${a * a} - x^{2}}\,dx = \\frac{1}{4}\\pi \\cdot ${a}^{2} = \\frac{${a * a}\\pi}{4}$`,
       ]);
       return {
         type: 'fill-blank' as QuestionType,
@@ -2312,7 +2312,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate(rand, diff) {
       const a = randInt(rand, 2, 5);
       const b = randInt(rand, 2, 4);
-      // z = x^a + y^b，求 ∂z/∂x
+      // z = x^{a} + y^{b}，求 ∂z/∂x
       const answer = `${a}x^${a - 1}`;
       const problem = joinLines([
         `设 z = x^${a} + y^${b}，则 ∂z/∂x = `,
@@ -2343,7 +2343,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 40,
     generate(rand, diff) {
       const a = randInt(rand, 2, 5);
-      // z = x^2 + axy + y^2 在 (1,1) 处的全微分
+      // z = x^{2} + axy + y^{2} 在 (1,1) 处的全微分
       // dz = (2x+ay)dx + (ax+2y)dy，在 (1,1): (2+a)dx + (a+2)dy
       const coeff = 2 + a;
       const answer = `${coeff}dx + ${coeff}dy`;
@@ -2378,7 +2378,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 35,
     generate(rand, diff) {
       const a = randInt(rand, 2, 4);
-      // z = u^v, u = sinx, v = cosx，这是一元复合... 改一下
+      // z = u^{v}, u = sinx, v = cosx，这是一元复合... 改一下
       // z = e^(u+v), u = a·x², v = a·y²，求 ∂z/∂x
       // ∂z/∂x = e^(u+v) · 2ax = 2ax·e^(ax²+ay²)
       const answer = `${2 * a}x · e^(${a}x² + ${a}y²)`;
@@ -2627,7 +2627,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '梯度的模（即方向导数最大值）：',
         '',
-        String.raw`$|\\nabla f| = \\sqrt{${gradX}^2 + ${gradY}^2} = \\sqrt{${magSq}} = 2\\sqrt{${a*a + b*b}}$`,
+        String.raw`$|\\nabla f| = \\sqrt{${gradX}^{2} + ${gradY}^{2}} = \\sqrt{${magSq}} = 2\\sqrt{${a*a + b*b}}$`,
       ]);
       return {
         type: 'fill-blank' as QuestionType,
@@ -2727,7 +2727,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '构造拉格朗日函数：',
         '',
-        String.raw`$L(x, y, \\lambda) = xy + \\lambda(${a}^2 - x^2 - y^2)$`,
+        String.raw`$L(x, y, \\lambda) = xy + \\lambda(${a}^{2} - x^{2} - y^{2})$`,
         '',
         '求偏导并令其为 0：',
         '',
@@ -2943,7 +2943,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const bSquared = b * b;
       const answer = `${aCubed * bSquared}/6`;
       const problem = joinLines([
-        String.raw`计算二重积分 $iint_D x^2 y , dxdy$，其中 D: 0 ≤ x ≤ ${a}, 0 ≤ y ≤ ${b}`,
+        String.raw`计算二重积分 $iint_D x^{2} y , dxdy$，其中 D: 0 ≤ x ≤ ${a}, 0 ≤ y ≤ ${b}`,
       ]);
       const solution = joinLines([
         '**矩形域上的二重积分可分离变量**',
@@ -2974,10 +2974,10 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate(rand, diff) {
       const a = randInt(rand, 2, 5);
       // ∬_D e^(-x²-y²) dxdy，D: x²+y² ≤ a²
-      // = ∫₀^2π dθ ∫₀ᵃ e^(-r²) rdr = π(1 - e^(-a²))
+      // = ∫₀^{2}π dθ ∫₀ᵃ e^(-r²) rdr = π(1 - e^(-a²))
       const answer = `π(1 - e^(-${a * a}))`;
       const problem = joinLines([
-        String.raw`用极坐标计算 $iint_D e^{-(x^2+y^2)} , dxdy$，其中 D: x² + y² ≤ ${a}²`,
+        String.raw`用极坐标计算 $iint_D e^{-(x^{2}+y^{2})} , dxdy$，其中 D: x² + y² ≤ ${a}²`,
       ]);
       const solution = joinLines([
         '**极坐标变换：x = rcosθ, y = rsinθ, dxdy = rdrdθ**',
@@ -3010,11 +3010,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate(rand) {
       const a = randInt(rand, 2, 4);
       // 三重积分 ∭_Ω (x²+y²+z²) dV，Ω: x²+y²+z² ≤ a²
-      // 球坐标 = ∫₀^2π dθ ∫₀^π sinφ dφ ∫₀ᵃ r² · r² dr = 2π · 2 · a⁵/5 = 4πa⁵/5
+      // 球坐标 = ∫₀^{2}π dθ ∫₀^π sinφ dφ ∫₀ᵃ r² · r² dr = 2π · 2 · a⁵/5 = 4πa⁵/5
       const a5th = a ** 5;
       const answer = `4π${a5th}/5`;
       const problem = joinLines([
-        String.raw`计算三重积分 $iiint_Omega (x^2 + y^2 + z^2) dV$，Ω: x² + y² + z² ≤ ${a}²`,
+        String.raw`计算三重积分 $iiint_Omega (x^{2} + y^{2} + z^{2}) dV$，Ω: x² + y² + z² ≤ ${a}²`,
       ]);
       const solution = joinLines([
         '**球坐标：x²+y²+z² = r², dV = r²sinφ·drdφdθ**',
@@ -3231,7 +3231,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '交换下列二重积分的积分次序（写出新的积分限）：',
         '',
-        String.raw`$\displaystyle \\int_0^{${a}} dx \\int_0^{x} f(x, y) \, dy$`,
+        String.raw`$\displaystyle \\int_0^{${a}} dx \\int_0^{x}} f(x, y) \, dy$`,
       ]);
       const answer = `∫₀^${a} dy ∫ᵧ^${a} f(x,y) dx`;
       const solution = joinLines([
@@ -3251,7 +3251,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**交换后：**',
         '',
-        String.raw`$\\int_0^{${a}} dx \\int_0^{x} f(x,y) dy = \\int_0^{${a}} dy \\int_y^{${a}} f(x,y) dx$`,
+        String.raw`$\\int_0^{${a}} dx \\int_0^{x}} f(x,y) dy = \\int_0^{${a}} dy \\int_y^{${a}} f(x,y) dx$`,
         '',
         '注意：交换积分次序时，积分区域不变，只是描述方式改变。',
       ]);
@@ -3281,7 +3281,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '计算第一类曲线积分：',
         '',
-        String.raw`$\displaystyle \\oint_L x \, ds$，其中 L 为圆周 $x^2 + y^2 = ${a}^2$。`,
+        String.raw`$\displaystyle \\oint_L x \, ds$，其中 L 为圆周 $x^{2} + y^{2} = ${a}^{2}$。`,
       ]);
       const solution = joinLines([
         '**第一类曲线积分：∫_L f(x,y) ds，ds 为弧长元素**',
@@ -3300,7 +3300,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '代入积分：',
         '',
-        String.raw`$\\oint_L x \, ds = \\int_0^{2\\pi} ${a} \\cos t \\cdot ${a} \, dt$`,
+        String.raw`$\\oint_L x \, ds = \\int_0^{2}\\pi} ${a} \\cos t \\cdot ${a} \, dt$`,
         '',
         `     = ${a*a} ∫₀²π cos t dt = ${a}² [sin t]₀²π = 0`,
         '',
@@ -3343,7 +3343,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         String.raw`$\displaystyle \\iint_{\Sigma} x \, dydz + y \, dzdx + z \, dxdy$`,
         '',
-        String.raw`其中 $\Sigma$ 为上半球面 $z = \\sqrt{${a}^2 - x^2 - y^2}$ 的上侧。`,
+        String.raw`其中 $\Sigma$ 为上半球面 $z = \\sqrt{${a}^{2} - x^{2} - y^{2}}$ 的上侧。`,
       ]);
       const answer = `${ansCoef}π${a}³ = ${ansCoef * a * a * a}π`;
       const solution = joinLines([
@@ -3430,7 +3430,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate(rand, diff) {
       const a = randInt(rand, 1, 3);
       const n = randInt(rand, 1, 3);
-      // ∬_D (x²+y²)^n dσ, D: x²+y²≤a²
+      // ∬_D (x²+y²)^{n} dσ, D: x²+y²≤a²
       // 极坐标：∫₀²π dθ ∫₀ᵃ r^(2n)·r dr = 2π · [r^(2n+2)/(2n+2)]₀ᵃ = 2π·a^(2n+2)/(2n+2) = π·a^(2n+2)/(n+1)
       const denom = n + 1;
       const exp = 2 * n + 2;
@@ -3474,9 +3474,9 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const a = randInt(rand, 1, 3);
       // Ω 由 z = x²+y² 与 z = a 围成，计算 ∭_Ω z dV（或体积）
       // 柱坐标：z: r²→a, r: 0→√a, θ: 0→2π
-      // 体积 V = ∫₀²π dθ ∫₀^√a r dr ∫_{r²}^a dz = 2π ∫₀^√a r(a-r²) dr = 2π [a·r²/2 - r⁴/4]₀^√a
+      // 体积 V = ∫₀²π dθ ∫₀^√a r dr ∫_{r²}^{a} dz = 2π ∫₀^√a r(a-r²) dr = 2π [a·r²/2 - r⁴/4]₀^√a
       // = 2π (a·a/2 - a²/4) = 2π·a²/4 = πa²/2
-      // ∭ z dV = ∫₀²π dθ ∫₀^√a r dr ∫_{r²}^a z dz = 2π ∫₀^√a r·(a²-r⁴)/2 dr = π ∫₀^√a (a²r - r⁵) dr
+      // ∭ z dV = ∫₀²π dθ ∫₀^√a r dr ∫_{r²}^{a} z dz = 2π ∫₀^√a r·(a²-r⁴)/2 dr = π ∫₀^√a (a²r - r⁵) dr
       // = π [a²·r²/2 - r⁶/6]₀^√a = π (a²·a/2 - a³/6) = π·a³/3
       const answer = `π${a}³/3`;
       const problem = joinLines([
@@ -3495,7 +3495,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `z: r² → ${a}`,
         '',
-        '原式 = ∫₀²π dθ ∫₀^√a r dr ∫_{r²}^a z dz',
+        '原式 = ∫₀²π dθ ∫₀^√a r dr ∫_{r²}^{a} z dz',
         '',
         `= 2π · ∫₀^√a r · [z²/2]_{r²}^${a} dr`,
         '',
@@ -3527,8 +3527,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // S: x+y+z=a 在第一卦限部分，计算 ∬_S z dS
       // dS = √(1+z_x²+z_y²) dxdy = √(1+1+1) dxdy = √3 dxdy
       // ∬ z dS = ∬ (a-x-y)·√3 dxdy, D: x≥0,y≥0,x+y≤a
-      // = √3·∫₀ᵃ dx ∫₀^{a-x} (a-x-y) dy
-      // = √3·∫₀ᵃ [(a-x)y - y²/2]₀^{a-x} dx = √3·∫₀ᵃ (a-x)²/2 dx
+      // = √3·∫₀ᵃ dx ∫₀^{a}-x} (a-x-y) dy
+      // = √3·∫₀ᵃ [(a-x)y - y²/2]₀^{a}-x} dx = √3·∫₀ᵃ (a-x)²/2 dx
       // = √3/2·[-(a-x)³/3]₀ᵃ = √3/2·a³/3 = √3·a³/6
       const answer = `√3·${a}³/6`;
       const problem = joinLines([
@@ -3620,8 +3620,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 由对称性，4 倍第一象限：4·∫₀ᵃ dx ∫₀^√(a²-x²) x dy
       // = 4·∫₀ᵃ x·√(a²-x²) dx
       // 令 u = a²-x², du = -2x dx
-      // = 4·(-1/2)·∫_{a²}⁰ √u du = 2·∫₀^{a²} u^(1/2) du
-      // = 2·(2/3)·[u^(3/2)]₀^{a²} = 4/3·a³
+      // = 4·(-1/2)·∫_{a²}⁰ √u du = 2·∫₀^{a}²} u^(1/2) du
+      // = 2·(2/3)·[u^(3/2)]₀^{a}²} = 4/3·a³
       const answer = `4·${a}³/3`;
       const problem = joinLines([
         `计算二重积分 ∬_D |x| dσ，其中 D: x² + y² ≤ ${a}²`,
@@ -3668,7 +3668,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['级数', '正项级数', '比较判别法'],
     variantCount: 28,
     generate(rand, diff) {
-      // Σ 1/n^p，p>1 收敛，p≤1 发散
+      // Σ 1/n^{p}，p>1 收敛，p≤1 发散
       // 取一个 1/n^(p-0.5) 这种不太好判断的
       // 简单点：Σ 1/(n²+1) 与 Σ 1/n² 比较 → 收敛
       const types = [
@@ -3700,14 +3700,14 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 25,
     generate(rand, diff) {
       const a = randInt(rand, 2, 5);
-      // Σ a^n / n!，比值 = a/(n+1) → 0 < 1 → 收敛
+      // Σ a^{n} / n!，比值 = a/(n+1) → 0 < 1 → 收敛
       const problem = joinLines([
-        `用比值判别法判断 Σ ${a}^n / n! 的敛散性（填收敛/发散）`,
+        `用比值判别法判断 Σ ${a}^{n} / n! 的敛散性（填收敛/发散）`,
       ]);
       const solution = joinLines([
         '**比值判别法：lim |u_{n+1}/u_n| = ρ，ρ<1 收敛，ρ>1 发散**',
         '',
-        `u_n = ${a}^n / n!，u_{n+1} = ${a}^(n+1) / (n+1)!`,
+        `u_n = ${a}^{n} / n!，u_{n+1} = ${a}^(n+1) / (n+1)!`,
         '',
         `u_{n+1}/u_n = ${a} / (n+1)`,
         '',
@@ -3734,14 +3734,14 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 25,
     generate(rand, diff) {
       const a = randInt(rand, 2, 4);
-      // Σ (a/n)^n，根值 = a/n → 0 < 1 → 收敛
+      // Σ (a/n)^{n}，根值 = a/n → 0 < 1 → 收敛
       const problem = joinLines([
-        `用根值判别法判断 Σ (${a}/n)^n 的敛散性（填收敛/发散）`,
+        `用根值判别法判断 Σ (${a}/n)^{n} 的敛散性（填收敛/发散）`,
       ]);
       const solution = joinLines([
         '**根值判别法：lim √(|u_n|) = ρ，ρ<1 收敛，ρ>1 发散**',
         '',
-        `u_n = (${a}/n)^n`,
+        `u_n = (${a}/n)^{n}`,
         '',
         `ⁿ√(|u_n|) = ${a}/n`,
         '',
@@ -3768,7 +3768,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 24,
     generate(rand, diff) {
       const p = randInt(rand, 1, 3);
-      // Σ (-1)^n / n^p
+      // Σ (-1)^{n} / n^{p}
       // p=1: 条件收敛（莱布尼茨判定收敛，绝对值级数发散）
       // p>1: 绝对收敛（绝对值也收敛）
       const ans = p === 1 ? '条件收敛' : '绝对收敛';
@@ -3803,7 +3803,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 30,
     generate(rand, diff) {
       const a = randInt(rand, 2, 5);
-      // Σ x^n / a^n，收敛半径 R = a
+      // Σ x^{n} / a^{n}，收敛半径 R = a
       const answer = String(a);
       const problem = joinLines([
         `求幂级数 Σ xⁿ / ${a}ⁿ 的收敛半径 R = `,
@@ -3932,7 +3932,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'fill-blank' as QuestionType,
         score: 8,
         problem, answer: 'x - x²/2 + x³/3 - x⁴/4 + ...', solution,
-        hint: '1/(1+x) = Σ(-x)^n，逐项积分',
+        hint: '1/(1+x) = Σ(-x)^{n}，逐项积分',
       };
     },
   },
@@ -3985,7 +3985,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         `p 级数 Σ 1/n^${p} 的敛散性是？（填收敛/发散）`,
       ]);
       const solution = joinLines([
-        '**p 级数判别：Σ 1/n^p，p > 1 收敛，p ≤ 1 发散**',
+        '**p 级数判别：Σ 1/n^{p}，p > 1 收敛，p ≤ 1 发散**',
         '',
         `这里 p = ${p}`,
         '',
@@ -4016,24 +4016,24 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 18,
     generate(rand, diff) {
       const a = randInt(rand, 2, 4);
-      // Σ x^n / n^a
-      // R = lim |a_n/a_{n+1}| = lim (n+1)^a/n^a = 1
+      // Σ x^{n} / n^{a}
+      // R = lim |a_n/a_{n+1}| = lim (n+1)^{a}/n^{a} = 1
       // 收敛区间 (-1, 1)
-      // x=1: Σ 1/n^a → a>1 收敛，a≤1 发散（p级数）
-      // x=-1: Σ (-1)^n/n^a → a>1 绝对收敛，a>0 条件收敛，a≤0 发散
+      // x=1: Σ 1/n^{a} → a>1 收敛，a≤1 发散（p级数）
+      // x=-1: Σ (-1)^{n}/n^{a} → a>1 绝对收敛，a>0 条件收敛，a≤0 发散
       const problem = joinLines([
         '求下列幂级数的收敛域：',
         '',
-        String.raw`$\displaystyle \\sum_{n=1}^{\\infty} \\frac{x^n}{n^${a}}$`,
+        String.raw`$\displaystyle \\sum_{n=1}^{\\infty} \\frac{x^{n}}{n^${a}}$`,
       ]);
       let endpoint1 = '';
       let endpoint2 = '';
       if (a > 1) {
         endpoint1 = 'x = 1：Σ 1/n^' + a + '（p级数，p=' + a + '>1）收敛';
-        endpoint2 = 'x = −1：Σ (−1)^n/n^' + a + '（绝对收敛，因为 |(−1)^n/n^' + a + '| = 1/n^' + a + ' 收敛）';
+        endpoint2 = 'x = −1：Σ (−1)^{n}/n^' + a + '（绝对收敛，因为 |(−1)^{n}/n^' + a + '| = 1/n^' + a + ' 收敛）';
       } else {
         endpoint1 = 'x = 1：Σ 1/n（调和级数）发散';
-        endpoint2 = 'x = −1：Σ (−1)^n/n（莱布尼茨级数）条件收敛';
+        endpoint2 = 'x = −1：Σ (−1)^{n}/n（莱布尼茨级数）条件收敛';
       }
       const answer = a > 1 ? `[−1, 1]（p=${a}>1，端点绝对收敛）` : `[−1, 1)（x=−1条件收敛，x=1发散）`;
       const solution = joinLines([
@@ -4079,21 +4079,21 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['级数', '幂级数', '和函数', 'arctan'],
     variantCount: 12,
     generate() {
-      // Σ_{n=0}^∞ (−1)^n x^(2n+1)/(2n+1) = arctan x
+      // Σ_{n=0}^∞ (−1)^{n} x^(2n+1)/(2n+1) = arctan x
       const problem = joinLines([
         '求幂级数的和函数：',
         '',
-        String.raw`$\displaystyle \\sum_{n=0}^{\\infty} \\frac{(-1)^n x^{2n+1}}{2n+1}$`,
+        String.raw`$\displaystyle \\sum_{n=0}^{\\infty} \\frac{(-1)^{n} x^{2n}+1}}{2n+1}$`,
       ]);
       const answer = 'arctan x，x ∈ [−1, 1]';
       const solution = joinLines([
         '**逐项求导 + 几何级数求和 + 积分还原**',
         '',
-        '设 S(x) = Σ_{n=0}^∞ (−1)^n x^(2n+1)/(2n+1)',
+        '设 S(x) = Σ_{n=0}^∞ (−1)^{n} x^(2n+1)/(2n+1)',
         '',
         '逐项求导（幂级数在收敛区间内可逐项求导）：',
         '',
-        "S'(x) = Σ_{n=0}^∞ (−1)^n x^(2n)",
+        "S'(x) = Σ_{n=0}^∞ (−1)^{n} x^(2n)",
         '',
         '这是公比为 −x² 的等比级数：',
         '',
@@ -4105,7 +4105,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**讨论端点：**',
         '',
-        'x = 1 时：Σ (−1)^n/(2n+1)（莱布尼茨级数，收敛）',
+        'x = 1 时：Σ (−1)^{n}/(2n+1)（莱布尼茨级数，收敛）',
         '',
         'x = −1 时：Σ (−1)^(3n+1)/(2n+1) = Σ (−1)^(n+1)/(2n+1)（也收敛）',
         '',
@@ -4205,12 +4205,12 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 16,
     generate(_rand, diff) {
       // Σ(n=1..∞) n·x^(n-1)，求 S(x)
-      // 已知 Σ x^n = x/(1-x)，逐项求导：Σ n x^(n-1) = 1/(1-x)²
+      // 已知 Σ x^{n} = x/(1-x)，逐项求导：Σ n x^(n-1) = 1/(1-x)²
       const answer = '1/(1−x)²，x ∈ (−1, 1)';
       const problem = joinLines([
         '求幂级数的和函数：',
         '',
-        String.raw`$\displaystyle \\sum_{n=1}^{\\infty} n x^{n-1}$`,
+        String.raw`$\displaystyle \\sum_{n=1}^{\\infty} n x^{n}-1}$`,
       ]);
       const solution = joinLines([
         '**逐项求导：将待求和级数转化为已知级数的导数**',
@@ -4296,7 +4296,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '求下列数项级数的和：',
         '',
-        String.raw`$\displaystyle \\sum_{n=1}^{\\infty} \\frac{(-1)^{n-1}}{n}$`,
+        String.raw`$\displaystyle \\sum_{n=1}^{\\infty} \\frac{(-1)^{n}-1}}{n}$`,
       ]);
       const solution = joinLines([
         '**利用 ln(1+x) 的幂级数展开**',
@@ -4331,12 +4331,12 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['级数', '幂级数', '和函数', '对数型'],
     variantCount: 16,
     generate(_rand, diff) {
-      // Σ(n=1..∞) x^n / n = -ln(1-x)
+      // Σ(n=1..∞) x^{n} / n = -ln(1-x)
       const answer = '−ln(1−x)，x ∈ [−1, 1)';
       const problem = joinLines([
         '求幂级数的和函数：',
         '',
-        String.raw`$\displaystyle \\sum_{n=1}^{\\infty} \\frac{x^n}{n}$`,
+        String.raw`$\displaystyle \\sum_{n=1}^{\\infty} \\frac{x^{n}}{n}$`,
       ]);
       const solution = joinLines([
         '**逐项求导 + 几何级数 + 积分还原**',
@@ -4398,7 +4398,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `积分：ln|y| = ${a}x + C₁`,
         '',
-        `y = Ce^(${a}x)（C = ±e^C₁ 为任意常数）`,
+        `y = Ce^(${a}x)（C = ±e^{C}₁ 为任意常数）`,
       ]);
       return {
         type: 'fill-blank' as QuestionType,
@@ -4419,27 +4419,27 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 30,
     generate(rand, diff) {
       const a = randInt(rand, 1, 3);
-      // y' + a·y = e^x，积分因子 μ = e^(ax)
-      // 通解：y = e^(-ax)(∫ e^(ax)·e^x dx + C) = e^(-ax)(e^((a+1)x)/(a+1) + C)
+      // y' + a·y = e^{x}，积分因子 μ = e^(ax)
+      // 通解：y = e^(-ax)(∫ e^(ax)·e^{x} dx + C) = e^(-ax)(e^((a+1)x)/(a+1) + C)
       const ap1 = a + 1;
-      const answer = `y = Ce^(-${a}x) + e^x/${ap1}`;
+      const answer = `y = Ce^(-${a}x) + e^{x}/${ap1}`;
       const problem = joinLines([
-        `一阶线性方程 y' + ${a}y = e^x 的通解 = `,
+        `一阶线性方程 y' + ${a}y = e^{x} 的通解 = `,
       ]);
       const solution = joinLines([
         '**一阶线性方程：y\' + P(x)y = Q(x)**',
         '',
-        `P(x) = ${a}，Q(x) = e^x`,
+        `P(x) = ${a}，Q(x) = e^{x}`,
         '',
         `积分因子 μ(x) = e^(∫${a}dx) = e^(${a}x)`,
         '',
-        `两边乘 μ：e^(${a}x)y' + ${a}e^(${a}x)y = e^(${a}x)·e^x`,
+        `两边乘 μ：e^(${a}x)y' + ${a}e^(${a}x)y = e^(${a}x)·e^{x}`,
         '',
         `d/dx [e^(${a}x) y] = e^(${ap1}x)`,
         '',
         `积分：e^(${a}x) y = e^(${ap1}x)/${ap1} + C`,
         '',
-        `y = Ce^(-${a}x) + e^x/${ap1}`,
+        `y = Ce^(-${a}x) + e^{x}/${ap1}`,
       ]);
       return {
         type: 'fill-blank' as QuestionType,
@@ -4653,8 +4653,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate() {
       // y' + y = y²，伯努利方程 n=2
       // 令 z = y^(-1)，z' = -y'/y²，代入：-z' + z = 1 → z' - z = -1
-      // 积分因子 e^(-x)，z = 1 + Ce^x，y = 1/z = 1/(1+Ce^x)
-      const answer = 'y = 1/(1 + Ce^x)';
+      // 积分因子 e^(-x)，z = 1 + Ce^{x}，y = 1/z = 1/(1+Ce^{x})
+      const answer = 'y = 1/(1 + Ce^{x})';
       const problem = joinLines([
         `伯努利方程 y' + y = y² 的通解 = `,
       ]);
@@ -4669,9 +4669,9 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '一阶线性，积分因子 e^(-x)',
         '',
-        'z = Ce^x + 1（通解形式）',
+        'z = Ce^{x} + 1（通解形式）',
         '',
-        '代回：1/y = Ce^x + 1 → y = 1/(1 + Ce^x)',
+        '代回：1/y = Ce^{x} + 1 → y = 1/(1 + Ce^{x})',
       ]);
       return {
         type: 'fill-blank' as QuestionType,
@@ -4691,15 +4691,15 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['微分方程', '欧拉方程', '二阶变系数'],
     variantCount: 18,
     generate() {
-      // x²y'' + xy' - y = 0，欧拉方程，令 x = e^t
+      // x²y'' + xy' - y = 0，欧拉方程，令 x = e^{t}
       // D(D-1)y + Dy - y = 0 → D²y - y = 0 → r²-1=0 → r=±1
-      // y = C₁e^t + C₂e^(-t) = C₁x + C₂/x
+      // y = C₁e^{t} + C₂e^(-t) = C₁x + C₂/x
       const answer = 'y = C₁x + C₂/x';
       const problem = joinLines([
         '欧拉方程 x²y″ + xy′ − y = 0 的通解 = ',
       ]);
       const solution = joinLines([
-        '**欧拉方程：令 x = e^t，则 xy\' = Dy，x²y\'\' = D(D-1)y，其中 D = d/dt**',
+        '**欧拉方程：令 x = e^{t}，则 xy\' = Dy，x²y\'\' = D(D-1)y，其中 D = d/dt**',
         '',
         '代入：D(D-1)y + Dy - y = 0',
         '',
@@ -4707,15 +4707,15 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '特征方程：r² - 1 = 0 → r = ±1',
         '',
-        'y(t) = C₁e^t + C₂e^(-t)',
+        'y(t) = C₁e^{t} + C₂e^(-t)',
         '',
-        '代回 x = e^t：y = C₁x + C₂/x',
+        '代回 x = e^{t}：y = C₁x + C₂/x',
       ]);
       return {
         type: 'fill-blank' as QuestionType,
         score: 8,
         problem, answer, solution,
-        hint: '欧拉方程：令 x = e^t，化成常系数',
+        hint: '欧拉方程：令 x = e^{t}，化成常系数',
       };
     },
   },
@@ -4744,7 +4744,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `通解：y = Ce^(-${a}x)`,
         '',
-        `代入 y(0) = 1：1 = Ce^0 → C = 1`,
+        `代入 y(0) = 1：1 = Ce^{0} → C = 1`,
         '',
         `特解：y = e^(-${a}x)`,
       ]);
@@ -4898,20 +4898,20 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 齐次特征方程 r² - 3r + 2 = 0 → r = 1, 2
       // 若 a = 1 或 a = 2（单根），特解设为 A·x·e^(ax)
       // 若 a ≠ 1 且 a ≠ 2（不是根），特解设为 A·e^(ax)
-      // 取 a = 1 为单根：设 y* = Axe^x
-      // y*' = Ae^x + Axe^x = A(1+x)e^x
-      // y*'' = A(2+x)e^x
+      // 取 a = 1 为单根：设 y* = Axe^{x}
+      // y*' = Ae^{x} + Axe^{x} = A(1+x)e^{x}
+      // y*'' = A(2+x)e^{x}
       // 代入：A(2+x) - 3A(1+x) + 2Ax = 1
       // 2A + Ax - 3A - 3Ax + 2Ax = 1
       // -A = 1 → A = -1
-      // 特解：y* = -xe^x
-      // 通解：y = C₁e^x + C₂e^(2x) - xe^x
+      // 特解：y* = -xe^{x}
+      // 通解：y = C₁e^{x} + C₂e^(2x) - xe^{x}
       const problem = joinLines([
         '求微分方程的通解：',
         '',
-        `y'' − 3y' + 2y = e^x`,
+        `y'' − 3y' + 2y = e^{x}`,
       ]);
-      const answer = 'y = C₁e^x + C₂e^(2x) − xe^x';
+      const answer = 'y = C₁e^{x} + C₂e^(2x) − xe^{x}';
       const solution = joinLines([
         '**二阶常系数非齐次线性方程：y\'\' + py\' + qy = e^(λx)·Pₘ(x)**',
         '',
@@ -4921,29 +4921,29 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '(r − 1)(r − 2) = 0 → r₁ = 1, r₂ = 2',
         '',
-        '齐次通解：Y = C₁e^x + C₂e^(2x)',
+        '齐次通解：Y = C₁e^{x} + C₂e^(2x)',
         '',
         '**第二步：求非齐次特解**',
         '',
-        '右端 f(x) = e^x，属 e^(λx)·Pₘ(x) 型',
+        '右端 f(x) = e^{x}，属 e^(λx)·Pₘ(x) 型',
         '',
         'λ = 1，m = 0（常数多项式）',
         '',
         'λ = 1 是特征方程的**单根**（k = 1）',
         '',
-        '设特解 y* = x · A · e^x = Ax·e^x',
+        '设特解 y* = x · A · e^{x} = Ax·e^{x}',
         '',
         '求导：',
         '',
-        'y*\' = Ae^x + Axe^x = A(1 + x)e^x',
+        'y*\' = Ae^{x} + Axe^{x} = A(1 + x)e^{x}',
         '',
-        'y*\'\' = A(2 + x)e^x',
+        'y*\'\' = A(2 + x)e^{x}',
         '',
         '代入原方程：',
         '',
-        'A(2+x)e^x − 3A(1+x)e^x + 2Axe^x = e^x',
+        'A(2+x)e^{x} − 3A(1+x)e^{x} + 2Axe^{x} = e^{x}',
         '',
-        '两边除以 e^x：',
+        '两边除以 e^{x}：',
         '',
         'A(2+x) − 3A(1+x) + 2Ax = 1',
         '',
@@ -4951,17 +4951,17 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '−A = 1 → A = −1',
         '',
-        '特解：y* = −xe^x',
+        '特解：y* = −xe^{x}',
         '',
         '**第三步：通解 = 齐次通解 + 特解**',
         '',
-        'y = C₁e^x + C₂e^(2x) − xe^x',
+        'y = C₁e^{x} + C₂e^(2x) − xe^{x}',
       ]);
       return {
         type: 'calculation' as QuestionType,
         score: diff === 2 ? 10 : 12,
         problem, answer, solution,
-        hint: 'λ=1是单根，设特解 y*=Axe^x，代入求 A',
+        hint: 'λ=1是单根，设特解 y*=Axe^{x}，代入求 A',
       };
     },
   },
@@ -5005,13 +5005,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '分离变量：dp/p = dy/y',
         '',
-        '积分：ln|p| = ln|y| + C₀ → p = C₁y（C₁ = ±e^C₀）',
+        '积分：ln|p| = ln|y| + C₀ → p = C₁y（C₁ = ±e^{C}₀）',
         '',
         '即 dy/dx = C₁y',
         '',
         '分离变量再积分：dy/y = C₁dx → ln|y| = C₁x + C₂',
         '',
-        'y = C₂·e^(C₁x)（C₂ = ±e^C₂ 为任意常数）',
+        'y = C₂·e^(C₁x)（C₂ = ±e^{C}₂ 为任意常数）',
         '',
         '**情况 2：p = 0，即 y = C（常数）**',
         '',
@@ -5755,7 +5755,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     name: '含参数极限求参数关系（sin/exp）',
     type: 'fill-blank' as QuestionType,
     difficultyRange: [2, 3],
-    tags: ['极限', '参数', '等价无穷小', 'sin', 'e^x-1'],
+    tags: ['极限', '参数', '等价无穷小', 'sin', 'e^{x}-1'],
     variantCount: 12,
     generate(rand, diff) {
       const a = randInt(rand, 1, 4);
@@ -5844,7 +5844,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['极限', '无穷小', '阶的比较', '泰勒展开'],
     variantCount: 12,
     generate(_rand, diff) {
-      // 当 x→0 时，1-cosx 与 ax^n 是等价无穷小，求 a,n
+      // 当 x→0 时，1-cosx 与 ax^{n} 是等价无穷小，求 a,n
       // 1-cosx ~ x²/2，所以 a = 1/2, n = 2
       const answer = 'a = 1/2，n = 2';
       const problem = joinLines([
@@ -5888,17 +5888,17 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     name: '莱布尼茨公式求高阶导数',
     type: 'fill-blank' as QuestionType,
     difficultyRange: [3, 3],
-    tags: ['微分', '高阶导数', '莱布尼茨公式', 'e^x·sinx'],
+    tags: ['微分', '高阶导数', '莱布尼茨公式', 'e^{x}·sinx'],
     variantCount: 8,
     generate(_rand, _diff) {
-      // y = e^x · sinx，求 y^(n)
-      // y^(n) = 2^(n/2) · e^x · sin(x + nπ/4)
+      // y = e^{x} · sinx，求 y^(n)
+      // y^(n) = 2^(n/2) · e^{x} · sin(x + nπ/4)
       const answer = 'y⁽ⁿ⁾ = 2^(n/2)·eˣ·sin(x + nπ/4)';
       const problem = joinLines([
         '设 y = eˣ · sinx，利用莱布尼茨公式求 y⁽ⁿ⁾ 的通项公式。',
       ]);
       const solution = joinLines([
-        '**莱布尼茨公式：(uv)⁽ⁿ⁾ = Σ_{k=0}^n C(n,k) · u⁽ᵏ⁾ · v⁽ⁿ⁻ᵏ⁾**',
+        '**莱布尼茨公式：(uv)⁽ⁿ⁾ = Σ_{k=0}^{n} C(n,k) · u⁽ᵏ⁾ · v⁽ⁿ⁻ᵏ⁾**',
         '',
         '令 u = eˣ，v = sinx，则：',
         '',
@@ -5908,7 +5908,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '由莱布尼茨公式：',
         '',
-        'y⁽ⁿ⁾ = Σ_{k=0}^n C(n,k) · eˣ · sin(x + (n−k)π/2)',
+        'y⁽ⁿ⁾ = Σ_{k=0}^{n} C(n,k) · eˣ · sin(x + (n−k)π/2)',
         '',
         '**巧妙方法（复数法）：**',
         '',
@@ -5928,7 +5928,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'fill-blank' as QuestionType,
         score: 12,
         problem, answer, solution,
-        hint: '用复数法或归纳法：e^x·sinx 的 n 阶导含 2^(n/2) 和相位偏移',
+        hint: '用复数法或归纳法：e^{x}·sinx 的 n 阶导含 2^(n/2) 和相位偏移',
       };
     },
   },
@@ -5945,8 +5945,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const x0 = 0;
       const x = randInt(rand, 2, 4) / 10; // 0.2 ~ 0.4
       const order = 2;
-      // 用 e^x 的 n 阶泰勒公式在 x=0 处近似，拉格朗日余项 R_n(x) = e^(ξ)/(n+1)! · x^(n+1), ξ∈(0,x)
-      // 误差上界 = e^x/(n+1)! · |x|^(n+1)（因为 e^ξ < e^x 当 ξ<x）
+      // 用 e^{x} 的 n 阶泰勒公式在 x=0 处近似，拉格朗日余项 R_n(x) = e^(ξ)/(n+1)! · x^(n+1), ξ∈(0,x)
+      // 误差上界 = e^{x}/(n+1)! · |x|^(n+1)（因为 e^ξ < e^{x} 当 ξ<x）
       const n = order;
       const xVal = x; // 0.2, 0.3, 0.4
       const np1 = n + 1;
@@ -6104,7 +6104,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '令 x = π − t，则 dx = −dt，x: 0→π 对应 t: π→0',
         '',
-        'I = ∫₀^π x·sinx dx = ∫_π^0 (π−t)·sin(π−t)·(−dt) = ∫₀^π (π−t)·sint dt',
+        'I = ∫₀^π x·sinx dx = ∫_π^{0} (π−t)·sin(π−t)·(−dt) = ∫₀^π (π−t)·sint dt',
         '',
         '= π·∫₀^π sint dt − ∫₀^π t·sint dt = π·2 − I',
         '',
@@ -6129,7 +6129,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 12,
     generate(rand, diff) {
       const a = randInt(rand, 2, 5);
-      // ∫₁^a ln²x dx = a·ln²a - 2a·lna + 2a - 2
+      // ∫₁^{a} ln²x dx = a·ln²a - 2a·lna + 2a - 2
       // 分部两次：u = ln²x, dv = dx → du = 2lnx/x dx, v = x
       // = x·ln²x - 2∫lnx dx
       // = x·ln²x - 2(x·lnx - x) + C
@@ -6140,7 +6140,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '计算定积分：',
         '',
-        String.raw`$\displaystyle \\int_1^{${a}} \\ln^2 x \, dx$`,
+        String.raw`$\displaystyle \\int_1^{${a}} \\ln^{2} x \, dx$`,
       ]);
       const solution = joinLines([
         '**两次分部积分：先降 ln²x → lnx → 1/x**',
@@ -6381,7 +6381,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // dS = √(1 + x²/(x²+y²) + y²/(x²+y²)) = √2 dxdy
       // ∬_S z dS = ∬_D √(x²+y²) · √2 dxdy
       // 极坐标：D: r ≤ 2cosθ, θ ∈ [-π/2, π/2]
-      // = √2 ∫_{-π/2}^{π/2} dθ ∫₀^{2cosθ} r · r dr
+      // = √2 ∫_{-π/2}^{π/2} dθ ∫₀^{2cos}θ} r · r dr
       // = √2 ∫_{-π/2}^{π/2} (8cos³θ/3) dθ = (8√2/3) · 2 ∫₀^{π/2} cos³θ dθ
       // = (16√2/3) · (2/3) = 32√2/9
       const answer = '32√2 / 9';
@@ -6421,9 +6421,9 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '极坐标换元：x = rcosθ, y = rsinθ, dxdy = rdrdθ, √(x²+y²) = r',
         '',
-        '= √2 · ∫_{-π/2}^{π/2} dθ ∫₀^{2cosθ} r · r dr',
+        '= √2 · ∫_{-π/2}^{π/2} dθ ∫₀^{2cos}θ} r · r dr',
         '',
-        '= √2 · ∫_{-π/2}^{π/2} [r³/3]₀^{2cosθ} dθ',
+        '= √2 · ∫_{-π/2}^{π/2} [r³/3]₀^{2cos}θ} dθ',
         '',
         '= √2 · ∫_{-π/2}^{π/2} (8cos³θ/3) dθ',
         '',
@@ -6527,7 +6527,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '验证曲线积分与路径无关，并计算：',
         '',
-        String.raw`$\displaystyle \\int_{(0,0)}^{(${a},${a})} (2xy + y^2) \, dx + (x^2 + 2xy) \, dy$`,
+        String.raw`$\displaystyle \\int_{(0,0)}^{(${a},${a})} (2xy + y^{2}) \, dx + (x^{2} + 2xy) \, dy$`,
       ]);
       const solution = joinLines([
         '**路径无关判定：∂P/∂y = ∂Q/∂x 在单连通区域内恒成立**',
@@ -6580,14 +6580,14 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 椭圆 x²/a² + y²/b² = 1 围成的面积 = πab，用格林公式
       // 面积 A = (1/2)∮_L x dy - y dx
       // 参数化：x = acosθ, y = bsinθ, θ: 0→2π
-      // A = (1/2)∫₀^{2π} acosθ·bcosθ - bsinθ·(-asinθ) dθ
-      // = (1/2)∫₀^{2π} ab(cos²θ + sin²θ) dθ = (1/2)ab·2π = πab
+      // A = (1/2)∫₀^{2}π} acosθ·bcosθ - bsinθ·(-asinθ) dθ
+      // = (1/2)∫₀^{2}π} ab(cos²θ + sin²θ) dθ = (1/2)ab·2π = πab
       const b = randInt(rand, 2, 4);
       const answer = `π · ${a} · ${b} = ${a*b}π`;
       const problem = joinLines([
         '利用格林公式的面积公式计算椭圆',
         '',
-        String.raw`$\displaystyle \\frac{x^2}{${a}^2} + \\frac{y^2}{${b}^2} = 1$`,
+        String.raw`$\displaystyle \\frac{x^{2}}{${a}^{2}} + \\frac{y^{2}}{${b}^{2}} = 1$`,
         '',
         '所围成图形的面积。',
       ]);
@@ -6604,15 +6604,15 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**代入面积公式：**',
         '',
-        'A = (1/2) ∫₀^{2π} [x·dy − y·dx]',
+        'A = (1/2) ∫₀^{2}π} [x·dy − y·dx]',
         '',
-        `= (1/2) ∫₀^{2π} [${a}cosθ · ${b}cosθ − ${b}sinθ · (−${a}sinθ)] dθ`,
+        `= (1/2) ∫₀^{2}π} [${a}cosθ · ${b}cosθ − ${b}sinθ · (−${a}sinθ)] dθ`,
         '',
-        `= (1/2) ∫₀^{2π} ${a*b}·cos²θ + ${a*b}·sin²θ dθ`,
+        `= (1/2) ∫₀^{2}π} ${a*b}·cos²θ + ${a*b}·sin²θ dθ`,
         '',
-        `= (1/2) · ${a*b} ∫₀^{2π} (cos²θ + sin²θ) dθ`,
+        `= (1/2) · ${a*b} ∫₀^{2}π} (cos²θ + sin²θ) dθ`,
         '',
-        `= (${a*b}/2) ∫₀^{2π} 1 · dθ`,
+        `= (${a*b}/2) ∫₀^{2}π} 1 · dθ`,
         '',
         `= (${a*b}/2) · 2π = ${a*b}π`,
         '',
@@ -6706,8 +6706,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // S + S₁ 闭合，取外侧，用高斯公式
       // ∬_{S+S₁} = ∭_V 2(x+y+z) dV = 2∭_V x dV + 2∭_V y dV + 2∭_V z dV
       // 由对称性：∭x dV = ∭y dV = 0
-      // = 2∭_V z dV = 2 ∫₀^{2π} dθ ∫₀^{π/2} dφ ∫₀^a rcosφ · r²sinφ dr
-      // = 2 · 2π · ∫₀^{π/2} cosφsinφ dφ · ∫₀^a r³ dr
+      // = 2∭_V z dV = 2 ∫₀^{2}π} dθ ∫₀^{π/2} dφ ∫₀^{a} rcosφ · r²sinφ dr
+      // = 2 · 2π · ∫₀^{π/2} cosφsinφ dφ · ∫₀^{a} r³ dr
       // = 4π · [sin²φ/2]₀^{π/2} · a⁴/4 = 4π · (1/2) · a⁴/4 = πa⁴/2
       // 再算 S₁ 上的积分：z=0, dz=0, 且取下侧
       // ∬_{S₁} x² dydz + y² dzdx + z² dxdy = 0 + 0 + ∬_{S₁} 0 dxdy = 0 ?
@@ -6719,7 +6719,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '计算第二类曲面积分：',
         '',
-        String.raw`$\displaystyle \\iint_S x^2 \, dydz + y^2 \, dzdx + z^2 \, dxdy$`,
+        String.raw`$\displaystyle \\iint_S x^{2} \, dydz + y^{2} \, dzdx + z^{2} \, dxdy$`,
         '',
         `其中 S 是上半球面 z = √(${a}² − x² − y²) 的上侧。`,
       ]);
@@ -6750,7 +6750,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `z = rcosφ，dV = r²sinφ drdφdθ`,
         '',
-        `2∭z dV = 2 ∫₀^{2π} dθ ∫₀^{π/2} dφ ∫₀^{${a}} rcosφ · r²sinφ dr`,
+        `2∭z dV = 2 ∫₀^{2}π} dθ ∫₀^{π/2} dφ ∫₀^{${a}} rcosφ · r²sinφ dr`,
         '',
         `= 2 · 2π · ∫₀^{π/2} cosφ·sinφ dφ · ∫₀^{${a}} r³ dr`,
         '',
@@ -6789,21 +6789,21 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     name: 'e^(−x²) 麦克劳林展开到 x⁴ 项',
     type: 'fill-blank' as QuestionType,
     difficultyRange: [2, 3],
-    tags: ['级数', '泰勒展开', '麦克劳林', 'e^u 代换'],
+    tags: ['级数', '泰勒展开', '麦克劳林', 'e^{u} 代换'],
     variantCount: 10,
     generate(_rand, diff) {
-      // e^u = 1 + u + u²/2! + u³/3! + ...
+      // e^{u} = 1 + u + u²/2! + u³/3! + ...
       // 令 u = -x²: e^(-x²) = 1 - x² + x⁴/2 - ...
       const answer = '1 − x² + x⁴/2（到 x⁴ 项，x⁴ 系数为 1/2）';
       const problem = joinLines([
         '将函数 f(x) = e^(−x²) 展开为 x 的麦克劳林级数（到 x⁴ 项），并写出 x⁴ 项的系数。',
       ]);
       const solution = joinLines([
-        '**利用 e^u 的已知展开式，做变量代换 u = −x²**',
+        '**利用 e^{u} 的已知展开式，做变量代换 u = −x²**',
         '',
         '已知（对任意实数 u）：',
         '',
-        'e^u = 1 + u + u²/2! + u³/3! + u⁴/4! + ... = Σ_{n=0}^∞ uⁿ/n!',
+        'e^{u} = 1 + u + u²/2! + u³/3! + u⁴/4! + ... = Σ_{n=0}^∞ uⁿ/n!',
         '',
         '令 u = −x²，代入得：',
         '',
@@ -6825,13 +6825,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '其中 x⁴ 项的系数为 1/2。',
         '',
-        '**收敛域：** 由于 e^u 的收敛域是 (−∞, +∞)，代换后也为 (−∞, +∞)。',
+        '**收敛域：** 由于 e^{u} 的收敛域是 (−∞, +∞)，代换后也为 (−∞, +∞)。',
       ]);
       return {
         type: 'fill-blank' as QuestionType,
         score: diff === 2 ? 7 : 9,
         problem, answer, solution,
-        hint: '用 e^u 的展开式，令 u = -x² 代入，只算到 x⁴ 项',
+        hint: '用 e^{u} 的展开式，令 u = -x² 代入，只算到 x⁴ 项',
       };
     },
   },
@@ -6899,16 +6899,16 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['级数', '阿贝尔定理', '和函数', '数项级数求和'],
     variantCount: 10,
     generate(_rand, diff) {
-      // 已知 Σ_{n=0}^∞ x^n = 1/(1-x), |x|<1
-      // 求 Σ_{n=1}^∞ n/2^n
+      // 已知 Σ_{n=0}^∞ x^{n} = 1/(1-x), |x|<1
+      // 求 Σ_{n=1}^∞ n/2^{n}
       // 令 S(x) = Σ_{n=1}^∞ n·x^(n-1) = 1/(1-x)² (逐项求导)
-      // x·S(x) = Σ_{n=1}^∞ n·x^n = x/(1-x)²
-      // 令 x = 1/2：Σ n/2^n = (1/2)/(1-1/2)² = (1/2)/(1/4) = 2
+      // x·S(x) = Σ_{n=1}^∞ n·x^{n} = x/(1-x)²
+      // 令 x = 1/2：Σ n/2^{n} = (1/2)/(1-1/2)² = (1/2)/(1/4) = 2
       const answer = '2';
       const problem = joinLines([
         '利用幂级数的和函数求数项级数的和：',
         '',
-        String.raw`$\displaystyle \\sum_{n=1}^{\\infty} \\frac{n}{2^n}$`,
+        String.raw`$\displaystyle \\sum_{n=1}^{\\infty} \\frac{n}{2^{n}}$`,
       ]);
       const solution = joinLines([
         '**构造幂级数，用逐项求导求和函数，再代值（阿贝尔定理）**',
@@ -6945,7 +6945,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'fill-blank' as QuestionType,
         score: diff === 2 ? 8 : 10,
         problem, answer, solution,
-        hint: '构造幂级数 Σ n·x^n，利用逐项积分/求导找和函数，再令 x=1/2',
+        hint: '构造幂级数 Σ n·x^{n}，利用逐项积分/求导找和函数，再令 x=1/2',
       };
     },
   },
@@ -7014,7 +7014,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 10,
     generate(rand) {
       const p = randInt(rand, 2, 3);
-      // 用积分判别法证明 Σ 1/n^p 收敛 (p>1)
+      // 用积分判别法证明 Σ 1/n^{p} 收敛 (p>1)
       // 并估计余项 R_n < 1/((p-1)·n^(p-1))
       // p = 2: R_n < 1/n
       // p = 3: R_n < 1/(2·n²)
@@ -7042,7 +7042,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**第二步：余项估计**',
         '',
-        '余项 Rₙ = Σ_{k=n+1}^∞ 1/k^p',
+        '余项 Rₙ = Σ_{k=n+1}^∞ 1/k^{p}',
         '',
         '由积分判别法的几何意义（用矩形和面积比较）：',
         '',
@@ -7074,7 +7074,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['常微分方程', '全微分', '积分因子', 'μ(x)'],
     variantCount: 8,
     generate() {
-      // 方程：y(ax+y) dx + x(x+y) dy = 0, 找积分因子 μ(x) = x^k
+      // 方程：y(ax+y) dx + x(x+y) dy = 0, 找积分因子 μ(x) = x^{k}
       // M = y(ax+y) = axy + y², N = x(x+y) = x² + xy
       // ∂M/∂y = ax + 2y, ∂N/∂x = 2x + y
       // (∂M/∂y - ∂N/∂x)/N = (ax+2y - 2x - y)/(x²+xy) = ((a-2)x + y)/(x(x+y))
@@ -7245,8 +7245,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 10,
     generate(rand, diff) {
       const a = randInt(rand, 1, 2);
-      // a·x²y'' + b·xy' + c·y = 0, 令 t=lnx 或 x=e^t
-      // 设 y = x^k, y' = k·x^(k-1), y'' = k(k-1)x^(k-2)
+      // a·x²y'' + b·xy' + c·y = 0, 令 t=lnx 或 x=e^{t}
+      // 设 y = x^{k}, y' = k·x^(k-1), y'' = k(k-1)x^(k-2)
       // 代入：a·k(k-1) + b·k + c = 0 → 特征方程
       // x²y'' + xy' - y = 0: k(k-1) + k - 1 = k² - 1 = 0 → k = ±1
       // 通解：y = C₁·x + C₂/x
@@ -7261,7 +7261,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '解欧拉方程：',
         '',
-        String.raw`$\displaystyle ${a}x^2 y'' + ${bVal}xy' ${cVal}y = 0$`,
+        String.raw`$\displaystyle ${a}x^{2} y'' + ${bVal}xy' ${cVal}y = 0$`,
         '',
         '（x > 0）',
       ]);
@@ -7306,7 +7306,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'fill-blank' as QuestionType,
         score: diff === 2 ? 7 : 9,
         problem, answer, solution,
-        hint: '欧拉方程设 y=x^k，代入得特征方程 ak(k-1)+bk+c=0，解出 k1,k2',
+        hint: '欧拉方程设 y=x^{k}，代入得特征方程 ak(k-1)+bk+c=0，解出 k1,k2',
       };
     },
   },
@@ -7633,8 +7633,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 12,
     generate(rand, _diff) {
       const a = randInt(rand, 1, 3);
-      // lim_{x→+∞} (x^a · ln(1+1/x)) / (x^b - 1)
-      // 更经典：lim_{x→∞} (x^a + x^b) / (x^c + x^d) 讨论
+      // lim_{x→+∞} (x^{a} · ln(1+1/x)) / (x^{b} - 1)
+      // 更经典：lim_{x→∞} (x^{a} + x^{b}) / (x^{c} + x^{d}) 讨论
       // 用题目：lim_{n→∞} n^α · [ (1 + 1/n)^β − 1 ]，其中 α, β 是参数
       // 等价无穷小：(1+1/n)^β - 1 ~ β/n (n→∞)
       // n^α · β/n = β · n^{α-1}
@@ -7702,7 +7702,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 用具体题：已知 lim_{n→∞} (n·aₙ) = L（比如 L = a₀常数）
       // 则 lim (a₁+...+aₙ)/ln n = ? (用 Stolz ∞/∞ 型)
       // 更经典：已知 lim_{n→∞} aₙ = a，求证 lim_{n→∞} (a₁+...+aₙ)/n = a
-      // 数值题：aₙ = 1/n^p，p=0.5, 求 (Σaᵢ)/√n 极限
+      // 数值题：aₙ = 1/n^{p}，p=0.5, 求 (Σaᵢ)/√n 极限
       // 简化：给 aₙ → a，令学生直接答均值极限 = a
       const answer = `${a}（算术平均极限 = 原数列极限）`;
       const problem = joinLines([
@@ -7753,7 +7753,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // α = tan(sin(a·x)) - sin(tan(a·x)) 是 x 的几阶无穷小？太难了
       // 简单经典：α = √(1 + a·x) - 1 与 β = 1 - cos x 比较阶
       // α ~ a·x/2 (1阶), β ~ x²/2 (2阶), 所以β高阶
-      // 反过来问：α = e^(a·x²) - 1 - a·x² 是x的几阶？e^u=1+u+u²/2+, u=ax², 所以 α ~ a²·x⁴/2 是4阶
+      // 反过来问：α = e^(a·x²) - 1 - a·x² 是x的几阶？e^{u}=1+u+u²/2+, u=ax², 所以 α ~ a²·x⁴/2 是4阶
       // 用：α = ln(1+a·x) - a·x + a²·x²/2 是几阶？ ln(1+t)=t-t²/2+t³/3-..., t=ax
       // α = ax - a²x²/2 + a³x³/3 - ... - ax + a²x²/2 = a³x³/3 + ... → 3阶
       const answer = `${a} 阶无穷小（主部 = ${a * a * a}/3 · x³ = ${(a * a * a / 3).toFixed(2)}·x³）`;
@@ -7805,20 +7805,20 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['一元微分', '泰勒展开', '拉格朗日余项', '不等式证明'],
     variantCount: 10,
     generate() {
-      // 证明：当 x > 0 时, e^x > 1 + x + x²/2 + ... + x^n/n!
-      // 用 n = 2 的情况：e^x > 1 + x + x²/2 (x > 0)
-      // 泰勒展开到 2 阶：e^x = 1 + x + x²/2 + e^ξ·x³/6, ξ∈(0,x)
-      // 因为 e^ξ > 1 > 0，所以余项 > 0，即 e^x > 1 + x + x²/2
-      const answer = '利用拉格朗日余项，由 e^ξ > 0 知余项为正，故 e^x > 1 + x + x²/2';
+      // 证明：当 x > 0 时, e^{x} > 1 + x + x²/2 + ... + x^{n}/n!
+      // 用 n = 2 的情况：e^{x} > 1 + x + x²/2 (x > 0)
+      // 泰勒展开到 2 阶：e^{x} = 1 + x + x²/2 + e^ξ·x³/6, ξ∈(0,x)
+      // 因为 e^ξ > 1 > 0，所以余项 > 0，即 e^{x} > 1 + x + x²/2
+      const answer = '利用拉格朗日余项，由 e^ξ > 0 知余项为正，故 e^{x} > 1 + x + x²/2';
       const problem = joinLines([
         '证明：当 x > 0 时，有不等式',
         '',
-        String.raw`$\displaystyle e^x > 1 + x + \\frac{x^2}{2}$`,
+        String.raw`$\displaystyle e^{x} > 1 + x + \\frac{x^{2}}{2}$`,
       ]);
       const solution = joinLines([
         '**用麦克劳林展开 + 拉格朗日余项证明**',
         '',
-        '设 f(x) = e^x，在 x₀ = 0 处展开为二阶带拉格朗日余项的泰勒公式：',
+        '设 f(x) = e^{x}，在 x₀ = 0 处展开为二阶带拉格朗日余项的泰勒公式：',
         '',
         'f(x) = f(0) + f\'(0)·x + f\'\'(0)·x²/2! + R₂(x)',
         '',
@@ -7826,13 +7826,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**计算各阶导数：**',
         '',
-        'f(x) = e^x，f\'(x) = e^x，f\'\'(x) = e^x，f\'\'\'(x) = e^x',
+        'f(x) = e^{x}，f\'(x) = e^{x}，f\'\'(x) = e^{x}，f\'\'\'(x) = e^{x}',
         '',
         'f(0) = 1，f\'(0) = 1，f\'\'(0) = 1',
         '',
         '**泰勒展开式：**',
         '',
-        'e^x = 1 + x + x²/2 + e^ξ · x³/6，其中 ξ ∈ (0, x)（因为 x > 0）',
+        'e^{x} = 1 + x + x²/2 + e^ξ · x³/6，其中 ξ ∈ (0, x)（因为 x > 0）',
         '',
         '**分析余项符号：**',
         '',
@@ -7842,15 +7842,15 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**结论：**',
         '',
-        'e^x = 1 + x + x²/2 + (正项) > 1 + x + x²/2',
+        'e^{x} = 1 + x + x²/2 + (正项) > 1 + x + x²/2',
         '',
-        '即 e^x > 1 + x + x²/2（x > 0），证毕。',
+        '即 e^{x} > 1 + x + x²/2（x > 0），证毕。',
       ]);
       return {
         type: 'proof' as QuestionType,
         score: 14,
         problem, answer, solution,
-        hint: 'f(x)=e^x 麦克劳林展开到x²项，拉格朗日余项 e^ξ·x³/6>0，所以 e^x > 泰勒多项式',
+        hint: 'f(x)=e^{x} 麦克劳林展开到x²项，拉格朗日余项 e^ξ·x³/6>0，所以 e^{x} > 泰勒多项式',
       };
     },
   },
@@ -7868,7 +7868,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // y = a·x² 在 x=0 处的曲率和曲率半径
       // y' = 2ax, y'' = 2a
       // 在 x=0: y' = 0, y'' = 2a
-      // 曲率 k = |y''| / (1+y'^2)^(3/2) = 2a / 1 = 2a
+      // 曲率 k = |y''| / (1+y'^{2})^(3/2) = 2a / 1 = 2a
       // 曲率半径 ρ = 1/k = 1/(2a)
       const k = 2 * a;
       const rho = 1 / (2 * a);
@@ -7963,7 +7963,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'fill-blank' as QuestionType,
         score: diff === 2 ? 7 : 9,
         problem, answer, solution,
-        hint: '分子用 e^u 泰勒展开（e^(ax) = 1 + ax + a²x²/2 + ...），分母用1-cosx ~ x²/2等价替换',
+        hint: '分子用 e^{u} 泰勒展开（e^(ax) = 1 + ax + a²x²/2 + ...），分母用1-cosx ~ x²/2等价替换',
       };
     },
   },
@@ -7978,11 +7978,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 12,
     generate(rand, diff) {
       const a = randInt(rand, 2, 5);
-      // f(x) = x^a, 求 (f^{-1})'(y0) where y0 = a^a? 不，太复杂
+      // f(x) = x^{a}, 求 (f^{-1})'(y0) where y0 = a^{a}? 不，太复杂
       // 经典题：f(x) = x³ + 2x + 1, f(0)=1, 求 (f^{-1})'(1)
       // (f^{-1})'(y0) = 1 / f'(x0) 其中 f(x0) = y0
-      // 用 f(x) = x^2 + x 在 a=2: f(x) = 2x + 1 更简单
-      // 简化：f(x) = x^a, x>0. y0 = 1. x0 = 1 因为 f(1)=1.
+      // 用 f(x) = x^{2} + x 在 a=2: f(x) = 2x + 1 更简单
+      // 简化：f(x) = x^{a}, x>0. y0 = 1. x0 = 1 因为 f(1)=1.
       // f'(x) = a·x^(a-1), f'(1) = a
       // (f^{-1})'(1) = 1/a
       const answer = `1/${a} = ${(1 / a).toFixed(4)}`;
@@ -8026,18 +8026,18 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
   {
     id: 'int-improper-ln-xp',
     topic: 'single-var-int',
-    name: '反常积分收敛判别（∫₁^∞ ln x / x^p 型）',
+    name: '反常积分收敛判别（∫₁^∞ ln x / x^{p} 型）',
     type: 'calculation' as QuestionType,
     difficultyRange: [2, 3],
     tags: ['一元积分', '反常积分', '收敛判别', 'p积分', '分部积分'],
     variantCount: 10,
     generate(rand, diff) {
       const a = randInt(rand, 2, 4);
-      // ∫₁^∞ ln x / x^a dx 的收敛性与值
+      // ∫₁^∞ ln x / x^{a} dx 的收敛性与值
       // 收敛当且仅当 a > 1
       // 分部积分：令 u = ln x, dv = x^(-a) dx
       // du = dx/x, v = x^(1-a)/(1-a)
-      // ∫lnx/x^a dx = x^(1-a)·lnx/(1-a) - ∫x^(1-a)/(1-a) · dx/x
+      // ∫lnx/x^{a} dx = x^(1-a)·lnx/(1-a) - ∫x^(1-a)/(1-a) · dx/x
       // = x^(1-a)·lnx/(1-a) - 1/(1-a)·∫x^(-a) dx
       // = x^(1-a)·lnx/(1-a) - x^(1-a)/((1-a)²) + C
       // 从 1 到 ∞：当 a > 1 时，x^(1-a) = 1/x^(a-1) → 0
@@ -8106,7 +8106,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate(rand, diff) {
       const a = randInt(rand, 2, 4);
       const b = a + randInt(rand, 2, 4);
-      // ∫_a^b x² dx = (b³-a³)/3, 积分中值定理：∃ ξ ∈ [a,b] 使得 (b-a)·ξ² = (b³-a³)/3
+      // ∫_a^{b} x² dx = (b³-a³)/3, 积分中值定理：∃ ξ ∈ [a,b] 使得 (b-a)·ξ² = (b³-a³)/3
       // ξ² = (b³-a³)/(3(b-a)) = (b²+ab+a²)/3
       // ξ = √((a²+ab+b²)/3)  (因为 ξ > 0)
       const xi = Math.sqrt((a * a + a * b + b * b) / 3);
@@ -8117,7 +8117,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const solution = joinLines([
         '**积分中值定理：** 若 f(x) 在 [a, b] 上连续，则 ∃ ξ ∈ [a, b]，使得',
         '',
-        '∫_a^b f(x) dx = f(ξ) · (b − a)',
+        '∫_a^{b} f(x) dx = f(ξ) · (b − a)',
         '',
         '**第一步：计算积分值**',
         '',
@@ -8159,10 +8159,10 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['一元积分', '变上限积分', '参数求解', '方程'],
     variantCount: 10,
     generate() {
-      // 已知 ∫₀^x (a·t + 1) dt = x² + x，求 a
+      // 已知 ∫₀^{x} (a·t + 1) dt = x² + x，求 a
       // 左边 = a·x²/2 + x, 右边 = x² + x, 比较 a/2 = 1 → a = 2
-      // 更复杂：∫₀^x (a·t² + bt + c) dt = x³/3 + x² + x → a=1, b=2, c=1
-      // 用两个参数：∫₀^x (a·t + b) dt = a·x²/2 + b·x = 2x² + 3x → a=4, b=3
+      // 更复杂：∫₀^{x} (a·t² + bt + c) dt = x³/3 + x² + x → a=1, b=2, c=1
+      // 用两个参数：∫₀^{x} (a·t + b) dt = a·x²/2 + b·x = 2x² + 3x → a=4, b=3
       // 已知 ∫₀ˣ (a·t + b) dt = 2x² + 3x，求 a 和 b
       // 左边 = a·x²/2 + b·x
       // 比较系数：a/2 = 2 → a = 4, b = 3
@@ -8172,7 +8172,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '已知对所有 x 有恒等式',
         '',
-        String.raw`$\displaystyle \\int_0^x (at + b) \, dt = 2x^2 + 3x$`,
+        String.raw`$\displaystyle \\int_0^{x} (at + b) \, dt = 2x^{2} + 3x$`,
         '',
         '求常数 a 和 b 的值。',
       ]);
@@ -8230,7 +8230,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         `求由曲线 y = ${a}x、x 轴和直线 x = 1 围成的图形绕 x 轴旋转一周所得旋转体的体积。`,
       ]);
       const solution = joinLines([
-        '**圆盘法（绕 x 轴旋转）：V = π ∫_a^b [f(x)]² dx**',
+        '**圆盘法（绕 x 轴旋转）：V = π ∫_a^{b} [f(x)]² dx**',
         '',
         '旋转体是一个圆锥（顶点在原点，底面半径 = y(1) = a，高 = 1）。',
         '',
@@ -8271,13 +8271,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 10,
     generate(rand, _diff) {
       const a = randInt(rand, 1, 3);
-      // 设 z = u^v, u = a·x + y, v = x + a·y，用全微分形式不变性求 dz
-      // dz = ∂z/∂u·du + ∂z/∂v·dv = v·u^(v-1)·du + u^v·ln u·dv
+      // 设 z = u^{v}, u = a·x + y, v = x + a·y，用全微分形式不变性求 dz
+      // dz = ∂z/∂u·du + ∂z/∂v·dv = v·u^(v-1)·du + u^{v}·ln u·dv
       // du = a·dx + dy, dv = dx + a·dy
       // 代入化简
-      const answer = `dz = u^v·(v/u · (${a}dx+dy) + ln u · (dx+${a}dy))，其中 u=${a}x+y, v=x+${a}y`;
+      const answer = `dz = u^{v}·(v/u · (${a}dx+dy) + ln u · (dx+${a}dy))，其中 u=${a}x+y, v=x+${a}y`;
       const problem = joinLines([
-        `设 z = u^v，其中 u = ${a}x + y，v = x + ${a}y。`,
+        `设 z = u^{v}，其中 u = ${a}x + y，v = x + ${a}y。`,
         '',
         '利用一阶全微分形式不变性求 dz。',
       ]);
@@ -8286,13 +8286,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**第一步：求 z 对 u, v 的偏导**',
         '',
-        'z = u^v',
+        'z = u^{v}',
         '',
         '∂z/∂u = v·u^(v−1)（把 v 看作常数，幂函数求导）',
         '',
-        '∂z/∂v = u^v · ln u（把 u 看作常数，指数函数求导）',
+        '∂z/∂v = u^{v} · ln u（把 u 看作常数，指数函数求导）',
         '',
-        '故 dz = v·u^(v−1) du + u^v·ln u · dv',
+        '故 dz = v·u^(v−1) du + u^{v}·ln u · dv',
         '',
         '**第二步：求 du 和 dv**',
         '',
@@ -8302,19 +8302,19 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**第三步：代入化简**',
         '',
-        `dz = v·u^(v−1)(${a} dx + dy) + u^v·ln u (dx + ${a} dy)`,
+        `dz = v·u^(v−1)(${a} dx + dy) + u^{v}·ln u (dx + ${a} dy)`,
         '',
-        `= u^v [ v/u · (${a} dx + dy) + ln u · (dx + ${a} dy) ]`,
+        `= u^{v} [ v/u · (${a} dx + dy) + ln u · (dx + ${a} dy) ]`,
         '',
-        `= u^v [ (${a}·v/u + ln u) dx + (v/u + ${a}·ln u) dy ]`,
+        `= u^{v} [ (${a}·v/u + ln u) dx + (v/u + ${a}·ln u) dy ]`,
         '',
         `其中 u = ${a}x + y，v = x + ${a}y。`,
         '',
         '**最终全微分形式：**',
         '',
-        '∂z/∂x = u^v · (a·v/u + ln u)',
+        '∂z/∂x = u^{v} · (a·v/u + ln u)',
         '',
-        '∂z/∂y = u^v · (v/u + a·ln u)',
+        '∂z/∂y = u^{v} · (v/u + a·ln u)',
         '',
         'dz = (∂z/∂x) dx + (∂z/∂y) dy',
       ]);
@@ -8503,11 +8503,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**代入计算：**',
         '',
-        '∭_Ω (x²+y²+z²) dV = ∫₀²π dθ ∫₀^π sinφ dφ ∫₀^a r² · r² sinφ dr',
+        '∭_Ω (x²+y²+z²) dV = ∫₀²π dθ ∫₀^π sinφ dφ ∫₀^{a} r² · r² sinφ dr',
         '',
-        '= ∫₀²π dθ · ∫₀^π sinφ dφ · ∫₀^a r⁴ dr',
+        '= ∫₀²π dθ · ∫₀^π sinφ dφ · ∫₀^{a} r⁴ dr',
         '',
-        '= [θ]₀²π · [−cosφ]₀^π · [r⁵/5]₀^a',
+        '= [θ]₀²π · [−cosφ]₀^π · [r⁵/5]₀^{a}',
         '',
         `= 2π · (−cosπ + cos0) · (${a}⁵/5 − 0)`,
         '',
@@ -8550,7 +8550,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '设含参变量积分',
         '',
-        String.raw`$\displaystyle F(t) = \\int_0^t dx \\int_0^x (t + y) \, dy$`,
+        String.raw`$\displaystyle F(t) = \\int_0^{t} dx \\int_0^{x} (t + y) \, dy$`,
         '',
         '求 F\'(t) 的表达式（t > 0）。',
       ]);
@@ -8573,9 +8573,9 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**方法二：莱布尼茨公式（验证）**',
         '',
-        '对 F(t) = ∫_a(t)^b(t) f(x, t) dx，有：',
+        '对 F(t) = ∫_a(t)^{b}(t) f(x, t) dx，有：',
         '',
-        'F\'(t) = f(b(t),t)·b\'(t) − f(a(t),t)·a\'(t) + ∫_a(t)^b(t) ∂f/∂t dx',
+        'F\'(t) = f(b(t),t)·b\'(t) − f(a(t),t)·a\'(t) + ∫_a(t)^{b}(t) ∂f/∂t dx',
         '',
         '本题外层：f(x,t) = ∫₀ˣ (t+y)dy = t·x + x²/2，b(t)=t，a(t)=0',
         '',
@@ -8611,7 +8611,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '验证表达式为全微分，并求其原函数 u(x, y)：',
         '',
-        String.raw`$(${a}xy^2 + y\\cos(xy))dx + (${a}x^2y + x\\cos(xy))dy$`,
+        String.raw`$(${a}xy^{2} + y\\cos(xy))dx + (${a}x^{2y} + x\\cos(xy))dy$`,
       ]);
       const solution = joinLines([
         '**第一步：验证全微分条件 ∂P/∂y = ∂Q/∂x**',
@@ -8741,8 +8741,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 10,
     generate(rand, _diff) {
       const a = randInt(rand, 2, 4);
-      // 证明 Σ (sin(nx))/n^a 在 (-∞, +∞) 上一致收敛（a > 1 时）
-      // M判别法：|sin(nx)/n^a| ≤ 1/n^a，而 Σ 1/n^a 收敛(a>1)
+      // 证明 Σ (sin(nx))/n^{a} 在 (-∞, +∞) 上一致收敛（a > 1 时）
+      // M判别法：|sin(nx)/n^{a}| ≤ 1/n^{a}，而 Σ 1/n^{a} 收敛(a>1)
       const answer = `由魏尔斯特拉斯M判别法，取 M_n = 1/n^${a}，ΣM_n 收敛（${a} > 1 的p级数），故级数在 ℝ 上一致收敛`;
       const problem = joinLines([
         `证明函数项级数 Σ_{n=1}^∞ sin(nx) / n^${a} 在 (−∞, +∞) 上一致收敛（${a} > 1）。`,
@@ -8780,7 +8780,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'calculation' as QuestionType,
         score: 12,
         problem, answer, solution,
-        hint: '魏尔斯特拉斯M判别法：找收敛的正项级数ΣM_n控制|u_n(x)|。本题用|sin|≤1取M_n=1/n^a，p=a>1收敛',
+        hint: '魏尔斯特拉斯M判别法：找收敛的正项级数ΣM_n控制|u_n(x)|。本题用|sin|≤1取M_n=1/n^{a}，p=a>1收敛',
       };
     },
   },
@@ -8794,12 +8794,12 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['级数', '幂级数', '求和函数', '逐项求导'],
     variantCount: 10,
     generate() {
-      // 求 Σ n²·x^n, n从1到∞的和函数
-      // 已知 Σ x^n = x/(1-x) = 1/(1-x) - 1, |x|<1
+      // 求 Σ n²·x^{n}, n从1到∞的和函数
+      // 已知 Σ x^{n} = x/(1-x) = 1/(1-x) - 1, |x|<1
       // Σ n·x^(n-1) = 1/(1-x)² （两边求导）
-      // Σ n·x^n = x/(1-x)²
+      // Σ n·x^{n} = x/(1-x)²
       // Σ n²·x^(n-1) = d/dx [x/(1-x)²] = (1+x)/(1-x)³
-      // Σ n²·x^n = x(1+x)/(1-x)³
+      // Σ n²·x^{n} = x(1+x)/(1-x)³
       // 令 x = 1/a, a>1 是具体数验证
       const answer = `S(x) = x(1+x)/(1−x)³，|x| < 1`;
       const problem = joinLines([
@@ -8866,12 +8866,12 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate(rand, _diff) {
       const a = randInt(rand, 1, 2);
       // f(x) = a, -π ≤ x < 0; f(x) = 0, 0 ≤ x < π，周期2π
-      // a₀ = (1/π)∫_{-π}^π f(x)dx = (1/π)∫_{-π}^0 a dx = (1/π)(aπ) = a
-      // a_n = (1/π)∫_{-π}^π f(x)cos(nx)dx = (1/π)∫_{-π}^0 a·cos(nx)dx
-      //     = (a/(nπ))[sin(nx)]_{-π}^0 = 0  (因为sin(nπ)=sin(-nπ)=0)
-      // b_n = (1/π)∫_{-π}^π f(x)sin(nx)dx = (1/π)∫_{-π}^0 a·sin(nx)dx
-      //     = (a/π)[-cos(nx)/n]_{-π}^0 = (a/(nπ))[-1 + cos(-nπ)]
-      //     = (a/(nπ))[-1 + cos(nπ)] = (a/(nπ))[-1 + (-1)^n]
+      // a₀ = (1/π)∫_{-π}^π f(x)dx = (1/π)∫_{-π}^{0} a dx = (1/π)(aπ) = a
+      // a_n = (1/π)∫_{-π}^π f(x)cos(nx)dx = (1/π)∫_{-π}^{0} a·cos(nx)dx
+      //     = (a/(nπ))[sin(nx)]_{-π}^{0} = 0  (因为sin(nπ)=sin(-nπ)=0)
+      // b_n = (1/π)∫_{-π}^π f(x)sin(nx)dx = (1/π)∫_{-π}^{0} a·sin(nx)dx
+      //     = (a/π)[-cos(nx)/n]_{-π}^{0} = (a/(nπ))[-1 + cos(-nπ)]
+      //     = (a/(nπ))[-1 + cos(nπ)] = (a/(nπ))[-1 + (-1)^{n}]
       //     n偶时 = 0, n奇时 = (a/(nπ))(-2) = -2a/(nπ)
       const answer = `f(x) ~ ${a}/2 + Σ_{k=0}^∞ [−${2 * a}/((2k+1)π)]·sin((2k+1)x)（只含奇次正弦项）`;
       const problem = joinLines([
@@ -8892,33 +8892,33 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**计算 a₀：**',
         '',
-        `a₀ = (1/π)[∫_{−π}^0 ${a} dx + ∫₀^π 0 dx] = (1/π) · ${a}π = ${a}`,
+        `a₀ = (1/π)[∫_{−π}^{0} ${a} dx + ∫₀^π 0 dx] = (1/π) · ${a}π = ${a}`,
         '',
         '**计算 a_n（n ≥ 1）：**',
         '',
-        `a_n = (1/π)∫_{−π}^0 ${a}·cos(nx) dx + 0`,
+        `a_n = (1/π)∫_{−π}^{0} ${a}·cos(nx) dx + 0`,
         '',
-        `= (${a}/π) · [sin(nx)/n]_{−π}^0 = (${a}/(nπ)) · [sin0 − sin(−nπ)] = 0`,
+        `= (${a}/π) · [sin(nx)/n]_{−π}^{0} = (${a}/(nπ)) · [sin0 − sin(−nπ)] = 0`,
         '',
         '（因为 sin(nπ) = 0 对所有整数 n）',
         '',
         '**计算 b_n（n ≥ 1）：**',
         '',
-        `b_n = (1/π)∫_{−π}^0 ${a}·sin(nx) dx + 0`,
+        `b_n = (1/π)∫_{−π}^{0} ${a}·sin(nx) dx + 0`,
         '',
-        `= (${a}/π) · [−cos(nx)/n]_{−π}^0`,
+        `= (${a}/π) · [−cos(nx)/n]_{−π}^{0}`,
         '',
         `= (${a}/(nπ)) · [−cos0 + cos(−nπ)]`,
         '',
         `= (${a}/(nπ)) · (−1 + cos(nπ))`,
         '',
-        `= (${a}/(nπ)) · ((−1)^n − 1)`,
+        `= (${a}/(nπ)) · ((−1)^{n} − 1)`,
         '',
         '分奇偶讨论：',
         '',
-        `n 为偶数时，(−1)^n = 1，b_n = (${a}/(nπ)) · (1−1) = 0`,
+        `n 为偶数时，(−1)^{n} = 1，b_n = (${a}/(nπ)) · (1−1) = 0`,
         '',
-        `n 为奇数时，(−1)^n = −1，b_n = (${a}/(nπ)) · (−1−1) = −${2 * a}/(nπ)`,
+        `n 为奇数时，(−1)^{n} = −1，b_n = (${a}/(nπ)) · (−1−1) = −${2 * a}/(nπ)`,
         '',
         '**傅里叶级数：**',
         '',
@@ -8934,7 +8934,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'calculation' as QuestionType,
         score: 14,
         problem, answer, solution,
-        hint: '分段算a₀/a_n/b_n。注意 cos(nπ)=(-1)^n，所以b_n在n奇时非零，n偶时为零',
+        hint: '分段算a₀/a_n/b_n。注意 cos(nπ)=(-1)^{n}，所以b_n在n奇时非零，n偶时为零',
       };
     },
   },
@@ -8949,11 +8949,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 12,
     generate(rand, diff) {
       const a = randInt(rand, 2, 3);
-      // Σ (x-1)^n / n^a，求收敛域
-      // 收敛半径 R = lim |a_n/a_{n+1}| = lim n^a/(n+1)^a = 1
+      // Σ (x-1)^{n} / n^{a}，求收敛域
+      // 收敛半径 R = lim |a_n/a_{n+1}| = lim n^{a}/(n+1)^{a} = 1
       // 中心 x = 1，收敛区间 (0, 2)
-      // 端点 x=0: Σ (-1)^n / n^a - 交错p级数，a>1时绝对收敛，a=1时条件收敛
-      // 端点 x=2: Σ 1/n^a - p级数，a>1收敛，a=1发散
+      // 端点 x=0: Σ (-1)^{n} / n^{a} - 交错p级数，a>1时绝对收敛，a=1时条件收敛
+      // 端点 x=2: Σ 1/n^{a} - p级数，a>1收敛，a=1发散
       // a≥2 时两端都收敛
       const answer = `收敛半径 R = 1，收敛中心 x = 1，收敛域为 [0, 2]（端点 x = 0 和 x = 2 处都${a > 1 ? '' : '不'}收敛）`;
       const problem = joinLines([
@@ -8994,7 +8994,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'fill-blank' as QuestionType,
         score: diff === 2 ? 8 : 10,
         problem, answer, solution,
-        hint: '令t=x-1转成标准幂级数，a_n=1/n^a，R=lim|a_n/a_{n+1}|=1。端点x=0时是交错p级数，x=2时是p级数，p=a>1都收敛',
+        hint: '令t=x-1转成标准幂级数，a_n=1/n^{a}，R=lim|a_n/a_{n+1}|=1。端点x=0时是交错p级数，x=2时是p级数，p=a>1都收敛',
       };
     },
   },
@@ -9012,7 +9012,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate(_rand, diff) {
       // y'' - 3y' + 2y = e^(a·x)（这里 a=1 或 a=2 是特征根，a=3不是）
       // 特征方程：r² - 3r + 2 = 0, r1=1, r2=2
-      // 情况1：a=1（单根）→ 特解形如 y* = x·A·e^x
+      // 情况1：a=1（单根）→ 特解形如 y* = x·A·e^{x}
       // 情况2：a=3（不是根）→ 特解形如 y* = A·e^(3x)
       // 让 a=1 太简单，a=2 也是单根。取 a=3 不是根。
       // 但用户想练"按与特征根关系待定特解"，那就选会触发不同情况的
@@ -9024,12 +9024,12 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 左边 = (4A + 4Ax) - 3(A + 2Ax) + 2Ax
       // = 4A + 4Ax - 3A - 6Ax + 2Ax = A + 0x = A
       // 所以 A = 1, 特解 y* = x·e^(2x)
-      // 通解：y = C1·e^x + C2·e^(2x) + x·e^(2x)
-      const answer = `y = C₁·e^x + C₂·e^(2x) + x·e^(2x)（特解形式 x·A·e^(2x)，因为 λ=2 是单特征根）`;
+      // 通解：y = C1·e^{x} + C2·e^(2x) + x·e^(2x)
+      const answer = `y = C₁·e^{x} + C₂·e^(2x) + x·e^(2x)（特解形式 x·A·e^(2x)，因为 λ=2 是单特征根）`;
       const problem = joinLines([
         '求二阶常系数非齐次线性微分方程的通解：',
         '',
-        String.raw`$y'' - 3y' + 2y = e^{2x}$`,
+        String.raw`$y'' - 3y' + 2y = e^{2x}}$`,
       ]);
       const solution = joinLines([
         '**步骤一：求齐次方程的通解 Y**',
@@ -9100,14 +9100,14 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate(rand, _diff) {
       const a = randInt(rand, 2, 4);
       // 求 f(x) 满足 f(x) = a + ∫₀ˣ f(t) dt
-      // 两边求导：f'(x) = f(x), f(x) = Ce^x
+      // 两边求导：f'(x) = f(x), f(x) = Ce^{x}
       // 令 x=0: f(0) = a + 0 = a, 所以 C = a
-      // f(x) = a·e^x
-      const answer = `f(x) = ${a}·e^x`;
+      // f(x) = a·e^{x}
+      const answer = `f(x) = ${a}·e^{x}`;
       const problem = joinLines([
         '求连续函数 f(x) 满足积分方程：',
         '',
-        String.raw`$f(x) = ${a} + \\int_0^x f(t) \, dt$`,
+        String.raw`$f(x) = ${a} + \\int_0^{x} f(t) \, dt$`,
       ]);
       const solution = joinLines([
         '**方法：两边对 x 求导，转化为微分方程初值问题**',
@@ -9128,7 +9128,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '积分：ln|f(x)| = x + C₀',
         '',
-        'f(x) = C·eˣ（C = ±e^C₀ 为任意常数）',
+        'f(x) = C·eˣ（C = ±e^{C}₀ 为任意常数）',
         '',
         '**第三步：确定常数 C（找初始条件）**',
         '',
@@ -9513,7 +9513,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**推导思路（积分比较）：**',
         '',
-        '由 1/(k+1) < ∫_k^{k+1} 1/x dx < 1/k，对 k 从 1 到 n−1 求和：',
+        '由 1/(k+1) < ∫_k^{k}+1} 1/x dx < 1/k，对 k 从 1 到 n−1 求和：',
         '',
         'H_n − 1 < ln n < H_{n−1}',
         '',
@@ -9616,22 +9616,22 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         String.raw`$\displaystyle \\lim_{x \\to 0} \\frac{\\sinh(${a}x)}{x}$`,
         '',
-        '（其中 sinh u = (e^u − e^(−u))/2 为双曲正弦函数）',
+        '（其中 sinh u = (e^{u} − e^(−u))/2 为双曲正弦函数）',
       ]);
       const solution = joinLines([
         '**方法一：利用指数函数展开（等价无穷小）**',
         '',
-        '双曲正弦定义：sinh u = (e^u − e^(−u))/2',
+        '双曲正弦定义：sinh u = (e^{u} − e^(−u))/2',
         '',
         `令 u = ${a}x，当 x → 0 时 u → 0。`,
         '',
-        'e^u = 1 + u + u²/2! + u³/3! + ...',
+        'e^{u} = 1 + u + u²/2! + u³/3! + ...',
         '',
         'e^(−u) = 1 − u + u²/2! − u³/3! + ...',
         '',
         '两式相减除以 2：',
         '',
-        'sinh u = (e^u − e^(−u))/2 = u + u³/3! + u⁵/5! + ...',
+        'sinh u = (e^{u} − e^(−u))/2 = u + u³/3! + u⁵/5! + ...',
         '',
         '所以当 u → 0 时，sinh u ~ u（一阶等价无穷小）',
         '',
@@ -9651,7 +9651,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'fill-blank' as QuestionType,
         score: diff === 2 ? 7 : 9,
         problem, answer, solution,
-        hint: 'sinh u = (e^u - e^(-u))/2，泰勒展开后sinh u ~ u，所以sinh(ax)/x ~ ax/x = a。或直接洛必达',
+        hint: 'sinh u = (e^{u} - e^(-u))/2，泰勒展开后sinh u ~ u，所以sinh(ax)/x ~ ax/x = a。或直接洛必达',
       };
     },
   },
@@ -9678,7 +9678,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '求极限：',
         '',
-        String.raw`$\displaystyle \\lim_{x \\to 0} (\\cos ${a}x)^{1/x^2}$`,
+        String.raw`$\displaystyle \\lim_{x \\to 0} (\\cos ${a}x)^{1}/x^{2}}$`,
       ]);
       const solution = joinLines([
         '**类型：1^∞ 型，使用对数法**',
@@ -9920,25 +9920,25 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['一元积分', '周期函数', '积分性质', '平移不变'],
     variantCount: 10,
     generate(_rand, diff) {
-      // f(x) 周期为 T，证明 ∫_a^(a+T) f(x)dx = ∫_0^T f(x)dx
-      // 拆分：∫_a^(a+T) = ∫_a^0 + ∫_0^T + ∫_T^(a+T)
-      // 第三项换元 x = t + T: ∫_T^(a+T) f(x)dx = ∫_0^a f(t+T)dt = ∫_0^a f(t)dt = ∫_0^a f(x)dx
-      // 第一项 + 第三项 = ∫_a^0 + ∫_0^a = 0
-      // 所以 ∫_a^(a+T) = ∫_0^T
-      const answer = '周期函数在一个周期长度区间上的积分与起点无关，恒等于 ∫₀^T f(x)dx';
+      // f(x) 周期为 T，证明 ∫_a^(a+T) f(x)dx = ∫_0^{T} f(x)dx
+      // 拆分：∫_a^(a+T) = ∫_a^{0} + ∫_0^{T} + ∫_T^(a+T)
+      // 第三项换元 x = t + T: ∫_T^(a+T) f(x)dx = ∫_0^{a} f(t+T)dt = ∫_0^{a} f(t)dt = ∫_0^{a} f(x)dx
+      // 第一项 + 第三项 = ∫_a^{0} + ∫_0^{a} = 0
+      // 所以 ∫_a^(a+T) = ∫_0^{T}
+      const answer = '周期函数在一个周期长度区间上的积分与起点无关，恒等于 ∫₀^{T} f(x)dx';
       const problem = joinLines([
         `设 f(x) 是以 T 为周期的连续函数，证明：对任意实数 a，有`,
         '',
-        String.raw`$\displaystyle \\int_a^{a+T} f(x) \, dx = \\int_0^T f(x) \, dx$`,
+        String.raw`$\displaystyle \\int_a^{a}+T} f(x) \, dx = \\int_0^{T} f(x) \, dx$`,
       ]);
       const solution = joinLines([
         '**证明思路：拆分积分区间 + 周期函数换元**',
         '',
         '**第一步：拆分积分区间**',
         '',
-        '∫_a^(a+T) f(x) dx = ∫_a⁰ f(x) dx + ∫₀^T f(x) dx + ∫_T^(a+T) f(x) dx',
+        '∫_a^(a+T) f(x) dx = ∫_a⁰ f(x) dx + ∫₀^{T} f(x) dx + ∫_T^(a+T) f(x) dx',
         '',
-        '= −∫₀ᵃ f(x) dx + ∫₀^T f(x) dx + ∫_T^(a+T) f(x) dx',
+        '= −∫₀ᵃ f(x) dx + ∫₀^{T} f(x) dx + ∫_T^(a+T) f(x) dx',
         '',
         '**第二步：对第三项换元（利用周期性）**',
         '',
@@ -9952,13 +9952,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**第三步：合并**',
         '',
-        '∫_a^(a+T) f(x) dx = −∫₀ᵃ f(x) dx + ∫₀^T f(x) dx + ∫₀ᵃ f(x) dx',
+        '∫_a^(a+T) f(x) dx = −∫₀ᵃ f(x) dx + ∫₀^{T} f(x) dx + ∫₀ᵃ f(x) dx',
         '',
-        '= ∫₀^T f(x) dx',
+        '= ∫₀^{T} f(x) dx',
         '',
         '**结论：** 周期函数在任一长度为一个周期的区间上的积分值相同，与区间起点无关。',
         '',
-        '**推论：** 若 f 周期为 T，则 ∫₀^(nT) f(x) dx = n·∫₀^T f(x) dx（n 为正整数）。',
+        '**推论：** 若 f 周期为 T，则 ∫₀^(nT) f(x) dx = n·∫₀^{T} f(x) dx（n 为正整数）。',
       ]);
       return {
         type: 'proof' as QuestionType,
@@ -9978,7 +9978,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 10,
     generate(rand, _diff) {
       const a = randInt(rand, 1, 3);
-      // 用柯西-施瓦茨估计 ∫₀^a √(1+x²) dx
+      // 用柯西-施瓦茨估计 ∫₀^{a} √(1+x²) dx
       // (∫f·g dx)² ≤ (∫f²)(∫g²)
       // 令 f = √(1+x²), g = 1，则 (∫√(1+x²))² ≤ ∫(1+x²) · ∫1 = (a+a³/3)·a = a² + a⁴/3
       // 所以 ∫₀ᵃ √(1+x²) ≤ √(a² + a⁴/3) = a·√(1 + a²/3)
@@ -9990,14 +9990,14 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '利用柯西-施瓦茨积分不等式',
         '',
-        String.raw`$\displaystyle \\left(\\int_a^b f(x)g(x)\,dx\\right)^2 \\le \\int_a^b f^2(x)\,dx \\cdot \\int_a^b g^2(x)\,dx$`,
+        String.raw`$\displaystyle \\left(\\int_a^{b} f(x)g(x)\,dx\\right)^{2} \\le \\int_a^{b} f^{2}(x)\,dx \\cdot \\int_a^{b} g^{2}(x)\,dx$`,
         '',
         `估计 ∫₀^${a} √(1 + x²) dx 的上界。`,
       ]);
       const solution = joinLines([
         '**柯西-施瓦茨积分不等式：**',
         '',
-        '(∫_a^b f(x)g(x) dx)² ≤ (∫_a^b f²(x) dx) · (∫_a^b g²(x) dx)',
+        '(∫_a^{b} f(x)g(x) dx)² ≤ (∫_a^{b} f²(x) dx) · (∫_a^{b} g²(x) dx)',
         '',
         '**第一步：选取合适的 f 和 g**',
         '',
@@ -10051,7 +10051,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '求反常积分（高斯积分）：',
         '',
-        String.raw`$\displaystyle \\int_0^{\\infty} e^{-${a}x^2} \, dx$`,
+        String.raw`$\displaystyle \\int_0^{\\infty} e^{-${a}x^{2}} \, dx$`,
       ]);
       const solution = joinLines([
         '**方法：二重积分 + 极坐标（经典技巧）**',
@@ -10281,10 +10281,10 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // |J| = 1/|∂(u,v)/∂(x,y)| = 1/(2u)
       // 被积：xy·dxdy = v · (1/(2u)) · dudv = v/(2u) dudv
       // 积分区域 uv 坐标下：a ≤ v ≤ 2a, 1 ≤ u ≤ 2
-      // I = ∫_{u=1}^2 ∫_{v=a}^{2a} v/(2u) dv du
-      // = ∫_1^2 (1/(2u)) · [v²/2]_a^{2a} du
-      // = ∫_1^2 (1/(2u)) · (4a²/2 - a²/2) du = ∫_1^2 (1/(2u)) · (3a²/2) du
-      // = (3a²/4) ∫_1^2 du/u = (3a²/4)·ln2
+      // I = ∫_{u=1}^{2} ∫_{v=a}^{2a}} v/(2u) dv du
+      // = ∫_1^{2} (1/(2u)) · [v²/2]_a^{2a}} du
+      // = ∫_1^{2} (1/(2u)) · (4a²/2 - a²/2) du = ∫_1^{2} (1/(2u)) · (3a²/2) du
+      // = (3a²/4) ∫_1^{2} du/u = (3a²/4)·ln2
       const result = (3 * a * a / 4) * Math.log(2);
       const answer = `3${a === 1 ? '' : a * a}/4 · ln 2 = ${(3 * a * a / 4).toFixed(2)}·ln 2 ≈ ${result.toFixed(4)}`;
       const problem = joinLines([
@@ -10329,9 +10329,9 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**第四步：计算累次积分**',
         '',
-        'I = ∫_{u=1}^2 ∫_{v=' + a + '}^{' + (2 * a) + '} v/(2u) dv du',
+        'I = ∫_{u=1}^{2} ∫_{v=' + a + '}^{' + (2 * a) + '} v/(2u) dv du',
         '',
-        '先对 v 积分：∫_{a}^{2a} v/(2u) dv = (1/(2u)) · [v²/2]_a^{2a}',
+        '先对 v 积分：∫_{a}^{2a}} v/(2u) dv = (1/(2u)) · [v²/2]_a^{2a}}',
         '',
         `= (1/(2u)) · ((${2 * a})²/2 − ${a}²/2) = (1/(2u)) · (${4 * a * a}/2 − ${a * a}/2)`,
         '',
@@ -10366,8 +10366,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 投影到 xy 平面：上半球 z = √(a²-x²-x²), 投影区域 D: x²+y² ≤ a²
       // 外侧 → 上方向为正
       // ∬_Σ z dxdy = ∬_D √(a²-x²-y²) dxdy（上半球取正）
-      // 极坐标：∫₀^{2π} dθ ∫₀^a √(a²-r²) · r dr
-      // = 2π · [ −(a²-r²)^{3/2}/3 ]₀^a = 2π · (0 + a³/3) = 2πa³/3
+      // 极坐标：∫₀^{2}π} dθ ∫₀^{a} √(a²-r²) · r dr
+      // = 2π · [ −(a²-r²)^{3}/2}/3 ]₀^{a} = 2π · (0 + a³/3) = 2πa³/3
       // 注意：如果是整个球面外侧，下半球也有贡献，下半球 z<0 且法向朝下（负方向）
       // 下半球：z = -√(a²-r²)，外侧 = 朝下 = dxdy 取负号
       // ∬_{下半球} z dxdy = ∬_D (-√(a²-r²)) · (-dxdy) = ∬_D √(a²-r²) dxdy = 2πa³/3 同样
@@ -10407,7 +10407,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `D：0 ≤ θ ≤ 2π，0 ≤ r ≤ ${a}`,
         '',
-        `I = ∫₀^{2π} dθ ∫₀^${a} √(${a * a} − r²) · r dr`,
+        `I = ∫₀^{2}π} dθ ∫₀^${a} √(${a * a} − r²) · r dr`,
         '',
         '内层换元 u = a² − r²，du = −2r dr，r dr = −du/2',
         '',
@@ -10415,7 +10415,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `∫₀^${a} √(${a * a} − r²) · r dr = ∫_{a²}⁰ √u · (−du/2)`,
         '',
-        `= (1/2) ∫₀^{a²} √u du = (1/2) · [u^(3/2) / (3/2)]₀^{a²}`,
+        `= (1/2) ∫₀^{a}²} √u du = (1/2) · [u^(3/2) / (3/2)]₀^{a}²}`,
         '',
         `= (1/2) · (2/3) · (a²)^(3/2) = (1/3) · a³ = ${a * a * a}/3`,
         '',
@@ -10449,8 +10449,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 令抛物面 z1 = a(x²+y²) = a·r²
       // 旋转面 z2 = a² - (x²+y²) = a² - r²
       // 交线：a·r² = a² - r² → r²(a + 1) = a² → r = a/√(a+1)
-      // 体积 = ∫∫ (z2 - z1) dxdy 在投影区域上 = ∫₀^{2π}dθ∫₀^R (a²-r²-a·r²) r dr
-      // = 2π ∫₀^R (a² - (a+1)r²) r dr = 2π [a²·r²/2 - (a+1)r⁴/4]₀^R
+      // 体积 = ∫∫ (z2 - z1) dxdy 在投影区域上 = ∫₀^{2}π}dθ∫₀^{R} (a²-r²-a·r²) r dr
+      // = 2π ∫₀^{R} (a² - (a+1)r²) r dr = 2π [a²·r²/2 - (a+1)r⁴/4]₀^{R}
       // R² = a²/(a+1), R⁴ = a⁴/(a+1)²
       // = 2π [a²·a²/(2(a+1)) - (a+1)·a⁴/(4(a+1)²)]
       // = 2π [a⁴/(2(a+1)) - a⁴/(4(a+1))]
@@ -10488,7 +10488,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `D：0 ≤ θ ≤ 2π，0 ≤ r ≤ R = ${a}/√${a + 1}`,
         '',
-        `V = ∫₀^{2π} dθ ∫₀ᴿ [${a * a} − (${a} + 1)r²] · r dr`,
+        `V = ∫₀^{2}π} dθ ∫₀ᴿ [${a * a} − (${a} + 1)r²] · r dr`,
         '',
         `= 2π ∫₀ᴿ (${a * a}·r − (${a} + 1)r³) dr`,
         '',
@@ -10527,10 +10527,10 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 10,
     generate(rand, _diff) {
       const a = randInt(rand, 2, 4);
-      // 经典题：Σ sin(nx)/n^a, a>0, 用狄利克雷判别法证收敛
-      // 用具体例子：Σ cos(n)/n^a 的收敛性
-      // a_n = 1/n^a 单调趋于0 (a>0)
-      // Σ_{k=1}^n cos k 的部分和有界（公式：|Σ cos k| ≤ 1/|sin(1/2)| ≈ 1/0.4794 ≈ 2.086）
+      // 经典题：Σ sin(nx)/n^{a}, a>0, 用狄利克雷判别法证收敛
+      // 用具体例子：Σ cos(n)/n^{a} 的收敛性
+      // a_n = 1/n^{a} 单调趋于0 (a>0)
+      // Σ_{k=1}^{n} cos k 的部分和有界（公式：|Σ cos k| ≤ 1/|sin(1/2)| ≈ 1/0.4794 ≈ 2.086）
       // 由狄利克雷判别法，级数收敛
       const answer = `由狄利克雷判别法，Σ cos(n)/n^${a} 收敛（aₙ = 1/n^${a} 单调趋 0，Σ cos n 部分和有界）`;
       const problem = joinLines([
@@ -10551,7 +10551,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `① 单调性：n 增大 → n^${a} 增大 → 1/n^${a} 减小 → {aₙ} 单调递减`,
         '',
-        '② 极限：lim_{n→∞} aₙ = lim 1/n^a = 0',
+        '② 极限：lim_{n→∞} aₙ = lim 1/n^{a} = 0',
         '',
         '故 {aₙ} 单调递减且趋于 0 ✓',
         '',
@@ -10559,7 +10559,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '利用三角级数求和公式（积化和差推导）：',
         '',
-        'Sₙ = Σ_{k=1}^n cos k',
+        'Sₙ = Σ_{k=1}^{n} cos k',
         '',
         '= [sin(n + 1/2) − sin(1/2)] / [2 sin(1/2)]',
         '',
@@ -10583,7 +10583,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'calculation' as QuestionType,
         score: 14,
         problem, answer, solution,
-        hint: '狄利克雷判别法：①{aₙ}单调趋0；②Σbₙ部分和有界。取aₙ=1/n^a，bₙ=cos n。用积化和差累加公式证Σcos k有界',
+        hint: '狄利克雷判别法：①{aₙ}单调趋0；②Σbₙ部分和有界。取aₙ=1/n^{a}，bₙ=cos n。用积化和差累加公式证Σcos k有界',
       };
     },
   },
@@ -10605,8 +10605,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 所以 Σ_{n=0}^∞ x^(n+1)/(n+1) = -ln(1-x)
       // 等价于 Σ_{n=1}^∞ xⁿ/n = -ln(1-x)（这个其实已经有了 series-power-ln-sum）
       // 换一个：Σ x^(n+2) / ((n+1)(n+2)) = (1-x)ln(1-x) + x
-      // 对 Σ x^n/(n+1) 再积分一次
-      // 用 Σ x^(n+1) / (n+1)^2？ 是 dilogarithm，不好
+      // 对 Σ x^{n}/(n+1) 再积分一次
+      // 用 Σ x^(n+1) / (n+1)^{2}？ 是 dilogarithm，不好
       // 用 Σ_{n=1}^∞ x^(n+1) / (n(n+1)) = (1-x)ln(1-x) + x
       // 拆成：1/(n(n+1)) = 1/n - 1/(n+1)
       // Σ x^(n+1)/(n(n+1)) = Σ x^(n+1)/n - Σ x^(n+1)/(n+1)
@@ -10616,7 +10616,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '利用逐项积分求幂级数的和函数 S(x)：',
         '',
-        String.raw`$\displaystyle S(x) = \\sum_{n=1}^{\\infty} \\frac{x^{n+1}}{n(n+1)}$`,
+        String.raw`$\displaystyle S(x) = \\sum_{n=1}^{\\infty} \\frac{x^{n}+1}}{n(n+1)}$`,
       ]);
       const solution = joinLines([
         '**方法：拆项 + 利用已知级数求和**',
@@ -10641,9 +10641,9 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '第二个和：令 m = n+1，当 n=1 时 m=2：',
         '',
-        'Σ_{n=1}^∞ x^(n+1)/(n+1) = Σ_{m=2}^∞ x^m/m',
+        'Σ_{n=1}^∞ x^(n+1)/(n+1) = Σ_{m=2}^∞ x^{m}/m',
         '',
-        '= [Σ_{m=1}^∞ x^m/m] − x/1 = −ln(1−x) − x',
+        '= [Σ_{m=1}^∞ x^{m}/m] − x/1 = −ln(1−x) − x',
         '',
         '**第四步：合并**',
         '',
@@ -10681,9 +10681,9 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // (arcsin x)' = 1/√(1-x²) = (1-x²)^(-1/2)
       // 利用二项式级数 (1+t)^α = Σ C(α, n) tⁿ
       // α = -1/2, t = -x²
-      // C(-1/2, n) = (-1/2)(-3/2)...(-(2n-1)/2)/n! = (-1)^n (2n-1)!! / (2^n n!)
-      // (1-x²)^(-1/2) = Σ [(-1)^n (2n-1)!!/(2^n n!)] · (-x²)^n = Σ (2n-1)!!/(2^n n!) · x^(2n)
-      // 逐项积分：arcsin x = Σ (2n-1)!! / [2^n n! · (2n+1)] · x^(2n+1)
+      // C(-1/2, n) = (-1/2)(-3/2)...(-(2n-1)/2)/n! = (-1)^{n} (2n-1)!! / (2^{n} n!)
+      // (1-x²)^(-1/2) = Σ [(-1)^{n} (2n-1)!!/(2^{n} n!)] · (-x²)^{n} = Σ (2n-1)!!/(2^{n} n!) · x^(2n)
+      // 逐项积分：arcsin x = Σ (2n-1)!! / [2^{n} n! · (2n+1)] · x^(2n+1)
       // 即 arcsin x = Σ_{n=0}^∞ (2n-1)!!/( (2n)!! ) · x^(2n+1)/(2n+1)
       // 收敛域：|x| ≤ 1
       const answer = 'arcsin x = Σ_{n=0}^∞ (2n−1)!!/((2n)!!) · x^(2n+1)/(2n+1)，|x| ≤ 1（端点也收敛）';
@@ -10705,17 +10705,17 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `令 α = −1/2，t = −x²，代入：`,
         '',
-        '(1 − x²)^(−1/2) = Σ_{n=0}^∞ C(−1/2, n) · (−x²)^n',
+        '(1 − x²)^(−1/2) = Σ_{n=0}^∞ C(−1/2, n) · (−x²)^{n}',
         '',
         '**第三步：化简系数**',
         '',
         'C(−1/2, n) = (−1/2)(−3/2)(−5/2)...(−(2n−1)/2) / n!',
         '',
-        '= (−1)^n · (2n−1)!! / (2^n · n!)',
+        '= (−1)^{n} · (2n−1)!! / (2^{n} · n!)',
         '',
-        '所以 C(−1/2, n) · (−1)^n = (2n−1)!! / (2^n · n!) = (2n−1)!! / (2n)!!',
+        '所以 C(−1/2, n) · (−1)^{n} = (2n−1)!! / (2^{n} · n!) = (2n−1)!! / (2n)!!',
         '',
-        '（其中 (2n)!! = 2·4·6·...·2n = 2^n·n!）',
+        '（其中 (2n)!! = 2·4·6·...·2n = 2^{n}·n!）',
         '',
         '**第四步：写出导数的展开式**',
         '',
@@ -11094,11 +11094,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 10,
     generate(rand, _diff) {
       const a = randInt(rand, 1, 3);
-      // 求 lim_{n→∞} Σ_{k=1}^{an} n/(n² + k²) 的极限
+      // 求 lim_{n→∞} Σ_{k=1}^{an}} n/(n² + k²) 的极限
       // 思路：积分定义 or 夹逼
-      // 实际 Σ_{k=1}^{an} n/(n²+k²) = Σ_{k=1}^{an} 1/n · 1/(1+(k/n)²)
+      // 实际 Σ_{k=1}^{an}} n/(n²+k²) = Σ_{k=1}^{an}} 1/n · 1/(1+(k/n)²)
       // → ∫₀ᵃ 1/(1+x²) dx = arctan(a)
-      // 用夹逼：n/(n²+k²) 关于k递减，所以 ∫_{k}^{k+1} n/(n²+x²)dx < n/(n²+k²) < ∫_{k-1}^{k} n/(n²+x²)dx
+      // 用夹逼：n/(n²+k²) 关于k递减，所以 ∫_{k}^{k}+1} n/(n²+x²)dx < n/(n²+k²) < ∫_{k-1}^{k}} n/(n²+x²)dx
       // 即 arctan((k+1)/n)-arctan(k/n) < n/(n²+k²) < arctan(k/n)-arctan((k-1)/n)
       // 累加：arctan((an+1)/n)-arctan(1/n) < Σ < arctan(a)-arctan(0)
       // 两边 → arctan(a)
@@ -11106,7 +11106,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '利用夹逼准则证明并计算：',
         '',
-        String.raw`$\displaystyle \\lim_{n\\to\\infty} \\sum_{k=1}^{${a}n} \\frac{n}{n^2 + k^2}$`,
+        String.raw`$\displaystyle \\lim_{n\\to\\infty} \\sum_{k=1}^{${a}n} \\frac{n}{n^{2} + k^{2}}$`,
       ]);
       const solution = joinLines([
         '**方法：利用函数单调性放缩 + 积分夹逼**',
@@ -11121,9 +11121,9 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '对任意正整数 k，由单调性：f(k+1) < f(k) < f(k−1)（k ≥ 2 时）',
         '',
-        '积分形式：∫_k^{k+1} f(x) dx < f(k) < ∫_{k−1}^k f(x) dx',
+        '积分形式：∫_k^{k}+1} f(x) dx < f(k) < ∫_{k−1}^{k} f(x) dx',
         '',
-        '即 ∫_k^{k+1} n/(n²+x²) dx < n/(n²+k²) < ∫_{k−1}^k n/(n²+x²) dx',
+        '即 ∫_k^{k}+1} n/(n²+x²) dx < n/(n²+k²) < ∫_{k−1}^{k} n/(n²+x²) dx',
         '',
         '**第三步：积分原函数**',
         '',
@@ -11133,11 +11133,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `**第四步：对 k 从 1 到 ${a}n 求和（望远镜累加）**`,
         '',
-        '左边：Σ_{k=1}^{an} [arctan((k+1)/n) − arctan(k/n)]',
+        '左边：Σ_{k=1}^{an}} [arctan((k+1)/n) − arctan(k/n)]',
         '',
         `= arctan((${a}n+1)/n) − arctan(1/n) = arctan(${a} + 1/n) − arctan(1/n)`,
         '',
-        '右边：Σ_{k=1}^{an} [arctan(k/n) − arctan((k−1)/n)]',
+        '右边：Σ_{k=1}^{an}} [arctan(k/n) − arctan((k−1)/n)]',
         '',
         `= arctan(${a}n/n) − arctan(0) = arctan(${a}) − 0 = arctan(${a})`,
         '',
@@ -11153,7 +11153,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**补充：定积分定义法验证**',
         '',
-        'Σ_{k=1}^{an} n/(n²+k²) = Σ_{k=1}^{an} 1/n · 1/(1+(k/n)²)',
+        'Σ_{k=1}^{an}} n/(n²+k²) = Σ_{k=1}^{an}} 1/n · 1/(1+(k/n)²)',
         '',
         `这是 f(x) = 1/(1+x²) 在 [0, ${a}] 上的积分和，当 n → ∞ 时极限 = ∫₀^${a} 1/(1+x²) dx = arctan(${a}) ✓`,
       ]);
@@ -11161,7 +11161,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'proof' as QuestionType,
         score: 15,
         problem, answer, solution,
-        hint: '单调递减函数f(k)满足∫_k^{k+1}f<f(k)<∫_{k-1}^k f，原函数arctan(x/n)，望远镜求和后两边夹逼',
+        hint: '单调递减函数f(k)满足∫_k^{k}+1}f<f(k)<∫_{k-1}^{k} f，原函数arctan(x/n)，望远镜求和后两边夹逼',
       };
     },
   },
@@ -11669,15 +11669,15 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `当 x → 0⁺ 时，e^(−x) → 1，被积函数 ~ x^${a - 1}`,
         '',
-        '瑕积分 ∫₀¹ x^p dx 当 p > −1 时收敛（即指数 > −1）。',
+        '瑕积分 ∫₀¹ x^{p} dx 当 p > −1 时收敛（即指数 > −1）。',
         '',
         `这里 p = ${a - 1}，由于 ${a} ≥ 2，${a - 1} ≥ 1 > −1，故瑕积分段收敛。`,
         '',
         '**第三步：无穷积分段 [1, +∞) 的收敛性**',
         '',
-        '当 x → +∞ 时，e^(−x) 是指数衰减，比任何多项式 x^k 都快。',
+        '当 x → +∞ 时，e^(−x) 是指数衰减，比任何多项式 x^{k} 都快。',
         '',
-        '对任意常数 k，x^k · e^(−x) → 0（指数函数增长/衰减远快于多项式）。',
+        '对任意常数 k，x^{k} · e^(−x) → 0（指数函数增长/衰减远快于多项式）。',
         '',
         '由比较判别法，∫₁^∞ x^(a−1)·e^(−x) dx 收敛。',
         '',
@@ -11722,7 +11722,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         `求满足下列积分方程的连续函数 f(x)：`,
         '',
-        String.raw`$\displaystyle f(x) = ${a} + \\int_0^x t \\cdot f(t) \, dt$`,
+        String.raw`$\displaystyle f(x) = ${a} + \\int_0^{x} t \\cdot f(t) \, dt$`,
       ]);
       const solution = joinLines([
         '**方法：变限积分求导 → 转化为微分方程 + 初值条件**',
@@ -11755,7 +11755,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         'ln|f| = x²/2 + C₁',
         '',
-        'f(x) = C · e^(x²/2)（其中 C = ±e^C₁ 为任意常数，C = 0 也满足方程）',
+        'f(x) = C · e^(x²/2)（其中 C = ±e^{C}₁ 为任意常数，C = 0 也满足方程）',
         '',
         '**第四步：代入初始条件定常数**',
         '',
@@ -12001,7 +12001,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // ∬_S = -πa⁴/2 - 0 = -πa⁴/2
       // 但上半球上侧的通量...让我用另一种方式验证：
       // 直接对 z 分量：∬_S z²dxdy = ∬_D (a²-x²-y²) dxdy（上侧取正）
-      // = ∫₀^2π dθ ∫₀ᵃ (a²-r²)·r dr = 2π·[a²r²/2 - r⁴/4]₀ᵃ = 2π·(a⁴/2 - a⁴/4) = 2π·a⁴/4 = πa⁴/2
+      // = ∫₀^{2}π dθ ∫₀ᵃ (a²-r²)·r dr = 2π·[a²r²/2 - r⁴/4]₀ᵃ = 2π·(a⁴/2 - a⁴/4) = 2π·a⁴/4 = πa⁴/2
       // 由对称性，∬x²dydz = ∬y²dzdx = ∬z²dxdy = πa⁴/2？
       // 不！上半球在 yOz 面上的投影不是整个圆... 
       // 实际上由于对称性（轮换对称），∬x²dydz = ∬y²dzdx = ∬z²dxdy 吗？
@@ -12043,7 +12043,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problemText = joinLines([
         '计算曲面积分：',
         '',
-        String.raw`$\displaystyle \\iint_S x^2 dydz + y^2 dzdx + z^2 dxdy$`,
+        String.raw`$\displaystyle \\iint_S x^{2} dydz + y^{2} dzdx + z^{2} dxdy$`,
         '',
         `其中 S 为上半球面 z = √(${a}² − x² − y²) 的上侧。`,
       ]);
@@ -12125,16 +12125,16 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 10,
     generate(rand, _diff) {
       const a = randInt(rand, 1, 3);
-      // P = e^x(1+sin y), Q = e^x cos y + a
-      // 验证：∂P/∂y = e^x cos y, ∂Q/∂x = e^x cos y → 路径无关（单连通域）
+      // P = e^{x}(1+sin y), Q = e^{x} cos y + a
+      // 验证：∂P/∂y = e^{x} cos y, ∂Q/∂x = e^{x} cos y → 路径无关（单连通域）
       // 求 u(x,y) 使 du = Pdx + Qdy
-      // u = ∫_0^x P(t,0) dt + ∫_0^y Q(x,t) dt
-      // = ∫_0^x e^t(1+0) dt + ∫_0^y (e^x cos t + a) dt
-      // = e^x - 1 + e^x sin y + a y
-      // u = e^x + e^x sin y + a y - 1（常数可弃）
-      // 验证：∂u/∂x = e^x + e^x sin y = e^x(1+sin y) = P ✓
-      // ∂u/∂y = e^x cos y + a = Q ✓
-      const answer = `原函数 u(x,y) = e^x(1 + sin y) + ${a}y + C`;
+      // u = ∫_0^{x} P(t,0) dt + ∫_0^{y} Q(x,t) dt
+      // = ∫_0^{x} e^{t}(1+0) dt + ∫_0^{y} (e^{x} cos t + a) dt
+      // = e^{x} - 1 + e^{x} sin y + a y
+      // u = e^{x} + e^{x} sin y + a y - 1（常数可弃）
+      // 验证：∂u/∂x = e^{x} + e^{x} sin y = e^{x}(1+sin y) = P ✓
+      // ∂u/∂y = e^{x} cos y + a = Q ✓
+      const answer = `原函数 u(x,y) = e^{x}(1 + sin y) + ${a}y + C`;
       const problem = joinLines([
         '验证曲线积分 ∫_L eˣ(1 + sin y) dx + (eˣcos y + a) dy 在整个 xOy 平面上与路径无关，',
         '',
@@ -12191,7 +12191,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'calculation' as QuestionType,
         score: 14,
         problem, answer, solution,
-        hint: '∂P/∂y=e^x·cos y=∂Q/∂x→路径无关。折线路径(0,0)→(x,0)→(x,y)积分得u=e^x-1+e^x sin y+ay',
+        hint: '∂P/∂y=e^{x}·cos y=∂Q/∂x→路径无关。折线路径(0,0)→(x,0)→(x,y)积分得u=e^{x}-1+e^{x} sin y+ay',
       };
     },
   },
@@ -12213,8 +12213,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 积分 = ∫₀^√a du ∫₀^{√a-u} √(u+v) · 4uv dv
       // 令 t = u+v, 则 v = t - u，dv = dt
       // 内层：∫_u^{√a} √t · 4u(t-u) dt = 4u ∫_u^{√a} (t-u)√t dt
-      // = 4u ∫_u^{√a} (t^{3/2} - u·t^{1/2}) dt
-      // = 4u · [(2/5)t^{5/2} - u·(2/3)t^{3/2}]_u^{√a}
+      // = 4u ∫_u^{√a} (t^{3}/2} - u·t^{1}/2}) dt
+      // = 4u · [(2/5)t^{5}/2} - u·(2/3)t^{3}/2}]_u^{√a}
       // 这题计算量偏大，简化一下用极坐标类型的换元
       // 换个题：∬_D xy dxdy，D由xy=a, xy=b, y=x, y=2x围成（a<b）
       // 令 u = xy, v = y/x，即 y² = uv, x² = u/v
@@ -12223,7 +12223,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // ∂v/∂x = -y/x², ∂v/∂y = 1/x
       // |∂(u,v)/∂(x,y)| = y·1/x - x·(-y/x²) = y/x + y/x = 2y/x = 2v
       // 所以 J = 1/(2v)
-      // 积分 = ∫_a^b du ∫_1^2 u · 1/(2v) dv = ∫_a^b u du · ∫_1^2 1/(2v) dv
+      // 积分 = ∫_a^{b} du ∫_1^{2} u · 1/(2v) dv = ∫_a^{b} u du · ∫_1^{2} 1/(2v) dv
       // = [(b²-a²)/2] · [(ln 2)/2] = (b²-a²)·ln 2 / 4
       const b = a + 2;
       const result = ((b * b - a * a) * Math.log(2)) / 4;
@@ -12303,9 +12303,9 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 10,
     generate(rand, diff) {
       const a = randInt(rand, 2, 4);
-      // 证明 Σ_{n=1}^∞ sin(1/n^a) 收敛（当 a > 1 时）
-      // 比较判别：0 < sin(1/n^a) < 1/n^a（当 1/n^a < π/2，即 n^a > 2/π，对足够大的n成立）
-      // 又 Σ 1/n^a 收敛（a > 1 的 p 级数），故 Σ sin(1/n^a) 收敛
+      // 证明 Σ_{n=1}^∞ sin(1/n^{a}) 收敛（当 a > 1 时）
+      // 比较判别：0 < sin(1/n^{a}) < 1/n^{a}（当 1/n^{a} < π/2，即 n^{a} > 2/π，对足够大的n成立）
+      // 又 Σ 1/n^{a} 收敛（a > 1 的 p 级数），故 Σ sin(1/n^{a}) 收敛
       const answer = `由比较判别法：0 < sin(1/n^${a}) < 1/n^${a}（n 充分大），Σ 1/n^${a} 收敛（p=${a}>1），故 Σ sin(1/n^${a}) 收敛`;
       const problem = joinLines([
         `证明数项级数 Σ_{n=1}^∞ sin(1/n^${a}) 收敛。`,
@@ -12317,7 +12317,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `对所有正整数 n，1/n^${a} > 0，且当 n ≥ 1 时 1/n^${a} ≤ 1 < π/2（≈1.57），`,
         '',
-        '所以 sin(1/n^a) > 0，这是正项级数。',
+        '所以 sin(1/n^{a}) > 0，这是正项级数。',
         '',
         '**第二步：建立不等式**',
         '',
@@ -12347,7 +12347,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'proof' as QuestionType,
         score: diff === 2 ? 8 : 10,
         problem, answer, solution,
-        hint: '用sin x < x (x>0)放缩得0<sin(1/n^a)<1/n^a。p级数p=a>1收敛，由比较判别法原级数收敛',
+        hint: '用sin x < x (x>0)放缩得0<sin(1/n^{a})<1/n^{a}。p级数p=a>1收敛，由比较判别法原级数收敛',
       };
     },
   },
@@ -12361,23 +12361,23 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['无穷级数', '幂级数', '和函数', '收敛域', '逐项求导'],
     variantCount: 8,
     generate() {
-      // 求 Σ_{n=1}^∞ x^n / n 的和函数与收敛域
+      // 求 Σ_{n=1}^∞ x^{n} / n 的和函数与收敛域
       // 收敛半径：lim |a_n/a_{n+1}| = lim (1/n)/(1/(n+1)) = 1
       // x = 1：Σ 1/n 发散（调和级数）
-      // x = -1：Σ (-1)^n/n 收敛（莱布尼茨判别）
+      // x = -1：Σ (-1)^{n}/n 收敛（莱布尼茨判别）
       // 收敛域：[-1, 1)
-      // 和函数：S(x) = Σ_{n=1}^∞ x^n/n
-      // S'(x) = Σ_{n=1}^∞ x^{n-1} = 1/(1-x) （|x|<1）
+      // 和函数：S(x) = Σ_{n=1}^∞ x^{n}/n
+      // S'(x) = Σ_{n=1}^∞ x^{n}-1} = 1/(1-x) （|x|<1）
       // S(x) = S(0) + ∫₀ˣ 1/(1-t) dt = 0 + [-ln(1-t)]₀ˣ = -ln(1-x)
       // 在 x=-1 处，由阿贝尔定理，S(-1) = lim_{x→-1+} -ln(1-x) = -ln 2
-      // 不对，S(-1) = Σ (-1)^n/n = -Σ (-1)^{n+1}/n = -ln 2
-      // 验证：ln(1+x) = Σ(-1)^{n+1}x^n/n，所以ln2 = Σ(-1)^{n+1}/n → Σ(-1)^n/n = -ln2 ✓
+      // 不对，S(-1) = Σ (-1)^{n}/n = -Σ (-1)^{n}+1}/n = -ln 2
+      // 验证：ln(1+x) = Σ(-1)^{n}+1}x^{n}/n，所以ln2 = Σ(-1)^{n}+1}/n → Σ(-1)^{n}/n = -ln2 ✓
       // 嗯，x=-1时和函数是 -ln(1-(-1)) = -ln2，与级数和一致
       const answer = `收敛域 [−1, 1)，和函数 S(x) = −ln(1 − x)（x ∈ [−1, 1)）`;
       const problem = joinLines([
         '求下列幂级数的收敛域及和函数：',
         '',
-        String.raw`$\displaystyle S(x) = \\sum_{n=1}^{\\infty} \\frac{x^n}{n}$`,
+        String.raw`$\displaystyle S(x) = \\sum_{n=1}^{\\infty} \\frac{x^{n}}{n}$`,
       ]);
       const solution = joinLines([
         '**方法：先求收敛半径 → 讨论端点 → 逐项求导/积分求和函数**',
@@ -12394,7 +12394,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         'x = 1 时：级数为 Σ_{n=1}^∞ 1/n，这是调和级数，发散。',
         '',
-        'x = −1 时：级数为 Σ_{n=1}^∞ (−1)^n / n，这是交错级数。',
+        'x = −1 时：级数为 Σ_{n=1}^∞ (−1)^{n} / n，这是交错级数。',
         '',
         '由莱布尼茨判别法：u_n = 1/n 单调递减趋于 0，故收敛。',
         '',
@@ -12404,7 +12404,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '在 |x| < 1 内，幂级数可逐项求导：',
         '',
-        'S\'(x) = Σ_{n=1}^∞ (x^n/n)\' = Σ_{n=1}^∞ x^{n−1}',
+        'S\'(x) = Σ_{n=1}^∞ (x^{n}/n)\' = Σ_{n=1}^∞ x^{n}−1}',
         '',
         '= 1 + x + x² + x³ + ... = 1/(1 − x) （等比级数求和，|x| < 1）',
         '',
@@ -12422,7 +12422,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         'S(−1) = lim_{x→−1⁺} S(x) = lim_{x→−1⁺} −ln(1 − x) = −ln 2',
         '',
-        '（验证：Σ_{n=1}^∞ (−1)^n/n = −ln 2，与 ln(1+x) 展开式一致。）',
+        '（验证：Σ_{n=1}^∞ (−1)^{n}/n = −ln 2，与 ln(1+x) 展开式一致。）',
         '',
         '**结论：**',
         '',
@@ -12453,22 +12453,22 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // (2) 在 x = 0 和 x = 2 处的收敛值
       // x=0 处：f(0+)=0, f(0-)=1 → 收敛值 = (1+0)/2 = 1/2
       // x=2 处：f(2-)=2, f(2+)=f(-2+)=1 → 收敛值 = (2+1)/2 = 3/2
-      // a₀ = (1/2)∫_{-2}^{2} f(x)dx = (1/2)[∫_{-2}^{0}1·dx + ∫_{0}^{2}x·dx]
+      // a₀ = (1/2)∫_{-2}^{2}} f(x)dx = (1/2)[∫_{-2}^{0}}1·dx + ∫_{0}^{2}}x·dx]
       //    = (1/2)[2 + 2] = (1/2)·4 = 2
-      // aₙ = (1/2)∫_{-2}^{2} f(x)cos(nπx/2)dx
-      //    = (1/2)[∫_{-2}^{0}cos(nπx/2)dx + ∫_{0}^{2}x·cos(nπx/2)dx]
-      //    = (1/2)[(2/(nπ))sin(nπx/2)|_{-2}^0 + (2x/(nπ))sin(nπx/2)|_0^2 + (4/(n²π²))cos(nπx/2)|_0^2]
+      // aₙ = (1/2)∫_{-2}^{2}} f(x)cos(nπx/2)dx
+      //    = (1/2)[∫_{-2}^{0}}cos(nπx/2)dx + ∫_{0}^{2}}x·cos(nπx/2)dx]
+      //    = (1/2)[(2/(nπ))sin(nπx/2)|_{-2}^{0} + (2x/(nπ))sin(nπx/2)|_0^{2} + (4/(n²π²))cos(nπx/2)|_0^{2}]
       //    = (1/2)[0 + 0 + (4/(n²π²))(cos(nπ)-1)]
-      //    = (2/(n²π²))((-1)^n - 1)
-      // bₙ = (1/2)∫_{-2}^{2} f(x)sin(nπx/2)dx
-      //    = (1/2)[∫_{-2}^{0}sin(nπx/2)dx + ∫_{0}^{2}x·sin(nπx/2)dx]
-      //    = (1/2)[(-2/(nπ))cos(nπx/2)|_{-2}^0 + (-2x/(nπ))cos(nπx/2)|_0^2 + (4/(n²π²))sin(nπx/2)|_0^2]
+      //    = (2/(n²π²))((-1)^{n} - 1)
+      // bₙ = (1/2)∫_{-2}^{2}} f(x)sin(nπx/2)dx
+      //    = (1/2)[∫_{-2}^{0}}sin(nπx/2)dx + ∫_{0}^{2}}x·sin(nπx/2)dx]
+      //    = (1/2)[(-2/(nπ))cos(nπx/2)|_{-2}^{0} + (-2x/(nπ))cos(nπx/2)|_0^{2} + (4/(n²π²))sin(nπx/2)|_0^{2}]
       //    = (1/2)[(-2/(nπ))(1-cos(-nπ)) + (-4/(nπ))cos(nπ) + 0]
-      //    = (1/2)[(-2/(nπ))(1-(-1)^n) + (-4/(nπ))(-1)^n]
-      //    = (1/2)[-2/(nπ) + 2(-1)^n/(nπ) - 4(-1)^n/(nπ)]
-      //    = (1/2)[-2/(nπ) - 2(-1)^n/(nπ)]
-      //    = -1/(nπ) - (-1)^n/(nπ) = -[1 + (-1)^n]/(nπ)
-      const answer = `S(0) = 1/2，S(2) = 3/2；a₀/2 = 1，aₙ = 2[(-1)^n − 1]/(n²π²)，bₙ = −[1 + (-1)^n]/(nπ)`;
+      //    = (1/2)[(-2/(nπ))(1-(-1)^{n}) + (-4/(nπ))(-1)^{n}]
+      //    = (1/2)[-2/(nπ) + 2(-1)^{n}/(nπ) - 4(-1)^{n}/(nπ)]
+      //    = (1/2)[-2/(nπ) - 2(-1)^{n}/(nπ)]
+      //    = -1/(nπ) - (-1)^{n}/(nπ) = -[1 + (-1)^{n}]/(nπ)
+      const answer = `S(0) = 1/2，S(2) = 3/2；a₀/2 = 1，aₙ = 2[(-1)^{n} − 1]/(n²π²)，bₙ = −[1 + (-1)^{n}]/(nπ)`;
       const problem = joinLines([
         '设函数 f(x) 以 4 为周期，在一个周期内',
         '',
@@ -12508,13 +12508,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**计算 a₀：**',
         '',
-        'a₀ = (1/l)∫_{−l}^l f(x)dx = (1/2)[∫_{−2}⁰ 1·dx + ∫₀² x·dx]',
+        'a₀ = (1/l)∫_{−l}^{l} f(x)dx = (1/2)[∫_{−2}⁰ 1·dx + ∫₀² x·dx]',
         '',
         '= (1/2)[x|_{−2}⁰ + x²/2|₀²] = (1/2)[(0−(−2)) + (2−0)] = (1/2)(2 + 2) = 2',
         '',
         '**计算 aₙ：**',
         '',
-        'aₙ = (1/l)∫_{−l}^l f(x)cos(nπx/l)dx = (1/2)[∫_{−2}⁰ cos(nπx/2)dx + ∫₀² x·cos(nπx/2)dx]',
+        'aₙ = (1/l)∫_{−l}^{l} f(x)cos(nπx/l)dx = (1/2)[∫_{−2}⁰ cos(nπx/2)dx + ∫₀² x·cos(nπx/2)dx]',
         '',
         '第一项：∫_{−2}⁰ cos(nπx/2)dx = (2/(nπ))sin(nπx/2)|_{−2}⁰ = 0 − (2/(nπ))sin(−nπ) = 0',
         '',
@@ -12528,17 +12528,17 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '代入上下限 0 到 2：',
         '',
-        '[0 + (4/(n²π²))cos(nπ)] − [0 + (4/(n²π²))·1] = (4/(n²π²))(cos nπ − 1) = (4/(n²π²))((−1)^n − 1)',
+        '[0 + (4/(n²π²))cos(nπ)] − [0 + (4/(n²π²))·1] = (4/(n²π²))(cos nπ − 1) = (4/(n²π²))((−1)^{n} − 1)',
         '',
-        '所以 aₙ = (1/2) · (4/(n²π²))((−1)^n − 1) = 2((−1)^n − 1)/(n²π²)',
+        '所以 aₙ = (1/2) · (4/(n²π²))((−1)^{n} − 1) = 2((−1)^{n} − 1)/(n²π²)',
         '',
         '**计算 bₙ：**',
         '',
-        'bₙ = (1/l)∫_{−l}^l f(x)sin(nπx/l)dx = (1/2)[∫_{−2}⁰ sin(nπx/2)dx + ∫₀² x·sin(nπx/2)dx]',
+        'bₙ = (1/l)∫_{−l}^{l} f(x)sin(nπx/l)dx = (1/2)[∫_{−2}⁰ sin(nπx/2)dx + ∫₀² x·sin(nπx/2)dx]',
         '',
         '第一项：∫_{−2}⁰ sin(nπx/2)dx = (−2/(nπ))cos(nπx/2)|_{−2}⁰',
         '',
-        '= (−2/(nπ))[cos 0 − cos(−nπ)] = (−2/(nπ))[1 − (−1)^n]',
+        '= (−2/(nπ))[cos 0 − cos(−nπ)] = (−2/(nπ))[1 − (−1)^{n}]',
         '',
         '第二项（分部积分）：∫ x·sin(nπx/2)dx',
         '',
@@ -12550,21 +12550,21 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '代入上下限 0 到 2：',
         '',
-        '[(−4/(nπ))cos(nπ) + 0] − [0 + 0] = (−4/(nπ))(−1)^n',
+        '[(−4/(nπ))cos(nπ) + 0] − [0 + 0] = (−4/(nπ))(−1)^{n}',
         '',
-        'bₙ = (1/2)[(−2/(nπ))(1 − (−1)^n) + (−4/(nπ))(−1)^n]',
+        'bₙ = (1/2)[(−2/(nπ))(1 − (−1)^{n}) + (−4/(nπ))(−1)^{n}]',
         '',
-        '= (1/2)[−2/(nπ) + 2(−1)^n/(nπ) − 4(−1)^n/(nπ)]',
+        '= (1/2)[−2/(nπ) + 2(−1)^{n}/(nπ) − 4(−1)^{n}/(nπ)]',
         '',
-        '= (1/2)[−2/(nπ) − 2(−1)^n/(nπ)] = −[1 + (−1)^n]/(nπ)',
+        '= (1/2)[−2/(nπ) − 2(−1)^{n}/(nπ)] = −[1 + (−1)^{n}]/(nπ)',
         '',
         '**总结：**',
         '',
         'a₀ = 2',
         '',
-        'aₙ = 2[(−1)^n − 1]/(n²π²) （n = 1, 2, 3, ...）',
+        'aₙ = 2[(−1)^{n} − 1]/(n²π²) （n = 1, 2, 3, ...）',
         '',
-        'bₙ = −[1 + (−1)^n]/(nπ) （n = 1, 2, 3, ...）',
+        'bₙ = −[1 + (−1)^{n}]/(nπ) （n = 1, 2, 3, ...）',
       ]);
       return {
         type: 'calculation' as QuestionType,
@@ -12586,22 +12586,22 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['常微分方程', '二阶常系数', '非齐次', '初值问题', '待定系数法'],
     variantCount: 10,
     generate() {
-      // y'' - 3y' + 2y = e^x, y(0)=0, y'(0)=1
+      // y'' - 3y' + 2y = e^{x}, y(0)=0, y'(0)=1
       // 特征方程：r²-3r+2=0 → r=1, r=2
-      // 齐次通解：Y = C₁e^x + C₂e^{2x}
-      // 特解：λ=1是特征根（单根），设 y* = A·x·e^x
-      // y*' = A(e^x + x e^x) = A e^x (1+x)
-      // y*'' = A[e^x(1+x) + e^x] = A e^x (2+x)
-      // 代入方程：A e^x(2+x) - 3A e^x(1+x) + 2A x e^x = e^x
+      // 齐次通解：Y = C₁e^{x} + C₂e^{2x}}
+      // 特解：λ=1是特征根（单根），设 y* = A·x·e^{x}
+      // y*' = A(e^{x} + x e^{x}) = A e^{x} (1+x)
+      // y*'' = A[e^{x}(1+x) + e^{x}] = A e^{x} (2+x)
+      // 代入方程：A e^{x}(2+x) - 3A e^{x}(1+x) + 2A x e^{x} = e^{x}
       // A(2+x-3-3x+2x) = 1 → A(-1) = 1 → A = -1
-      // 特解：y* = -x e^x
-      // 通解：y = C₁e^x + C₂e^{2x} - x e^x
+      // 特解：y* = -x e^{x}
+      // 通解：y = C₁e^{x} + C₂e^{2x}} - x e^{x}
       // y(0)=C₁+C₂=0 → C₂=-C₁
-      // y' = C₁e^x + 2C₂e^{2x} - e^x - x e^x
+      // y' = C₁e^{x} + 2C₂e^{2x}} - e^{x} - x e^{x}
       // y'(0) = C₁ + 2C₂ - 1 = 1 → C₁ + 2C₂ = 2
       // C₁ + 2(-C₁) = 2 → -C₁ = 2 → C₁ = -2, C₂ = 2
-      // y = -2e^x + 2e^{2x} - x e^x
-      const answer = `y = 2e^{2x} − 2e^x − x·e^x`;
+      // y = -2e^{x} + 2e^{2x}} - x e^{x}
+      const answer = `y = 2e^{2x}} − 2e^{x} − x·e^{x}`;
       const problem = joinLines([
         '求解初值问题：',
         '',
@@ -12620,7 +12620,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '因式分解：(r − 1)(r − 2) = 0 → r₁ = 1，r₂ = 2',
         '',
-        '齐次通解：Y = C₁ eˣ + C₂ e^{2x}',
+        '齐次通解：Y = C₁ eˣ + C₂ e^{2x}}',
         '',
         '**第二步：求非齐次方程的一个特解**',
         '',
@@ -12644,7 +12644,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**第三步：写出通解**',
         '',
-        'y = Y + y* = C₁ eˣ + C₂ e^{2x} − x eˣ',
+        'y = Y + y* = C₁ eˣ + C₂ e^{2x}} − x eˣ',
         '',
         '**第四步：用初值条件确定常数**',
         '',
@@ -12652,7 +12652,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '对通解求导：',
         '',
-        'y′ = C₁ eˣ + 2C₂ e^{2x} − eˣ − x eˣ',
+        'y′ = C₁ eˣ + 2C₂ e^{2x}} − eˣ − x eˣ',
         '',
         'y′(0) = 1：C₁ + 2C₂ − 1 − 0 = 1 → C₁ + 2C₂ = 2 ... (2)',
         '',
@@ -12660,17 +12660,17 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**第五步：写出特解**',
         '',
-        'y = −2 eˣ + 2 e^{2x} − x eˣ',
+        'y = −2 eˣ + 2 e^{2x}} − x eˣ',
         '',
-        '即 y = 2e^{2x} − 2eˣ − x·eˣ',
+        '即 y = 2e^{2x}} − 2eˣ − x·eˣ',
         '',
-        '**验证：** y(0)=2-2-0=0✓，y′=4e^{2x}-2e^x-e^x-xe^x，y′(0)=4-2-1=1✓',
+        '**验证：** y(0)=2-2-0=0✓，y′=4e^{2x}}-2e^{x}-e^{x}-xe^{x}，y′(0)=4-2-1=1✓',
       ]);
       return {
         type: 'calculation' as QuestionType,
         score: 14,
         problem, answer, solution,
-        hint: '特征根r=1,2→齐次通解C₁e^x+C₂e^{2x}。λ=1是单根→设y*=Axe^x，代入得A=-1。初值条件联立解C₁=-2,C₂=2',
+        hint: '特征根r=1,2→齐次通解C₁e^{x}+C₂e^{2x}}。λ=1是单根→设y*=Axe^{x}，代入得A=-1。初值条件联立解C₁=-2,C₂=2',
       };
     },
   },
@@ -12685,7 +12685,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 10,
     generate(rand, diff) {
       const a = randInt(rand, 1, 3);
-      // y'' = (1 + y'^2) / (1 + x^2) 型... 不，太复杂
+      // y'' = (1 + y'^{2}) / (1 + x^{2}) 型... 不，太复杂
       // 选 xy'' + y' = 0, y(1)=a, y'(1)=1
       // 令 p = y'，则 y'' = p'
       // xp' + p = 0 → dp/p = -dx/x → ln p = -ln x + C₁ → p = C₁/x
@@ -12718,7 +12718,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '积分：∫ dp/p = −∫ dx/x → ln|p| = −ln|x| + C₁',
         '',
-        'p = C₁ / x（C₁ = ±e^{C₁} 为任意常数，C₁ = 0 也满足）',
+        'p = C₁ / x（C₁ = ±e^{C}₁} 为任意常数，C₁ = 0 也满足）',
         '',
         '**第三步：用 y′ 的初值定 C₁**',
         '',
@@ -12845,13 +12845,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 8,
     generate(rand, _diff) {
       const a = randInt(rand, 2, 4);
-      // lim_{n→∞} (1^a + 2^a + ... + n^a) / n^{a+1}
-      // 用 Stolz 定理（∞/∞型）：设 x_n = Σk^a, y_n = n^{a+1}
+      // lim_{n→∞} (1^{a} + 2^{a} + ... + n^{a}) / n^{a}+1}
+      // 用 Stolz 定理（∞/∞型）：设 x_n = Σk^{a}, y_n = n^{a}+1}
       // y_n 严格递增且趋向+∞，满足 Stolz 条件
-      // lim (x_{n+1}-x_n)/(y_{n+1}-y_n) = lim (n+1)^a / [(n+1)^{a+1} - n^{a+1}]
-      // 分母展开：(n+1)^{a+1} - n^{a+1} = (a+1)n^a + o(n^a)
+      // lim (x_{n+1}-x_n)/(y_{n+1}-y_n) = lim (n+1)^{a} / [(n+1)^{a}+1} - n^{a}+1}]
+      // 分母展开：(n+1)^{a}+1} - n^{a}+1} = (a+1)n^{a} + o(n^{a})
       // 所以极限 = 1/(a+1)
-      // （也可用定积分定义：Σ(k/n)^a·(1/n) → ∫₀¹ x^a dx = 1/(a+1)）
+      // （也可用定积分定义：Σ(k/n)^{a}·(1/n) → ∫₀¹ x^{a} dx = 1/(a+1)）
       const result = 1 / (a + 1);
       const answer = `1/(${a}+1) = ${result.toFixed(4)}（Stolz 定理或定积分定义）`;
       const problem = joinLines([
@@ -12870,7 +12870,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**第一步：识别 x_n, y_n 并验证条件**',
         '',
-        `设 xₙ = 1^${a} + 2^${a} + ... + n^${a} = Σ_{k=1}^n k^${a}`,
+        `设 xₙ = 1^${a} + 2^${a} + ... + n^${a} = Σ_{k=1}^{n} k^${a}`,
         '',
         `yₙ = n^${a + 1}`,
         '',
@@ -12904,7 +12904,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**补充：定积分定义法验证**',
         '',
-        `Σ_{k=1}^n k^${a} / n^${a + 1} = Σ_{k=1}^n (k/n)^${a} · (1/n)`,
+        `Σ_{k=1}^{n} k^${a} / n^${a + 1} = Σ_{k=1}^{n} (k/n)^${a} · (1/n)`,
         '',
         `这是 f(x) = x^${a} 在 [0, 1] 上的积分和，极限 = ∫₀¹ x^${a} dx = [x^(${a}+1)/(${a}+1)]₀¹ = 1/(${a}+1) ✓`,
       ]);
@@ -12912,7 +12912,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'calculation' as QuestionType,
         score: 14,
         problem, answer, solution,
-        hint: 'Stolz定理：lim(x_{n+1}-x_n)/(y_{n+1}-y_n)=lim x_n/y_n（y_n严格增→∞）。分子=(n+1)^a，分母首项=(a+1)n^a，极限=1/(a+1)',
+        hint: 'Stolz定理：lim(x_{n+1}-x_n)/(y_{n+1}-y_n)=lim x_n/y_n（y_n严格增→∞）。分子=(n+1)^{a}，分母首项=(a+1)n^{a}，极限=1/(a+1)',
       };
     },
   },
@@ -13004,8 +13004,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 8,
     generate(rand, _diff) {
       const a = randInt(rand, 2, 5);
-      // 证明：当 x→+∞ 时，e^x 是比 x^a 更高阶的无穷大，x^a 是比 ln x 更高阶的无穷大
-      // 即 lim x^a / e^x = 0，lim ln x / x^a = 0
+      // 证明：当 x→+∞ 时，e^{x} 是比 x^{a} 更高阶的无穷大，x^{a} 是比 ln x 更高阶的无穷大
+      // 即 lim x^{a} / e^{x} = 0，lim ln x / x^{a} = 0
       const answer = `由洛必达法则：lim x^${a}/eˣ = 0，lim ln x / x^${a} = 0。增长速度排序：eˣ ≫ x^${a} ≫ ln x`;
       const problem = joinLines([
         '证明当 x → +∞ 时，下列无穷大量按阶从低到高排列：',
@@ -13029,7 +13029,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `**命题 1：lim_{x→+∞} ln x / x^${a} = 0**`,
         '',
-        '当 x → +∞ 时，ln x → +∞，x^a → +∞，这是 ∞/∞ 型不定式。',
+        '当 x → +∞ 时，ln x → +∞，x^{a} → +∞，这是 ∞/∞ 型不定式。',
         '',
         '由洛必达法则：',
         '',
@@ -13043,7 +13043,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `**命题 2：lim_{x→+∞} x^${a} / eˣ = 0**`,
         '',
-        '当 x → +∞ 时，x^a → +∞，eˣ → +∞，这也是 ∞/∞ 型不定式。',
+        '当 x → +∞ 时，x^{a} → +∞，eˣ → +∞，这也是 ∞/∞ 型不定式。',
         '',
         '连续使用洛必达法则 a 次（a 为正整数）：',
         '',
@@ -13067,7 +13067,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '（对数增长 < 幂函数增长 < 指数增长）',
         '',
-        '**推广：** 对任意 a > 0, b > 0，有 ln^b x ≪ x^a ≪ e^x。',
+        '**推广：** 对任意 a > 0, b > 0，有 ln^{b} x ≪ x^{a} ≪ e^{x}。',
         '',
         '即无论 b 多大、a 多小，对数的任何次幂都比任何正幂次的 x 增长慢；',
         '',
@@ -13077,7 +13077,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'proof' as QuestionType,
         score: 13,
         problem, answer, solution,
-        hint: '洛必达法则：lim ln x / x^a = lim (1/x)/(a·x^(a-1)) = 0。lim x^a/e^x 连用a次洛必达得a!/e^x→0',
+        hint: '洛必达法则：lim ln x / x^{a} = lim (1/x)/(a·x^(a-1)) = 0。lim x^{a}/e^{x} 连用a次洛必达得a!/e^{x}→0',
       };
     },
   },
@@ -13266,12 +13266,12 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 10,
     generate(rand, diff) {
       const a = randInt(rand, 1, 4);
-      // 用积分中值定理估计 ∫_a^b e^(-x^2) dx 的值（求 ξ ∈ [a,b] 使积分=(b-a)e^(-ξ²)）
+      // 用积分中值定理估计 ∫_a^{b} e^(-x^{2}) dx 的值（求 ξ ∈ [a,b] 使积分=(b-a)e^(-ξ²)）
       // 或者更经典：f(x)单调，求中值点位置
-      // 简化：给定 f(x) = x^a + 1，区间 [0, 1]，求 ξ 使 ∫₀¹ f(x)dx = f(ξ)
-      // ∫₀¹ (x^a + 1)dx = 1/(a+1) + 1 = (a+2)/(a+1)
-      // f(ξ) = ξ^a + 1 = (a+2)/(a+1)
-      // ξ^a = 1/(a+1)
+      // 简化：给定 f(x) = x^{a} + 1，区间 [0, 1]，求 ξ 使 ∫₀¹ f(x)dx = f(ξ)
+      // ∫₀¹ (x^{a} + 1)dx = 1/(a+1) + 1 = (a+2)/(a+1)
+      // f(ξ) = ξ^{a} + 1 = (a+2)/(a+1)
+      // ξ^{a} = 1/(a+1)
       // ξ = (1/(a+1))^(1/a)
       const valA = a + 2;
       const valB = a + 1;
@@ -13318,7 +13318,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'calculation' as QuestionType,
         score: diff === 2 ? 8 : 10,
         problem, answer, solution,
-        hint: '先算积分∫₀¹(x^a+1)dx=1/(a+1)+1=(a+2)/(a+1)。由中值定理f(ξ)=积分值→ξ^a+1=(a+2)/(a+1)→ξ=(1/(a+1))^(1/a)',
+        hint: '先算积分∫₀¹(x^{a}+1)dx=1/(a+1)+1=(a+2)/(a+1)。由中值定理f(ξ)=积分值→ξ^{a}+1=(a+2)/(a+1)→ξ=(1/(a+1))^(1/a)',
       };
     },
   },
@@ -13332,15 +13332,15 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['一元积分', '奇偶函数', '周期函数', '对称区间', '积分化简'],
     variantCount: 10,
     generate() {
-      // 计算 ∫_{-a}^{a} [f(x) + f(-x)] / 2 · cos(x) dx，其中 f 是任意连续函数
+      // 计算 ∫_{-a}^{a}} [f(x) + f(-x)] / 2 · cos(x) dx，其中 f 是任意连续函数
       // 关键思路：令 g(x) = [f(x)+f(-x)]/2·cosx，则 g(-x) = [f(-x)+f(x)]/2·cos(-x) = g(x)
-      // g 是偶函数，故 ∫_{-a}^a g = 2∫₀^a g
-      // 同时可以问：∫_{-a}^a [f(x)-f(-x)]/2·sinx dx？也是偶函数？
+      // g 是偶函数，故 ∫_{-a}^{a} g = 2∫₀^{a} g
+      // 同时可以问：∫_{-a}^{a} [f(x)-f(-x)]/2·sinx dx？也是偶函数？
       // 不，奇函数×奇函数=偶函数，所以也是2倍
       // 出一道经典题：∫_{-π/2}^{π/2} sin²x·cosx dx （偶函数·偶函数=偶函数）
-      // 不对，应该更综合。比如：∫_{-a}^{a} (x·e^{|x|} + sin²x) dx
-      // 拆成两部分：x·e^{|x|} 是奇函数→0，sin²x 是偶函数→2∫₀^a sin²x dx
-      // 2∫₀^a sin²x dx = 2·∫₀^a (1-cos2x)/2 dx = ∫₀^a (1-cos2x) dx = a - (sin2a)/2
+      // 不对，应该更综合。比如：∫_{-a}^{a}} (x·e^{|x|} + sin²x) dx
+      // 拆成两部分：x·e^{|x|} 是奇函数→0，sin²x 是偶函数→2∫₀^{a} sin²x dx
+      // 2∫₀^{a} sin²x dx = 2·∫₀^{a} (1-cos2x)/2 dx = ∫₀^{a} (1-cos2x) dx = a - (sin2a)/2
       // 用 π/2 作为上限更经典
       // ∫_{-π/2}^{π/2} (x·sin²x + x²·cosx) dx
       // 拆：x·sin²x 是奇函数（奇×偶=奇）→ 0
@@ -13354,16 +13354,16 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '利用奇偶函数积分性质计算：',
         '',
-        String.raw`$\displaystyle \\int_{-\\pi/2}^{\\pi/2} \bigl(x \\cdot \\sin^2 x + x^2 \\cdot \\cos x\bigr) \, dx$`,
+        String.raw`$\displaystyle \\int_{-\\pi/2}^{\\pi/2} \bigl(x \\cdot \\sin^{2} x + x^{2} \\cdot \\cos x\bigr) \, dx$`,
       ]);
       const solution = joinLines([
         '**方法：拆项 + 奇偶函数积分性质（奇函数对称区间 = 0，偶函数 = 2 倍半区间）**',
         '',
         '**奇偶函数积分法则：**',
         '',
-        '· 若 f(x) 为奇函数：∫_{−a}^a f(x)dx = 0',
+        '· 若 f(x) 为奇函数：∫_{−a}^{a} f(x)dx = 0',
         '',
-        '· 若 f(x) 为偶函数：∫_{−a}^a f(x)dx = 2∫₀^a f(x)dx',
+        '· 若 f(x) 为偶函数：∫_{−a}^{a} f(x)dx = 2∫₀^{a} f(x)dx',
         '',
         '**第一步：拆分被积函数并判断奇偶性**',
         '',
@@ -13439,13 +13439,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate() {
       // 证明 lim_{(x,y)→(0,0)} xy/(x²+y²) 不存在
       // 沿 y = kx 趋近：lim x·kx/(x²+k²x²) = k/(1+k²)，与k有关，故极限不存在
-      // 或者 xy²/(x²+y^4) 沿 y=kx 和 y²=x 得到不同结果
+      // 或者 xy²/(x²+y^{4}) 沿 y=kx 和 y²=x 得到不同结果
       // 选经典题：f(x,y) = xy/(x²+y²) 在(0,0)处极限不存在
       const answer = `沿 y = kx 趋近时极限 = k/(1+k²)，与 k 有关，不同路径极限不同，故二重极限不存在`;
       const problem = joinLines([
         '证明下列二重极限不存在：',
         '',
-        String.raw`$\displaystyle \\lim_{(x,y)\\to(0,0)} \\frac{xy}{x^2 + y^2}$`,
+        String.raw`$\displaystyle \\lim_{(x,y)\\to(0,0)} \\frac{xy}{x^{2} + y^{2}}$`,
       ]);
       const solution = joinLines([
         '**方法：沿不同路径趋近，若极限不同则二重极限不存在**',
@@ -13616,7 +13616,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate(rand, _diff) {
       const a = randInt(rand, 1, 3);
       // 心形线 r = a(1 + cosθ) 围成的面积
-      // A = ∬_D dσ = ∫_{-π}^{π} dθ ∫₀^{a(1+cosθ)} r dr
+      // A = ∬_D dσ = ∫_{-π}^{π} dθ ∫₀^{a}(1+cosθ)} r dr
       // = ∫_{-π}^{π} (1/2)·a²(1+cosθ)² dθ
       // = a² ∫₀^{π} (1 + 2cosθ + cos²θ) dθ（偶函数）
       // = a² [θ + 2sinθ + θ/2 + sin2θ/4]₀^{π}
@@ -13628,12 +13628,12 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // = 2π + 0 + π = 3π
       // A = 1/2 · a² · 3π = 3πa²/2？不对...
       // 等等，极坐标面积公式是 1/2 ∫ r² dθ 对吗？是的，但二重积分就是 ∬ rdrdθ
-      // 内层 ∫₀^{r(θ)} r dr = [r²/2]₀^{r(θ)} = r²(θ)/2
+      // 内层 ∫₀^{r}(θ)} r dr = [r²/2]₀^{r}(θ)} = r²(θ)/2
       // 所以 A = ∫_α^β r²(θ)/2 dθ，和曲线面积公式一致
       // 心形线 r = a(1+cosθ)，θ ∈ [0, 2π] 或 [-π, π]
-      // A = ∫₀^{2π} [a²(1+cosθ)²/2] dθ = a²/2 ∫₀^{2π} (1+2cosθ+cos²θ) dθ
+      // A = ∫₀^{2}π} [a²(1+cosθ)²/2] dθ = a²/2 ∫₀^{2}π} (1+2cosθ+cos²θ) dθ
       // cos²θ = (1+cos2θ)/2
-      // ∫₀^{2π} 1 dθ = 2π, ∫ cosθ dθ = 0, ∫ cos²θ dθ = π
+      // ∫₀^{2}π} 1 dθ = 2π, ∫ cosθ dθ = 0, ∫ cos²θ dθ = π
       // A = a²/2 · (2π + 0 + π) = a²/2 · 3π = 3πa²/2 ✓
       const area = (3 * Math.PI * a * a) / 2;
       const answer = `心形线 r = ${a}(1 + cosθ) 围成的面积 = 3π·${a}²/2 = ${area.toFixed(4)}`;
@@ -13647,7 +13647,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         'A = (1/2)∫_α^β r²(θ) dθ',
         '',
-        '（本质是二重积分 ∬_D dσ = ∫_α^β dθ ∫₀^{r(θ)} r dr）',
+        '（本质是二重积分 ∬_D dσ = ∫_α^β dθ ∫₀^{r}(θ)} r dr）',
         '',
         '**第一步：确定积分限**',
         '',
@@ -13659,7 +13659,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**第二步：建立面积积分**',
         '',
-        `A = ∬_D dσ = ∫₀^{2π} dθ ∫₀^{${a}(1+cosθ)} r dr`,
+        `A = ∬_D dσ = ∫₀^{2}π} dθ ∫₀^{${a}(1+cosθ)} r dr`,
         '',
         '先算内层对 r 的积分：',
         '',
@@ -13667,15 +13667,15 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**第三步：计算 θ 积分**',
         '',
-        `A = ∫₀^{2π} [${a}²(1 + cos θ)² / 2] dθ = (${a}²/2) ∫₀^{2π} (1 + 2cosθ + cos²θ) dθ`,
+        `A = ∫₀^{2}π} [${a}²(1 + cos θ)² / 2] dθ = (${a}²/2) ∫₀^{2}π} (1 + 2cosθ + cos²θ) dθ`,
         '',
         '分项积分：',
         '',
-        '∫₀^{2π} 1 dθ = 2π',
+        '∫₀^{2}π} 1 dθ = 2π',
         '',
-        '∫₀^{2π} 2cos θ dθ = 2[sin θ]₀^{2π} = 0',
+        '∫₀^{2}π} 2cos θ dθ = 2[sin θ]₀^{2}π} = 0',
         '',
-        '∫₀^{2π} cos²θ dθ = ∫₀^{2π} (1 + cos 2θ)/2 dθ = (1/2)∫₀^{2π} 1 dθ + (1/2)∫₀^{2π} cos 2θ dθ',
+        '∫₀^{2}π} cos²θ dθ = ∫₀^{2}π} (1 + cos 2θ)/2 dθ = (1/2)∫₀^{2}π} 1 dθ + (1/2)∫₀^{2}π} cos 2θ dθ',
         '',
         '= (1/2)·2π + 0 = π',
         '',
@@ -13697,7 +13697,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'calculation' as QuestionType,
         score: 13,
         problem, answer, solution,
-        hint: '极坐标面积A=∫₀^{2π} r²(θ)/2 dθ。r=a(1+cosθ)→A=a²/2∫(1+2cosθ+cos²θ)dθ=a²/2·(2π+0+π)=3πa²/2',
+        hint: '极坐标面积A=∫₀^{2}π} r²(θ)/2 dθ。r=a(1+cosθ)→A=a²/2∫(1+2cosθ+cos²θ)dθ=a²/2·(2π+0+π)=3πa²/2',
       };
     },
   },
@@ -13719,8 +13719,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 即 x²/[a²(1-z²/c²)] + y²/[b²(1-z²/c²)] ≤ 1
       // 这是椭圆，半轴 a√(1-z²/c²), b√(1-z²/c²)
       // 截面面积 A(z) = π · a√(1-z²/c²) · b√(1-z²/c²) = πab(1 - z²/c²)
-      // 体积 V = ∫_{-c}^{c} A(z) dz = 2∫₀^c πab(1-z²/c²) dz
-      // = 2πab [z - z³/(3c²)]₀^c = 2πab(c - c/3) = 2πab·(2c/3) = 4πabc/3
+      // 体积 V = ∫_{-c}^{c}} A(z) dz = 2∫₀^{c} πab(1-z²/c²) dz
+      // = 2πab [z - z³/(3c²)]₀^{c} = 2πab(c - c/3) = 2πab·(2c/3) = 4πabc/3
       const volume = (4 * Math.PI * a * b * c) / 3;
       const answer = `椭球体积 V = 4πabc/3 = 4π·${a}·${b}·${c}/3 ≈ ${volume.toFixed(4)}`;
       const problem = joinLines([
@@ -13731,7 +13731,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const solution = joinLines([
         '**方法：截面法（先二后一）—— 固定 z 算椭圆截面面积，再对 z 积分**',
         '',
-        '**截面法原理：** V = ∫_c^d A(z) dz，其中 A(z) 是高度 z 处的平行截面面积。',
+        '**截面法原理：** V = ∫_c^{d} A(z) dz，其中 A(z) 是高度 z 处的平行截面面积。',
         '',
         '适用：被积函数仅为 z 的函数（本题为 1），且截面面积易求。',
         '',
@@ -13783,7 +13783,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'calculation' as QuestionType,
         score: 14,
         problem, answer, solution,
-        hint: '固定z得椭圆截面x²/[a²(1-z²/c²)]+y²/[b²(1-z²/c²)]≤1，面积A(z)=πab(1-z²/c²)。V=∫_{-c}^c A(z)dz=4πabc/3',
+        hint: '固定z得椭圆截面x²/[a²(1-z²/c²)]+y²/[b²(1-z²/c²)]≤1，面积A(z)=πab(1-z²/c²)。V=∫_{-c}^{c} A(z)dz=4πabc/3',
       };
     },
   },
@@ -13850,7 +13850,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '由 ln(1+1/n) < 1/n，即 ln(n+1) − ln n < 1/n，求和：',
         '',
-        'Σ_{k=1}^{n-1} [ln(k+1) − ln k] < Σ_{k=1}^{n-1} 1/k',
+        'Σ_{k=1}^{n}-1} [ln(k+1) − ln k] < Σ_{k=1}^{n}-1} 1/k',
         '',
         '左边望远镜求和：ln n − ln 1 = ln n',
         '',
@@ -13891,10 +13891,10 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 10,
     generate(rand, _diff) {
       const a = randInt(rand, 2, 4);
-      // 求 f(x) = 1/(1-x)^a 的麦克劳林展开前 5 项系数
-      // f(x) = (1-x)^{-a} = Σ_{n=0}^∞ C(-a, n)(-x)^n
-      // C(-a, n) = (-a)(-a-1)...(-a-n+1)/n! = (-1)^n a(a+1)...(a+n-1)/n!
-      // 所以 C(-a, n)(-1)^n = a(a+1)...(a+n-1)/n! = C(a+n-1, n)
+      // 求 f(x) = 1/(1-x)^{a} 的麦克劳林展开前 5 项系数
+      // f(x) = (1-x)^{-a} = Σ_{n=0}^∞ C(-a, n)(-x)^{n}
+      // C(-a, n) = (-a)(-a-1)...(-a-n+1)/n! = (-1)^{n} a(a+1)...(a+n-1)/n!
+      // 所以 C(-a, n)(-1)^{n} = a(a+1)...(a+n-1)/n! = C(a+n-1, n)
       // 系数 a_n = C(a+n-1, n) = (a+n-1)!/(n!(a-1)!) = (a+n-1 choose n)
       // 计算前 5 项（n=0,1,2,3,4）
       const coeffs = [];
@@ -13919,7 +13919,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**广义二项式定理：** 对任意实数 α，有',
         '',
-        '(1 + x)^α = Σ_{n=0}^∞ C(α, n) x^n，其中 C(α, n) = α(α−1)...(α−n+1)/n!',
+        '(1 + x)^α = Σ_{n=0}^∞ C(α, n) x^{n}，其中 C(α, n) = α(α−1)...(α−n+1)/n!',
         '',
         '收敛域：|x| < 1。',
         '',
@@ -13933,9 +13933,9 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**第二步：写出一般系数公式**',
         '',
-        `aₙ = C(−${a}, n) · (−1)^n = [(−${a})(−${a}-1)...(−${a}−n+1)/n!] · (−1)^n`,
+        `aₙ = C(−${a}, n) · (−1)^{n} = [(−${a})(−${a}-1)...(−${a}−n+1)/n!] · (−1)^{n}`,
         '',
-        `= [(-1)^n · ${a}(${a}+1)...(${a}+n-1) / n!] · (-1)^n`,
+        `= [(-1)^{n} · ${a}(${a}+1)...(${a}+n-1) / n!] · (-1)^{n}`,
         '',
         `= ${a}(${a}+1)...(${a}+n-1) / n! = C(${a}+n−1, n)`,
         '',
@@ -14210,7 +14210,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const solution = joinLines([
         '**方法：用二次型矩阵的特征值（正、负、零的个数）判断二次曲面类型**',
         '',
-        '**二次曲面一般方程：** X^T A X = 1（A 为 3×3 对称矩阵，X = [x, y, z]^T）',
+        '**二次曲面一般方程：** X^{T} A X = 1（A 为 3×3 对称矩阵，X = [x, y, z]^{T}）',
         '',
         '**分类判据：** 通过正交变换将二次型化为标准型 λ₁x′² + λ₂y′² + λ₃z′² = 1，',
         '',
@@ -14292,7 +14292,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 弧长公式：∫_α^β √(x'(t)² + y'(t)² + z'(t)²) dt
       // x' = -a·sin t, y' = a·cos t, z' = b
       // x'² + y'² + z'² = a² sin²t + a² cos²t + b² = a² + b²
-      // 弧长 s = ∫₀^{2π} √(a²+b²) dt = 2π√(a²+b²)
+      // 弧长 s = ∫₀^{2}π} √(a²+b²) dt = 2π√(a²+b²)
       const length = 2 * Math.PI * Math.sqrt(a * a + b * b);
       const answer = `螺旋线一拱弧长 = 2π√(${a}² + ${b}²) = ${length.toFixed(4)}`;
       const problem = joinLines([
@@ -14335,9 +14335,9 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**第三步：积分求弧长**',
         '',
-        's = ∫₀^{2π} √(a² + b²) dt',
+        's = ∫₀^{2}π} √(a² + b²) dt',
         '',
-        `= √(${a}² + ${b}²) · ∫₀^{2π} dt`,
+        `= √(${a}² + ${b}²) · ∫₀^{2}π} dt`,
         '',
         `= √(${a}² + ${b}²) · 2π`,
         '',
@@ -14372,12 +14372,12 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const x0 = randInt(rand, 0, 2);
       // y = x²，在 x = x0 处
       // y' = 2x, y'' = 2
-      // 曲率 K = |y''| / (1+y'^2)^(3/2)
+      // 曲率 K = |y''| / (1+y'^{2})^(3/2)
       // K = 2 / (1 + 4x0²)^(3/2)
       // 曲率半径 R = 1/K = (1 + 4x0²)^(3/2) / 2
       // 曲率圆圆心 (ξ, η):
-      // ξ = x0 - y'(1+y'^2)/y'' = x0 - 2x0(1+4x0²)/2 = x0 - x0(1+4x0²) = x0 - x0 - 4x0³ = -4x0³
-      // η = y + (1+y'^2)/y'' = x0² + (1+4x0²)/2 = x0² + 1/2 + 2x0² = 3x0² + 1/2
+      // ξ = x0 - y'(1+y'^{2})/y'' = x0 - 2x0(1+4x0²)/2 = x0 - x0(1+4x0²) = x0 - x0 - 4x0³ = -4x0³
+      // η = y + (1+y'^{2})/y'' = x0² + (1+4x0²)/2 = x0² + 1/2 + 2x0² = 3x0² + 1/2
       const yp = 2 * x0;
       const ypp = 2;
       const K = ypp / Math.pow(1 + yp * yp, 1.5);
@@ -14550,13 +14550,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate(rand, _diff) {
       const a = randInt(rand, 1, 3);
       // y = a·sinx，在 [0, π] 绕 x 轴旋转的曲面面积
-      // S = 2π ∫_0^π y · √(1 + y'^2) dx
+      // S = 2π ∫_0^π y · √(1 + y'^{2}) dx
       // y = a·sinx, y' = a·cosx
       // S = 2π ∫_0^π a·sinx · √(1 + a²cos²x) dx
       // 令 u = a·cosx, du = -a·sinx dx → sinx dx = -du/a
       // x=0→u=a, x=π→u=-a
-      // S = 2π · a · ∫_{a}^{-a} √(1+u²) · (-du/a) = 2π ∫_{-a}^{a} √(1+u²) du
-      // = 4π ∫₀^{a} √(1+u²) du（偶函数）
+      // S = 2π · a · ∫_{a}^{-a} √(1+u²) · (-du/a) = 2π ∫_{-a}^{a}} √(1+u²) du
+      // = 4π ∫₀^{a}} √(1+u²) du（偶函数）
       // ∫√(1+u²) du = (u/2)√(1+u²) + (1/2)ln(u+√(1+u²)) + C
       // S = 4π · [(a/2)√(1+a²) + (1/2)ln(a+√(1+a²))]
       // = 2π [a√(1+a²) + ln(a+√(1+a²))]
@@ -14571,7 +14571,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**旋转曲面面积公式：** 曲线 y = f(x)（a ≤ x ≤ b）绕 x 轴旋转，',
         '',
-        'S = 2π ∫_a^b f(x) · √(1 + [f′(x)]²) dx',
+        'S = 2π ∫_a^{b} f(x) · √(1 + [f′(x)]²) dx',
         '',
         '（微元法：每个窄带近似为圆台侧面积，展开为 2πy·ds）',
         '',
@@ -14629,7 +14629,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'calculation' as QuestionType,
         score: 13,
         problem, answer, solution,
-        hint: 'S=2π∫y√(1+y\'²)dx。y=a sinx,y\'=a cosx。令u=a cosx→du=-a sinx dx。S=2π∫_{-a}^a√(1+u²)du=4π∫₀^a√(1+u²)du=2π[a√(1+a²)+ln(a+√(1+a²))]',
+        hint: 'S=2π∫y√(1+y\'²)dx。y=a sinx,y\'=a cosx。令u=a cosx→du=-a sinx dx。S=2π∫_{-a}^{a}√(1+u²)du=4π∫₀^{a}√(1+u²)du=2π[a√(1+a²)+ln(a+√(1+a²))]',
       };
     },
   },
@@ -14644,7 +14644,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 10,
     generate(rand, diff) {
       const a = randInt(rand, 2, 4);
-      // f'(x) = x^a + sin(x)，f(0) = 1，求 f(x) 和 ∫_0^π f(x)dx
+      // f'(x) = x^{a} + sin(x)，f(0) = 1，求 f(x) 和 ∫_0^π f(x)dx
       // f(x) = x^(a+1)/(a+1) - cosx + C
       // f(0) = 0 - 1 + C = 1 → C = 2
       // f(x) = x^(a+1)/(a+1) - cosx + 2
@@ -14811,23 +14811,23 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 8,
     generate(rand, _diff) {
       const a = randInt(rand, 1, 2);
-      // z = u² + v²，其中 u = x^a · y，v = ln(x/y)
+      // z = u² + v²，其中 u = x^{a} · y，v = ln(x/y)
       // 用链式法则求 dz/dx 和 dz/dy，在 (1, 1) 处的值
-      // u(1,1) = 1^a·1 = 1
+      // u(1,1) = 1^{a}·1 = 1
       // v(1,1) = ln(1/1) = ln 1 = 0
       // ∂z/∂u = 2u, ∂z/∂v = 2v
       // ∂u/∂x = a·x^(a-1)·y = a·1·1 = a （在(1,1)处）
-      // ∂u/∂y = x^a = 1
+      // ∂u/∂y = x^{a} = 1
       // ∂v/∂x = (1/y)·(y/x)?? 不对
       // v = ln(x/y) = ln x - ln y
       // ∂v/∂x = 1/x，在(1,1)处 = 1
       // ∂v/∂y = -1/y，在(1,1)处 = -1
       // ∂z/∂x = ∂z/∂u·∂u/∂x + ∂z/∂v·∂v/∂x = 2u·a·x^(a-1)y + 2v·(1/x)
       // 在(1,1)处：= 2·1·a + 2·0·1 = 2a
-      // ∂z/∂y = ∂z/∂u·∂u/∂y + ∂z/∂v·∂v/∂y = 2u·x^a + 2v·(-1/y)
+      // ∂z/∂y = ∂z/∂u·∂u/∂y + ∂z/∂v·∂v/∂y = 2u·x^{a} + 2v·(-1/y)
       // 在(1,1)处：= 2·1·1 + 2·0·(-1) = 2
       // dz = ∂z/∂x dx + ∂z/∂y dy = 2a dx + 2 dy
-      const u0 = 1; // u(1,1) = 1^a * 1 = 1
+      const u0 = 1; // u(1,1) = 1^{a} * 1 = 1
       const v0 = 0; // v(1,1) = ln(1/1) = 0
       const dzDx = 2 * u0 * a * 1 + 2 * v0 * 1; // = 2a
       const dzDy = 2 * u0 * 1 + 2 * v0 * (-1); // = 2
@@ -14987,8 +14987,8 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 由对称性，x̄ = 0
       // 面积 A = πa²/2
       // ȳ = (1/A) ∬_D y dxdy
-      // 极坐标：∬_D y dxdy = ∫₀^π ∫₀^a (r sinθ) · r dr dθ = ∫₀^π sinθ dθ · ∫₀^a r² dr
-      // = [-cosθ]₀^π · [r³/3]₀^a = (2) · (a³/3) = 2a³/3
+      // 极坐标：∬_D y dxdy = ∫₀^π ∫₀^{a} (r sinθ) · r dr dθ = ∫₀^π sinθ dθ · ∫₀^{a} r² dr
+      // = [-cosθ]₀^π · [r³/3]₀^{a} = (2) · (a³/3) = 2a³/3
       // ȳ = (2a³/3) / (πa²/2) = 4a/(3π)
       const area = Math.PI * a * a / 2;
       const yBar = (4 * a) / (3 * Math.PI);
@@ -15027,11 +15027,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `积分限：0 ≤ r ≤ ${a}，0 ≤ θ ≤ π（上半圆）`,
         '',
-        '∬_D y dσ = ∫₀^π ∫₀^a (r sin θ) · r dr dθ',
+        '∬_D y dσ = ∫₀^π ∫₀^{a} (r sin θ) · r dr dθ',
         '',
-        '= ∫₀^π sin θ dθ · ∫₀^a r² dr（被积函数可分离变量，二重积分 = 两个单积分乘积）',
+        '= ∫₀^π sin θ dθ · ∫₀^{a} r² dr（被积函数可分离变量，二重积分 = 两个单积分乘积）',
         '',
-        '= [−cos θ]₀^π · [r³/3]₀^a',
+        '= [−cos θ]₀^π · [r³/3]₀^{a}',
         '',
         `= (−cos π + cos 0) · (${a}³/3)`,
         '',
@@ -15055,7 +15055,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'calculation' as QuestionType,
         score: diff === 2 ? 8 : 10,
         problem, answer, solution,
-        hint: 'x̄=0（对称性）。A=πa²/2。∬y dσ=∫₀^πsinθdθ·∫₀^a r²dr=2·a³/3=2a³/3。ȳ=(2a³/3)/(πa²/2)=4a/(3π)',
+        hint: 'x̄=0（对称性）。A=πa²/2。∬y dσ=∫₀^πsinθdθ·∫₀^{a} r²dr=2·a³/3=2a³/3。ȳ=(2a³/3)/(πa²/2)=4a/(3π)',
       };
     },
   },
@@ -15075,7 +15075,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '叙述并说明以下命题（柯西乘积的收敛性）：',
         '',
-        '若级数 Σ aₙ 绝对收敛于 A，级数 Σ bₙ 收敛于 B，则它们的柯西乘积 Σ cₙ（其中 cₙ = Σ_{k=0}^n a_k b_{n−k}）也收敛，且其和为 A·B。',
+        '若级数 Σ aₙ 绝对收敛于 A，级数 Σ bₙ 收敛于 B，则它们的柯西乘积 Σ cₙ（其中 cₙ = Σ_{k=0}^{n} a_k b_{n−k}）也收敛，且其和为 A·B。',
         '',
         '（只需说明结论和适用条件，不需要完整证明）',
       ]);
@@ -15090,7 +15090,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '则它们的柯西乘积 Σ_{n=0}^∞ cₙ 也收敛，且其和为 A·B。',
         '',
-        '其中柯西乘积的通项为：cₙ = Σ_{k=0}^n a_k · b_{n−k}',
+        '其中柯西乘积的通项为：cₙ = Σ_{k=0}^{n} a_k · b_{n−k}',
         '',
         '---',
         '',
@@ -15106,13 +15106,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**经典反例：** 两个条件收敛级数的柯西乘积可能发散',
         '',
-        '设 aₙ = bₙ = (−1)^n / √(n+1)（n = 0, 1, 2, ...）',
+        '设 aₙ = bₙ = (−1)^{n} / √(n+1)（n = 0, 1, 2, ...）',
         '',
-        'Σ aₙ = Σ (−1)^n / √(n+1) 是交错级数，由莱布尼茨判别法收敛（条件收敛）。',
+        'Σ aₙ = Σ (−1)^{n} / √(n+1) 是交错级数，由莱布尼茨判别法收敛（条件收敛）。',
         '',
-        '柯西乘积：cₙ = Σ_{k=0}^n a_k b_{n−k} = Σ_{k=0}^n [(−1)^k/√(k+1)] · [(−1)^{n−k}/√(n−k+1)]',
+        '柯西乘积：cₙ = Σ_{k=0}^{n} a_k b_{n−k} = Σ_{k=0}^{n} [(−1)^{k}/√(k+1)] · [(−1)^{n}−k}/√(n−k+1)]',
         '',
-        '= (−1)^n Σ_{k=0}^n 1/√[(k+1)(n−k+1)]',
+        '= (−1)^{n} Σ_{k=0}^{n} 1/√[(k+1)(n−k+1)]',
         '',
         '由均值不等式 √[(k+1)(n−k+1)] ≤ [(k+1)+(n−k+1)]/2 = (n+2)/2',
         '',
@@ -15163,11 +15163,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '则：S(x) 在 [a, b] 上可积，且可以逐项积分：',
         '',
-        '∫_a^b S(x) dx = Σ ∫_a^b uₙ(x) dx',
+        '∫_a^{b} S(x) dx = Σ ∫_a^{b} uₙ(x) dx',
         '',
         '**理由：** 连续函数的一致收敛极限仍连续（故可积）；',
         '',
-        '且 |∫_a^b [Σ_{k=1}^n u_k(x) − S(x)] dx| ≤ ∫_a^b |Sₙ(x) − S(x)| dx ≤ (b−a)·‖Sₙ−S‖ → 0。',
+        '且 |∫_a^{b} [Σ_{k=1}^{n} u_k(x) − S(x)] dx| ≤ ∫_a^{b} |Sₙ(x) − S(x)| dx ≤ (b−a)·‖Sₙ−S‖ → 0。',
         '',
         '---',
         '',
@@ -15189,11 +15189,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**为什么需要一致收敛？**（反例：逐点收敛不够）',
         '',
-        '**反例 1（逐项积分不成立）：** 考虑 fₙ(x) = n x (1−x²)^n 在 [0, 1] 上。',
+        '**反例 1（逐项积分不成立）：** 考虑 fₙ(x) = n x (1−x²)^{n} 在 [0, 1] 上。',
         '',
         '逐点极限 f(x) = 0，故 ∫₀¹ f(x) dx = 0。',
         '',
-        '但 ∫₀¹ fₙ(x) dx = n · ∫₀¹ x(1−x²)^n dx = n · [−(1−x²)^{n+1}/(2(n+1))]₀¹ = n/(2(n+1)) → 1/2 ≠ 0。',
+        '但 ∫₀¹ fₙ(x) dx = n · ∫₀¹ x(1−x²)^{n} dx = n · [−(1−x²)^{n}+1}/(2(n+1))]₀¹ = n/(2(n+1)) → 1/2 ≠ 0。',
         '',
         '积分的极限 ≠ 极限的积分。根本原因是 fₙ(x) 不一致收敛于 0（峰值越来越高）。',
         '',
@@ -15227,7 +15227,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate(rand, _diff) {
       const a = randInt(rand, 1, 2);
       const n = 2 + randInt(rand, 0, 1); // n=2或3
-      // 伯努利方程：y' + a·y = y^n
+      // 伯努利方程：y' + a·y = y^{n}
       // 令 z = y^(1-n) = y^(1-n)
       // z' = (1-n)·y^(-n)·y'
       // 方程两边乘 (1-n)·y^(-n)：
@@ -15242,7 +15242,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // y = z^(1/(1-n)) = [1/a + C·exp(a(n-1)x)]^(1/(1-n))
       // 初值 y(0) = 1：1 = [1/a + C]^(1/(1-n)) → 1/a + C = 1 → C = 1 - 1/a = (a-1)/a
       // y(x) = [1/a + (a-1)/a · exp(a(n-1)x)]^(1/(1-n))
-      // 也可以写成：y = [C·e^{a(n-1)x} + 1/a]^{1/(1-n)}
+      // 也可以写成：y = [C·e^{a}(n-1)x} + 1/a]^{1}/(1-n)}
       const C = (a - 1) / a; // 用初值 y(0)=1 算出的常数
       const expCoeff = a * (n - 1);
       const power = 1 / (1 - n);
@@ -15253,11 +15253,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         `y′ + ${a}y = y^${n}，y(0) = 1`,
       ]);
       const solution = joinLines([
-        '**方法：伯努利方程 y′ + P(x)y = Q(x)y^n，令 z = y^{1−n} 化为一阶线性方程**',
+        '**方法：伯努利方程 y′ + P(x)y = Q(x)y^{n}，令 z = y^{1}−n} 化为一阶线性方程**',
         '',
-        '伯努利方程标准形式：y′ + P(x)y = Q(x)y^n（n ≠ 0, 1）',
+        '伯努利方程标准形式：y′ + P(x)y = Q(x)y^{n}（n ≠ 0, 1）',
         '',
-        '变量替换：令 z = y^{1−n}，则 z′ = (1−n)y^{−n}·y′',
+        '变量替换：令 z = y^{1}−n}，则 z′ = (1−n)y^{−n}·y′',
         '',
         '方程两边乘 (1−n)y^{−n}，化为关于 z 的一阶线性方程。',
         '',
@@ -15269,7 +15269,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `这是伯努利方程，其中 n = ${n} ≠ 0, 1。`,
         '',
-        `令 z = y^{1−${n}} = y^{${1 - n}}，则：`,
+        `令 z = y^{1}−${n}} = y^{${1 - n}}，则：`,
         '',
         `z′ = (1−${n})·y^{−${n}}·y′ = ${1 - n}·y^{−${n}}·y′`,
         '',
@@ -15277,7 +15277,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         `原方程两边乘以 ${1 - n}·y^{−${n}}：`,
         '',
-        `${1 - n}·y^{−${n}}·y′ + ${a}·${1 - n}·y^{1−${n}} = ${1 - n}`,
+        `${1 - n}·y^{−${n}}·y′ + ${a}·${1 - n}·y^{1}−${n}} = ${1 - n}`,
         '',
         `即 z′ + ${a * (1 - n)}·z = ${1 - n}`,
         '',
@@ -15303,7 +15303,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**第四步：换回 y，得通解**',
         '',
-        `z = y^{1−${n}} → y = z^{1/(1−${n})} = z^(${power.toFixed(2)})`,
+        `z = y^{1}−${n}} → y = z^{1}/(1−${n})} = z^(${power.toFixed(2)})`,
         '',
         `通解：y = [1/${a} + C·e^(${expCoeff} x)]^(${power.toFixed(2)})`,
         '',
@@ -15325,7 +15325,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'calculation' as QuestionType,
         score: 14,
         problem, answer, solution,
-        hint: '伯努利y\'+Py=Qyⁿ，令z=y^{1-n}。z\'=(1-n)y^{-n}y\'。方程乘(1-n)y^{-n}得z\'+a(1-n)z=1-n。解z=1/a+Ce^{a(n-1)x}。y=z^{1/(1-n)}。y(0)=1→C=(a-1)/a',
+        hint: '伯努利y\'+Py=Qyⁿ，令z=y^{1}-n}。z\'=(1-n)y^{-n}y\'。方程乘(1-n)y^{-n}得z\'+a(1-n)z=1-n。解z=1/a+Ce^{a}(n-1)x}。y=z^{1}/(1-n)}。y(0)=1→C=(a-1)/a',
       };
     },
   },
@@ -15342,21 +15342,21 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 方程：(x² + y²) dx + (ax · y) dy = 0
       // 判断是否全微分：∂M/∂y = 2y, ∂N/∂x = a·y
       // 若 a = 2 则是全微分；否则不是，需要积分因子
-      // 当 a ≠ 2 时，积分因子 μ = x^{a-2}？不对，让我推一下
+      // 当 a ≠ 2 时，积分因子 μ = x^{a}-2}？不对，让我推一下
       // (∂M/∂y - ∂N/∂x)/N = (2y - ay)/(a x y) = (2-a)/(a x) = f(x)
-      // 积分因子 μ(x) = exp(∫f(x)dx) = exp((2-a)/(a) · ln|x|) = x^{(2-a)/a} = x^{2/a - 1}
-      // 验证一下：μM = x^{2/a-1}(x²+y²) = x^{2/a+1} + x^{2/a-1}y²
-      // μN = x^{2/a-1}·a x y = a x^{2/a} y
-      // ∂(μM)/∂y = 2 x^{2/a-1} y
-      // ∂(μN)/∂x = a · (2/a) x^{2/a-1} · y = 2 x^{2/a-1} y ✓
-      // 所以积分因子是 μ = x^{2/a - 1}
+      // 积分因子 μ(x) = exp(∫f(x)dx) = exp((2-a)/(a) · ln|x|) = x^{(2-a)/a} = x^{2}/a - 1}
+      // 验证一下：μM = x^{2}/a-1}(x²+y²) = x^{2}/a+1} + x^{2}/a-1}y²
+      // μN = x^{2}/a-1}·a x y = a x^{2}/a} y
+      // ∂(μM)/∂y = 2 x^{2}/a-1} y
+      // ∂(μN)/∂x = a · (2/a) x^{2}/a-1} · y = 2 x^{2}/a-1} y ✓
+      // 所以积分因子是 μ = x^{2}/a - 1}
       // 全微分后求势函数 u(x,y)：
-      // u_x = μM = x^{2/a+1} + x^{2/a-1} y²
-      // u = ∫ μM dx = x^{2/a+2}/(2/a+2) + x^{2/a} y²/2 + φ(y)
-      // u_y = x^{2/a-1} y² ... 不对
-      // u_y = x^{2/a} · y + φ'(y) = μN = a · x^{2/a} · y
-      // 所以 x^{2/a} · y + φ'(y) = a·x^{2/a}·y
-      // φ'(y) = (a-1)·x^{2/a}·y  -- 不对，这还含 x，说明我推导有误
+      // u_x = μM = x^{2}/a+1} + x^{2}/a-1} y²
+      // u = ∫ μM dx = x^{2}/a+2}/(2/a+2) + x^{2}/a} y²/2 + φ(y)
+      // u_y = x^{2}/a-1} y² ... 不对
+      // u_y = x^{2}/a} · y + φ'(y) = μN = a · x^{2}/a} · y
+      // 所以 x^{2}/a} · y + φ'(y) = a·x^{2}/a}·y
+      // φ'(y) = (a-1)·x^{2}/a}·y  -- 不对，这还含 x，说明我推导有误
       // 实际上应该 u_y = μN
       // 让我重新选一个更简单的题：
       // 方程 (xy² - y) dx + (x²y - x) dy = 0，积分因子 μ = 1/(x²y²)
@@ -15402,7 +15402,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**第二步：寻找积分因子**',
         '',
-        '观察方程结构：M 和 N 都是多项式。尝试寻找只依赖于 xy 的积分因子，或形如 μ = x^m y^n 的积分因子。',
+        '观察方程结构：M 和 N 都是多项式。尝试寻找只依赖于 xy 的积分因子，或形如 μ = x^{m} y^{n} 的积分因子。',
         '',
         '注意到方程可以改写：',
         '',
@@ -15670,20 +15670,20 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '设极限',
         '',
-        String.raw`$\displaystyle \\lim_{x \\to +\\infty} \\left( \\sqrt{x^4 + ${d}x^2 + ${e}} - x^2 \\right) = A$`,
+        String.raw`$\displaystyle \\lim_{x \\to +\\infty} \\left( \\sqrt{x^{4} + ${d}x^{2} + ${e}} - x^{2} \\right) = A$`,
         '',
         '则 $A = $ ______（用分数表示）',
       ]);
       const solution = joinLines([
         '**分子有理化 / 泰勒展开**',
         '',
-        '令 $\displaystyle I = \\lim_{x\\to+\\infty}\\left(\\sqrt{x^4+ax^2+b} - x^2\\right)$',
+        '令 $\displaystyle I = \\lim_{x\\to+\\infty}\\left(\\sqrt{x^{4}+ax^{2}+b} - x^{2}\\right)$',
         '',
         '方法一：有理化',
         '',
-        String.raw`$I = \\lim \\frac{(x^4+ax^2+b) - x^4}{\\sqrt{x^4+ax^2+b} + x^2} = \\lim \\frac{ax^2+b}{x^2\\sqrt{1+a/x^2+b/x^4} + x^2}$`,
+        String.raw`$I = \\lim \\frac{(x^{4}+ax^{2}+b) - x^{4}}{\\sqrt{x^{4}+ax^{2}+b} + x^{2}} = \\lim \\frac{ax^{2}+b}{x^{2}\\sqrt{1+a/x^{2}+b/x^{4}} + x^{2}}$`,
         '',
-        String.raw`$\\quad = \\lim \\frac{a + b/x^2}{\\sqrt{1+a/x^2+b/x^4} + 1} = \\frac{a}{2}$`,
+        String.raw`$\\quad = \\lim \\frac{a + b/x^{2}}{\\sqrt{1+a/x^{2}+b/x^{4}} + 1} = \\frac{a}{2}$`,
         '',
         `代入 $a = ${d}$，得 $A = ${fracLatex(d, 2)}$`,
       ]);
@@ -15728,7 +15728,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**步骤二：证明收敛（压缩映射）**',
         '',
-        `设 $f(x) = \\dfrac{${a}}{1+x}$，则 $|f'(x)| = \\dfrac{${a}}{(1+x)^2}$`,
+        `设 $f(x) = \\dfrac{${a}}{1+x}$，则 $|f'(x)| = \\dfrac{${a}}{(1+x)^{2}}$`,
         '',
         '当 $x > 0$ 时，估计差值：',
         '',
@@ -15740,7 +15740,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '设 $\\lim_{n\\to\\infty} x_n = L$，对递推式取极限：',
         '',
-        String.raw`$L = \dfrac{${a}}{1+L} \implies L^2 + L - ${a} = 0$`,
+        String.raw`$L = \dfrac{${a}}{1+L} \implies L^{2} + L - ${a} = 0$`,
         '',
         String.raw`解得 $L = \dfrac{-1\\pm\\sqrt{1+4\\cdot ${a}}}{2} = \dfrac{-1\\pm\\sqrt{${disc}}}{2}$`,
         '',
@@ -15768,10 +15768,10 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate(rand, diff) {
       const a = randInt(rand, 1, 5);
       const b = randInt(rand, 1, 4);
-      // 形式: lim_{x→0} ∫₀^{ax} sin(t^b)dt / x^{b+1}
-      // 洛必达：分子导数 = a·sin((ax)^b)，分母导数 = (b+1)x^b
-      // sin((ax)^b) ~ (ax)^b = a^b·x^b (x→0)
-      // 所以极限 = a · a^b / (b+1) = a^{b+1} / (b+1)
+      // 形式: lim_{x→0} ∫₀^{ax}} sin(t^{b})dt / x^{b}+1}
+      // 洛必达：分子导数 = a·sin((ax)^{b})，分母导数 = (b+1)x^{b}
+      // sin((ax)^{b}) ~ (ax)^{b} = a^{b}·x^{b} (x→0)
+      // 所以极限 = a · a^{b} / (b+1) = a^{b}+1} / (b+1)
       const ansNum = Math.pow(a, b + 1);
       const answer = reduceFrac(ansNum, b + 1);
       const problem = joinLines([
@@ -15820,27 +15820,27 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       if (variant === 1) {
         // eˣ > 1 + x (x ≠ 0)
         problem = joinLines([
-          String.raw`证明：当 $x \\neq 0$ 时，$e^x > 1 + x$。`,
+          String.raw`证明：当 $x \\neq 0$ 时，$e^{x} > 1 + x$。`,
         ]);
         answer = '利用单调性证明 f(x)=eˣ-1-x 的最小值为 f(0)=0';
         solution = joinLines([
           '**构造辅助函数 + 单调性分析**',
           '',
-          String.raw`令 $f(x) = e^x - 1 - x$，定义域为 $\\mathbb{R}$`,
+          String.raw`令 $f(x) = e^{x} - 1 - x$，定义域为 $\\mathbb{R}$`,
           '',
-          String.raw`求导得：$f'(x) = e^x - 1$`,
+          String.raw`求导得：$f'(x) = e^{x} - 1$`,
           '',
-          String.raw`- 当 $x > 0$ 时，$f'(x) = e^x - 1 > 0$，$f(x)$ 单调递增`,
-          String.raw`- 当 $x < 0$ 时，$f'(x) = e^x - 1 < 0$，$f(x)$ 单调递减`,
+          String.raw`- 当 $x > 0$ 时，$f'(x) = e^{x} - 1 > 0$，$f(x)$ 单调递增`,
+          String.raw`- 当 $x < 0$ 时，$f'(x) = e^{x} - 1 < 0$，$f(x)$ 单调递减`,
           String.raw`- $x = 0$ 时，$f'(0) = 0$，为极小值点，也是最小值点`,
           '',
-          String.raw`最小值 $f(0) = e^0 - 1 - 0 = 0$`,
+          String.raw`最小值 $f(0) = e^{0} - 1 - 0 = 0$`,
           '',
           String.raw`当 $x \\neq 0$ 时，$f(x) > f(0) = 0$`,
           '',
-          String.raw`即 $e^x - 1 - x > 0$，故 $e^x > 1 + x$（$x \\neq 0$）`,
+          String.raw`即 $e^{x} - 1 - x > 0$，故 $e^{x} > 1 + x$（$x \\neq 0$）`,
           '',
-          String.raw`$\boxed{e^x > 1 + x \\quad (x \\neq 0)}$`,
+          String.raw`$\boxed{e^{x} > 1 + x \\quad (x \\neq 0)}$`,
         ]);
         hint = '构造 f(x) = eˣ - 1 - x，求导找最小值';
       } else if (variant === 2) {
@@ -15890,7 +15890,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
           '',
           String.raw`令 $g(x) = \\tan x - x$，则 $g(0) = 0$`,
           '',
-          String.raw`$g\,''(x) = \\sec^2 x - 1 = \\tan^2 x$`,
+          String.raw`$g\,''(x) = \\sec^{2} x - 1 = \\tan^{2} x$`,
           '',
           `当 $0 < x < \\dfrac{\\pi}{2}$ 时，$\\tan x > 0$，故 $g\,''(x) > 0$`,
           '',
@@ -15937,7 +15937,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         String.raw`$\\begin{cases} x = ${a} \\cos t \\ y = ${b} \\sin t \\end{cases}$`,
         '',
-        `则在 $t = \\dfrac{\\pi}{4}$ 处的二阶导数 $\\dfrac{d^2 y}{dx^2} = $ ______`,
+        `则在 $t = \\dfrac{\\pi}{4}$ 处的二阶导数 $\\dfrac{d^{2} y}{dx^{2}} = $ ______`,
       ]);
       const solution = joinLines([
         '**参数方程求导公式**',
@@ -15948,19 +15948,19 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '二阶导数：',
         '',
-        String.raw`$\dfrac{d^2y}{dx^2} = \dfrac{d}{dx}\\left(\dfrac{dy}{dx}\\right) = \dfrac{d/dt\\left(\dfrac{dy}{dx}\\right)}{dx/dt}$`,
+        String.raw`$\dfrac{d^{2y}}{dx^{2}} = \dfrac{d}{dx}\\left(\dfrac{dy}{dx}\\right) = \dfrac{d/dt\\left(\dfrac{dy}{dx}\\right)}{dx/dt}$`,
         '',
-        String.raw`$\\quad = \dfrac{d/dt\\left(-\dfrac{${b}}{${a}}\\cot t\\right)}{-${a}\\sin t} = \dfrac{-\dfrac{${b}}{${a}}(-\\csc^2 t)}{-${a}\\sin t}$`,
+        String.raw`$\\quad = \dfrac{d/dt\\left(-\dfrac{${b}}{${a}}\\cot t\\right)}{-${a}\\sin t} = \dfrac{-\dfrac{${b}}{${a}}(-\\csc^{2} t)}{-${a}\\sin t}$`,
         '',
-        String.raw`$\\quad = -\dfrac{${b}}{${a}^2} \\cdot \\csc^3 t = -\dfrac{${b}}{${a}^2 \\sin^3 t}$`,
+        String.raw`$\\quad = -\dfrac{${b}}{${a}^{2}} \\cdot \\csc^{3} t = -\dfrac{${b}}{${a}^{2} \\sin^{3} t}$`,
         '',
         `当 $t = \\dfrac{\\pi}{4}$ 时，$\\sin \\dfrac{\\pi}{4} = \\dfrac{\\sqrt{2}}{2}$`,
         '',
-        String.raw`$\\sin^3 \dfrac{\\pi}{4} = \\left(\dfrac{\\sqrt{2}}{2}\\right)^3 = \dfrac{2\\sqrt{2}}{8} = \dfrac{\\sqrt{2}}{4}$`,
+        String.raw`$\\sin^{3} \dfrac{\\pi}{4} = \\left(\dfrac{\\sqrt{2}}{2}\\right)^{3} = \dfrac{2\\sqrt{2}}{8} = \dfrac{\\sqrt{2}}{4}$`,
         '',
         '代入得：',
         '',
-        String.raw`$\dfrac{d^2y}{dx^2}\bigg|_{t=\\pi/4} = -\dfrac{${b}}{${a}^2 \\cdot \dfrac{\\sqrt{2}}{4}} = -\dfrac{4${b}}{${a}^2\\sqrt{2}} = -\dfrac{${numer}\\sqrt{2}}{${denom}}$`,
+        String.raw`$\dfrac{d^{2y}}{dx^{2}}\bigg|_{t=\\pi/4} = -\dfrac{${b}}{${a}^{2} \\cdot \dfrac{\\sqrt{2}}{4}} = -\dfrac{4${b}}{${a}^{2}\\sqrt{2}} = -\dfrac{${numer}\\sqrt{2}}{${denom}}$`,
         '',
         String.raw`答案：$\boxed{${answer}}$`,
       ]);
@@ -15988,40 +15988,40 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 找零点：x² = a → x = √a（在 [0, b] 内，因为 a>=1, b>a+2>=3, √a <= √3 < b）
       // [0, √a]: x² - a <= 0，|x²-a| = a - x²
       // [√a, b]: x² - a >= 0，|x²-a| = x² - a
-      // 积分 = ∫₀^√a (a - x²)dx + ∫_√a^b (x² - a)dx
-      //       = [ax - x³/3]₀^√a + [x³/3 - ax]_√a^b
+      // 积分 = ∫₀^√a (a - x²)dx + ∫_√a^{b} (x² - a)dx
+      //       = [ax - x³/3]₀^√a + [x³/3 - ax]_√a^{b}
       //       = (a√a - (a√a)/3) + (b³/3 - ab) - (a√a/3 - a√a)
       //       = (2a√a)/3 + b³/3 - ab - (-2a√a/3)
       //       = 4a√a/3 + b³/3 - ab
-      const answer = `\\dfrac{${b}^3}{3} + \\dfrac{4${a}\\sqrt{${a}}}{3} - ${a * b}`;
+      const answer = `\\dfrac{${b}^{3}}{3} + \\dfrac{4${a}\\sqrt{${a}}}{3} - ${a * b}`;
       const problem = joinLines([
         '计算定积分：',
         '',
-        String.raw`$\displaystyle \\int_0^{${b}} |x^2 - ${a}| \, dx = $ ______`,
+        String.raw`$\displaystyle \\int_0^{${b}} |x^{2} - ${a}| \, dx = $ ______`,
       ]);
       const solution = joinLines([
         '**分段去绝对值 + 分段积分**',
         '',
-        `令 $x^2 - ${a} = 0$，得零点 $x = \\sqrt{${a}}$（在 $[0, ${b}]$ 内）`,
+        `令 $x^{2} - ${a} = 0$，得零点 $x = \\sqrt{${a}}$（在 $[0, ${b}]$ 内）`,
         '',
         '分段讨论：',
         '',
-        `- 当 $0 \\le x \\le \\sqrt{${a}}$ 时，$|x^2 - ${a}| = ${a} - x^2$`,
-        `- 当 $\\sqrt{${a}} \\le x \\le ${b}$ 时，$|x^2 - ${a}| = x^2 - ${a}$`,
+        `- 当 $0 \\le x \\le \\sqrt{${a}}$ 时，$|x^{2} - ${a}| = ${a} - x^{2}$`,
+        `- 当 $\\sqrt{${a}} \\le x \\le ${b}$ 时，$|x^{2} - ${a}| = x^{2} - ${a}$`,
         '',
         '分段积分：',
         '',
-        String.raw`$\\int_0^{${b}} |x^2-${a}|\,dx = \\int_0^{\\sqrt{${a}}} (${a}-x^2)dx + \\int_{\\sqrt{${a}}}^{${b}} (x^2-${a})dx$`,
+        String.raw`$\\int_0^{${b}} |x^{2}-${a}|\,dx = \\int_0^{\\sqrt{${a}}} (${a}-x^{2})dx + \\int_{\\sqrt{${a}}}^{${b}} (x^{2}-${a})dx$`,
         '',
-        String.raw`$= \bigg[${a}x - \\frac{x^3}{3}\bigg]_0^{\\sqrt{${a}}} + \bigg[\\frac{x^3}{3} - ${a}x\bigg]_{\\sqrt{${a}}}^{${b}}$`,
+        String.raw`$= \bigg[${a}x - \\frac{x^{3}}{3}\bigg]_0^{\\sqrt{${a}}} + \bigg[\\frac{x^{3}}{3} - ${a}x\bigg]_{\\sqrt{${a}}}^{${b}}$`,
         '',
-        String.raw`$= \bigg(${a}\\sqrt{${a}} - \\frac{${a}\\sqrt{${a}}}{3}\bigg) + \bigg(\\frac{${b}^3}{3} - ${a * b}\bigg) - \bigg(\\frac{${a}\\sqrt{${a}}}{3} - ${a}\\sqrt{${a}}\bigg)$`,
+        String.raw`$= \bigg(${a}\\sqrt{${a}} - \\frac{${a}\\sqrt{${a}}}{3}\bigg) + \bigg(\\frac{${b}^{3}}{3} - ${a * b}\bigg) - \bigg(\\frac{${a}\\sqrt{${a}}}{3} - ${a}\\sqrt{${a}}\bigg)$`,
         '',
-        String.raw`$= \\frac{2${a}\\sqrt{${a}}}{3} + \\frac{${b}^3}{3} - ${a * b} + \\frac{2${a}\\sqrt{${a}}}{3}$`,
+        String.raw`$= \\frac{2${a}\\sqrt{${a}}}{3} + \\frac{${b}^{3}}{3} - ${a * b} + \\frac{2${a}\\sqrt{${a}}}{3}$`,
         '',
-        String.raw`$= \\frac{${b}^3}{3} + \\frac{4${a}\\sqrt{${a}}}{3} - ${a * b}$`,
+        String.raw`$= \\frac{${b}^{3}}{3} + \\frac{4${a}\\sqrt{${a}}}{3} - ${a * b}$`,
         '',
-        String.raw`答案：$\boxed{\dfrac{${b}^3}{3} + \dfrac{4${a}\\sqrt{${a}}}{3} - ${a * b}}$`,
+        String.raw`答案：$\boxed{\dfrac{${b}^{3}}{3} + \dfrac{4${a}\\sqrt{${a}}}{3} - ${a * b}}$`,
       ]);
       return {
         type: 'fill-blank' as QuestionType,
@@ -16041,36 +16041,36 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     tags: ['定积分', '周期函数', '积分性质'],
     variantCount: 100,
     generate(rand, diff) {
-      // ∫₀^{nT} sin²(πx) dx，周期 T=1
+      // ∫₀^{nT}} sin²(πx) dx，周期 T=1
       // sin²(πx) 的周期 = π/π = 1
       // 一个周期内积分 ∫₀¹ sin²(πx)dx = ∫₀¹ (1-cos(2πx))/2 dx = 1/2
       // n 个周期积分 = n × 1/2 = n/2
-      // 换个形式: ∫₀^{2nπ} sin²x dx，周期 2π？不，sin²x 周期是 π
+      // 换个形式: ∫₀^{2n}π} sin²x dx，周期 2π？不，sin²x 周期是 π
       // 用 sin²x，周期 π，∫₀^π sin²x dx = π/2
-      // ∫₀^{nπ} sin²x dx = n × π/2 = nπ/2
+      // ∫₀^{n}π} sin²x dx = n × π/2 = nπ/2
       const periods = randInt(rand, 2, 4); // 几个周期
       const answer = `\\dfrac{${periods}\\pi}{2}`;
       const problem = joinLines([
         '利用周期函数积分性质计算：',
         '',
-        String.raw`$\displaystyle \\int_0^{${periods}\\pi} \\sin^2 x \, dx = $ ______`,
+        String.raw`$\displaystyle \\int_0^{${periods}\\pi} \\sin^{2} x \, dx = $ ______`,
       ]);
       const solution = joinLines([
         '**周期函数积分性质**',
         '',
-        '若 $f(x)$ 以 $T$ 为周期，则 $\displaystyle \\int_a^{a+nT} f(x)dx = n\\int_0^T f(x)dx$',
+        '若 $f(x)$ 以 $T$ 为周期，则 $\displaystyle \\int_a^{a}+nT} f(x)dx = n\\int_0^{T} f(x)dx$',
         '',
-        `$\\sin^2 x$ 的周期为 $\\pi$（因为 $\\sin^2(x+\\pi) = (-\\sin x)^2 = \\sin^2 x$）`,
+        `$\\sin^{2} x$ 的周期为 $\\pi$（因为 $\\sin^{2}(x+\\pi) = (-\\sin x)^{2} = \\sin^{2} x$）`,
         '',
         '一个周期内的积分：',
         '',
-        String.raw`$\\int_0^\\pi \\sin^2 x \, dx = \\int_0^\\pi \\frac{1-\\cos 2x}{2} dx = \\frac{1}{2}\\int_0^\\pi dx - \\frac{1}{2}\\int_0^\\pi \\cos 2x \, dx$`,
+        String.raw`$\\int_0^\\pi \\sin^{2} x \, dx = \\int_0^\\pi \\frac{1-\\cos 2x}{2} dx = \\frac{1}{2}\\int_0^\\pi dx - \\frac{1}{2}\\int_0^\\pi \\cos 2x \, dx$`,
         '',
         String.raw`$= \\frac{\\pi}{2} - \\frac{1}{4}\\sin 2x\bigg|_0^\\pi = \\frac{\\pi}{2}$`,
         '',
         `${periods} 个周期的积分：`,
         '',
-        String.raw`$\\int_0^{${periods}\\pi} \\sin^2 x \, dx = ${periods} \\cdot \\frac{\\pi}{2} = \\frac{${periods}\\pi}{2}$`,
+        String.raw`$\\int_0^{${periods}\\pi} \\sin^{2} x \, dx = ${periods} \\cdot \\frac{\\pi}{2} = \\frac{${periods}\\pi}{2}$`,
         '',
         String.raw`答案：$\boxed{\dfrac{${periods}\\pi}{2}}$`,
       ]);
@@ -16094,24 +16094,24 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     generate(rand, diff) {
       const a = randInt(rand, 1, 5);
       const b = randInt(rand, 1, 4);
-      // ∫_{-a}^a (x³ + b cos x) dx
+      // ∫_{-a}^{a} (x³ + b cos x) dx
       // x³ 是奇函数，对称区间积分 = 0
       // b cos x 是偶函数，对称区间积分 = 2b∫₀ᵃ cos x dx = 2b sin a
       const ansStr = `${2 * b}\\sin ${a}`;
       const problem = joinLines([
         '计算定积分：',
         '',
-        String.raw`$\displaystyle \\int_{-${a}}^{${a}} (x^3 + ${b}\\cos x) \, dx = $ ______`,
+        String.raw`$\displaystyle \\int_{-${a}}^{${a}} (x^{3} + ${b}\\cos x) \, dx = $ ______`,
       ]);
       const solution = joinLines([
         '**对称区间 + 奇偶性秒杀**',
         '',
         '性质：',
         '',
-        '- 奇函数在对称区间积分 = 0：$\\int_{-a}^a f(x)dx = 0$（$f$ 为奇函数）',
-        '- 偶函数在对称区间积分 = 2 倍半区间：$\\int_{-a}^a f(x)dx = 2\\int_0^a f(x)dx$（$f$ 为偶函数）',
+        '- 奇函数在对称区间积分 = 0：$\\int_{-a}^{a} f(x)dx = 0$（$f$ 为奇函数）',
+        '- 偶函数在对称区间积分 = 2 倍半区间：$\\int_{-a}^{a} f(x)dx = 2\\int_0^{a} f(x)dx$（$f$ 为偶函数）',
         '',
-        `$x^3$ 是奇函数 $\\Rightarrow \\int_{-${a}}^{${a}} x^3 dx = 0$`,
+        `$x^{3}$ 是奇函数 $\\Rightarrow \\int_{-${a}}^{${a}} x^{3} dx = 0$`,
         '',
         `${b}\\cos x$ 是偶函数 $\\Rightarrow \\int_{-${a}}^{${a}} ${b}\\cos x \, dx = 2\\int_0^{${a}} ${b}\\cos x \, dx$`,
         '',
@@ -16121,7 +16121,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '所以：',
         '',
-        String.raw`$\\int_{-${a}}^{${a}} (x^3 + ${b}\\cos x)dx = 0 + 2${b}\\sin ${a} = 2${b}\\sin ${a}$`,
+        String.raw`$\\int_{-${a}}^{${a}} (x^{3} + ${b}\\cos x)dx = 0 + 2${b}\\sin ${a} = 2${b}\\sin ${a}$`,
         '',
         String.raw`答案：$\boxed{2${b}\\sin ${a}}$`,
       ]);
@@ -16152,7 +16152,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 由对称性 x=y=z = ³√V₀
       // 最小表面积 = 6(³√V₀)² = 6V₀^(2/3)
       const cubeRootV = `\\sqrt[3]{${V}}`;
-      const answer = `6\\sqrt[3]{${V}^2}`;
+      const answer = `6\\sqrt[3]{${V}^{2}}`;
       const problem = joinLines([
         `一个长方体的体积为 ${V}，求其表面积的最小值。`,
       ]);
@@ -16181,13 +16181,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '同理，由 (2)(3) 得 $y = z$',
         '',
-        `所以 $x = y = z$，代入 (4)：$x^3 = ${V} \\Rightarrow x = ${cubeRootV}$`,
+        `所以 $x = y = z$，代入 (4)：$x^{3} = ${V} \\Rightarrow x = ${cubeRootV}$`,
         '',
         '最小表面积：',
         '',
-        String.raw`$S_{\\text{min}} = 2(3x^2) = 6x^2 = 6(${cubeRootV})^2 = 6${cubeRootV}^2$`,
+        String.raw`$S_{\\text{min}} = 2(3x^{2}) = 6x^{2} = 6(${cubeRootV})^{2} = 6${cubeRootV}^{2}$`,
         '',
-        String.raw`答案：$\boxed{6\\sqrt[3]{${V}^2}}$（此时为正方体）`,
+        String.raw`答案：$\boxed{6\\sqrt[3]{${V}^{2}}}$（此时为正方体）`,
       ]);
       return {
         type: 'calculation' as QuestionType,
@@ -16220,7 +16220,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const squareSum = c * c + a * a + b * b;
       const answer = `2\\sqrt{${squareSum}}`;
       const problem = joinLines([
-        String.raw`设函数 $f(x,y,z) = x^2 + ${a}y^2 + ${b}z^2$，`,
+        String.raw`设函数 $f(x,y,z) = x^{2} + ${a}y^{2} + ${b}z^{2}$，`,
         '',
         `则在点 $(${c}, 1, 1)$ 处方向导数的最大值为 ______`,
       ]);
@@ -16237,7 +16237,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '方向导数沿梯度方向取得最大值，最大值为梯度的模：',
         '',
-        String.raw`$|\\nabla f| = \\sqrt{${gradX}^2 + ${gradY}^2 + ${gradZ}^2} = \\sqrt{${gradX * gradX} + ${gradY * gradY} + ${gradZ * gradZ}}$`,
+        String.raw`$|\\nabla f| = \\sqrt{${gradX}^{2} + ${gradY}^{2} + ${gradZ}^{2}} = \\sqrt{${gradX * gradX} + ${gradY * gradY} + ${gradZ * gradZ}}$`,
         '',
         String.raw`$= \\sqrt{${gradX * gradX + gradY * gradY + gradZ * gradZ}} = \\sqrt{4(${c * c} + ${a * a} + ${b * b})} = 2\\sqrt{${squareSum}}$`,
         '',
@@ -16265,18 +16265,18 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 三重积分 ∭_Ω z² dV，其中 Ω 是球体 x²+y²+z² ≤ R²
       // 球坐标: x=ρsinφcosθ, y=ρsinφsinθ, z=ρcosφ, dV=ρ²sinφ dρdφdθ
       // 范围: ρ∈[0,R], φ∈[0,π], θ∈[0,2π]
-      // ∭ z² dV = ∫₀^{2π} dθ ∫₀^π sinφ dφ ∫₀ᴿ (ρcosφ)² · ρ² dρ
+      // ∭ z² dV = ∫₀^{2}π} dθ ∫₀^π sinφ dφ ∫₀ᴿ (ρcosφ)² · ρ² dρ
       //         = 2π · ∫₀^π cos²φ sinφ dφ · ∫₀ᴿ ρ⁴ dρ
       // ∫₀^π cos²φ sinφ dφ = [-cos³φ/3]₀^π = -(-1/3 - 1/3) = 2/3
       // ∫₀ᴿ ρ⁴ dρ = R⁵/5
       // 结果 = 2π · 2/3 · R⁵/5 = 4πR⁵/15
-      const answer = `\\dfrac{4\\pi ${R}^5}{15}`;
+      const answer = `\\dfrac{4\\pi ${R}^{5}}{15}`;
       const problem = joinLines([
         String.raw`计算三重积分：`,
         '',
-        String.raw`$\displaystyle \\iiint_{\Omega} z^2 \, dV$`,
+        String.raw`$\displaystyle \\iiint_{\Omega} z^{2} \, dV$`,
         '',
-        `其中 $\Omega$ 是球体 $x^2 + y^2 + z^2 \\leq ${R}^2$`,
+        `其中 $\Omega$ 是球体 $x^{2} + y^{2} + z^{2} \\leq ${R}^{2}$`,
       ]);
       const solution = joinLines([
         '**球坐标变换 + 对称性**',
@@ -16285,7 +16285,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         String.raw`$x = \\rho \\sin\varphi \\cos\\theta$, $y = \\rho \\sin\varphi \\sin\\theta$, $z = \\rho \\cos\varphi$`,
         '',
-        String.raw`雅可比行列式：$dV = \\rho^2 \\sin\varphi \, d\\rho d\varphi d\\theta$`,
+        String.raw`雅可比行列式：$dV = \\rho^{2} \\sin\varphi \, d\\rho d\varphi d\\theta$`,
         '',
         '积分区域：',
         '',
@@ -16293,21 +16293,21 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '代入得：',
         '',
-        String.raw`$\\iiint z^2 dV = \\int_0^{2\\pi} d\\theta \\int_0^{\\pi} \\sin\varphi \, d\varphi \\int_0^{${R}} (\\rho\\cos\varphi)^2 \\cdot \\rho^2 d\\rho$`,
+        String.raw`$\\iiint z^{2} dV = \\int_0^{2}\\pi} d\\theta \\int_0^{\\pi} \\sin\varphi \, d\varphi \\int_0^{${R}} (\\rho\\cos\varphi)^{2} \\cdot \\rho^{2} d\\rho$`,
         '',
-        String.raw`$= 2\\pi \\cdot \\int_0^{\\pi} \\cos^2\varphi \\sin\varphi \, d\varphi \\cdot \\int_0^{${R}} \\rho^4 d\\rho$`,
+        String.raw`$= 2\\pi \\cdot \\int_0^{\\pi} \\cos^{2}\varphi \\sin\varphi \, d\varphi \\cdot \\int_0^{${R}} \\rho^{4} d\\rho$`,
         '',
         '分别计算：',
         '',
-        String.raw`$\\int_0^{\\pi} \\cos^2\varphi \\sin\varphi \, d\varphi = -\\int_1^{-1} u^2 du = \\int_{-1}^1 u^2 du = \\frac{2}{3}$`,
+        String.raw`$\\int_0^{\\pi} \\cos^{2}\varphi \\sin\varphi \, d\varphi = -\\int_1^{-1} u^{2} du = \\int_{-1}^{1} u^{2} du = \\frac{2}{3}$`,
         '',
-        String.raw`$\\int_0^{${R}} \\rho^4 d\\rho = \\frac{${R}^5}{5}$`,
+        String.raw`$\\int_0^{${R}} \\rho^{4} d\\rho = \\frac{${R}^{5}}{5}$`,
         '',
         '合起来：',
         '',
-        String.raw`$\\text{原式} = 2\\pi \\cdot \\frac{2}{3} \\cdot \\frac{${R}^5}{5} = \\frac{4\\pi ${R}^5}{15}$`,
+        String.raw`$\\text{原式} = 2\\pi \\cdot \\frac{2}{3} \\cdot \\frac{${R}^{5}}{5} = \\frac{4\\pi ${R}^{5}}{15}$`,
         '',
-        String.raw`答案：$\boxed{\dfrac{4\\pi ${R}^5}{15}}$`,
+        String.raw`答案：$\boxed{\dfrac{4\\pi ${R}^{5}}{15}}$`,
       ]);
       return {
         type: 'fill-blank' as QuestionType,
@@ -16336,7 +16336,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 换成更有意义的: ∫_L (x + y) ds，上半圆弧
       // = ∫₀^π (a cos t + a sin t) · a dt = a² ∫₀^π (cos t + sin t) dt
       // = a² [sin t - cos t]₀^π = a² [(0 - (-1)) - (0 - 1)] = a² (1 + 1) = 2a²
-      const ansStr = `2${a}^2`;
+      const ansStr = `2${a}^{2}`;
       const problem = joinLines([
         String.raw`计算第一类曲线积分 $\displaystyle \\int_L (x + y) \, ds$，`,
         '',
@@ -16351,19 +16351,19 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '弧长元素：',
         '',
-        String.raw`$ds = \\sqrt{\\left(\dfrac{dx}{dt}\\right)^2 + \\left(\dfrac{dy}{dt}\\right)^2} dt$`,
+        String.raw`$ds = \\sqrt{\\left(\dfrac{dx}{dt}\\right)^{2} + \\left(\dfrac{dy}{dt}\\right)^{2}} dt$`,
         '',
-        String.raw`$\\quad = \\sqrt{(${a}\\sin t)^2 + (${a}\\cos t)^2} dt = ${a}\\sqrt{\\sin^2 t + \\cos^2 t} dt = ${a} dt$`,
+        String.raw`$\\quad = \\sqrt{(${a}\\sin t)^{2} + (${a}\\cos t)^{2}} dt = ${a}\\sqrt{\\sin^{2} t + \\cos^{2} t} dt = ${a} dt$`,
         '',
         '代入曲线积分：',
         '',
         String.raw`$\\int_L (x+y) ds = \\int_0^{\\pi} (${a}\\cos t + ${a}\\sin t) \\cdot ${a} dt$`,
         '',
-        String.raw`$= ${a}^2 \\int_0^{\\pi} (\\cos t + \\sin t) dt = ${a}^2 \big[\\sin t - \\cos t\big]_0^{\\pi}$`,
+        String.raw`$= ${a}^{2} \\int_0^{\\pi} (\\cos t + \\sin t) dt = ${a}^{2} \big[\\sin t - \\cos t\big]_0^{\\pi}$`,
         '',
-        String.raw`$= ${a}^2 \big((0 - (-1)) - (0 - 1)\big) = ${a}^2 \\cdot 2 = 2${a}^2$`,
+        String.raw`$= ${a}^{2} \big((0 - (-1)) - (0 - 1)\big) = ${a}^{2} \\cdot 2 = 2${a}^{2}$`,
         '',
-        String.raw`答案：$\boxed{2${a}^2}$`,
+        String.raw`答案：$\boxed{2${a}^{2}}$`,
       ]);
       return {
         type: 'fill-blank' as QuestionType,
@@ -16384,45 +16384,45 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 100,
     generate(rand, diff) {
       const a = randInt(rand, 1, 3);
-      // ∫₀^{π/2} dθ ∫₀^{a cos θ} r² dr
+      // ∫₀^{π/2} dθ ∫₀^{a} cos θ} r² dr
       // 这是一个极坐标积分，积分区域是：θ∈[0,π/2], r∈[0,a cosθ]
       // r = a cosθ 是圆心在 (a/2, 0)，半径 a/2 的圆（右半圆，因为 θ∈[-π/2,π/2]）
       // 这里 θ∈[0,π/2] 就是上半个右半圆 = 四分之一圆
-      // 先计算：∫₀^{a cos θ} r² dr = a³ cos³θ / 3
+      // 先计算：∫₀^{a} cos θ} r² dr = a³ cos³θ / 3
       // 再积分：∫₀^{π/2} a³ cos³θ / 3 dθ = a³/3 · ∫₀^{π/2} cos³θ dθ
       // ∫ cos³θ dθ = ∫ (1-sin²θ)cosθ dθ = sinθ - sin³θ/3 + C
       // [sinθ - sin³θ/3]₀^{π/2} = (1 - 1/3) - 0 = 2/3
       // 结果 = a³/3 · 2/3 = 2a³/9
-      const answer = `\\dfrac{2${a}^3}{9}`;
+      const answer = `\\dfrac{2${a}^{3}}{9}`;
       const problem = joinLines([
         String.raw`计算极坐标下的二重积分：`,
         '',
-        String.raw`$\displaystyle \\int_0^{\\frac{\\pi}{2}} d\\theta \\int_0^{${a}\\cos\\theta} r^2 dr$`,
+        String.raw`$\displaystyle \\int_0^{\\frac{\\pi}{2}} d\\theta \\int_0^{${a}\\cos\\theta} r^{2} dr$`,
       ]);
       const solution = joinLines([
         '**极坐标二重积分**',
         '',
         '先计算内层积分（对 r 积分）：',
         '',
-        String.raw`$\\int_0^{${a}\\cos\\theta} r^2 dr = \bigg[\\frac{r^3}{3}\bigg]_0^{${a}\\cos\\theta} = \\frac{${a}^3 \\cos^3\\theta}{3}$`,
+        String.raw`$\\int_0^{${a}\\cos\\theta} r^{2} dr = \bigg[\\frac{r^{3}}{3}\bigg]_0^{${a}\\cos\\theta} = \\frac{${a}^{3} \\cos^{3}\\theta}{3}$`,
         '',
         '再计算外层积分（对 θ 积分）：',
         '',
-        String.raw`$\\int_0^{\\frac{\\pi}{2}} \\frac{${a}^3 \\cos^3\\theta}{3} d\\theta = \\frac{${a}^3}{3} \\int_0^{\\frac{\\pi}{2}} \\cos^3\\theta \, d\\theta$`,
+        String.raw`$\\int_0^{\\frac{\\pi}{2}} \\frac{${a}^{3} \\cos^{3}\\theta}{3} d\\theta = \\frac{${a}^{3}}{3} \\int_0^{\\frac{\\pi}{2}} \\cos^{3}\\theta \, d\\theta$`,
         '',
         '利用公式（Wallis 公式）：',
         '',
-        String.raw`$\\int_0^{\\frac{\\pi}{2}} \\cos^n\\theta \, d\\theta = \\int_0^{\\frac{\\pi}{2}} \\sin^n\\theta \, d\\theta$`,
+        String.raw`$\\int_0^{\\frac{\\pi}{2}} \\cos^{n}\\theta \, d\\theta = \\int_0^{\\frac{\\pi}{2}} \\sin^{n}\\theta \, d\\theta$`,
         '',
         '当 n 为奇数时：',
         '',
-        String.raw`$\\int_0^{\\frac{\\pi}{2}} \\cos^3\\theta d\\theta = \\frac{2}{3}$`,
+        String.raw`$\\int_0^{\\frac{\\pi}{2}} \\cos^{3}\\theta d\\theta = \\frac{2}{3}$`,
         '',
         '代入得：',
         '',
-        String.raw`$\\text{原式} = \\frac{${a}^3}{3} \\cdot \\frac{2}{3} = \\frac{2${a}^3}{9}$`,
+        String.raw`$\\text{原式} = \\frac{${a}^{3}}{3} \\cdot \\frac{2}{3} = \\frac{2${a}^{3}}{9}$`,
         '',
-        String.raw`答案：$\boxed{\dfrac{2${a}^3}{9}}$`,
+        String.raw`答案：$\boxed{\dfrac{2${a}^{3}}{9}}$`,
       ]);
       return {
         type: 'calculation' as QuestionType,
@@ -16448,10 +16448,10 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // bₙ = 2/π ∫₀^π f(x) sin(nx) dx
       // = 2/π ∫₀^π a x sin(nx) dx
       // 分部积分：∫x sin(nx) dx = -x cos(nx)/n + sin(nx)/n² + C
-      // [ -x cos(nx)/n ]₀^π = -π cos(nπ)/n = -π (-1)^n / n
+      // [ -x cos(nx)/n ]₀^π = -π cos(nπ)/n = -π (-1)^{n} / n
       // [ sin(nx)/n² ]₀^π = 0
-      // 所以 bₙ = 2/π · a · [ -π(-1)^n / n ] = 2a(-1)^{n+1}/n
-      // b₁ = 2a(-1)^{2}/1 = 2a
+      // 所以 bₙ = 2/π · a · [ -π(-1)^{n} / n ] = 2a(-1)^{n}+1}/n
+      // b₁ = 2a(-1)^{2}}/1 = 2a
       const n = randInt(rand, 1, 4);
       const coeff = 2 * a;
       const coeffLatex = n % 2 === 1 ? `\\dfrac{2${a}}{${n}}` : `-\\dfrac{2${a}}{${n}}`;
@@ -16471,17 +16471,17 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '分部积分：',
         '',
-        String.raw`$\\int x \\sin(nx) dx = -\dfrac{x \\cos(nx)}{n} + \dfrac{\\sin(nx)}{n^2} + C$`,
+        String.raw`$\\int x \\sin(nx) dx = -\dfrac{x \\cos(nx)}{n} + \dfrac{\\sin(nx)}{n^{2}} + C$`,
         '',
         '代入上下限：',
         '',
-        String.raw`$\\int_0^{\\pi} x \\sin(nx) dx = \bigg[-\dfrac{x\\cos(nx)}{n}\bigg]_0^{\\pi} + \bigg[\dfrac{\\sin(nx)}{n^2}\bigg]_0^{\\pi}$`,
+        String.raw`$\\int_0^{\\pi} x \\sin(nx) dx = \bigg[-\dfrac{x\\cos(nx)}{n}\bigg]_0^{\\pi} + \bigg[\dfrac{\\sin(nx)}{n^{2}}\bigg]_0^{\\pi}$`,
         '',
-        String.raw`$\\quad = -\dfrac{\\pi \\cos(n\\pi)}{n} - 0 + 0 - 0 = \dfrac{\\pi (-1)^{n+1}}{n}$`,
+        String.raw`$\\quad = -\dfrac{\\pi \\cos(n\\pi)}{n} - 0 + 0 - 0 = \dfrac{\\pi (-1)^{n}+1}}{n}$`,
         '',
         '因此：',
         '',
-        String.raw`$b_n = \dfrac{2}{\\pi} \\cdot ${a} \\cdot \dfrac{\\pi (-1)^{n+1}}{n} = \dfrac{2${a}(-1)^{n+1}}{n}$`,
+        String.raw`$b_n = \dfrac{2}{\\pi} \\cdot ${a} \\cdot \dfrac{\\pi (-1)^{n}+1}}{n} = \dfrac{2${a}(-1)^{n}+1}}{n}$`,
         '',
         `当 $n = ${n}$ 时：`,
         '',
@@ -16508,43 +16508,43 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 100,
     generate(rand, diff) {
       const a = randInt(rand, 2, 5);
-      // 求幂级数 ∑_{n=1}^∞ x^n / (n·a^n) 的收敛域与和函数
-      // 收敛半径 R = lim |aₙ/aₙ₊₁| = lim (1/(n·a^n)) / (1/((n+1)·a^{n+1})) = lim (n+1)a/n = a
-      // 端点 x = a: ∑ 1/n 发散；x = -a: ∑ (-1)^n/n 收敛
+      // 求幂级数 ∑_{n=1}^∞ x^{n} / (n·a^{n}) 的收敛域与和函数
+      // 收敛半径 R = lim |aₙ/aₙ₊₁| = lim (1/(n·a^{n})) / (1/((n+1)·a^{n}+1})) = lim (n+1)a/n = a
+      // 端点 x = a: ∑ 1/n 发散；x = -a: ∑ (-1)^{n}/n 收敛
       // 收敛域：[-a, a)
-      // 和函数: S(x) = ∑ x^n/(n·a^n) = ∑ (x/a)^n / n
-      // 已知 ∑ t^n / n = -ln(1-t)，t∈[-1,1)
+      // 和函数: S(x) = ∑ x^{n}/(n·a^{n}) = ∑ (x/a)^{n} / n
+      // 已知 ∑ t^{n} / n = -ln(1-t)，t∈[-1,1)
       // 令 t = x/a，则 S(x) = -ln(1 - x/a) = -ln((a-x)/a) = ln(a/(a-x))
       const ansSum = `\\ln\\dfrac{${a}}{${a} - x}`;
       const problem = joinLines([
-        String.raw`求幂级数 $\displaystyle \\sum_{n=1}^{\\infty} \dfrac{x^n}{n \\cdot ${a}^n}$ 的收敛域与和函数。`,
+        String.raw`求幂级数 $\displaystyle \\sum_{n=1}^{\\infty} \dfrac{x^{n}}{n \\cdot ${a}^{n}}$ 的收敛域与和函数。`,
       ]);
       const solution = joinLines([
         '**收敛半径 + 逐项求导与和函数**',
         '',
         '**步骤一：求收敛半径**',
         '',
-        String.raw`设 $a_n = \dfrac{1}{n \\cdot ${a}^n}$，则`,
+        String.raw`设 $a_n = \dfrac{1}{n \\cdot ${a}^{n}}$，则`,
         '',
-        String.raw`$R = \\lim_{n\\to\\infty}\\left|\dfrac{a_n}{a_{n+1}}\\right| = \\lim \dfrac{(n+1) \\cdot ${a}^{n+1}}{n \\cdot ${a}^n} = \\lim \dfrac{(n+1)${a}}{n} = ${a}$`,
+        String.raw`$R = \\lim_{n\\to\\infty}\\left|\dfrac{a_n}{a_{n+1}}\\right| = \\lim \dfrac{(n+1) \\cdot ${a}^{n}+1}}{n \\cdot ${a}^{n}} = \\lim \dfrac{(n+1)${a}}{n} = ${a}$`,
         '',
         '**步骤二：验证端点**',
         '',
-        String.raw`- $x = ${a}$：$\\sum \dfrac{${a}^n}{n \\cdot ${a}^n} = \\sum \dfrac{1}{n}$，调和级数，发散`,
+        String.raw`- $x = ${a}$：$\\sum \dfrac{${a}^{n}}{n \\cdot ${a}^{n}} = \\sum \dfrac{1}{n}$，调和级数，发散`,
         '',
-        String.raw`- $x = -${a}$：$\\sum \dfrac{(-${a})^n}{n \\cdot ${a}^n} = \\sum \dfrac{(-1)^n}{n}$，莱布尼茨型级数，收敛`,
+        String.raw`- $x = -${a}$：$\\sum \dfrac{(-${a})^{n}}{n \\cdot ${a}^{n}} = \\sum \dfrac{(-1)^{n}}{n}$，莱布尼茨型级数，收敛`,
         '',
         String.raw`**收敛域：$[-${a}, ${a})$**`,
         '',
         '**步骤三：求和函数**',
         '',
-        String.raw`设 $S(x) = \\sum_{n=1}^{\\infty} \dfrac{x^n}{n \\cdot ${a}^n} = \\sum_{n=1}^{\\infty} \dfrac{1}{n}\\left(\dfrac{x}{${a}}\\right)^n$`,
+        String.raw`设 $S(x) = \\sum_{n=1}^{\\infty} \dfrac{x^{n}}{n \\cdot ${a}^{n}} = \\sum_{n=1}^{\\infty} \dfrac{1}{n}\\left(\dfrac{x}{${a}}\\right)^{n}$`,
         '',
-        String.raw`令 $t = \dfrac{x}{${a}}$，则 $S(x) = \\sum_{n=1}^{\\infty} \dfrac{t^n}{n}$`,
+        String.raw`令 $t = \dfrac{x}{${a}}$，则 $S(x) = \\sum_{n=1}^{\\infty} \dfrac{t^{n}}{n}$`,
         '',
         '利用已知展开式（几何级数逐项积分）：',
         '',
-        String.raw`$\dfrac{1}{1-t} = \\sum_{n=0}^{\\infty} t^n$，逐项积分得 $-\\ln(1-t) = \\sum_{n=1}^{\\infty} \dfrac{t^n}{n}$`,
+        String.raw`$\dfrac{1}{1-t} = \\sum_{n=0}^{\\infty} t^{n}$，逐项积分得 $-\\ln(1-t) = \\sum_{n=1}^{\\infty} \dfrac{t^{n}}{n}$`,
         '',
         '因此：',
         '',
@@ -16571,9 +16571,9 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 100,
     generate(rand, diff) {
       const p = randInt(rand, 2, 4);
-      // 判断 ∑_{n=2}^∞ 1/(n ln^p n) 的敛散性
-      // 积分判别法：f(x) = 1/(x ln^p x) 在 [2, +∞) 上非负递减
-      // ∫₂^∞ 1/(x ln^p x) dx = ∫₂^∞ (ln x)^{-p} d(ln x) = [(ln x)^{1-p}/(1-p)]₂^∞
+      // 判断 ∑_{n=2}^∞ 1/(n ln^{p} n) 的敛散性
+      // 积分判别法：f(x) = 1/(x ln^{p} x) 在 [2, +∞) 上非负递减
+      // ∫₂^∞ 1/(x ln^{p} x) dx = ∫₂^∞ (ln x)^{-p} d(ln x) = [(ln x)^{1}-p}/(1-p)]₂^∞
       // p > 1 时收敛，p ≤ 1 时发散
       const problem = joinLines([
         String.raw`用积分判别法判断级数 $\displaystyle \\sum_{n=2}^{\\infty} \dfrac{1}{n \\ln^{${p}} n}$ 的敛散性。`,
@@ -16587,7 +16587,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '- $f(x)$ 在 $[2, +\\infty)$ 上连续',
         '- $f(x) > 0$（非负）',
-        String.raw`- $f'(x) = -\dfrac{\\ln^{${p}}x + ${p}\\ln^{${p-1}}x}{x^2 \\ln^{${p*2}}x} < 0$（单调递减）`,
+        String.raw`- $f'(x) = -\dfrac{\\ln^{${p}}x + ${p}\\ln^{${p-1}}x}{x^{2} \\ln^{${p*2}}x} < 0$（单调递减）`,
         '',
         '满足积分判别法条件。计算反常积分：',
         '',
@@ -16595,13 +16595,13 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         String.raw`令 $u = \\ln x$，则 $du = \dfrac{1}{x}dx$，积分化为：`,
         '',
-        String.raw`$\\int_{\\ln 2}^{+\\infty} u^{-${p}} du = \bigg[\dfrac{u^{1-${p}}}{1-${p}}\bigg]_{\\ln 2}^{+\\infty}$`,
+        String.raw`$\\int_{\\ln 2}^{+\\infty} u^{-${p}} du = \bigg[\dfrac{u^{1}-${p}}}{1-${p}}\bigg]_{\\ln 2}^{+\\infty}$`,
         '',
-        `因为 ${p} > 1$，所以 $1 - ${p} < 0$，当 $u \\to +\\infty$ 时，$u^{1-${p}} = \\dfrac{1}{u^{${p-1}}} \\to 0$`,
+        `因为 ${p} > 1$，所以 $1 - ${p} < 0$，当 $u \\to +\\infty$ 时，$u^{1}-${p}} = \\dfrac{1}{u^{${p-1}}} \\to 0$`,
         '',
         '反常积分收敛：',
         '',
-        String.raw`$\\int_2^{+\\infty} \dfrac{1}{x \\ln^{${p}} x} dx = 0 - \dfrac{(\\ln 2)^{1-${p}}}{1-${p}} = \dfrac{(\\ln 2)^{1-${p}}}{${p}-1}$`,
+        String.raw`$\\int_2^{+\\infty} \dfrac{1}{x \\ln^{${p}} x} dx = 0 - \dfrac{(\\ln 2)^{1}-${p}}}{1-${p}} = \dfrac{(\\ln 2)^{1}-${p}}}{${p}-1}$`,
         '',
         '由积分判别法，原级数收敛。',
         '',
@@ -16626,7 +16626,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
     variantCount: 120,
     generate(rand, diff) {
       // 欧拉方程：x²y'' + a x y' + b y = 0
-      // 令 x = e^t (t = ln x)，则 x y' = dy/dt, x² y'' = d²y/dt² - dy/dt
+      // 令 x = e^{t} (t = ln x)，则 x y' = dy/dt, x² y'' = d²y/dt² - dy/dt
       // 代入得：y''_t - y'_t + a y'_t + b y = 0 → y''_t + (a-1)y'_t + b y = 0
       // 特征方程：r² + (a-1)r + b = 0
       // 构造 a, b 使得方程有漂亮的根
@@ -16634,33 +16634,33 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       // 取 a=3, b=1: r²+2r+1=0 → r=-1(二重)，通解 y = (C₁+C₂t)e^{-t} = (C₁+C₂ ln x)/x
       // 随机选一组
       const variants = [
-        { av: 4, bv: 2, r1: -1, r2: -2, sol: 'y = \\dfrac{C_1}{x} + \\dfrac{C_2}{x^2}', type: 'distinct' },
+        { av: 4, bv: 2, r1: -1, r2: -2, sol: 'y = \\dfrac{C_1}{x} + \\dfrac{C_2}{x^{2}}', type: 'distinct' },
         { av: 3, bv: 1, r1: -1, r2: -1, sol: 'y = \\dfrac{C_1 + C_2 \\ln x}{x}', type: 'double' },
-        { av: 5, bv: 4, r1: -1, r2: -4, sol: 'y = \\dfrac{C_1}{x} + \\dfrac{C_2}{x^4}', type: 'distinct' },
-        { av: 3, bv: 2, r1: -1, r2: -2, sol: 'y = \\dfrac{C_1}{x} + \\dfrac{C_2}{x^2}', type: 'distinct' },
+        { av: 5, bv: 4, r1: -1, r2: -4, sol: 'y = \\dfrac{C_1}{x} + \\dfrac{C_2}{x^{4}}', type: 'distinct' },
+        { av: 3, bv: 2, r1: -1, r2: -2, sol: 'y = \\dfrac{C_1}{x} + \\dfrac{C_2}{x^{2}}', type: 'distinct' },
       ];
       const v = variants[randInt(rand, 0, variants.length - 1)];
       const problem = joinLines([
         '求欧拉方程的通解：',
         '',
-        String.raw`$x^2 y'' + ${v.av}x y' + ${v.bv} y = 0$ $(x > 0)$`,
+        String.raw`$x^{2} y'' + ${v.av}x y' + ${v.bv} y = 0$ $(x > 0)$`,
       ]);
       const solution = joinLines([
-        '**欧拉方程：做变量代换 $x = e^t$**',
+        '**欧拉方程：做变量代换 $x = e^{t}$**',
         '',
-        String.raw`令 $x = e^t$（即 $t = \\ln x$），利用微分算子：`,
+        String.raw`令 $x = e^{t}$（即 $t = \\ln x$），利用微分算子：`,
         '',
-        String.raw`$xy' = \dfrac{dy}{dt}$，$x^2 y'' = \dfrac{d^2y}{dt^2} - \dfrac{dy}{dt}$`,
+        String.raw`$xy' = \dfrac{dy}{dt}$，$x^{2} y'' = \dfrac{d^{2y}}{dt^{2}} - \dfrac{dy}{dt}$`,
         '',
         '代入原方程：',
         '',
-        String.raw`$\\left(\dfrac{d^2y}{dt^2} - \dfrac{dy}{dt}\\right) + ${v.av}\dfrac{dy}{dt} + ${v.bv} y = 0$`,
+        String.raw`$\\left(\dfrac{d^{2y}}{dt^{2}} - \dfrac{dy}{dt}\\right) + ${v.av}\dfrac{dy}{dt} + ${v.bv} y = 0$`,
         '',
-        String.raw`即 $\dfrac{d^2y}{dt^2} + ${v.av - 1}\dfrac{dy}{dt} + ${v.bv} y = 0$`,
+        String.raw`即 $\dfrac{d^{2y}}{dt^{2}} + ${v.av - 1}\dfrac{dy}{dt} + ${v.bv} y = 0$`,
         '',
         '特征方程：',
         '',
-        `$r^2 + ${v.av - 1}r + ${v.bv} = 0$`,
+        `$r^{2} + ${v.av - 1}r + ${v.bv} = 0$`,
         '',
         v.type === 'distinct'
           ? String.raw`解得 $r_1 = ${v.r1}$，$r_2 = ${v.r2}$（两个不等实根）`
@@ -16672,7 +16672,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
           ? String.raw`$y(t) = C_1 e^{${v.r1}t} + C_2 e^{${v.r2}t}$`
           : String.raw`$y(t) = (C_1 + C_2 t) e^{${v.r1}t}$`,
         '',
-        `换回 $x$（$e^t = x$，$t = \\ln x$）：`,
+        `换回 $x$（$e^{t} = x$，$t = \\ln x$）：`,
         '',
         String.raw`$y(x) = ${v.sol}$`,
         '',
@@ -16682,7 +16682,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         type: 'fill-blank' as QuestionType,
         score: diff === 2 ? 8 : 10,
         problem, answer: v.sol, solution,
-        hint: '令 x = e^t，将欧拉方程化为常系数线性齐次方程',
+        hint: '令 x = e^{t}，将欧拉方程化为常系数线性齐次方程',
       };
     },
   },
@@ -16724,7 +16724,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
           '',
           '积分得：',
           '',
-          String.raw`$\\ln|p| = -\\ln|x| + C_0 \implies p = \dfrac{C_1}{x}$（$C_1 = \\pm e^{C_0}$）`,
+          String.raw`$\\ln|p| = -\\ln|x| + C_0 \implies p = \dfrac{C_1}{x}$（$C_1 = \\pm e^{C}_0}$）`,
           '',
           '即：',
           '',
@@ -16741,11 +16741,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         // 例：y y'' = (y')²
         // 令 p = y'，y'' = dp/dx = dp/dy · dy/dx = p dp/dy
         // y · p dp/dy = p² → 若 p≠0: y dp/dy = p → dp/p = dy/y → ln p = ln y + C → p = C₁ y
-        // y' = C₁ y → dy/y = C₁ dx → ln|y| = C₁ x + C₂ → y = C e^{C₁ x}
+        // y' = C₁ y → dy/y = C₁ dx → ln|y| = C₁ x + C₂ → y = C e^{C}₁ x}
         problem = joinLines([
-          String.raw`求微分方程 $y \\cdot y'' = (y')^2$ 的通解。`,
+          String.raw`求微分方程 $y \\cdot y'' = (y')^{2}$ 的通解。`,
         ]);
-        answer = 'y = C₂ e^{C₁ x}';
+        answer = 'y = C₂ e^{C}₁ x}';
         solution = joinLines([
           String.raw`**缺 x 型：令 $p = y'$，则 $y'' = p\dfrac{dp}{dy}$**`,
           '',
@@ -16753,7 +16753,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
           '',
           '代入方程：',
           '',
-          String.raw`$y \\cdot p\dfrac{dp}{dy} = p^2$`,
+          String.raw`$y \\cdot p\dfrac{dp}{dy} = p^{2}$`,
           '',
           '当 $p \\neq 0$ 时，两边约去 $p$：',
           '',
@@ -16761,7 +16761,7 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
           '',
           '积分得：',
           '',
-          String.raw`$\\ln|p| = \\ln|y| + C_0 \implies p = C_1 y$（$C_1 = \\pm e^{C_0}$）`,
+          String.raw`$\\ln|p| = \\ln|y| + C_0 \implies p = C_1 y$（$C_1 = \\pm e^{C}_0}$）`,
           '',
           '即：',
           '',
@@ -16771,11 +16771,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
           '',
           String.raw`$\dfrac{dy}{y} = C_1 dx \implies \\ln|y| = C_1 x + C_2$`,
           '',
-          String.raw`$y = C \\cdot e^{C_1 x}$（$C = \\pm e^{C_2}$）`,
+          String.raw`$y = C \\cdot e^{C}_1 x}$（$C = \\pm e^{C}_2}$）`,
           '',
           '当 $p = 0$ 时，$y = $ 常数，已包含在上述解中（$C_1 = 0$）',
           '',
-          String.raw`答案：$\boxed{y = C_2 e^{C_1 x}}$`,
+          String.raw`答案：$\boxed{y = C_2 e^{C}_1 x}}$`,
         ]);
       }
 
@@ -16869,11 +16869,11 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
       const problem = joinLines([
         '已知空间曲线 $C$ 的一般方程：',
         '',
-        String.raw`$C: \\begin{cases} x^2 + y^2 + z^2 = ${a}^2 \\ x + y + z = 0 \\end{cases}$`,
+        String.raw`$C: \\begin{cases} x^{2} + y^{2} + z^{2} = ${a}^{2} \\ x + y + z = 0 \\end{cases}$`,
         '',
         '求曲线 $C$ 在 $xOy$ 坐标面上的投影柱面方程。',
       ]);
-      const answer = `2x^2 + 2y^2 + 2xy = ${a * a}`;
+      const answer = `2x^{2} + 2y^{2} + 2xy = ${a * a}`;
       const solution = joinLines([
         '**消元法求投影柱面**',
         '',
@@ -16887,21 +16887,21 @@ export const PROBLEM_GENERATORS: ProblemGenerator[] = [
         '',
         '**2. 代入第一个方程（消去 z）**',
         '',
-        String.raw`$x^2 + y^2 + (-x - y)^2 = ${a}^2$`,
+        String.raw`$x^{2} + y^{2} + (-x - y)^{2} = ${a}^{2}$`,
         '',
-        String.raw`$x^2 + y^2 + (x + y)^2 = ${a}^2$`,
+        String.raw`$x^{2} + y^{2} + (x + y)^{2} = ${a}^{2}$`,
         '',
         '展开：',
         '',
-        String.raw`$x^2 + y^2 + x^2 + 2xy + y^2 = ${a}^2$`,
+        String.raw`$x^{2} + y^{2} + x^{2} + 2xy + y^{2} = ${a}^{2}$`,
         '',
         '合并同类项：',
         '',
-        String.raw`$2x^2 + 2y^2 + 2xy = ${a * a}$`,
+        String.raw`$2x^{2} + 2y^{2} + 2xy = ${a * a}$`,
         '',
         '这就是曲线 $C$ 在 $xOy$ 面上的投影柱面方程（母线平行于 z 轴的柱面）。',
         '',
-        String.raw`答案：$\boxed{2x^2 + 2y^2 + 2xy = ${a * a}}$`,
+        String.raw`答案：$\boxed{2x^{2} + 2y^{2} + 2xy = ${a * a}}$`,
       ]);
       return {
         type: 'fill-blank' as QuestionType,

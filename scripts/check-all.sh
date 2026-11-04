@@ -57,6 +57,12 @@ if node scripts/check-latex.mjs >"$TMP/mf-check-latex.log" 2>&1; then
 else
   bad "latex"; grep -A 2 'FAIL' "$TMP/mf-check-latex.log" | head -10 | sed 's/^/    /'
 fi
+# 生成题抽样：实际生成 400+ 道题，检查渲染与书写规范
+if node scripts/check-generators.mjs >"$TMP/mf-check-gen.log" 2>&1; then
+  ok "generators（$(head -1 "$TMP/mf-check-gen.log")）"
+else
+  bad "generators"; grep -E 'FAIL|存在问题' "$TMP/mf-check-gen.log" | head -8 | sed 's/^/    /'
+fi
 
 step "6/7 文本规范（标点 / 术语 / 占位符）"
 if node scripts/check-text.mjs >"$TMP/mf-check-text.log" 2>&1; then

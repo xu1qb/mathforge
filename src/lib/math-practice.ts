@@ -75,7 +75,7 @@ function genQuadEq(diff: Difficulty): PracticeQuestion {
   const cAbs = Math.abs(c);
 
   const question = `解方程：${aStr}x² ${bSign} ${bStr}x ${cSign} ${cAbs} = 0`;
-  const questionLatex = `\\text{解方程： } ${a === 1 ? '' : a}x^2 ${b >= 0 ? '+' : '-'} ${bAbs === 1 ? '' : bAbs}x ${c >= 0 ? '+' : '-'} ${cAbs} = 0`;
+  const questionLatex = `\\text{解方程： } ${a === 1 ? '' : a}x^{2} ${b >= 0 ? '+' : '-'} ${bAbs === 1 ? '' : bAbs}x ${c >= 0 ? '+' : '-'} ${cAbs} = 0`;
 
   // 计算根
   const disc = b * b - 4 * a * c;
@@ -148,7 +148,7 @@ function genFactor(diff: Difficulty): PracticeQuestion {
   const cAbs = Math.abs(c);
 
   const question = `因式分解：${aStr}x² ${b === 0 ? '' : bSign + ' ' + bStr + 'x'} ${c === 0 ? '' : cSign + ' ' + cAbs}`;
-  const questionLatex = `\\text{因式分解： } ${a === 1 ? '' : a}x^2 ${b === 0 ? '' : (b > 0 ? '+' : '-') + (bAbs === 1 ? '' : bAbs) + 'x'} ${c === 0 ? '' : (c > 0 ? '+' : '-') + cAbs}`;
+  const questionLatex = `\\text{因式分解： } ${a === 1 ? '' : a}x^{2} ${b === 0 ? '' : (b > 0 ? '+' : '-') + (bAbs === 1 ? '' : bAbs) + 'x'} ${c === 0 ? '' : (c > 0 ? '+' : '-') + cAbs}`;
 
   // 答案形式：(a*x - r1)(x - r2) 简化
   const r1Abs = Math.abs(r1);
@@ -244,10 +244,10 @@ function genTrigSpecial(diff: Difficulty): PracticeQuestion {
 // ===== 4. 函数求导 =====
 function genDerivative(diff: Difficulty): PracticeQuestion {
   const templates = [
-    { f: 'x^n', fLatex: 'x^n', deriv: 'n \\cdot x^{n-1}', sample: ['x²', 'x^3', 'x^4'] },
+    { f: 'x^{n}', fLatex: 'x^{n}', deriv: 'n \\cdot x^{n}-1}', sample: ['x²', 'x^{3}', 'x^{4}'] },
     { f: 'sin(x)', fLatex: '\\sin x', deriv: '\\cos x', sample: ['sin(x)'] },
     { f: 'cos(x)', fLatex: '\\cos x', deriv: '-\\sin x', sample: ['cos(x)'] },
-    { f: 'e^x', fLatex: 'e^x', deriv: 'e^x', sample: ['e^x'] },
+    { f: 'e^{x}', fLatex: 'e^{x}', deriv: 'e^{x}', sample: ['e^{x}'] },
     { f: 'ln(x)', fLatex: '\\ln x', deriv: '\\frac{1}{x}', sample: ['log(x)'] },
   ];
 
@@ -257,7 +257,7 @@ function genDerivative(diff: Difficulty): PracticeQuestion {
   let answerExpr: string;
   let answerLatex: string;
 
-  if (template.f === 'x^n') {
+  if (template.f === 'x^{n}') {
     const n = diff === 'basic' ? randInt(2, 4) : randInt(2, 6);
     const coeff = diff === 'competition' ? randInt(2, 5) : 1;
     if (coeff === 1) {
@@ -271,18 +271,18 @@ function genDerivative(diff: Difficulty): PracticeQuestion {
       answerExpr = `${coeff * n}*x^(${n - 1})`;
       answerLatex = `${coeff * n}x^{${n - 1}}`;
     }
-  } else if (template.f === 'e^x') {
+  } else if (template.f === 'e^{x}') {
     const coeff = diff !== 'basic' ? randInt(2, 4) : 1;
     if (coeff === 1) {
-      expr = 'e^x';
-      exprLatex = 'e^x';
-      answerExpr = 'e^x';
-      answerLatex = 'e^x';
+      expr = 'e^{x}';
+      exprLatex = 'e^{x}';
+      answerExpr = 'e^{x}';
+      answerLatex = 'e^{x}';
     } else {
-      expr = `${coeff}*e^x`;
-      exprLatex = `${coeff}e^x`;
-      answerExpr = `${coeff}*e^x`;
-      answerLatex = `${coeff}e^x`;
+      expr = `${coeff}*e^{x}`;
+      exprLatex = `${coeff}e^{x}`;
+      answerExpr = `${coeff}*e^{x}`;
+      answerLatex = `${coeff}e^{x}`;
     }
   } else if (template.f === 'ln(x)') {
     expr = 'log(x)';
@@ -372,10 +372,10 @@ function genIntegral(diff: Difficulty): PracticeQuestion {
   } else {
     // exp
     const coeff = diff !== 'basic' ? randInt(2, 4) : 1;
-    expr = coeff === 1 ? 'e^x' : `${coeff}*e^x`;
-    exprLatex = coeff === 1 ? 'e^x' : `${coeff}e^x`;
-    answerExpr = coeff === 1 ? 'e^x + C' : `${coeff}*e^x + C`;
-    answerLatex = coeff === 1 ? 'e^x + C' : `${coeff}e^x + C`;
+    expr = coeff === 1 ? 'e^{x}' : `${coeff}*e^{x}`;
+    exprLatex = coeff === 1 ? 'e^{x}' : `${coeff}e^{x}`;
+    answerExpr = coeff === 1 ? 'e^{x} + C' : `${coeff}*e^{x} + C`;
+    answerLatex = coeff === 1 ? 'e^{x} + C' : `${coeff}e^{x} + C`;
     ruleName = '∫eˣ dx = eˣ + C';
   }
 
@@ -405,8 +405,8 @@ function genLimit(diff: Difficulty): PracticeQuestion {
   const templates = [
     { type: 'sinx/x', expr: 'sin(x)/x', point: '0', answer: '1', answerLatex: '1', steps: ['重要极限：lim(x→0) sin(x)/x = 1'] },
     { type: '1/x-inf', expr: '1/x', point: '∞', answer: '0', answerLatex: '0', steps: ['x → ∞ 时，1/x → 0'] },
-    { type: 'poly-div', expr: '(x^2-1)/(x-1)', point: '1', answer: '2', answerLatex: '2', steps: ['因式分解：(x²-1)/(x-1) = x+1', 'x → 1 时，x+1 → 2'] },
-    { type: 'e-lim', expr: '(1+1/x)^x', point: '∞', answer: 'e', answerLatex: 'e', steps: ['重要极限：lim(x→∞) (1+1/x)^x = e'] },
+    { type: 'poly-div', expr: '(x^{2}-1)/(x-1)', point: '1', answer: '2', answerLatex: '2', steps: ['因式分解：(x²-1)/(x-1) = x+1', 'x → 1 时，x+1 → 2'] },
+    { type: 'e-lim', expr: '(1+1/x)^{x}', point: '∞', answer: 'e', answerLatex: 'e', steps: ['重要极限：lim(x→∞) (1+1/x)^{x} = e'] },
   ];
 
   const t = pick(templates);
@@ -706,7 +706,7 @@ function genAMGM(diff: Difficulty): PracticeQuestion {
     const answer = Math.sqrt(2 * S);
     const answerStr = Number.isInteger(answer) ? String(answer) : `√(${2 * S})`;
     const question = `已知实数 x, y 满足 x² + y² = ${S}，求 x + y 的最大值`;
-    const questionLatex = `\\text{已知 } x^2+y^2=${S} \\text{，求 } x+y \\text{ 的最大值}`;
+    const questionLatex = `\\text{已知 } x^{2}+y^{2}=${S} \\text{，求 } x+y \\text{ 的最大值}`;
     const steps = [
       `由柯西不等式：(1² + 1²)(x² + y²) ≥ (x + y)²`,
       `即 2 × ${S} ≥ (x + y)²`,
@@ -721,7 +721,7 @@ function genAMGM(diff: Difficulty): PracticeQuestion {
   const S = diff === 'basic' ? randInt(4, 20) * 2 : randInt(6, 30);
   const answer = (S * S) / 2;
   const question = `已知 a, b 为实数，且 a + b = ${S}，求 a² + b² 的最小值`;
-  const questionLatex = `\\text{已知 } a+b=${S} \\text{，求 } a^2+b^2 \\text{ 的最小值}`;
+  const questionLatex = `\\text{已知 } a+b=${S} \\text{，求 } a^{2}+b^{2} \\text{ 的最小值}`;
   const steps = [
     `由 a² + b² ≥ 2ab，两边同时加 a² + b²：`,
     `2(a² + b²) ≥ a² + 2ab + b² = (a + b)²`,
@@ -765,7 +765,7 @@ function genExpPower(diff: Difficulty): PracticeQuestion {
     const questionLatex = `\\frac{e^{${n}} \\cdot e^{${n+1}}}{e^{${n-1}}} = ?`;
     const result = n + n + 1 - n + 1; // = n+2
     const steps = [
-      '指数运算法则：a^m × a^n = a^(m+n)，a^m / a^n = a^(m-n)',
+      '指数运算法则：a^{m} × a^{n} = a^(m+n)，a^{m} / a^{n} = a^(m-n)',
       `e^${n} × e^${n + 1} / e^${n - 1} = e^(${n} + ${n + 1} - (${n - 1}))`,
       `= e^${result}`,
     ];
@@ -782,12 +782,12 @@ function genExpPower(diff: Difficulty): PracticeQuestion {
   if (type === 'simplify') {
     const a = randInt(2, 5);
     const b = randInt(2, 5);
-    const question = `化简：(${a}×${b})^2`;
-    const questionLatex = `(${a} \\times ${b})^2 = ?`;
+    const question = `化简：(${a}×${b})^{2}`;
+    const questionLatex = `(${a} \\times ${b})^{2} = ?`;
     const answer = Math.pow(a, 2) * Math.pow(b, 2);
     const steps = [
-      '积的乘方：(ab)^n = a^n × b^n',
-      `(${a}×${b})^2 = ${a}^2 × ${b}^2 = ${a * a} × ${b * b} = ${answer}`,
+      '积的乘方：(ab)^{n} = a^{n} × b^{n}',
+      `(${a}×${b})^{2} = ${a}^{2} × ${b}^{2} = ${a * a} × ${b * b} = ${answer}`,
     ];
     return {
       id: `exp-${Date.now()}`,
@@ -837,7 +837,7 @@ function genLogEquation(diff: Difficulty): PracticeQuestion {
     const question = `解方程：log_${base}(x) = ${exp}`;
     const questionLatex = `\\log_{${base}} x = ${exp}`;
     const steps = [
-      '对数定义：log_b(x) = y  ⇔  x = b^y',
+      '对数定义：log_b(x) = y  ⇔  x = b^{y}',
       `x = ${base}^${exp} = ${answer}`,
     ];
     return {
@@ -854,7 +854,7 @@ function genLogEquation(diff: Difficulty): PracticeQuestion {
     const question = `解方程：ln(x) = ${ans}`;
     const questionLatex = `\\ln x = ${ans}`;
     const steps = [
-      '自然对数：ln(x) = y  ⇔  x = e^y',
+      '自然对数：ln(x) = y  ⇔  x = e^{y}',
       `x = e^${ans}`,
     ];
     return {
@@ -1324,7 +1324,7 @@ function genGeometryBasic(diff: Difficulty): PracticeQuestion {
     // 题目：已知两边及夹角，求第三边平方
     const answer = a * a + b * b - a * b; // cos60°=0.5, 2ab·cosC = ab
     const question = `三角形中，a = ${a}, b = ${b}, C = 60°，求 c²`;
-    const questionLatex = `a=${a}, b=${b}, \\angle C=60° \\text{，求 } c^2`;
+    const questionLatex = `a=${a}, b=${b}, \\angle C=60° \\text{，求 } c^{2}`;
     const steps = [
       `由余弦定理：c² = a² + b² - 2ab·cosC`,
       `c² = ${a}² + ${b}² - 2 × ${a} × ${b} × cos60°`,
@@ -1823,7 +1823,7 @@ export function genTrigIdentity(diff: Difficulty): PracticeQuestion {
       const question = `已知 sin α = 3/5，α 在第一象限；cos β = 5/13，β 在第一象限。求 sin(α+β) 的值`;
       const questionLatex = `已知 $\\sin\\alpha = \\dfrac{3}{5}$，$\\alpha$ 在第一象限；$\\cos\\beta = \\dfrac{5}{13}$，$\\beta$ 在第一象限。求 $\\sin(\\alpha+\\beta)$ 的值`;
       const steps = [
-        '先求 cos α 和 sin β：$\\cos\\alpha = \\sqrt{1 - \\sin^2\\alpha} = \\dfrac{4}{5}$，$\\sin\\beta = \\sqrt{1 - \\cos^2\\beta} = \\dfrac{12}{13}$',
+        '先求 cos α 和 sin β：$\\cos\\alpha = \\sqrt{1 - \\sin^{2}\\alpha} = \\dfrac{4}{5}$，$\\sin\\beta = \\sqrt{1 - \\cos^{2}\\beta} = \\dfrac{12}{13}$',
         '应用正弦和角公式：$\\sin(\\alpha+\\beta) = \\sin\\alpha\\cos\\beta + \\cos\\alpha\\sin\\beta$',
         '代入数值计算：$\\sin(\\alpha+\\beta) = \\dfrac{3}{5}\\cdot\\dfrac{5}{13} + \\dfrac{4}{5}\\cdot\\dfrac{12}{13} = \\dfrac{63}{65}$',
       ];
@@ -1836,7 +1836,7 @@ export function genTrigIdentity(diff: Difficulty): PracticeQuestion {
       const question = `已知 sin θ = 3/5，θ 在第一象限，求 sin 2θ 的值`;
       const questionLatex = `已知 $\\sin\\theta = \\dfrac{3}{5}$，$\\theta$ 在第一象限，求 $\\sin 2\\theta$ 的值`;
       const steps = [
-        '先求 cos θ：$\\cos\\theta = \\sqrt{1 - \\sin^2\\theta} = \\dfrac{4}{5}$',
+        '先求 cos θ：$\\cos\\theta = \\sqrt{1 - \\sin^{2}\\theta} = \\dfrac{4}{5}$',
         '应用二倍角公式：$\\sin 2\\theta = 2\\sin\\theta\\cos\\theta$',
         '代入计算：$\\sin 2\\theta = 2 \\cdot \\dfrac{3}{5} \\cdot \\dfrac{4}{5} = \\dfrac{24}{25}$',
       ];
@@ -1862,8 +1862,8 @@ export function genTrigIdentity(diff: Difficulty): PracticeQuestion {
       const question = `求函数 f(x) = ${a} sin x + ${b} cos x 的最大值`;
       const questionLatex = `求函数 $f(x) = ${a}\\sin x + ${b}\\cos x$ 的最大值`;
       const steps = [
-        `应用辅助角公式：$a\\sin x + b\\cos x = \\sqrt{a^2 + b^2}\\sin(x + \\varphi)$`,
-        `其中最大值为振幅 $\\sqrt{a^2 + b^2} = \\sqrt{${a}^2 + ${b}^2} = \\sqrt{${a*a + b*b}}$`,
+        `应用辅助角公式：$a\\sin x + b\\cos x = \\sqrt{a^{2} + b^{2}}\\sin(x + \\varphi)$`,
+        `其中最大值为振幅 $\\sqrt{a^{2} + b^{2}} = \\sqrt{${a}^{2} + ${b}^{2}} = \\sqrt{${a*a + b*b}}$`,
         `计算得最大值 = ${maxVal}`,
       ];
       return { id: `tri-${Date.now()}-${Math.random()}`, topicKey: 'trig-identity', question, questionLatex, answer: String(maxVal), answerDisplay: String(maxVal), answerType: 'numeric' as const, steps, difficulty: diff };
@@ -1924,14 +1924,14 @@ export function genTrigIdentity(diff: Difficulty): PracticeQuestion {
 // ===== 17. 数列极限 =====
 export function genSequenceLimit(diff: Difficulty): PracticeQuestion {
   const templates = [
-    // 题型1：等比数列极限 |q| < 1 时 lim q^n = 0
+    // 题型1：等比数列极限 |q| < 1 时 lim q^{n} = 0
     () => {
       const q = pick(['1/2', '1/3', '2/3', '1/4']);
-      const question = `求极限：lim(n→∞) (${q})^n`;
-      const questionLatex = `求极限：$\\lim\\limits_{n\\to\\infty} \\left(${q.replace(/\//g, '\\over')}\\right)^n$`;
+      const question = `求极限：lim(n→∞) (${q})^{n}`;
+      const questionLatex = `求极限：$\\lim\\limits_{n\\to\\infty} \\left(${q.replace(/\//g, '\\over')}\\right)^{n}$`;
       const steps = [
-        `识别等比数列形式 q^n，其中 q = ${q}，|q| < 1`,
-        '由等比数列极限定理：当 |q| < 1 时，$\\lim_{n\\to\\infty} q^n = 0$',
+        `识别等比数列形式 q^{n}，其中 q = ${q}，|q| < 1`,
+        '由等比数列极限定理：当 |q| < 1 时，$\\lim_{n\\to\\infty} q^{n} = 0$',
         '因此极限为 0',
       ];
       return { id: `seq-${Date.now()}-${Math.random()}`, topicKey: 'sequence-limit', question, questionLatex, answer: '0', answerDisplay: '0', answerType: 'numeric' as const, steps, difficulty: diff };
@@ -1943,7 +1943,7 @@ export function genSequenceLimit(diff: Difficulty): PracticeQuestion {
       const questionLatex = `求极限：$\\lim\\limits_{n\\to\\infty} \\sum_{k=1}^{n} \\dfrac{1}{k(k+1)}$`;
       const steps = [
         '将通项裂项：$\\dfrac{1}{k(k+1)} = \\dfrac{1}{k} - \\dfrac{1}{k+1}$',
-        '求和（中间项抵消）：$\\sum_{k=1}^n \\left(\\dfrac{1}{k} - \\dfrac{1}{k+1}\\right) = 1 - \\dfrac{1}{n+1}$',
+        '求和（中间项抵消）：$\\sum_{k=1}^{n} \\left(\\dfrac{1}{k} - \\dfrac{1}{k+1}\\right) = 1 - \\dfrac{1}{n+1}$',
         '取极限：$\\lim_{n\\to\\infty} \\left(1 - \\dfrac{1}{n+1}\\right) = 1$',
       ];
       return { id: `seq-${Date.now()}-${Math.random()}`, topicKey: 'sequence-limit', question, questionLatex, answer: '1', answerDisplay: '1', answerType: 'numeric' as const, steps, difficulty: diff };
@@ -1953,11 +1953,11 @@ export function genSequenceLimit(diff: Difficulty): PracticeQuestion {
       // lim (1/√(n²+1) + 1/√(n²+2) + ... + 1/√(n²+n)) = ?
       // n/√(n²+n) ≤ S ≤ n/√(n²+1), both → 1
       const question = `用夹逼准则求：lim(n→∞) Σ (k=1到n) 1/√(n²+k)`;
-      const questionLatex = `用夹逼准则求：$\\lim\\limits_{n\\to\\infty} \\sum_{k=1}^{n} \\dfrac{1}{\\sqrt{n^2+k}}$`;
+      const questionLatex = `用夹逼准则求：$\\lim\\limits_{n\\to\\infty} \\sum_{k=1}^{n} \\dfrac{1}{\\sqrt{n^{2}+k}}$`;
       const steps = [
-        '对每一项进行放缩：$\\dfrac{1}{\\sqrt{n^2+n}} \\le \\dfrac{1}{\\sqrt{n^2+k}} \\le \\dfrac{1}{\\sqrt{n^2+1}} \\quad (1\\le k\\le n)$',
-        '对不等式求和：$\\dfrac{n}{\\sqrt{n^2+n}} \\le S_n \\le \\dfrac{n}{\\sqrt{n^2+1}}$',
-        '两端极限均为 1：$\\lim_{n\\to\\infty}\\dfrac{n}{\\sqrt{n^2+n}} = \\lim_{n\\to\\infty}\\dfrac{n}{\\sqrt{n^2+1}} = 1$',
+        '对每一项进行放缩：$\\dfrac{1}{\\sqrt{n^{2}+n}} \\le \\dfrac{1}{\\sqrt{n^{2}+k}} \\le \\dfrac{1}{\\sqrt{n^{2}+1}} \\quad (1\\le k\\le n)$',
+        '对不等式求和：$\\dfrac{n}{\\sqrt{n^{2}+n}} \\le S_n \\le \\dfrac{n}{\\sqrt{n^{2}+1}}$',
+        '两端极限均为 1：$\\lim_{n\\to\\infty}\\dfrac{n}{\\sqrt{n^{2}+n}} = \\lim_{n\\to\\infty}\\dfrac{n}{\\sqrt{n^{2}+1}} = 1$',
         '由夹逼准则得：$\\lim_{n\\to\\infty} S_n = 1$',
       ];
       return { id: `seq-${Date.now()}-${Math.random()}`, topicKey: 'sequence-limit', question, questionLatex, answer: '1', answerDisplay: '1', answerType: 'numeric' as const, steps, difficulty: diff };
@@ -1975,27 +1975,27 @@ export function genSequenceLimit(diff: Difficulty): PracticeQuestion {
       ];
       return { id: `seq-${Date.now()}-${Math.random()}`, topicKey: 'sequence-limit', question, questionLatex, answer: '2', answerDisplay: '2', answerType: 'numeric' as const, steps, difficulty: diff };
     },
-    // 题型5：重要极限 (1+1/n)^n → e
+    // 题型5：重要极限 (1+1/n)^{n} → e
     () => {
-      const question = `求极限：lim(n→∞) (1 + 1/n)^n`;
-      const questionLatex = `求极限：$\\lim\\limits_{n\\to\\infty} \\left(1 + \\dfrac{1}{n}\\right)^n$`;
+      const question = `求极限：lim(n→∞) (1 + 1/n)^{n}`;
+      const questionLatex = `求极限：$\\lim\\limits_{n\\to\\infty} \\left(1 + \\dfrac{1}{n}\\right)^{n}$`;
       const steps = [
-        '这是经典重要极限：$\\lim_{n\\to\\infty} \\left(1 + \\dfrac{1}{n}\\right)^n = e$',
+        '这是经典重要极限：$\\lim_{n\\to\\infty} \\left(1 + \\dfrac{1}{n}\\right)^{n} = e$',
         '其中 e ≈ 2.71828 是自然对数的底',
       ];
       return { id: `seq-${Date.now()}-${Math.random()}`, topicKey: 'sequence-limit', question, questionLatex, answer: 'e', answerDisplay: 'e', answerType: 'numeric' as const, steps, difficulty: diff };
     },
     // 题型6：比值法求级数收敛性（极限型）
     () => {
-      // lim a_{n+1}/aₙ 其中 aₙ = n!/n^n → 1/e < 1, 级数收敛
+      // lim a_{n+1}/aₙ 其中 aₙ = n!/n^{n} → 1/e < 1, 级数收敛
       // 这里只算极限值：1/e
-      const question = `求极限：lim(n→∞) (n! / n^n)^(1/n) （提示：用比值法思想）`;
-      const questionLatex = `求极限：$\\lim\\limits_{n\\to\\infty} \\dfrac{n!}{n^n}$（填数值或无穷）`;
+      const question = `求极限：lim(n→∞) (n! / n^{n})^(1/n) （提示：用比值法思想）`;
+      const questionLatex = `求极限：$\\lim\\limits_{n\\to\\infty} \\dfrac{n!}{n^{n}}$（填数值或无穷）`;
       const steps = [
-        '考虑比值 a_{n+1}/aₙ：$\\dfrac{(n+1)!}{(n+1)^{n+1}} \\cdot \\dfrac{n^n}{n!} = \\dfrac{n^n}{(n+1)^n} = \\dfrac{1}{(1+1/n)^n}$',
-        '由重要极限：$\\lim_{n\\to\\infty} \\dfrac{1}{(1+1/n)^n} = \\dfrac{1}{e} < 1$',
-        '比值 < 1，故级数 Σ n!/n^n 收敛，因此通项趋向 0',
-        '所以：$\\lim_{n\\to\\infty}\\dfrac{n!}{n^n} = 0$',
+        '考虑比值 a_{n+1}/aₙ：$\\dfrac{(n+1)!}{(n+1)^{n}+1}} \\cdot \\dfrac{n^{n}}{n!} = \\dfrac{n^{n}}{(n+1)^{n}} = \\dfrac{1}{(1+1/n)^{n}}$',
+        '由重要极限：$\\lim_{n\\to\\infty} \\dfrac{1}{(1+1/n)^{n}} = \\dfrac{1}{e} < 1$',
+        '比值 < 1，故级数 Σ n!/n^{n} 收敛，因此通项趋向 0',
+        '所以：$\\lim_{n\\to\\infty}\\dfrac{n!}{n^{n}} = 0$',
       ];
       return { id: `seq-${Date.now()}-${Math.random()}`, topicKey: 'sequence-limit', question, questionLatex, answer: '0', answerDisplay: '0', answerType: 'numeric' as const, steps, difficulty: diff };
     },
@@ -2003,9 +2003,9 @@ export function genSequenceLimit(diff: Difficulty): PracticeQuestion {
     () => {
       // lim (3n² + 2n - 1) / (n² + 5) = 3
       const question = `求极限：lim(n→∞) (3n² + 2n - 1) / (n² + 5)`;
-      const questionLatex = `求极限：$\\lim\\limits_{n\\to\\infty} \\dfrac{3n^2 + 2n - 1}{n^2 + 5}$`;
+      const questionLatex = `求极限：$\\lim\\limits_{n\\to\\infty} \\dfrac{3n^{2} + 2n - 1}{n^{2} + 5}$`;
       const steps = [
-        '分子分母同除以最高次项 n²：$\\lim_{n\\to\\infty} \\dfrac{3 + \\dfrac{2}{n} - \\dfrac{1}{n^2}}{1 + \\dfrac{5}{n^2}}$',
+        '分子分母同除以最高次项 n²：$\\lim_{n\\to\\infty} \\dfrac{3 + \\dfrac{2}{n} - \\dfrac{1}{n^{2}}}{1 + \\dfrac{5}{n^{2}}}$',
         '利用 lim 1/n = 0，极限为 $\\dfrac{3 + 0 - 0}{1 + 0}$',
         '结果 = 3',
       ];
@@ -2085,9 +2085,9 @@ export function genCoordinateGeometry(diff: Difficulty): PracticeQuestion {
       const question = `求两点 A(${x1}, ${y1}) 与 B(${x2}, ${y2}) 之间的距离`;
       const questionLatex = `求两点 $A(${x1}, ${y1})$ 与 $B(${x2}, ${y2})$ 之间的距离`;
       const steps = [
-        `由两点间距离公式：$d = \\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}$`,
-        `代入坐标：$d = \\sqrt{(${x2}-(${x1}))^2 + (${y2}-(${y1}))^2}$`,
-        `计算得：$d = \\sqrt{${dx}^2 + ${dy}^2} = \\sqrt{${distSq}} = ${answerDisplay}$`,
+        `由两点间距离公式：$d = \\sqrt{(x_2-x_1)^{2} + (y_2-y_1)^{2}}$`,
+        `代入坐标：$d = \\sqrt{(${x2}-(${x1}))^{2} + (${y2}-(${y1}))^{2}}$`,
+        `计算得：$d = \\sqrt{${dx}^{2} + ${dy}^{2}} = \\sqrt{${distSq}} = ${answerDisplay}$`,
       ];
       return { id: `cg-${Date.now()}-${Math.random()}`, topicKey: 'coordinate-geometry', question, questionLatex, answer, answerDisplay, answerType: 'numeric' as const, steps, difficulty: diff };
     },
@@ -2123,8 +2123,8 @@ export function genCoordinateGeometry(diff: Difficulty): PracticeQuestion {
       const question = `求点 P(${x0}, ${y0}) 到直线 ${A}x + ${B}y + ${C} = 0 的距离`;
       const questionLatex = `求点 $P(${x0}, ${y0})$ 到直线 ${A}x + ${B}y + ${C} = 0 的距离`;
       const steps = [
-        `点到直线距离公式：$d = \\frac{|Ax_0+By_0+C|}{\\sqrt{A^2+B^2}}$`,
-        `代入：$d = \\frac{|${A}\\cdot${x0} + ${B}\\cdot${y0} + ${C}|}{\\sqrt{${A}^2+${B}^2}} = \\frac{${num}}{\\sqrt{2}}$`,
+        `点到直线距离公式：$d = \\frac{|Ax_0+By_0+C|}{\\sqrt{A^{2}+B^{2}}}$`,
+        `代入：$d = \\frac{|${A}\\cdot${x0} + ${B}\\cdot${y0} + ${C}|}{\\sqrt{${A}^{2}+${B}^{2}}} = \\frac{${num}}{\\sqrt{2}}$`,
         `有理化得：$d = ${answerDisplay}$`,
       ];
       return { id: `cg-${Date.now()}-${Math.random()}`, topicKey: 'coordinate-geometry', question, questionLatex, answer, answerDisplay, answerType: 'numeric' as const, steps, difficulty: diff };
@@ -2153,11 +2153,11 @@ export function genCoordinateGeometry(diff: Difficulty): PracticeQuestion {
       const k = randInt(-3, 3);
       const r = randInt(1, 6);
       const answerDisplay = `(x${h >= 0 ? '-' : '+'}${Math.abs(h)})² + (y${k >= 0 ? '-' : '+'}${Math.abs(k)})² = ${r*r}`;
-      const answer = `(x${h >= 0 ? '-' : '+'}${Math.abs(h)})^2 + (y${k >= 0 ? '-' : '+'}${Math.abs(k)})^2 = ${r*r}`;
+      const answer = `(x${h >= 0 ? '-' : '+'}${Math.abs(h)})^{2} + (y${k >= 0 ? '-' : '+'}${Math.abs(k)})^{2} = ${r*r}`;
       const question = `求圆心为 (${h}, ${k})，半径为 ${r} 的圆的标准方程`;
       const questionLatex = `求圆心为 $(${h}, ${k})$，半径为 ${r} 的圆的标准方程`;
       const steps = [
-        `圆的标准方程：$(x-h)^2 + (y-k)^2 = r^2$`,
+        `圆的标准方程：$(x-h)^{2} + (y-k)^{2} = r^{2}$`,
         `代入圆心 (${h}, ${k})，半径 r = ${r}`,
         `得：${answerDisplay}`,
       ];
@@ -2207,10 +2207,10 @@ export function genConicSections(diff: Difficulty): PracticeQuestion {
       const answer = `${c}/${a}`;
       const answerDisplay = `${c}/${a}`;
       const question = `椭圆 x²/${a*a} + y²/${b*b} = 1 的离心率 e = ?`;
-      const questionLatex = `椭圆 $\\frac{x^2}{${a*a}} + \\frac{y^2}{${b*b}} = 1$ 的离心率 $e = ?$`;
+      const questionLatex = `椭圆 $\\frac{x^{2}}{${a*a}} + \\frac{y^{2}}{${b*b}} = 1$ 的离心率 $e = ?$`;
       const steps = [
-        `椭圆离心率公式：$e = \\frac{c}{a}$，其中 $c^2 = a^2 - b^2$`,
-        `由 $a^2 = ${a*a}$，$b^2 = ${b*b}$，得 $c = \\sqrt{${a*a} - ${b*b}} = \\sqrt{${cSq}} = ${c}$`,
+        `椭圆离心率公式：$e = \\frac{c}{a}$，其中 $c^{2} = a^{2} - b^{2}$`,
+        `由 $a^{2} = ${a*a}$，$b^{2} = ${b*b}$，得 $c = \\sqrt{${a*a} - ${b*b}} = \\sqrt{${cSq}} = ${c}$`,
         `故 $e = \\frac{${c}}{${a}}$`,
       ];
       return { id: `cs-${Date.now()}-${Math.random()}`, topicKey: 'conic-sections', question, questionLatex, answer, answerDisplay, answerType: 'numeric' as const, steps, difficulty: diff };
@@ -2222,9 +2222,9 @@ export function genConicSections(diff: Difficulty): PracticeQuestion {
       const answer = `sqrt(${cSq})/${a}`;
       const answerDisplay = `√${cSq}/${a}`;
       const question = `双曲线 x²/${a*a} − y²/${b*b} = 1 的离心率 e = ?`;
-      const questionLatex = `双曲线 $\\frac{x^2}{${a*a}} - \\frac{y^2}{${b*b}} = 1$ 的离心率 $e = ?$`;
+      const questionLatex = `双曲线 $\\frac{x^{2}}{${a*a}} - \\frac{y^{2}}{${b*b}} = 1$ 的离心率 $e = ?$`;
       const steps = [
-        `双曲线离心率公式：$e = \\frac{c}{a}$，其中 $c^2 = a^2 + b^2$`,
+        `双曲线离心率公式：$e = \\frac{c}{a}$，其中 $c^{2} = a^{2} + b^{2}$`,
         `$c = \\sqrt{${a*a} + ${b*b}} = \\sqrt{${cSq}}$`,
         `故 $e = \\frac{\\sqrt{${cSq}}}{${a}}$`,
       ];
@@ -2235,9 +2235,9 @@ export function genConicSections(diff: Difficulty): PracticeQuestion {
       const answerDisplay = `(${p/2}, 0)`;
       const answer = `(${p/2}, 0)`;
       const question = `抛物线 y² = ${p}x 的焦点坐标为？`;
-      const questionLatex = `抛物线 $y^2 = ${p}x$ 的焦点坐标为？`;
+      const questionLatex = `抛物线 $y^{2} = ${p}x$ 的焦点坐标为？`;
       const steps = [
-        `抛物线标准形式 $y^2 = 2px$，焦点为 $(\\frac{p}{2}, 0)$`,
+        `抛物线标准形式 $y^{2} = 2px$，焦点为 $(\\frac{p}{2}, 0)$`,
         `由 $2p = ${p}$，得 $p = ${p/2}$`,
         `焦点坐标为 $(${p/2}, 0)$`,
       ];
@@ -2251,9 +2251,9 @@ export function genConicSections(diff: Difficulty): PracticeQuestion {
       const answerDisplay = `(±${c}, 0)`;
       const answer = `(${c}, 0)`;
       const question = `椭圆 x²/${a*a} + y²/${b*b} = 1 的焦点坐标为？`;
-      const questionLatex = `椭圆 $\\frac{x^2}{${a*a}} + \\frac{y^2}{${b*b}} = 1$ 的焦点坐标为？`;
+      const questionLatex = `椭圆 $\\frac{x^{2}}{${a*a}} + \\frac{y^{2}}{${b*b}} = 1$ 的焦点坐标为？`;
       const steps = [
-        `椭圆中 $c^2 = a^2 - b^2$`,
+        `椭圆中 $c^{2} = a^{2} - b^{2}$`,
         `$c = \\sqrt{${a*a} - ${b*b}} = \\sqrt{${cSq}} = ${c}$`,
         `焦点在 x 轴上，坐标为 $(\\pm${c}, 0)$`,
       ];
@@ -2265,9 +2265,9 @@ export function genConicSections(diff: Difficulty): PracticeQuestion {
       const answerDisplay = `x = -${halfP/2}`;
       const answer = `x = -${halfP/2}`;
       const question = `抛物线 y² = ${p}x 的准线方程为？`;
-      const questionLatex = `抛物线 $y^2 = ${p}x$ 的准线方程为？`;
+      const questionLatex = `抛物线 $y^{2} = ${p}x$ 的准线方程为？`;
       const steps = [
-        `抛物线 $y^2 = 2px$ 的准线方程为 $x = -\\frac{p}{2}$`,
+        `抛物线 $y^{2} = 2px$ 的准线方程为 $x = -\\frac{p}{2}$`,
         `这里 $2p = ${p}$，即 $p = ${halfP}$`,
         `准线方程为 $x = -${halfP/2}$`,
       ];
@@ -2294,8 +2294,8 @@ export function genSolidGeometry(diff: Difficulty): PracticeQuestion {
       const question = `棱长为 ${a} 的正方体体积为？`;
       const questionLatex = `棱长为 ${a} 的正方体体积为？`;
       const steps = [
-        `正方体体积公式：$V = a^3$`,
-        `代入 $a = ${a}$，得 $V = ${a}^3 = ${V}$`,
+        `正方体体积公式：$V = a^{3}$`,
+        `代入 $a = ${a}$，得 $V = ${a}^{3} = ${V}$`,
       ];
       return { id: `sg-${Date.now()}-${Math.random()}`, topicKey: 'solid-geometry', question, questionLatex, answer, answerDisplay, answerType: 'numeric' as const, steps, difficulty: diff };
     },
@@ -2307,8 +2307,8 @@ export function genSolidGeometry(diff: Difficulty): PracticeQuestion {
       const question = `半径为 ${r} 的球体积为？`;
       const questionLatex = `半径为 ${r} 的球体积为？`;
       const steps = [
-        `球体积公式：$V = \\frac{4}{3}\\pi r^3$`,
-        `代入 $r = ${r}$，得 $V = \\frac{4}{3}\\pi \\cdot ${r}^3 = \\frac{${4*r3}}{3}\\pi$`,
+        `球体积公式：$V = \\frac{4}{3}\\pi r^{3}$`,
+        `代入 $r = ${r}$，得 $V = \\frac{4}{3}\\pi \\cdot ${r}^{3} = \\frac{${4*r3}}{3}\\pi$`,
       ];
       return { id: `sg-${Date.now()}-${Math.random()}`, topicKey: 'solid-geometry', question, questionLatex, answer, answerDisplay, answerType: 'numeric' as const, steps, difficulty: diff };
     },
@@ -2319,8 +2319,8 @@ export function genSolidGeometry(diff: Difficulty): PracticeQuestion {
       const question = `半径为 ${r} 的球表面积为？`;
       const questionLatex = `半径为 ${r} 的球表面积为？`;
       const steps = [
-        `球表面积公式：$S = 4\\pi r^2$`,
-        `代入 $r = ${r}$，得 $S = 4\\pi \\cdot ${r}^2 = ${4*r*r}\\pi$`,
+        `球表面积公式：$S = 4\\pi r^{2}$`,
+        `代入 $r = ${r}$，得 $S = 4\\pi \\cdot ${r}^{2} = ${4*r*r}\\pi$`,
       ];
       return { id: `sg-${Date.now()}-${Math.random()}`, topicKey: 'solid-geometry', question, questionLatex, answer, answerDisplay, answerType: 'numeric' as const, steps, difficulty: diff };
     },
@@ -2332,9 +2332,9 @@ export function genSolidGeometry(diff: Difficulty): PracticeQuestion {
       const question = `底面半径为 ${r}，高为 ${h} 的圆柱体积为？`;
       const questionLatex = `底面半径为 ${r}，高为 ${h} 的圆柱体积为？`;
       const steps = [
-        `圆柱体积公式：$V = \\pi r^2 h$`,
+        `圆柱体积公式：$V = \\pi r^{2} h$`,
         `代入 $r = ${r}$，$h = ${h}$`,
-        `$V = \\pi \\cdot ${r}^2 \\cdot ${h} = ${r*r*h}\\pi$`,
+        `$V = \\pi \\cdot ${r}^{2} \\cdot ${h} = ${r*r*h}\\pi$`,
       ];
       return { id: `sg-${Date.now()}-${Math.random()}`, topicKey: 'solid-geometry', question, questionLatex, answer, answerDisplay, answerType: 'numeric' as const, steps, difficulty: diff };
     },
@@ -2347,9 +2347,9 @@ export function genSolidGeometry(diff: Difficulty): PracticeQuestion {
       const question = `底面半径为 ${r}，高为 ${h} 的圆锥体积为？`;
       const questionLatex = `底面半径为 ${r}，高为 ${h} 的圆锥体积为？`;
       const steps = [
-        `圆锥体积公式：$V = \\frac{1}{3}\\pi r^2 h$`,
+        `圆锥体积公式：$V = \\frac{1}{3}\\pi r^{2} h$`,
         `代入 $r = ${r}$，$h = ${h}$`,
-        `$V = \\frac{1}{3}\\pi \\cdot ${r}^2 \\cdot ${h} = \\frac{${base}}{3}\\pi$`,
+        `$V = \\frac{1}{3}\\pi \\cdot ${r}^{2} \\cdot ${h} = \\frac{${base}}{3}\\pi$`,
       ];
       return { id: `sg-${Date.now()}-${Math.random()}`, topicKey: 'solid-geometry', question, questionLatex, answer, answerDisplay, answerType: 'numeric' as const, steps, difficulty: diff };
     },
@@ -2549,14 +2549,14 @@ export function genOdeSolving(diff: Difficulty): PracticeQuestion {
   const templates = [
     () => {
       const a = randInt(1, 5);
-      const answerDisplay = `y = Ce^{${a}x^2/2}`;
-      const answer = `y=Ce^(${a}x^2/2)`;
+      const answerDisplay = `y = Ce^{${a}x^{2}/2}`;
+      const answer = `y=Ce^(${a}x^{2}/2)`;
       const question = `求解微分方程：y' = ${a}xy`;
       const questionLatex = `求解微分方程：$y' = ${a}xy$`;
       const steps = [
         `分离变量：$\\frac{dy}{y} = ${a}x dx$`,
-        `两边积分：$\\ln|y| = \\frac{${a}}{2}x^2 + C_1$`,
-        `通解：$y = Ce^{${a/2}x^2}$，其中 $C = \\pm e^{C_1}$`,
+        `两边积分：$\\ln|y| = \\frac{${a}}{2}x^{2} + C_1$`,
+        `通解：$y = Ce^{${a/2}x^{2}}$，其中 $C = \\pm e^{C}_1}$`,
       ];
       return { id: `ode-${Date.now()}-${Math.random()}`, topicKey: 'ode-solving', question, questionLatex, answer, answerDisplay, answerType: 'expression' as const, steps, difficulty: diff };
     },
@@ -2568,9 +2568,9 @@ export function genOdeSolving(diff: Difficulty): PracticeQuestion {
       const questionLatex = `求解一阶线性微分方程：$y' + y = ${k}$`;
       const steps = [
         `一阶线性方程标准形式：$y' + P(x)y = Q(x)$`,
-        `积分因子：$\\mu = e^{\\int 1 dx} = e^x$`,
-        `两边乘积分因子：$e^x y' + e^x y = ${k}e^x$`,
-        `即 $\\frac{d}{dx}(ye^x) = ${k}e^x$，积分得 $ye^x = ${k}e^x + C$`,
+        `积分因子：$\\mu = e^{\\int 1 dx} = e^{x}$`,
+        `两边乘积分因子：$e^{x} y' + e^{x} y = ${k}e^{x}$`,
+        `即 $\\frac{d}{dx}(ye^{x}) = ${k}e^{x}$，积分得 $ye^{x} = ${k}e^{x} + C$`,
         `通解：$y = Ce^{-x} + ${k}$`,
       ];
       return { id: `ode-${Date.now()}-${Math.random()}`, topicKey: 'ode-solving', question, questionLatex, answer, answerDisplay, answerType: 'expression' as const, steps, difficulty: diff };
@@ -2587,7 +2587,7 @@ export function genOdeSolving(diff: Difficulty): PracticeQuestion {
       const question = `求解二阶常系数齐次微分方程：y'' ${bSign} ${bAbs}y' + ${c}y = 0`;
       const questionLatex = `求解二阶常系数齐次微分方程：$y'' ${bSign} ${bAbs}y' + ${c}y = 0$`;
       const steps = [
-        `特征方程：$r^2 ${bSign} ${bAbs}r + ${c} = 0$`,
+        `特征方程：$r^{2} ${bSign} ${bAbs}r + ${c} = 0$`,
         `解得两个不同实根：$r_1 = ${r1}$，$r_2 = ${r2}$`,
         `通解：$y = C_1e^{${r1}x} + C_2e^{${r2}x}$`,
       ];
@@ -2627,9 +2627,9 @@ export function genSeriesConvergence(diff: Difficulty): PracticeQuestion {
       const answer = String(sum);
       const answerDisplay = `${sum}`;
       const question = `等比级数 Σ(${rStr})ⁿ (n从0到∞) 的和为？`;
-      const questionLatex = `等比级数 $\\sum_{n=0}^{\\infty} (${rStr})^n$ 的和为？`;
+      const questionLatex = `等比级数 $\\sum_{n=0}^{\\infty} (${rStr})^{n}$ 的和为？`;
       const steps = [
-        `等比级数求和公式：$\\sum_{n=0}^{\\infty} r^n = \\frac{1}{1-r}$，当 $|r| < 1$`,
+        `等比级数求和公式：$\\sum_{n=0}^{\\infty} r^{n} = \\frac{1}{1-r}$，当 $|r| < 1$`,
         `这里 $r = ${rStr}$，$|r| < 1$，级数收敛`,
         `和为 $\\frac{1}{1-${rStr}} = \\frac{1}{${1-r}} = ${sum}$`,
       ];
@@ -2640,9 +2640,9 @@ export function genSeriesConvergence(diff: Difficulty): PracticeQuestion {
       const answer = '收敛';
       const answerDisplay = '收敛';
       const question = `判断 p 级数 Σ1/n² 的敛散性`;
-      const questionLatex = `判断 p 级数 $\\sum \\frac{1}{n^2}$ 的敛散性`;
+      const questionLatex = `判断 p 级数 $\\sum \\frac{1}{n^{2}}$ 的敛散性`;
       const steps = [
-        `p 级数敛散性判别：$\\sum \\frac{1}{n^p}$`,
+        `p 级数敛散性判别：$\\sum \\frac{1}{n^{p}}$`,
         `当 $p > 1$ 时收敛，当 $p \\leq 1$ 时发散`,
         `这里 $p = ${p} > 1$，级数收敛`,
       ];
@@ -2654,7 +2654,7 @@ export function genSeriesConvergence(diff: Difficulty): PracticeQuestion {
       const question = `判断级数 Σ1/√n 的敛散性`;
       const questionLatex = `判断级数 $\\sum \\frac{1}{\\sqrt{n}}$ 的敛散性`;
       const steps = [
-        `这是 p 级数 $\\sum \\frac{1}{n^{1/2}}$，其中 $p = 1/2$`,
+        `这是 p 级数 $\\sum \\frac{1}{n^{1}/2}}$，其中 $p = 1/2$`,
         `当 $p > 1$ 时收敛，当 $p \\leq 1$ 时发散`,
         `这里 $p = 1/2 \\leq 1$，级数发散`,
       ];
@@ -2679,7 +2679,7 @@ export function genSeriesConvergence(diff: Difficulty): PracticeQuestion {
       const answer = '1';
       const answerDisplay = '1';
       const question = `幂级数 Σxⁿ/n! 的收敛半径 R = ?`;
-      const questionLatex = `幂级数 $\\sum \\frac{x^n}{n!}$ 的收敛半径 $R = ?$`;
+      const questionLatex = `幂级数 $\\sum \\frac{x^{n}}{n!}$ 的收敛半径 $R = ?$`;
       const steps = [
         `使用比值判别法：$\\lim_{n\\to\\infty} \\left|\\frac{a_{n+1}}{a_n}\\right|$`,
         `$\\left|\\frac{1/(n+1)!}{1/n!}\\right| = \\frac{1}{n+1} \\to 0$`,
@@ -2722,8 +2722,8 @@ export function genFourierBasic(diff: Difficulty): PracticeQuestion {
       const question = `函数 f(x) = ${L} 在区间 [0, 2] 上的傅里叶系数 a₀ = ?`;
       const questionLatex = `函数 $f(x) = ${L}$ 在 $[0, 2]$ 上的傅里叶系数 $a_0 = ?$`;
       const steps = [
-        `公式：$a_0 = \\frac{2}{T}\\int_0^T f(x)dx$，周期 $T=2$`,
-        `$a_0 = \\frac{2}{2}\\int_0^2 ${L} dx = \\int_0^2 ${L} dx$`,
+        `公式：$a_0 = \\frac{2}{T}\\int_0^{T} f(x)dx$，周期 $T=2$`,
+        `$a_0 = \\frac{2}{2}\\int_0^{2} ${L} dx = \\int_0^{2} ${L} dx$`,
         `$a_0 = ${L} \\times 2 = ${a0}$`,
       ];
       return { id: `fb-${Date.now()}-${Math.random()}`, topicKey: 'fourier-basic', question, questionLatex, answer, answerDisplay, answerType: 'numeric' as const, steps, difficulty: diff };
@@ -2781,9 +2781,9 @@ export function genFunctionProperty(diff: Difficulty): PracticeQuestion {
       const answer = '奇函数';
       const answerDisplay = '奇函数';
       const question = `判断函数 f(x) = x³ 的奇偶性`;
-      const questionLatex = `判断函数 $f(x) = x^3$ 的奇偶性`;
+      const questionLatex = `判断函数 $f(x) = x^{3}$ 的奇偶性`;
       const steps = [
-        `计算 $f(-x) = (-x)^3 = -x^3$`,
+        `计算 $f(-x) = (-x)^{3} = -x^{3}$`,
         `$f(-x) = -f(x)$`,
         `所以 f(x) = x³ 是奇函数`,
       ];
@@ -2793,9 +2793,9 @@ export function genFunctionProperty(diff: Difficulty): PracticeQuestion {
       const answer = '偶函数';
       const answerDisplay = '偶函数';
       const question = `判断函数 f(x) = x² 的奇偶性`;
-      const questionLatex = `判断函数 $f(x) = x^2$ 的奇偶性`;
+      const questionLatex = `判断函数 $f(x) = x^{2}$ 的奇偶性`;
       const steps = [
-        `计算 $f(-x) = (-x)^2 = x^2$`,
+        `计算 $f(-x) = (-x)^{2} = x^{2}$`,
         `$f(-x) = f(x)$`,
         `所以 f(x) = x² 是偶函数`,
       ];
@@ -2841,9 +2841,9 @@ export function genFunctionProperty(diff: Difficulty): PracticeQuestion {
       const answer = '[0, +∞)';
       const answerDisplay = '[0, +∞)';
       const question = `函数 f(x) = x² 的值域为？`;
-      const questionLatex = `函数 $f(x) = x^2$ 的值域为？`;
+      const questionLatex = `函数 $f(x) = x^{2}$ 的值域为？`;
       const steps = [
-        `对任意实数 x，有 $x^2 \\geq 0$`,
+        `对任意实数 x，有 $x^{2} \\geq 0$`,
         `当 x = 0 时取得最小值 0`,
         `值域为 $[0, +\\infty)$`,
       ];
@@ -2868,8 +2868,8 @@ export function genHyperbolicFunc(diff: Difficulty): PracticeQuestion {
       const question = `sinh(0) = ?`;
       const questionLatex = `$\\sinh(0) = ?$`;
       const steps = [
-        `双曲正弦定义：$\\sinh(x) = \\frac{e^x - e^{-x}}{2}$`,
-        `代入 x = 0：$\\sinh(0) = \\frac{e^0 - e^0}{2} = \\frac{1 - 1}{2}$`,
+        `双曲正弦定义：$\\sinh(x) = \\frac{e^{x} - e^{-x}}{2}$`,
+        `代入 x = 0：$\\sinh(0) = \\frac{e^{0} - e^{0}}{2} = \\frac{1 - 1}{2}$`,
         `$\\sinh(0) = 0$`,
       ];
       return { id: `hf-${Date.now()}-${Math.random()}`, topicKey: 'hyperbolic-func', question, questionLatex, answer, answerDisplay, answerType: 'numeric' as const, steps, difficulty: diff };
@@ -2880,8 +2880,8 @@ export function genHyperbolicFunc(diff: Difficulty): PracticeQuestion {
       const question = `cosh(0) = ?`;
       const questionLatex = `$\\cosh(0) = ?$`;
       const steps = [
-        `双曲余弦定义：$\\cosh(x) = \\frac{e^x + e^{-x}}{2}$`,
-        `代入 x = 0：$\\cosh(0) = \\frac{e^0 + e^0}{2} = \\frac{1 + 1}{2}$`,
+        `双曲余弦定义：$\\cosh(x) = \\frac{e^{x} + e^{-x}}{2}$`,
+        `代入 x = 0：$\\cosh(0) = \\frac{e^{0} + e^{0}}{2} = \\frac{1 + 1}{2}$`,
         `$\\cosh(0) = 1$`,
       ];
       return { id: `hf-${Date.now()}-${Math.random()}`, topicKey: 'hyperbolic-func', question, questionLatex, answer, answerDisplay, answerType: 'numeric' as const, steps, difficulty: diff };
@@ -2890,11 +2890,11 @@ export function genHyperbolicFunc(diff: Difficulty): PracticeQuestion {
       const answer = '1';
       const answerDisplay = '1';
       const question = `cosh²(x) − sinh²(x) = ?`;
-      const questionLatex = `$\\cosh^2(x) - \\sinh^2(x) = ?$`;
+      const questionLatex = `$\\cosh^{2}(x) - \\sinh^{2}(x) = ?$`;
       const steps = [
-        `双曲函数基本恒等式：$\\cosh^2 x - \\sinh^2 x = 1$`,
-        `证明：$(\\frac{e^x+e^{-x}}{2})^2 - (\\frac{e^x-e^{-x}}{2})^2$`,
-        `$= \\frac{e^{2x}+2+e^{-2x}}{4} - \\frac{e^{2x}-2+e^{-2x}}{4} = \\frac{4}{4} = 1$`,
+        `双曲函数基本恒等式：$\\cosh^{2} x - \\sinh^{2} x = 1$`,
+        `证明：$(\\frac{e^{x}+e^{-x}}{2})^{2} - (\\frac{e^{x}-e^{-x}}{2})^{2}$`,
+        `$= \\frac{e^{2x}}+2+e^{-2x}}{4} - \\frac{e^{2x}}-2+e^{-2x}}{4} = \\frac{4}{4} = 1$`,
       ];
       return { id: `hf-${Date.now()}-${Math.random()}`, topicKey: 'hyperbolic-func', question, questionLatex, answer, answerDisplay, answerType: 'numeric' as const, steps, difficulty: diff };
     },
@@ -2905,7 +2905,7 @@ export function genHyperbolicFunc(diff: Difficulty): PracticeQuestion {
       const questionLatex = `$\\frac{d}{dx} \\sinh(x) = ?$`;
       const steps = [
         `双曲正弦的导数：$(\\sinh x)' = \\cosh x$`,
-        `证明：$(\\frac{e^x - e^{-x}}{2})' = \\frac{e^x + e^{-x}}{2} = \\cosh x$`,
+        `证明：$(\\frac{e^{x} - e^{-x}}{2})' = \\frac{e^{x} + e^{-x}}{2} = \\cosh x$`,
       ];
       return { id: `hf-${Date.now()}-${Math.random()}`, topicKey: 'hyperbolic-func', question, questionLatex, answer, answerDisplay, answerType: 'expression' as const, steps, difficulty: diff };
     },
@@ -2916,7 +2916,7 @@ export function genHyperbolicFunc(diff: Difficulty): PracticeQuestion {
       const questionLatex = `$\\frac{d}{dx} \\cosh(x) = ?$`;
       const steps = [
         `双曲余弦的导数：$(\\cosh x)' = \\sinh x$`,
-        `证明：$(\\frac{e^x + e^{-x}}{2})' = \\frac{e^x - e^{-x}}{2} = \\sinh x$`,
+        `证明：$(\\frac{e^{x} + e^{-x}}{2})' = \\frac{e^{x} - e^{-x}}{2} = \\sinh x$`,
       ];
       return { id: `hf-${Date.now()}-${Math.random()}`, topicKey: 'hyperbolic-func', question, questionLatex, answer, answerDisplay, answerType: 'expression' as const, steps, difficulty: diff };
     },
@@ -2938,8 +2938,9 @@ export function genInequalitySolve(diff: Difficulty): PracticeQuestion {
       const r2 = r1 + randInt(2, 5);
       const answer = `${r1} < x < ${r2}`;
       const answerDisplay = `${r1} < x < ${r2}`;
-      const question = `解不等式：(x-${r1})(x-${r2}) < 0`;
-      const questionLatex = `解不等式：$(x-${r1})(x-${r2}) < 0$`;
+      const sgn = (n: number) => (n >= 0 ? '+' + n : String(n));
+      const question = `解不等式：(x${sgn(-r1)})(x${sgn(-r2)}) < 0`;
+      const questionLatex = `解不等式：$(x${sgn(-r1)})(x${sgn(-r2)}) < 0$`;
       const steps = [
         `方程 $(x-${r1})(x-${r2}) = 0$ 的两根为 $x = ${r1}$ 和 $x = ${r2}$`,
         `二次函数开口向上，小于零的解集在两根之间`,
@@ -2989,8 +2990,8 @@ export function genInequalitySolve(diff: Difficulty): PracticeQuestion {
       const base = randInt(2, 4);
       const answer = `x > 2`;
       const answerDisplay = `x > 2`;
-      const question = `解不等式：${base}^x > ${base*base}（底数>1）`;
-      const questionLatex = `解不等式：${base}^x > ${base*base}（底数 $>1$）`;
+      const question = `解不等式：${base}^{x} > ${base*base}（底数>1）`;
+      const questionLatex = `解不等式：${base}^{x} > ${base*base}（底数 $>1$）`;
       const steps = [
         `因为底数 ${base} > 1$，指数函数单调递增`,
         `两边取对数，不等号方向不变：$x > \\log_${base} ${base*base}$`,
@@ -3070,14 +3071,14 @@ export function genSequenceRecurrence(diff: Difficulty): PracticeQuestion {
     () => {
       const a0 = randInt(1, 3);
       const r = randInt(2, 4);
-      const answer = `${a0}*${r}^n`;
+      const answer = `${a0}*${r}^{n}`;
       const answerDisplay = `a_n = ${a0} × ${r}ⁿ`;
       const question = `等比数列 a₀=${a0}，公比 q=${r}，求通项公式 aₙ`;
       const questionLatex = `等比数列 $a_0=${a0}$，公比 $q=${r}$，求通项公式 $a_n$`;
       const steps = [
-        `等比数列通项公式：$a_n = a_0 \\cdot q^n$`,
+        `等比数列通项公式：$a_n = a_0 \\cdot q^{n}$`,
         `代入 $a_0 = ${a0}$，$q = ${r}$`,
-        `$a_n = ${a0} \\times ${r}^n$`,
+        `$a_n = ${a0} \\times ${r}^{n}$`,
       ];
       return { id: `sr-${Date.now()}-${Math.random()}`, topicKey: 'sequence-recurrence', question, questionLatex, answer, answerDisplay, answerType: 'expression' as const, steps, difficulty: diff };
     },
