@@ -61,7 +61,7 @@ const PROBE = [
   '  const sw = document.documentElement.scrollWidth;',
   '  const h1s = [...document.querySelectorAll("h1")].map(e => e.textContent.trim().slice(0, 18));',
   '  const katexErrors = [...document.querySelectorAll(".katex-error")].map(e => (e.textContent || "").slice(0, 40));',
-  '  const rawLatex = [...document.querySelectorAll("p,span,div,li")].filter(e => e.children.length === 0 && /\\\\[a-zA-Z]{2,}/.test(e.textContent || "")).map(e => (e.textContent || "").trim().slice(0, 40)).slice(0, 3);',
+  '  const rawLatex = [...document.querySelectorAll("p,span,div,li")].filter(e => e.children.length === 0 && !e.closest(".katex") && /\\\\[a-zA-Z]{2,}|\\$[^$]{1,60}\\$/.test(e.textContent || "")).map(e => (e.textContent || "").trim().slice(0, 40)).slice(0, 3);',
   '  const fixed = [...document.querySelectorAll("body *")].filter(e => {',
   '    const s = getComputedStyle(e);',
   '    if (s.position !== "fixed" || s.display === "none" || s.visibility === "hidden" || Number(s.opacity) === 0) return false;',

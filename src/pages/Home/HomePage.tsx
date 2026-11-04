@@ -1,6 +1,7 @@
 import { memo, useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { NAV_GROUPS } from '@/components/AppSidebar';
+import MathRenderer from '@/components/MathRenderer';
 import { useLastVisited } from '@/hooks/use-last-visited';
 import { useRecentModules, recordModuleUsage } from '@/hooks/use-recent-modules';
 import { useWrongBook } from '@/hooks/use-learning';
@@ -1032,8 +1033,8 @@ function HomePageInner() {
                     <div className="text-xs text-muted-foreground mb-3">
                       {dailyFormula.category}
                     </div>
-                    <div className="bg-muted/50 rounded-lg px-3 py-2 text-center text-emerald-600 dark:text-emerald-400 font-serif italic text-sm min-h-[2.5rem] flex items-center justify-center">
-                      {dailyFormula.latex}
+                    <div className="bg-muted/50 rounded-lg px-3 py-2 text-center text-sm min-h-[2.5rem] flex items-center justify-center">
+                      <MathRenderer expression={dailyFormula.latex} displayMode />
                     </div>
                   </>
                 )}

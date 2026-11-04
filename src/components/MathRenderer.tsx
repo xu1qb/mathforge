@@ -46,6 +46,13 @@ function checkBracketBalance(expr: string): boolean {
 }
 
 function MathRendererInner({ expression, displayMode = false, isInput = false, className, copyable }: MathRendererProps) {
+  // 内容分流：非输入态的混排文本（$...$）或纯中文提示，不走整段 KaTeX
+  const hasInline = !isInput && /\$[^$]+\$/.test(expression || '');
+  const isProse =
+    !isInput &&
+    /[\u4e00-\u9fa5]/.test(expression || '') &&
+    !/[\\\\^_{}]/.test(expression || '');
+
   const [html, setHtml] = useState<string>('');
   const [renderFailed, setRenderFailed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -148,6 +155,25 @@ function MathRendererInner({ expression, displayMode = false, isInput = false, c
     (skin as string) === 'pixel' ? '#7dff9a' :
     (skin as string) === 'journal' ? '#c0392b' :
     'hsl(170 60% 35%)';
+
+  if (isProse) {
+    return <span className={cn('text-foreground', className)}>{expression}</span>;
+  }
+
+  if (hasInline) {
+    const parts = expression.split(/(\$[^$]+\$)/g).filter((s) => s !== '');
+    return (
+      <span className={cn('text-foreground leading-relaxed', className)}>
+        {parts.map((part, i) =>
+          part.startsWith('$') && part.endsWith('$') && part.length > 2 ? (
+            <MathRenderer key={i} expression={part.slice(1, -1)} displayMode={displayMode} />
+          ) : (
+            <span key={i}>{part}</span>
+          )
+        )}
+      </span>
+    );
+  }
 
   const rendered = (
     <span
