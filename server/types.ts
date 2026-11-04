@@ -19,6 +19,12 @@ export interface AiQuestion {
     notationOk: boolean;
     issues: string[];
     attempts: number;
+    /** 双解一致：模型独立求解后的答案是否与原答案等价 */
+    dualSolve: 'match' | 'mismatch' | 'skipped';
+    /** 独立求解得到的答案（便于人工核对） */
+    secondAnswer?: string;
+    /** 等价判定使用的方法（sympy/string/numeric/…） */
+    method?: string;
   };
 }
 

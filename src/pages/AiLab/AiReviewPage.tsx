@@ -110,6 +110,17 @@ export default function AiReviewPage() {
               <div className="text-sm">
                 <span className="text-muted-foreground">答案：</span>
                 <span className="font-medium text-foreground">{q.answerDisplay ?? q.answer}</span>
+                {q.validation.dualSolve === 'match' && (
+                  <Badge variant="secondary" className="ml-2 text-[10px]">双解一致</Badge>
+                )}
+                {q.validation.dualSolve === 'skipped' && (
+                  <Badge variant="outline" className="ml-2 text-[10px]">未做双解</Badge>
+                )}
+                {q.validation.secondAnswer && (
+                  <span className="ml-2 text-[11px] text-muted-foreground">
+                    独立解：{q.validation.secondAnswer}
+                  </span>
+                )}
               </div>
 
               <ol className="space-y-1 text-xs text-muted-foreground">

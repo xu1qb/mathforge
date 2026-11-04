@@ -214,6 +214,14 @@ export default function AiLabPage() {
                   ) : (
                     <span className="text-[11px] text-amber-600">校验告警</span>
                   )}
+                  {q.validation.dualSolve === 'match' && (
+                    <span className="flex items-center gap-1 text-[11px] text-emerald-600">
+                      <CheckCircle2 className="size-3" /> 双解一致
+                    </span>
+                  )}
+                  {q.validation.dualSolve === 'skipped' && (
+                    <span className="text-[11px] text-muted-foreground">未做双解（mock 模式）</span>
+                  )}
                   <span className="text-[11px] text-muted-foreground">第 {q.validation.attempts} 次生成</span>
                 </div>
 

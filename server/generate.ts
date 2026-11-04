@@ -6,6 +6,8 @@ import { chat, llmMode, type ChatMessage } from './llm.ts';
 import { cacheKey, readCache, writeCache } from './cache.ts';
 import { buildQuestionPrompt } from './prompts.ts';
 import { parseModelJson, validateQuestion, type RawQuestion } from './validate.ts';
+import { answersEquivalent } from './verify.ts';
+import { independentSolve } from './solve.ts';
 import type { AiQuestion, AiQuestionBatch, AiQuestionRequest } from './types.ts';
 
 const PROMPT_VERSION = 3;
@@ -67,6 +69,24 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
       // 重试时模型可能重复给出同一道题，按题干去重
       const duplicate = accepted.some((x) => x.questionLatex === String(raw.questionLatex));
       if (duplicate) continue;
+
+      // 双解一致：模型独立再解一遍，答案必须与原答案等价（mock 模式跳过）
+      let dualSolve: 'match' | 'mismatch' | 'skipped' = 'skipped';
+      let secondAnswer: string | undefined;
+      let method: string | undefined;
+      if (config.dualSolve && llmMode() === 'live') {
+        const second = await independentSolve(String(raw.questionLatex)).catch(() => null);
+        if (second) {
+          const eq = await answersEquivalent(String(raw.answer), second.answer);
+          secondAnswer = second.answer;
+          method = eq.method;
+          dualSolve = eq.equal ? 'match' : 'mismatch';
+          if (!eq.equal) {
+            lastIssues.push('答案与独立求解不一致（独立解为 ' + second.answer + '）');
+            continue;
+          }
+        }
+      }
       accepted.push({
         id: 'ai-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6),
         topic: req.topic,
@@ -78,7 +98,7 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
         answerType: raw.answerType === 'expression' ? 'expression' : 'numeric',
         steps: (raw.steps as string[]).map(String),
         fusion: Array.isArray(raw.fusion) ? raw.fusion.map(String) : undefined,
-        validation: { latexOk: v.latexOk, notationOk: v.notationOk, issues: [], attempts },
+        validation: { latexOk: v.latexOk, notationOk: v.notationOk, issues: [], attempts, dualSolve, secondAnswer, method },
       });
     }
 

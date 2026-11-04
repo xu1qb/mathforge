@@ -12,7 +12,15 @@ export interface AiQuestion {
   answerType: 'numeric' | 'expression';
   steps: string[];
   fusion?: string[];
-  validation: { latexOk: boolean; notationOk: boolean; issues: string[]; attempts: number };
+  validation: {
+    latexOk: boolean;
+    notationOk: boolean;
+    issues: string[];
+    attempts: number;
+    dualSolve?: 'match' | 'mismatch' | 'skipped';
+    secondAnswer?: string;
+    method?: string;
+  };
 }
 
 export interface AiQuestionBatch {

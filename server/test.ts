@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { validateQuestion, parseModelJson } from './validate.ts';
 import { generateQuestions } from './generate.ts';
 import { savePending, listQueue, reviewQuestion } from './store.ts';
+import { answersEquivalent, verifyAvailable } from './verify.ts';
 
 let pass = 0;
 function check(name: string, fn: () => void | Promise<void>) {
@@ -75,5 +76,23 @@ await check('入库 → 审核 → 通过 全链路', async () => {
   assert.equal(updated?.status, 'approved');
   assert.ok(listQueue('approved', topic).some((q) => q.id === target.id));
 });
+
+if (verifyAvailable()) {
+  await check('等价判定：分数与小数', async () => {
+    assert.equal((await answersEquivalent('1/2', '0.5')).equal, true);
+    assert.equal((await answersEquivalent('\\dfrac{3}{4}', '0.75')).equal, true);
+  });
+
+  await check('等价判定：代数式展开', async () => {
+    assert.equal((await answersEquivalent('x^{2}+2x+1', '(x+1)^{2}')).equal, true);
+    assert.equal((await answersEquivalent('2', '3')).equal, false);
+  });
+
+  await check('等价判定：根式', async () => {
+    assert.equal((await answersEquivalent('\\sqrt{2}', '2^{1/2}')).equal, true);
+  });
+} else {
+  console.log('跳过等价判定测试：未找到 sympy（设置 MATH_PYTHON_PATH）');
+}
 
 console.log('服务端测试：' + pass + ' 项通过');

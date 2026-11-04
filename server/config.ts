@@ -15,6 +15,10 @@ export interface ServerConfig {
   maxRetries: number;
   /** 缓存目录 */
   cacheDir: string;
+  /** sympy 所在目录（PYTHONPATH），留空则用 ../.tooling/py */
+  pythonPath: string;
+  /** 是否启用「双解一致」校验 */
+  dualSolve: boolean;
 }
 
 function env(key: string, fallback = ''): string {
@@ -31,4 +35,6 @@ export const config: ServerConfig = {
   timeoutMs: Number(env('LLM_TIMEOUT_MS', '60000')),
   maxRetries: Number(env('LLM_MAX_RETRIES', '2')),
   cacheDir: env('CACHE_DIR', '.cache/ai'),
+  pythonPath: env('MATH_PYTHON_PATH', ''),
+  dualSolve: env('DUAL_SOLVE', '1') !== '0',
 };
