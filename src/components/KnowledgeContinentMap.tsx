@@ -211,7 +211,7 @@ function CompactMap({
   onClick: (key: string) => void;
 }) {
   return (
-    <div className="relative w-full aspect-[16/10] rounded-xl bg-muted/30 dark:bg-muted/10 border border-border/60 overflow-hidden">
+    <div className="relative w-full aspect-[16/10] max-h-[300px] rounded-xl bg-muted/30 dark:bg-muted/10 border border-border/60 overflow-hidden">
       <div
         className="absolute inset-0 opacity-40 dark:opacity-20"
         style={{
@@ -652,7 +652,9 @@ export default function KnowledgeContinentMap({ compact = false }: KnowledgeCont
               </div>
               <div>
                 <h3 className="text-base font-bold text-foreground">知识大陆</h3>
-                <p className="text-xs text-muted-foreground">点亮你的数学版图</p>
+                <p className="text-xs text-muted-foreground">
+                  {overallProgress === 0 ? '还没点亮，先去练一组题' : '点亮你的数学版图'}
+                </p>
               </div>
             </div>
             <div className="text-right">

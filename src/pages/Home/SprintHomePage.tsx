@@ -180,7 +180,13 @@ export default function SprintHomePage() {
               11 个大类 · 66 个分支，从基础计算到竞赛冲刺
             </p>
           </div>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-3">
+            <button
+              onClick={() => navigate('/calculator')}
+              className="text-xs text-muted-foreground hover:text-foreground"
+            >
+              切换到普通首页
+            </button>
             <Button variant="outline" size="sm" className="gap-1.5" onClick={() => navigate('/branches')}>
               <BookOpen className="size-4" /> 分支总览
             </Button>
@@ -235,17 +241,22 @@ export default function SprintHomePage() {
         </motion.div>
 
         {/* 学科分支入口条 */}
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-          {BRANCH_CATEGORIES.filter((c) => c.id !== 'competition').map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => navigate('/branches')}
-              className="rounded-lg border border-border bg-card px-3 py-2 text-left transition-colors hover:border-primary/40 hover:bg-accent"
-            >
-              <div className="truncate text-sm font-medium text-foreground">{cat.zh}</div>
-              <div className="text-xs text-muted-foreground">{cat.branches.length} 个分支</div>
-            </button>
-          ))}
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+          {BRANCH_CATEGORIES.filter((c) => c.id !== 'competition').map((cat) => {
+            const covered = cat.branches.filter((b) => b.pagePath || b.tags).length;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => navigate('/branches')}
+                className="rounded-lg border border-border bg-card px-3 py-2 text-left transition-colors hover:border-primary/40 hover:bg-accent"
+              >
+                <div className="truncate text-sm font-medium text-foreground">{cat.zh}</div>
+                <div className="text-xs text-muted-foreground">
+                  {covered}/{cat.branches.length} 有内容
+                </div>
+              </button>
+            );
+          })}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -521,21 +532,6 @@ export default function SprintHomePage() {
               </Card>
             </motion.div>
 
-            {/* 快捷跳转 */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.35 }}
-            >
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => navigate('/calculator')}
-              >
-                切换到普通首页
-                <ArrowRight className="size-4 ml-1.5" />
-              </Button>
-            </motion.div>
           </div>
         </div>
       </div>
