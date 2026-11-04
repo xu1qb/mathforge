@@ -332,6 +332,30 @@ _m = 65
 chk('RSA: p=61,q=53,e=17 加解密可还原',
     pow(pow(_m, _e, _n), _d, _n) == _m)
 
+# ---- 2026-11 补空分支（二）：测度论 ----
+_k = sp.Symbol('k', integer=True, nonnegative=True)
+chk('康托集挖掉的总测度为 1（等比级数）',
+    sp.simplify(sp.summation(2 ** _k / 3 ** (_k + 1), (_k, 0, sp.oo)) - 1) == 0)
+
+# ---- 补空分支（二）：伽罗瓦（五次不可根式解） ----
+chk('x^5-x-1 在 Q 上不可约', sp.Poly(x**5 - x - 1, x).is_irreducible)
+chk('|S5|=120, |A5|=60', sp.factorial(5) == 120 and sp.factorial(5) // 2 == 60)
+
+# ---- 补空分支（二）：线性规划（顶点枚举） ----
+_vertices = [(0, 0), (2, 0), (2, 2), (1, 3), (0, 3)]
+chk('max 3x+2y = 10 在 (2,2)', max(3 * a + 2 * b for a, b in _vertices) == 10
+    and all(a + b <= 4 and a <= 2 and b <= 3 for a, b in _vertices))
+
+# ---- 补空分支（二）：非欧几何（角亏 = 面积） ----
+_angles = [sp.pi / 6] * 3
+chk('双曲三角形面积 = π - 角和 > 0',
+    float(sp.pi - sum(_angles)) > 0 and abs(float(sum(_angles)) - float(sp.pi / 2)) < 1e-9)
+
+# ---- 补空分支（二）：可计算性（对角线构造） ----
+_rows = [[0, 0, 1], [1, 0, 1], [0, 1, 1]]
+_diag = [1 - _rows[i][i] for i in range(len(_rows))]
+chk('对角线构造出的序列不在列表中', _diag not in _rows)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:

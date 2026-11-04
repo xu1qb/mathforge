@@ -34,14 +34,14 @@
 | 复分析 Complex Analysis | ✅ | 复变函数 |
 | 泛函分析 Functional Analysis | ◐ | 现代数学 |
 | 调和分析 Harmonic Analysis | ✅ | 傅里叶级数 |
-| 测度论 Measure Theory | — | |
+| 测度论 Measure Theory | ◐ | 考点「测度论：把长度变成函数」 |
 | 常微分方程 ODE | ✅ | 常微分方程、偏微分方程 |
 
 ## 3. 几何与拓扑 Geometry & Topology
 
 | 分支 | 状态 | 对应页面 |
 |---|---|---|
-| 非欧几何 Non-Euclidean | — | |
+| 非欧几何 Non-Euclidean | ◐ | 考点「非欧几何：换掉平行公设」 |
 | 射影几何 Projective | — | |
 | 微分几何 Differential Geometry | ✅ | 微分几何 |
 | 代数几何 Algebraic Geometry | — | |
@@ -55,8 +55,8 @@
 |---|---|---|
 | 群论 Group Theory | ◐ | 考点「群论入门：先看阶」 |
 | 环论 Ring Theory | — | |
-| 域论 Field Theory | — | |
-| 伽罗瓦理论 Galois Theory | — | |
+| 域论 Field Theory | ◐ | 考点「伽罗瓦理论：五次方程为什么解不出」 |
+| 伽罗瓦理论 Galois Theory | ◐ | 同上（一个考点覆盖两分支） |
 | 代数数论 | — | |
 | 解析数论 Analytic Number Theory | — | |
 | 表示论 Representation Theory | — | |
@@ -72,7 +72,7 @@
 | 范畴论 Category Theory | — | |
 | 格论 Lattice Theory | — | |
 | 信息论 Information Theory | ◐ | 考点「信息论：熵就是不确定性」 |
-| 可计算性 Computability | — | |
+| 可计算性 Computability | ◐ | 考点「可计算性：停机问题不可判定」 |
 
 ## 6. 概率与统计 Probability & Statistics
 
@@ -101,7 +101,8 @@
 |---|---|---|
 | 数学物理 Mathematical Physics | ◐ | 偏微分方程 |
 | 力学 / 流体力学 | — | |
-| 生物数学 / 运筹学 / 控制论 | — | |
+| 运筹学 Operations Research | ◐ | 考点「线性规划：最优解在顶点」 |
+| 生物数学 / 控制论 | — | |
 
 ## 9. 逻辑与基础 Logic & Foundations
 
