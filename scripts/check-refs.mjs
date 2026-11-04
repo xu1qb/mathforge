@@ -86,6 +86,14 @@ for (const c of courses.COURSES) {
     for (const id of ch.lessonIds) if (!topicIds.has(id)) push('课程引用了不存在的考点', c.id + '/' + ch.id + ' -> ' + id);
     for (const k of ch.practiceTopics) if (!practiceKeys.has(k)) push('课程引用了不存在的练习知识点', c.id + '/' + ch.id + ' -> ' + k);
     if (!ch.exercises || ch.exercises.length === 0) push('章节没有练习题', c.id + '/' + ch.id);
+    const seen = new Set();
+    for (const ex of ch.exercises) {
+      if (seen.has(ex.id)) push('课程练习 id 重复', c.id + '/' + ch.id + ' -> ' + ex.id);
+      seen.add(ex.id);
+      if (!ex.answer || !ex.steps || ex.steps.length === 0) {
+        push('课程练习缺答案或步骤', c.id + '/' + ch.id + ' -> ' + ex.id);
+      }
+    }
   }
 }
 

@@ -3520,6 +3520,227 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
       result: '\\lambda_{1}>0,\\ \\lambda_{2}>0',
     },
   },
+
+  {
+    id: 'special-matrices',
+    title: '特殊矩阵：对角、三角、对称、正交',
+    tag: '线代',
+    level: '基础',
+    essence:
+      '矩阵的特殊结构能省掉大半计算：对角阵幂次只看对角元，三角阵行列式只乘对角元，对称阵一定能正交对角化。',
+    whenToUse: [
+      '快速算特殊矩阵的幂与行列式',
+      '判断矩阵是否正交、是否可正交对角化',
+      '用分块结构简化大矩阵运算',
+    ],
+    steps: [
+      {
+        title: '对角矩阵',
+        body: '乘法逐元素相乘，幂就是对角元各自取幂。',
+        formula: '\\Lambda^{k}=\\mathrm{diag}(\\lambda_{1}^{k},\\dots,\\lambda_{n}^{k})',
+      },
+      {
+        title: '三角矩阵',
+        body: '行列式等于主对角线元素之积，特征值就是对角元。',
+        formula: '|A|=\\prod_{i}a_{ii}',
+      },
+      {
+        title: '对称矩阵',
+        body: '满足 $A^{T}=A$，特征值全是实数，且一定存在正交矩阵把它对角化。',
+        formula: 'A^{T}=A',
+      },
+      {
+        title: '正交矩阵',
+        body: '满足 $Q^{T}Q=I$，保持向量长度与夹角，行列式只能是 $\\pm1$。',
+        formula: 'Q^{T}Q=I',
+      },
+      {
+        title: '分块矩阵',
+        body: '分块对角阵的行列式是各块行列式之积，求逆也逐块求。',
+      },
+    ],
+    example: {
+      problem: '验证旋转矩阵 $Q=\\begin{pmatrix}\\cos\\theta&-\\sin\\theta\\\\\\sin\\theta&\\cos\\theta\\end{pmatrix}$ 是正交矩阵。',
+      walkthrough: [
+        '计算 $Q^{T}Q$：两个因子相乘后，非对角元是 $-\\cos\\theta\\sin\\theta+\\sin\\theta\\cos\\theta=0$。',
+        '对角元是 $\\cos^{2}\\theta+\\sin^{2}\\theta=1$。',
+        '所以 $Q^{T}Q=I$，$Q$ 是正交矩阵。',
+        '行列式 $=\\cos^{2}\\theta+\\sin^{2}\\theta=1$，符合正交阵行列式为 $\\pm1$ 的结论。',
+      ],
+      result: 'Q^{T}Q=I',
+    },
+  },
+  {
+    id: 'cramers-rule',
+    title: '克拉默法则：用行列式解方程组',
+    tag: '线代',
+    level: '基础',
+    essence:
+      '当系数行列式不为零时，每个未知数都等于「用常数列替换该列后的行列式」除以系数行列式。',
+    whenToUse: [
+      '未知数少、系数简单的方程组',
+      '需要写出解的显式表达式',
+      '判断齐次方程组是否只有零解',
+    ],
+    steps: [
+      {
+        title: '前提',
+        body: '系数行列式 $|A|\\neq0$，此时解唯一。',
+      },
+      {
+        title: '替换求值',
+        body: '把第 $i$ 列换成常数项，算出行列式 $|A_{i}|$。',
+        formula: 'x_{i}=\\frac{|A_{i}|}{|A|}',
+      },
+      {
+        title: '齐次推论',
+        body: '齐次方程组 $Ax=0$ 只有零解当且仅当 $|A|\\neq0$。',
+      },
+      {
+        title: '和消元法比',
+        body: '克拉默法则形式漂亮但要算 $n+1$ 个行列式，未知数多时用高斯消元更快。',
+      },
+    ],
+    example: {
+      problem: '用克拉默法则解 $x+y=3$，$x-y=1$。',
+      walkthrough: [
+        '系数行列式 $|A|=\\det\\begin{pmatrix}1&1\\\\1&-1\\end{pmatrix}=-2\\neq0$。',
+        '$x$ 用常数列替换第一列：$|A_{1}|=\\det\\begin{pmatrix}3&1\\\\1&-1\\end{pmatrix}=-4$，所以 $x=2$。',
+        '$y$ 替换第二列：$|A_{2}|=\\det\\begin{pmatrix}1&3\\\\1&1\\end{pmatrix}=-2$，所以 $y=1$。',
+        '与消元法结果一致。',
+      ],
+      result: 'x=2,\\ y=1',
+    },
+  },
+  {
+    id: 'gram-schmidt',
+    title: '施密特正交化：把基变正交',
+    tag: '线代',
+    level: '进阶',
+    essence:
+      '用逐次减去投影的办法，把一组线性无关向量变成正交组，张成的空间不变，再单位化就得到标准正交基。',
+    whenToUse: [
+      '求标准正交基',
+      '构造正交矩阵',
+      '推导 QR 分解',
+    ],
+    steps: [
+      {
+        title: '第一个向量不变',
+        body: '$\\beta_{1}=\\alpha_{1}$。',
+      },
+      {
+        title: '逐个减投影',
+        body: '每个新向量减去它在已得正交向量上的投影。',
+        formula: '\\beta_{k}=\\alpha_{k}-\\sum_{i<k}\\frac{(\\alpha_{k},\\beta_{i})}{(\\beta_{i},\\beta_{i})}\\beta_{i}',
+      },
+      {
+        title: '单位化',
+        body: '每个 $\\beta_{i}$ 除以自己的长度，得到标准正交组。',
+        formula: 'e_{i}=\\frac{\\beta_{i}}{\\|\\beta_{i}\\|}',
+      },
+      {
+        title: '性质',
+        body: '新向量组与原向量组张成同一个空间，且两两正交。',
+      },
+    ],
+    example: {
+      problem: '把 $\\alpha_{1}=(1,1)$、$\\alpha_{2}=(1,0)$ 正交化。',
+      walkthrough: [
+        '$\\beta_{1}=\\alpha_{1}=(1,1)$。',
+        '计算投影系数 $\\frac{(\\alpha_{2},\\beta_{1})}{(\\beta_{1},\\beta_{1})}=\\frac{1}{2}$。',
+        '$\\beta_{2}=(1,0)-\\frac{1}{2}(1,1)=(\\frac{1}{2},-\\frac{1}{2})$。',
+        '两个向量内积 $1\\cdot\\frac{1}{2}+1\\cdot(-\\frac{1}{2})=0$，正交。',
+      ],
+      result: '\\beta_{2}=\\left(\\tfrac{1}{2},-\\tfrac{1}{2}\\right)',
+    },
+  },
+  {
+    id: 'jordan-form',
+    title: '若尔当标准形：不能对角化怎么办',
+    tag: '线代',
+    level: '进阶',
+    essence:
+      '不能对角化的矩阵仍能化成「对角块 + 上三角 $1$」的若尔当标准形；差别就在于这些 $1$ 记录了广义特征向量的层次。',
+    whenToUse: [
+      '处理不可对角化的矩阵',
+      '计算矩阵的幂与指数函数',
+      '理解重特征值对应的几何重数不足',
+    ],
+    steps: [
+      {
+        title: '可对角化的条件',
+        body: '每个特征值的几何重数等于代数重数时才能对角化。',
+      },
+      {
+        title: '广义特征向量',
+        body: '当 $(A-\\lambda I)x=0$ 的解不够时，继续解 $(A-\\lambda I)^{2}x=0$ 补足。',
+      },
+      {
+        title: '若尔当块',
+        body: '对角线上是 $\\lambda$，上方一排 $1$。',
+        formula: 'J_{k}(\\lambda)=\\begin{pmatrix}\\lambda&1&&\\\\&\\ddots&\\ddots&\\\\&&\\ddots&1\\\\&&&\\lambda\\end{pmatrix}',
+      },
+      {
+        title: '用途',
+        body: '若尔当形让矩阵幂和 $e^{At}$ 变得可算，是解线性微分方程组的工具。',
+      },
+    ],
+    example: {
+      problem: '说明 $A=\\begin{pmatrix}1&1\\\\0&1\\end{pmatrix}$ 的若尔当标准形。',
+      walkthrough: [
+        '特征值只有 $\\lambda=1$（二重）。',
+        '$(A-I)x=0$ 化得 $x_{2}=0$，只有一个线性无关特征向量。',
+        '几何重数 $1<$ 代数重数 $2$，不能对角化。',
+        '它的若尔当块就是 $J_{2}(1)=\\begin{pmatrix}1&1\\\\0&1\\end{pmatrix}$ 本身。',
+      ],
+      result: 'J_{2}(1)',
+    },
+  },
+  {
+    id: 'inertia-theorem',
+    title: '惯性定理：标准形不唯一但规范',
+    tag: '线代',
+    level: '进阶',
+    essence:
+      '二次型用不同的可逆替换化标准形，系数会变，但正平方项和负平方项的个数——正负惯性指数——永远不变。',
+    whenToUse: [
+      '判断二次型的类型（正定、负定、不定）',
+      '比较两个二次型是否合同',
+      '求二次型的秩与符号差',
+    ],
+    steps: [
+      {
+        title: '合同',
+        body: '存在可逆矩阵 $C$ 使 $B=C^{T}AC$，就说 $A$ 与 $B$ 合同。',
+        formula: 'B=C^{T}AC',
+      },
+      {
+        title: '标准形',
+        body: '合同变换能把二次型化成只含平方项的形式。',
+        formula: 'f=d_{1}y_{1}^{2}+\\cdots+d_{n}y_{n}^{2}',
+      },
+      {
+        title: '惯性定理',
+        body: '正项个数 $p$ 与负项个数 $q$ 与变换无关，只由二次型本身决定。',
+        formula: 'p+q=r=\\mathrm{rank}(A)',
+      },
+      {
+        title: '正定判据',
+        body: '$p=n$ 即全为正平方项，二次型正定。',
+      },
+    ],
+    example: {
+      problem: '求 $f=x^{2}-y^{2}$ 的正负惯性指数与秩。',
+      walkthrough: [
+        '矩阵为 $\\mathrm{diag}(1,-1)$。',
+        '正平方项 $1$ 个，负平方项 $1$ 个，所以 $p=1$、$q=1$。',
+        '秩 $r=p+q=2$。',
+        '既有正又有负，属于不定二次型。',
+      ],
+      result: 'p=1,\\ q=1,\\ r=2',
+    },
+  },
 ];
 
 

@@ -500,6 +500,76 @@ chk('练习 la5-2：[[1,0],[0,-1]] 不正定', not sp.Matrix([[1, 0], [0, -1]]).
 chk('练习 la5-3：[[1,1],[1,1]] 半正定（det=0 且特征值非负）',
     sp.Matrix([[1, 1], [1, 1]]).det() == 0 and all(float(v) >= 0 for v in sp.Matrix([[1, 1], [1, 1]]).eigenvals()))
 
+# ---- 线代加厚：新增 5 个考点 ----
+_rot = sp.Matrix([[sp.cos(sp.Symbol('t')), -sp.sin(sp.Symbol('t'))],
+                  [sp.sin(sp.Symbol('t')), sp.cos(sp.Symbol('t'))]])
+chk('旋转矩阵正交（QᵀQ=I）',
+    sp.simplify(_rot.T * _rot - sp.eye(2)) == sp.zeros(2, 2))
+chk('旋转矩阵行列式为 1', sp.simplify(_rot.det() - 1) == 0)
+
+_ca = sp.Matrix([[1, 1], [1, -1]])
+_cb = sp.Matrix([3, 1])
+_cx = sp.Matrix([_cb[0], _cb[1]])
+_det = _ca.det()
+_x1 = sp.Matrix([[3, 1], [1, -1]]).det() / _det
+_x2 = sp.Matrix([[1, 3], [1, 1]]).det() / _det
+chk('克拉默法则解出 x=2, y=1', _x1 == 2 and _x2 == 1)
+
+_a1 = sp.Matrix([1, 1])
+_a2 = sp.Matrix([1, 0])
+_b1 = _a1
+_coef = (_a2.dot(_b1)) / (_b1.dot(_b1))
+_b2 = _a2 - _coef * _b1
+chk('施密特正交化后内积为零', sp.simplify(_b1.dot(_b2)) == 0)
+
+_J = sp.Matrix([[1, 1], [0, 1]])
+chk('若尔当块 (A-I)^2 = 0', sp.simplify((_J - sp.eye(2)) ** 2) == sp.zeros(2, 2))
+
+_D = sp.Matrix([[1, 0], [0, -1]])
+_ev = [float(v) for v in _D.eigenvals()]
+chk('diag(1,-1) 惯性指数 p=1 q=1 r=2',
+    sum(1 for v in _ev if v > 0) == 1 and sum(1 for v in _ev if v < 0) == 1 and _D.rank() == 2)
+
+# ---- 线代加厚：新增 10 道课程练习的答案验证 ----
+chk('练习 la1-4：diag(2,3)² = diag(4,9)',
+    sp.Matrix([[2, 0], [0, 3]]) ** 2 == sp.Matrix([[4, 0], [0, 9]]))
+
+_Q90 = sp.Matrix([[0, -1], [1, 0]])
+chk('练习 la1-5：[[0,-1],[1,0]] 正交且行列式为 1',
+    _Q90.T * _Q90 == sp.eye(2) and _Q90.det() == 1)
+
+chk('练习 la2-4：2x+y=7, x−y=2 解为 (3,1)',
+    sp.solve([2 * sp.Symbol('x') + sp.Symbol('y') - 7,
+              sp.Symbol('x') - sp.Symbol('y') - 2],
+             [sp.Symbol('x'), sp.Symbol('y')]) == {sp.Symbol('x'): 3, sp.Symbol('y'): 1})
+chk('练习 la2-5：齐次系数行列式为 0 → 有非零解',
+    sp.Matrix([[1, 1], [2, 2]]).det() == 0)
+
+_g1 = sp.Matrix([1, 0])
+_g2 = sp.Matrix([1, 1])
+_p = _g2.dot(_g1) / _g1.dot(_g1)
+_g2o = _g2 - _p * _g1
+chk('练习 la3-4：正交化后为 (1,0) 与 (0,1)',
+    _g1 == sp.Matrix([1, 0]) and _g2o == sp.Matrix([0, 1]))
+
+chk('练习 la3-5：正交矩阵的逆等于转置',
+    _Q90.inv() == _Q90.T)
+
+_A2 = sp.Matrix([[2, 1], [0, 2]])
+chk('练习 la4-4：[[2,1],[0,2]] 的 (A-2I)²=0 且特征空间 1 维',
+    sp.simplify((_A2 - 2 * sp.eye(2)) ** 2) == sp.zeros(2, 2)
+    and len((_A2 - 2 * sp.eye(2)).nullspace()) == 1)
+
+_A3 = 3 * sp.eye(2)
+chk('练习 la4-5：3I 是对角矩阵（因此可对角化）', _A3.is_diagonal())
+
+chk('练习 la5-4：f=2x²+3y² 的正惯性指数 p=2',
+    sum(1 for v in [2, 3] if v > 0) == 2)
+
+_S3 = [1, 1, -1]
+chk('练习 la5-5：x²+y²−z² 的 p=2 q=1 r=3',
+    sum(1 for v in _S3 if v > 0) == 2 and sum(1 for v in _S3 if v < 0) == 1)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:

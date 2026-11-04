@@ -28,7 +28,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
         '掌握矩阵乘法与逆矩阵的判定',
         '理解秩是「有效信息量」',
       ],
-      lessonIds: ['det-basics', 'matrix-algebra', 'rank'],
+      lessonIds: ['det-basics', 'matrix-algebra', 'special-matrices', 'rank'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -59,6 +59,26 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
           hint: '看行列式是否为零。',
           steps: ['$\\det A=1\\times4-2\\times2=0$。', '行列式为零，矩阵不可逆（两行成比例）。'],
         },
+        {
+          id: 'la1-4',
+          level: '基础',
+          question: '求对角矩阵 $A=\\begin{pmatrix}2&0\\\\0&3\\end{pmatrix}$ 的平方。',
+          answer: '$\\begin{pmatrix}4&0\\\\0&9\\end{pmatrix}$',
+          hint: '对角矩阵的幂就是对对角元分别取幂。',
+          steps: ['对角阵相乘时非对角元仍为 $0$。', '对角元各自平方：$2^{2}=4$，$3^{2}=9$。'],
+        },
+        {
+          id: 'la1-5',
+          level: '进阶',
+          question: '判断 $Q=\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}$ 是否为正交矩阵。',
+          answer: '是（$Q^{T}Q=I$，行列式为 $1$）',
+          hint: '算 $Q^{T}Q$，再看行列式。',
+          steps: [
+            '$Q^{T}=\\begin{pmatrix}0&1\\\\-1&0\\end{pmatrix}$。',
+            '$Q^{T}Q=\\begin{pmatrix}1&0\\\\0&1\\end{pmatrix}=I$，所以是正交矩阵。',
+            '$\\det Q=0\\times0-(-1)\\times1=1$，符合正交阵行列式为 $\\pm1$。',
+          ],
+        },
       ],
     },
     {
@@ -67,7 +87,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
       textbookRef: '第 3 章',
       summary: '高斯消元 + 秩判据，一次性看清唯一解、无穷多解、无解',
       goals: ['用初等行变换化阶梯形', '用秩判断解的情况', '会写基础解系与通解'],
-      lessonIds: ['gauss-elimination', 'linear-system'],
+      lessonIds: ['gauss-elimination', 'linear-system', 'cramers-rule'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -98,6 +118,30 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
           hint: '比较系数矩阵与增广矩阵的秩。',
           steps: ['消元后得到 $0=1$ 的矛盾。', '$r(A)=1$，$r(A|b)=2$，两者不等。', '秩不相等，方程组无解。'],
         },
+        {
+          id: 'la2-4',
+          level: '基础',
+          question: '用克拉默法则解 $2x+y=7$，$x-y=2$。',
+          answer: '$x=3,\\ y=1$',
+          hint: '先算系数行列式，再分别替换两列。',
+          steps: [
+            '$|A|=\\det\\begin{pmatrix}2&1\\\\1&-1\\end{pmatrix}=-3$。',
+            '$x=\\det\\begin{pmatrix}7&1\\\\2&-1\\end{pmatrix}/(-3)=(-9)/(-3)=3$。',
+            '$y=\\det\\begin{pmatrix}2&7\\\\1&2\\end{pmatrix}/(-3)=(-3)/(-3)=1$。',
+          ],
+        },
+        {
+          id: 'la2-5',
+          level: '进阶',
+          question: '判断齐次方程组 $x+y=0$，$2x+2y=0$ 是否有非零解。',
+          answer: '有非零解：$x=-t,\\ y=t$',
+          hint: '看系数行列式是否为零。',
+          steps: [
+            '系数行列式 $\\det\\begin{pmatrix}1&1\\\\2&2\\end{pmatrix}=0$。',
+            '行列式为零，齐次方程组必有非零解。',
+            '两式等价于 $x+y=0$，通解 $x=-t$、$y=t$（$t$ 任意）。',
+          ],
+        },
       ],
     },
     {
@@ -106,7 +150,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
       textbookRef: '第 4 章',
       summary: '基与维数，是「用几个数描述一个对象」的严格版本',
       goals: ['判断线性相关与无关', '求极大无关组与秩', '理解基、维数、坐标'],
-      lessonIds: ['linear-dependence', 'vector-space-basis'],
+      lessonIds: ['linear-dependence', 'vector-space-basis', 'gram-schmidt'],
       practiceTopics: ['vector-op'],
       exercises: [
         {
@@ -137,6 +181,26 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
             '所以它们构成一组基。',
           ],
         },
+        {
+          id: 'la3-4',
+          level: '进阶',
+          question: '把 $\\alpha_{1}=(1,0)$、$\\alpha_{2}=(1,1)$ 正交化。',
+          answer: '$\\beta_{1}=(1,0)$，$\\beta_{2}=(0,1)$',
+          hint: '第二个向量减去它在第一个上的投影。',
+          steps: [
+            '$\\beta_{1}=\\alpha_{1}=(1,0)$。',
+            '投影系数 $\\frac{(\\alpha_{2},\\beta_{1})}{(\\beta_{1},\\beta_{1})}=1$。',
+            '$\\beta_{2}=(1,1)-1\\cdot(1,0)=(0,1)$，与 $\\beta_{1}$ 内积为 $0$。',
+          ],
+        },
+        {
+          id: 'la3-5',
+          level: '基础',
+          question: '求正交矩阵 $Q=\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}$ 的逆。',
+          answer: '$Q^{T}=\\begin{pmatrix}0&1\\\\-1&0\\end{pmatrix}$',
+          hint: '正交矩阵的逆等于它的转置。',
+          steps: ['正交矩阵满足 $Q^{T}Q=I$。', '两边左乘 $Q^{-1}$ 得 $Q^{-1}=Q^{T}$。', '直接转置即可。'],
+        },
       ],
     },
     {
@@ -145,7 +209,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
       textbookRef: '第 5 章',
       summary: '找到「不被变换改变方向」的那些向量，矩阵就变简单了',
       goals: ['求特征值与特征向量', '判断能否对角化', '理解相似与迹、行列式的关系'],
-      lessonIds: ['eigen-basics', 'eigen-diagonalization'],
+      lessonIds: ['eigen-basics', 'eigen-diagonalization', 'jordan-form'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -177,6 +241,31 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
           hint: '展开 $\\det(A-\\lambda I)$。',
           steps: ['$\\det\\begin{pmatrix}-\\lambda&1\\\\1&-\\lambda\\end{pmatrix}=\\lambda^{2}-1=0$。', '解得 $\\lambda=1$ 或 $-1$。', '验证：迹为 $0$，行列式为 $-1$，均吻合。'],
         },
+        {
+          id: 'la4-4',
+          level: '进阶',
+          question: '求 $A=\\begin{pmatrix}2&1\\\\0&2\\end{pmatrix}$ 的若尔当标准形。',
+          answer: '$J_{2}(2)$',
+          hint: '特征值是二重的，看特征向量有几个。',
+          steps: [
+            '特征值 $\\lambda=2$（二重）。',
+            '$(A-2I)x=0$ 给出 $x_{2}=0$，只有 $1$ 个线性无关特征向量。',
+            '几何重数 $1<$ 代数重数 $2$，不能对角化。',
+            '若尔当块为 $J_{2}(2)=\\begin{pmatrix}2&1\\\\0&2\\end{pmatrix}$。',
+          ],
+        },
+        {
+          id: 'la4-5',
+          level: '基础',
+          question: '判断 $A=\\begin{pmatrix}3&0\\\\0&3\\end{pmatrix}$ 能否对角化。',
+          answer: '能（它本身就是对角矩阵）',
+          hint: '对角矩阵的对角化就是它自己。',
+          steps: [
+            '特征值 $\\lambda_{1}=\\lambda_{2}=3$。',
+            '$(A-3I)=0$，整个平面都是特征空间，几何重数 $2$。',
+            '几何重数等于代数重数，可以对角化。',
+          ],
+        },
       ],
     },
     {
@@ -185,7 +274,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
       textbookRef: '第 6 章',
       summary: '把二次多项式写成矩阵形式，正定与否一眼看出',
       goals: ['写出二次型的矩阵', '用配方法或正交变换化标准形', '判定正定性'],
-      lessonIds: ['quadratic-form', 'positive-definite'],
+      lessonIds: ['quadratic-form', 'positive-definite', 'inertia-theorem'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -219,6 +308,26 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
             '$\\det A=1\\times1-1\\times1=0$，有零特征值。',
             '配方 $f=(x+y)^{2}\\geq0$，且存在非零向量使之为零。',
             '所以是半正定，不是正定。',
+          ],
+        },
+        {
+          id: 'la5-4',
+          level: '基础',
+          question: '求二次型 $f=2x^{2}+3y^{2}$ 的正负惯性指数。',
+          answer: '$p=2,\\ q=0,\\ r=2$',
+          hint: '已经是标准形，直接数正负系数。',
+          steps: ['标准形里两个系数 $2$ 和 $3$ 都为正。', '正惯性指数 $p=2$，负惯性指数 $q=0$。', '秩 $r=p+q=2$。'],
+        },
+        {
+          id: 'la5-5',
+          level: '进阶',
+          question: '判断 $f=x^{2}+y^{2}-z^{2}$ 的惯性指数与类型。',
+          answer: '$p=2,\\ q=1,\\ r=3$，不定',
+          hint: '数正系数与负系数。',
+          steps: [
+            '标准形系数为 $1,1,-1$。',
+            '正惯性指数 $p=2$，负惯性指数 $q=1$，秩 $r=3$。',
+            '既有正又有负，属于不定二次型。',
           ],
         },
       ],
