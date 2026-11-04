@@ -1,5 +1,10 @@
 // EXPORTS: generateQuestions
-// 生成流水线：提示词 → 模型（或带工具的 agent）→ 解析 → 形式校验 → 双解一致 → 定向修复重试 → 缓存
+// 生成流水线：提示词 → 模型（或 agent）→ 解析 → 形式校验 → 语义校验（按档位）→ 新颖度 → 入库
+//
+// 校验档位 verifyMode：
+//   strict   语义校验失败就拒绝（最严，出题率最低）
+//   balanced 失败也放行，但标记「未验证」，交给人工审核（默认）
+//   off      只做形式校验（LaTeX / 书写规范）
 
 import { config } from './config.ts';
 import { chat, llmMode, type ChatMessage } from './llm.ts';
@@ -14,7 +19,9 @@ import { checkNovelty } from './novelty.ts';
 import { saveRejected } from './store.ts';
 import type { AiQuestion, AiQuestionBatch, AiQuestionRequest } from './types.ts';
 
-const PROMPT_VERSION = 7;
+const PROMPT_VERSION = 8;
+
+type VerifyMode = 'strict' | 'balanced' | 'off';
 
 function normalize(req: AiQuestionRequest): Required<AiQuestionRequest> {
   return {
@@ -23,13 +30,15 @@ function normalize(req: AiQuestionRequest): Required<AiQuestionRequest> {
     count: Math.min(Math.max(req.count ?? 3, 1), 10),
     fusion: Array.isArray(req.fusion) ? req.fusion.filter(Boolean).slice(0, 3) : [],
     style: (req.style ?? '').trim(),
+    verifyMode: req.verifyMode,
   };
 }
 
 export async function generateQuestions(input: AiQuestionRequest): Promise<AiQuestionBatch> {
   const req = normalize(input);
+  const verifyMode: VerifyMode = (input.verifyMode ?? config.verifyMode) as VerifyMode;
   const useAgent = config.agentMode && llmMode() === 'live';
-  const key = cacheKey({ req, model: config.model, provider: config.provider, v: PROMPT_VERSION, agent: useAgent });
+  const key = cacheKey({ req, model: config.model, provider: config.provider, v: PROMPT_VERSION, agent: useAgent, verifyMode });
 
   const cached = readCache<AiQuestionBatch>(key);
   if (cached) {
@@ -44,6 +53,7 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
       '2) 对自己的答案做一次独立验算，必要时用 check_equivalent 对比另一种解法得到的答案；\n' +
       '3) 只有工具确认无误后再输出最终 JSON。'
     : baseSystem;
+
   const accepted: AiQuestion[] = [];
   const rejected: AiQuestion[] = [];
   let repairNotes: string[] = [];
@@ -88,6 +98,7 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
     }
 
     lastIssues = [];
+
     for (const raw of list.slice(0, req.count)) {
       const v = validateQuestion(raw);
       if (!v.ok) {
@@ -95,70 +106,90 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
         continue;
       }
 
-      const duplicate = accepted.some((x) => x.questionLatex === String(raw.questionLatex));
+      const latex = String(raw.questionLatex);
+      const answer = String(raw.answer);
+      const duplicate = accepted.some((x) => x.questionLatex === latex);
       if (duplicate) continue;
 
       let dualSolve: 'match' | 'judged' | 'mismatch' | 'skipped' = 'skipped';
       let secondAnswer: string | undefined;
       let method: string | undefined;
-      if (config.dualSolve && llmMode() === 'live') {
-        let second = await independentSolve(String(raw.questionLatex)).catch(() => null);
-        // 独立求解没给出可比答案时再试一次；仍失败则视为不可验证
-        if (!second) second = await independentSolve(String(raw.questionLatex)).catch(() => null);
+      let unverified = false;
+      let unverifiedReason: string | undefined;
+
+      // ---------- 语义校验 ----------
+      if (verifyMode !== 'off' && config.dualSolve && llmMode() === 'live') {
+        let second = await independentSolve(latex).catch(() => null);
+        if (!second) second = await independentSolve(latex).catch(() => null);
+
         if (!second) {
-          lastIssues.push('无法独立验证（独立求解未返回可比较的答案）：' + String(raw.questionLatex).slice(0, 60));
-          continue;
-        }
-        if (second) {
-          const eq = await answersEquivalent(String(raw.answer), second.answer);
+          const reason = '独立求解未返回可比较的答案';
+          if (verifyMode === 'strict') {
+            lastIssues.push('无法独立验证（' + reason + '）：' + latex.slice(0, 60));
+            continue;
+          }
+          unverified = true;
+          unverifiedReason = reason;
+        } else {
           secondAnswer = second.answer;
+          const eq = await answersEquivalent(answer, second.answer);
           method = eq.method;
           dualSolve = eq.equal ? 'match' : 'mismatch';
+
           if (!eq.equal) {
-            // 独立解也可能是错的（实测遇到过），所以再让模型复算一次做裁决
-            const judged = await judgeAnswer(String(raw.questionLatex), String(raw.answer)).catch(() => null);
-            if (judged && judged.correct && judged.computed) {
-              const recheck = await answersEquivalent(String(raw.answer), judged.computed);
-              if (recheck.equal) {
-                dualSolve = 'judged';
-              }
+            const judged = await judgeAnswer(latex, answer).catch(() => null);
+            if (judged?.correct && judged.computed) {
+              const recheck = await answersEquivalent(answer, judged.computed);
+              if (recheck.equal) dualSolve = 'judged';
             }
+
             if (dualSolve !== 'judged') {
-              lastIssues.push(
-                '答案无法通过核验（题面：' + String(raw.questionLatex).slice(0, 60) +
-                  '；你的答案 ' + String(raw.answer) + '，独立解 ' + second.answer + '）'
-              );
-              rejected.push({
-                id: 'ai-rej-' + Date.now().toString(36),
-                topic: req.topic,
-                difficulty: req.difficulty,
-                question: String(raw.question),
-                questionLatex: String(raw.questionLatex),
-                answer: String(raw.answer),
-                answerType: 'numeric',
-                steps: (raw.steps as string[]).map(String),
-                validation: { latexOk: true, notationOk: true, issues: [lastIssues[lastIssues.length - 1]], attempts, dualSolve, secondAnswer: second.answer },
-              });
-              continue;
+              const reason = '答案未通过核验（你的答案 ' + answer + '，独立解 ' + second.answer + '）';
+              if (verifyMode === 'strict') {
+                lastIssues.push('答案无法通过核验：' + latex.slice(0, 60) + '；' + reason);
+                rejected.push({
+                  id: 'ai-rej-' + Date.now().toString(36),
+                  topic: req.topic,
+                  difficulty: req.difficulty,
+                  question: String(raw.question),
+                  questionLatex: latex,
+                  answer,
+                  answerType: 'numeric',
+                  steps: (raw.steps as string[]).map(String),
+                  validation: {
+                    latexOk: true,
+                    notationOk: true,
+                    issues: [reason],
+                    attempts,
+                    dualSolve,
+                    secondAnswer: second.answer,
+                    verifyMode,
+                  },
+                });
+                continue;
+              }
+              unverified = true;
+              unverifiedReason = reason;
             }
           }
         }
       }
 
-      // 新颖度：与已有题库/本地题型比对，挡住旧题换皮
+      // ---------- 新颖度 ----------
       let novelty: 'novel' | 'similar' = 'novel';
       let noveltyScore = 0;
-      // mock 模式不启用：固定样例必然与基线重复，否则永远出不了题
       if (config.noveltyFilter && llmMode() === 'live') {
-        const nov = checkNovelty(String(raw.questionLatex), String(raw.answer));
+        const nov = checkNovelty(latex, answer);
         noveltyScore = Number(nov.similarity.toFixed(3));
         if (!nov.novel) {
           novelty = 'similar';
-          lastIssues.push(
-            '与已有题目高度相似（' + Math.round(nov.similarity * 100) + '%）：' +
-              (nov.closest ?? '').slice(0, 60) + '。请换一种考法或结构。'
-          );
-          continue;
+          if (verifyMode === 'strict') {
+            lastIssues.push(
+              '与已有题目高度相似（' + Math.round(nov.similarity * 100) + '%）：' +
+                (nov.closest ?? '').slice(0, 60) + '。请换一种考法或结构。'
+            );
+            continue;
+          }
         }
       }
 
@@ -167,9 +198,9 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
         topic: req.topic,
         difficulty: req.difficulty,
         question: String(raw.question),
-        questionLatex: String(raw.questionLatex),
-        answer: String(raw.answer),
-        answerDisplay: typeof raw.answer === 'string' ? raw.answer : undefined,
+        questionLatex: latex,
+        answer,
+        answerDisplay: answer,
         answerType: raw.answerType === 'expression' ? 'expression' : 'numeric',
         steps: (raw.steps as string[]).map(String),
         fusion: Array.isArray(raw.fusion) ? raw.fusion.map(String) : undefined,
@@ -183,6 +214,9 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
           method,
           novelty,
           noveltyScore,
+          verifyMode,
+          unverified,
+          unverifiedReason,
         },
       });
     }
@@ -192,7 +226,6 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
   }
 
   if (accepted.length === 0) {
-    // 核验失败的候选也入库（rejected），让审核的人看到模型出了什么、为什么没过
     if (rejected.length > 0) {
       saveRejected(rejected, 'ai:unverified', '自动核验未通过：' + (lastIssues.slice(0, 3).join('；') || '未知'));
     }

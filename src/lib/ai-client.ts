@@ -22,6 +22,9 @@ export interface AiQuestion {
     method?: string;
     novelty?: 'novel' | 'similar';
     noveltyScore?: number;
+    verifyMode?: 'strict' | 'balanced' | 'off';
+    unverified?: boolean;
+    unverifiedReason?: string;
   };
 }
 
@@ -98,6 +101,7 @@ export function fetchAiQuestions(req: {
   count: number;
   fusion?: string[];
   style?: string;
+  verifyMode?: 'strict' | 'balanced' | 'off';
 }): Promise<AiQuestionBatch> {
   return request<AiQuestionBatch>('/ai/questions', { method: 'POST', body: JSON.stringify(req) });
 }

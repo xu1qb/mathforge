@@ -27,6 +27,7 @@ export default function AiLabPage() {
   const [topic, setTopic] = useState('极限计算');
   const [difficulty, setDifficulty] = useState<'basic' | 'advanced' | 'competition'>('basic');
   const [count, setCount] = useState(3);
+  const [verifyMode, setVerifyMode] = useState<'strict' | 'balanced' | 'off'>('balanced');
   const [fusion, setFusion] = useState('');
   const [style, setStyle] = useState('');
   const [loading, setLoading] = useState(false);
@@ -53,6 +54,7 @@ export default function AiLabPage() {
         count,
         fusion: fusion.split(/[，,、\\s]+/).filter(Boolean),
         style: style.trim() || undefined,
+        verifyMode,
       });
       setQuestions(batch.questions);
       setMeta({ agent: Boolean(batch.agent), toolCalls: batch.toolCalls ?? 0 });
@@ -144,6 +146,19 @@ export default function AiLabPage() {
               </label>
 
               <label className="space-y-1 text-xs">
+                <span className="text-muted-foreground">校验档位</span>
+                <select
+                  value={verifyMode}
+                  onChange={(e) => setVerifyMode(e.target.value as typeof verifyMode)}
+                  className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm"
+                >
+                  <option value="strict">严格（不可验证就拒绝）</option>
+                  <option value="balanced">平衡（放行但标记未验证）</option>
+                  <option value="off">关闭（只查格式）</option>
+                </select>
+              </label>
+
+              <label className="space-y-1 text-xs">
                 <span className="text-muted-foreground">数量（1–10）</span>
                 <input
                   type="number"
@@ -229,8 +244,11 @@ export default function AiLabPage() {
                       <CheckCircle2 className="size-3" /> 复算确认
                     </span>
                   )}
-                  {q.validation.dualSolve === 'skipped' && (
-                    <span className="text-[11px] text-muted-foreground">未做双解（mock 模式）</span>
+                  {q.validation.unverified && (
+                    <span className="text-[11px] text-amber-600">未验证 · 待人工</span>
+                  )}
+                  {q.validation.dualSolve === 'skipped' && !q.validation.unverified && (
+                    <span className="text-[11px] text-muted-foreground">未做双解</span>
                   )}
                   <span className="text-[11px] text-muted-foreground">第 {q.validation.attempts} 次生成</span>
                 </div>

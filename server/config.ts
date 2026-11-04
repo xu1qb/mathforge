@@ -55,6 +55,8 @@ export interface ServerConfig {
   agentMaxRounds: number;
   /** 是否做新颖度过滤 */
   noveltyFilter: boolean;
+  /** 语义校验档位：strict 拒绝不可验证题 / balanced 放行但标记 / off 只做形式校验 */
+  verifyMode: 'strict' | 'balanced' | 'off';
 }
 
 function env(key: string, fallback = ''): string {
@@ -77,4 +79,5 @@ export const config: ServerConfig = {
   agentMode: env('AGENT_MODE', '0') === '1',
   agentMaxRounds: Number(env('AGENT_MAX_ROUNDS', '6')),
   noveltyFilter: env('NOVELTY_FILTER', '1') !== '0',
+  verifyMode: (env('VERIFY_MODE', 'balanced') as 'strict' | 'balanced' | 'off'),
 };

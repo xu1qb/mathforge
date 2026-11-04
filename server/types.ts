@@ -29,6 +29,12 @@ export interface AiQuestion {
     novelty?: 'novel' | 'similar';
     /** 与已有题目的最高结构相似度 */
     noveltyScore?: number;
+    /** 本次使用的校验档位 */
+    verifyMode?: 'strict' | 'balanced' | 'off';
+    /** 是否未经语义验证（balanced/off 下可能出现） */
+    unverified?: boolean;
+    /** 未验证的原因 */
+    unverifiedReason?: string;
   };
 }
 
@@ -48,4 +54,6 @@ export interface AiQuestionRequest {
   fusion?: string[];
   /** 可选：额外的风格要求，如「应用题背景」 */
   style?: string;
+  /** 可选：本次请求的校验档位，覆盖服务端默认 */
+  verifyMode?: 'strict' | 'balanced' | 'off';
 }
