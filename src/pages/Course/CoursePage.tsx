@@ -244,49 +244,28 @@ export default function CoursePage() {
 
         {/* 章节树 */}
         <section>
-          <h2 className="mb-3 text-base font-semibold text-foreground">章节</h2>
+          <h2 className="mb-3 flex flex-wrap items-center gap-2 text-base font-semibold text-foreground">
+            {activeChapter ? (
+              <>
+                <span>
+                  {course.chapters.findIndex((c) => c.id === activeChapter.id) + 1}.{' '}
+                  {activeChapter.title}
+                </span>
+                <Badge variant="outline" className="text-[10px] font-normal">
+                  {activeChapter.textbookRef}
+                </Badge>
+              </>
+            ) : null}
+          </h2>
           <div className="space-y-2">
             {course.chapters
               .filter((ch) => ch.id === openId)
-              .map((ch, idx) => {
-              const isActive = true;
-              return (
-                <Card
-                  key={ch.id}
-                  className={cn(
-                    'border-border/60 transition-colors',
-                    isActive && 'border-primary/50'
-                  )}
-                >
-                  <CardContent className="p-0">
-                    <button
-                      onClick={() => selectChapter(ch.id)}
-                      className="flex w-full items-center gap-3 p-4 text-left"
-                    >
-                      <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary">
-                        {course.chapters.findIndex((c) => c.id === ch.id) + 1}
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-sm font-medium text-foreground">{ch.title}</span>
-                          <Badge variant="outline" className="text-[10px]">
-                            {ch.textbookRef}
-                          </Badge>
-                        </div>
-                        <div className="truncate text-xs text-muted-foreground">
-                          <RichMath text={ch.summary} />
-                        </div>
-                        <div className="mt-0.5 text-[11px] text-muted-foreground/70">
-                          {ch.lessonIds.length} 个知识点 · {ch.exercises.length} 道题
-                        </div>
-                      </div>
-                      <ChevronRight
-                        className={cn('size-4 shrink-0 text-muted-foreground transition-transform', isActive && 'rotate-90')}
-                      />
-                    </button>
-
-                    {isActive && (
-                      <div className="space-y-3 border-t border-border/60 p-4">
+              .map((ch) => (
+                <Card key={ch.id} className="border-border/60">
+                  <CardContent className="space-y-3 p-4">
+                    <p className="text-xs text-muted-foreground">
+                      <RichMath text={ch.summary} />
+                    </p>
                         <div>
                           <div className="mb-1 text-xs font-medium text-foreground">学完能做到</div>
                           <ul className="space-y-0.5">
@@ -392,12 +371,9 @@ export default function CoursePage() {
                             用工具箱算一算
                           </Button>
                         </div>
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
-              );
-            })}
+              ))}
           </div>
         </section>
 
