@@ -402,6 +402,56 @@ chk('二阶系统 s²+2s+5 稳定', all(float(sp.re(r)) < 0 for r in _roots))
 _A, _B = set(range(3)), set(range(4))
 chk('|A×B| = |A|·|B|', len({(a, b) for a in _A for b in _B}) == len(_A) * len(_B))
 
+# ---- 2026-11 补空分支（四）：解析数论 ----
+def _is_prime(n):
+    if n < 2:
+        return False
+    i = 2
+    while i * i <= n:
+        if n % i == 0:
+            return False
+        i += 1
+    return True
+
+_pi1000 = sum(1 for n in range(2, 1001) if _is_prime(n))
+chk('π(1000) = 168', _pi1000 == 168)
+chk('π(x) ≈ x/ln x（1000 处比值 < 1.3）', 1.0 < _pi1000 / (1000 / sp.log(1000)) < 1.3)
+
+# ---- 补空分支（四）：表示论（Z3 特征标正交） ----
+_w3 = sp.exp(2 * sp.pi * sp.I / 3)
+_chis = [[_w3 ** (k * j) for j in range(3)] for k in range(3)]
+chk('Z3 不可约特征标正交',
+    all(abs(complex(sum(_chis[i][j] * sp.conjugate(_chis[i2][j]) for j in range(3))) / 3
+            - (1 if i == i2 else 0)) < 1e-9
+        for i in range(3) for i2 in range(3)))
+
+# ---- 补空分支（四）：金融数学（BS 看涨期权 ≈ 10.45） ----
+def _norm_cdf(z):
+    return 0.5 * (1 + __import__('math').erf(z / __import__('math').sqrt(2)))
+
+_S, _K, _r, _sig, _T = 100.0, 100.0, 0.05, 0.20, 1.0
+_d1 = (__import__('math').log(_S / _K) + (_r + _sig ** 2 / 2) * _T) / (_sig * __import__('math').sqrt(_T))
+_d2 = _d1 - _sig * __import__('math').sqrt(_T)
+_C = _S * _norm_cdf(_d1) - _K * __import__('math').exp(-_r * _T) * _norm_cdf(_d2)
+chk('Black-Scholes 价格 ≈ 10.45', abs(_C - 10.45) < 0.02)
+
+# ---- 补空分支（四）：力学（单摆 EL 方程） ----
+_m, _l, _g, _t = sp.symbols('m l g t', positive=True)
+_th = sp.Function('theta')(_t)
+_Llag = sp.Rational(1, 2) * _m * _l ** 2 * sp.diff(_th, _t) ** 2 + _m * _g * _l * sp.cos(_th)
+# 欧拉–拉格朗日方程：d/dt(∂L/∂θ̇) − ∂L/∂θ = 0
+_EL = sp.diff(sp.diff(_Llag, sp.diff(_th, _t)), _t) - sp.diff(_Llag, _th)
+# 化简后 EL = m l² θ̈ + m g l sinθ，即 θ̈ + (g/l) sinθ = 0
+chk('单摆拉格朗日方程给出 θ̈ + (g/l)sinθ = 0',
+    sp.simplify(_EL - (_m * _l ** 2 * sp.diff(_th, _t, 2) + _m * _g * _l * sp.sin(_th))) == 0)
+
+# ---- 补空分支（四）：生物数学（Lotka-Volterra 平衡点与守恒量） ----
+_a, _b, _c, _d = 1.0, 0.1, 0.075, 1.5
+_xs, _ys = _d / _c, _a / _b
+chk('Lotka-Volterra 平衡点 (20,10)', abs(_xs - 20) < 1e-9 and abs(_ys - 10) < 1e-9)
+chk('平衡点处导数为零',
+    abs(_a * _xs - _b * _xs * _ys) < 1e-9 and abs(_c * _xs * _ys - _d * _ys) < 1e-9)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:
