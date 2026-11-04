@@ -23,6 +23,7 @@ function wrapCJK(latex: string): string {
     guarded.push(m);
     return "\u0001" + (guarded.length - 1) + "\u0001";
   });
+  s = s.replace(/[\u3010\u3011\uff08\uff09]+/g, (m) => '@text{' + m + '}');
   s = s.replace(/[\u4e00-\u9fa5]+[，。：、；？！]*/g, (m) => '@text{' + m + '}');
   s = s.replace(/[，。：、；？！]+/g, (m) => '@text{' + m + '}');
   const guardRe = new RegExp('' + '(' + BS + 'd+)' + '', 'g');
@@ -35,17 +36,27 @@ interface Q {
   display?: string; steps: string[]; type?: 'numeric' | 'expression';
 }
 
-const mk = (q: Q): PracticeQuestion => ({
-  id: uid(q.topic),
-  topicKey: q.topic,
-  question: q.question,
-  questionLatex: L(wrapCJK(q.latex)),
-  answer: q.answer,
-  answerDisplay: q.display ?? q.answer,
-  answerType: q.type ?? 'numeric',
-  steps: q.steps.map(L),
-  difficulty: q.diff,
-});
+const mk = (q: Q): PracticeQuestion => {
+  const steps = q.steps.map(L);
+  // 难度梯度：竞赛档要求先判断方法、最后回代检验，这是竞赛解答的实际结构
+  if (q.diff === 'competition') {
+    steps.unshift(L('思路：先判断题型，再选择对应的公式或定理'));
+    steps.push(L('检验：把结果代回题设条件，确认满足'));
+  } else if (q.diff === 'advanced') {
+    steps.unshift(L('方法：先确定可直接套用的公式'));
+  }
+  return {
+    id: uid(q.topic),
+    topicKey: q.topic,
+    question: q.question,
+    questionLatex: L(wrapCJK(q.latex)),
+    answer: q.answer,
+    answerDisplay: q.display ?? q.answer,
+    answerType: q.type ?? 'numeric',
+    steps,
+    difficulty: q.diff,
+  };
+};
 
 // ===== 极限计算 =====
 export function genLimitV2(diff: Difficulty): PracticeQuestion {
@@ -1905,4 +1916,252 @@ export function genProbabilityV2(diff: Difficulty): PracticeQuestion {
     type: 'expression',
   });
 }
+
+
+
+// ===== 综合创新：跨知识点融合题 =====
+// 结构与参数分离：结构来自「两个知识点如何组合」，参数只负责随机化。
+const BS2 = String.fromCharCode(92);
+const L2 = (s: string) => s.split('@').join(BS2);
+const gcd2 = (a: number, b: number): number => (b === 0 ? Math.abs(a) : gcd2(b, a % b));
+const frac2 = (p: number, q: number) => { const g = gcd2(p, q) || 1; const np = p / g; const nq = q / g; return nq === 1 ? String(np) : np + '/' + nq; };
+
+function mkFusion(p: {
+  tag: string; question: string; latex: string; answer: string; steps: string[]; type?: 'numeric' | 'expression'; diff: Difficulty;
+}): PracticeQuestion {
+  const steps = p.steps.map(L2);
+  if (p.diff === 'competition') {
+    steps.unshift(L2('思路：先判断题型，再选择对应的公式或定理'));
+    steps.push(L2('检验：把结果代回题设条件，确认满足'));
+  } else if (p.diff === 'advanced') {
+    steps.unshift(L2('方法：先确定可直接套用的公式'));
+  }
+  return {
+    id: 'fusion-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+    topicKey: 'fusion',
+    question: '【' + p.tag + '】' + p.question,
+    questionLatex: L(wrapCJK(p.tag + ' ' + p.latex)),
+    answer: p.answer,
+    answerDisplay: p.answer,
+    answerType: p.type ?? 'numeric',
+    steps,
+    difficulty: p.diff,
+  };
+}
+
+export function genFusion(diff: Difficulty): PracticeQuestion {
+  const kinds = [
+    'seqMod', 'seqDigit', 'coprimeCount', 'seqMax', 'fibMatrix',
+    'probCombo', 'limitExp', 'complexDemoivre', 'derivMin', 'geoExpect', 'seqDivisible',
+  ];
+  const kind = kinds[Math.floor(Math.random() * kinds.length)];
+
+  if (kind === 'seqMod') {
+    const a = pickOneFusion([2, 3, 4, 5]);
+    const m = pickOneFusion([5, 7, 9, 11, 13]);
+    const n0 = rndFusion(3, 12);
+    let period = 1;
+    let cur = a % m;
+    while (cur !== 1 && period < 60) { cur = (cur * a) % m; period++; }
+    const rem = (a ** (n0 % period === 0 ? period : n0 % period)) % m;
+    return mkFusion({
+      diff,
+      tag: '数列 × 数论',
+      question: '数列 aₙ = ' + a + '^n，求 a_' + n0 + ' 除以 ' + m + ' 的余数',
+      latex: 'a_n = ' + a + '^{n}，求 a_{' + n0 + '} @bmod ' + m,
+      answer: String(rem),
+      steps: [
+        '先找 ' + a + '^n mod ' + m + ' 的周期：a^' + period + ' ≡ 1 (mod ' + m + ')',
+        '指数按周期缩减：' + n0 + ' ≡ ' + (n0 % period) + ' (mod ' + period + ')',
+        '所以 a_' + n0 + ' ≡ ' + a + '^' + (n0 % period || period) + ' ≡ ' + rem + ' (mod ' + m + ')',
+      ],
+    });
+  }
+
+  if (kind === 'seqDigit') {
+    const a = pickOneFusion([2, 3, 7, 8]);
+    const n0 = rndFusion(4, 20);
+    const digits: Record<number, number[]> = {
+      2: [2, 4, 8, 6], 3: [3, 9, 7, 1], 7: [7, 9, 3, 1], 8: [8, 4, 2, 6],
+    };
+    const cyc = digits[a];
+    const d = cyc[(n0 - 1) % 4];
+    return mkFusion({
+      diff,
+      tag: '数列 × 数论',
+      question: '数列 aₙ = ' + a + '^n，求 a_' + n0 + ' 的个位数字',
+      latex: 'a_n = ' + a + '^{n}，求 a_{' + n0 + '} 的个位数字',
+      answer: String(d),
+      steps: [
+        '个位数字以 4 为周期循环：' + cyc.join(', ') + '…',
+        n0 + ' mod 4 = ' + ((n0 - 1) % 4 + 1) + '，对应第 ' + ((n0 - 1) % 4 + 1) + ' 个数字',
+        '所以个位是 ' + d,
+      ],
+    });
+  }
+
+  if (kind === 'coprimeCount') {
+    const N = rndFusion(20, 200);
+    const count = N - Math.floor(N / 2) - Math.floor(N / 3) + Math.floor(N / 6);
+    return mkFusion({
+      diff,
+      tag: '数论 × 组合（容斥）',
+      question: '1 到 ' + N + ' 中与 6 互素的整数有多少个？',
+      latex: '@left@{1, 2, @dots, ' + N + '@right@}@text{ 中与 } 6 @text{ 互素的个数}',
+      answer: String(count),
+      steps: [
+        '6 = 2 × 3，互素即不被 2 也不被 3 整除',
+        '容斥：N − ⌊N/2⌋ − ⌊N/3⌋ + ⌊N/6⌋',
+        '= ' + N + ' − ' + Math.floor(N / 2) + ' − ' + Math.floor(N / 3) + ' + ' + Math.floor(N / 6) + ' = ' + count,
+      ],
+    });
+  }
+
+  if (kind === 'seqMax') {
+    const a = pickOneFusion([1, 2, 3, 4]);
+    const n = a;
+    return mkFusion({
+      diff,
+      tag: '数列 × 不等式',
+      question: '数列 aₙ = n/(n² + ' + a * a + ')（n ≥ 1）的最大值出现在 n = ' + a + ' 处，求该最大值',
+      latex: 'a_n = @dfrac{n}{n^{2} + ' + a * a + '}',
+      answer: frac2(1, 2 * a),
+      steps: [
+        '由均值不等式：n + ' + a * a + '/n ≥ 2a',
+        '所以 aₙ = 1/(n + ' + a * a + '/n) ≤ 1/(2a)',
+        'n = ' + a + ' 时取等号，最大值为 ' + frac2(1, 2 * a),
+      ],
+    });
+  }
+
+  if (kind === 'fibMatrix') {
+    const n = rndFusion(5, 18);
+    const fib = (k: number): number => (k <= 2 ? 1 : fib(k - 1) + fib(k - 2));
+    return mkFusion({
+      diff,
+      tag: '矩阵 × 递推',
+      question: 'Fibonacci 数列 F₁ = F₂ = 1，Fₙ = Fₙ₋₁ + Fₙ₋₂。用矩阵 [[' + 1 + ',1],[1,0]] 的幂求 F_' + n,
+      latex: 'F_{' + n + '} = ?@quad @begin{pmatrix} 1 & 1 @ 1 & 0 @end{pmatrix}^{n-1} = @begin{pmatrix} F_n & F_{n-1} @ F_{n-1} & F_{n-2} @end{pmatrix}',
+      answer: String(fib(n)),
+      steps: [
+        '转移到矩阵的特征值为 (1±√5)/2（黄金分割）',
+        '矩阵幂的左上角元素就是 F_' + n,
+        '直接递推：F_' + n + ' = ' + fib(n),
+      ],
+    });
+  }
+
+  if (kind === 'probCombo') {
+    const r = rndFusion(2, 10);
+    const w = rndFusion(2, 10);
+    const total = (r + w) * (r + w - 1) / 2;
+    const fav = r * (r - 1) / 2;
+    return mkFusion({
+      diff,
+      tag: '概率 × 组合',
+      question: '袋中 ' + r + ' 红 ' + w + ' 白，任取 2 个，求两个都是红球的概率',
+      latex: 'P = @dfrac{C_{' + r + '}^{2}}{C_{' + r + w + '}^{2}}',
+      answer: frac2(fav, total),
+      steps: [
+        '总取法 C(' + (r + w) + ', 2) = ' + total,
+        '有利取法 C(' + r + ', 2) = ' + fav,
+        '概率 = ' + frac2(fav, total),
+      ],
+      type: 'expression',
+    });
+  }
+
+  if (kind === 'limitExp') {
+    const k = rndFusion(1, 5);
+    const m = rndFusion(1, 5);
+    return mkFusion({
+      diff,
+      tag: '极限 × 指数',
+      question: '求 lim(n→∞) (1 + ' + k + '/n)^(' + m + 'n)',
+      latex: '@lim_{n @to @infty} @left(1 + @dfrac{' + k + '}{n}@right)^{' + m + 'n}',
+      answer: 'e^' + (k * m),
+      steps: [
+        '把指数拆成 (1 + k/n)^n 的 ' + m + ' 次方',
+        '(1 + k/n)^n → e^' + k,
+        '所以极限为 e^' + (k * m),
+      ],
+      type: 'expression',
+    });
+  }
+
+  if (kind === 'complexDemoivre') {
+    const n = pickOneFusion([2, 3, 4, 6]);
+    const theta = pickOneFusion([30, 45, 60, 90]);
+    const mapping: Record<number, Record<number, string>> = {
+      2: { 30: '1/2', 45: '0', 60: '-1/2', 90: '-1' },
+      3: { 30: '0', 45: '-sqrt(2)/2', 60: '-1', 90: '0' },
+      4: { 30: '-1/2', 45: '-1', 60: '-1/2', 90: '1' },
+      6: { 30: '-1', 45: '0', 60: '1', 90: '1' },
+    };
+    const val = mapping[n][theta];
+    return mkFusion({
+      diff,
+      tag: '复数 × 三角',
+      question: 'z = cos' + theta + '° + i·sin' + theta + '°，求 z^' + n + ' 的实部',
+      latex: 'z = @cos ' + theta + '^{@circ} + i@sin ' + theta + '^{@circ}，求 @Re(z^{' + n + '})',
+      answer: val,
+      steps: [
+        '棣莫弗定理：zⁿ = cos(nθ) + i·sin(nθ)',
+        'nθ = ' + n * theta + '°',
+        '实部为 cos(' + n * theta + '°) = ' + val,
+      ],
+      type: 'expression',
+    });
+  }
+
+  if (kind === 'derivMin') {
+    const t = rndFusion(1, 6);
+    const a = t * t;
+    return mkFusion({
+      diff,
+      tag: '导数 × 不等式',
+      question: '求 f(x) = x³ − ' + 3 * a + 'x 的极小值',
+      latex: 'f(x) = x^{3} - ' + 3 * a + 'x',
+      answer: String(-2 * a * t),
+      steps: [
+        "f'(x) = 3x² − " + 3 * a + ' = 0，得 x = ±' + t,
+        "f''(x) = 6x，x = " + t + ' 处为正，是极小值点',
+        '极小值 f(' + t + ') = ' + (-2 * a * t),
+      ],
+    });
+  }
+
+  if (kind === 'geoExpect') {
+    const p = pickOneFusion([2, 3, 4, 5, 6]);
+    return mkFusion({
+      diff,
+      tag: '级数 × 概率',
+      question: '每次试验成功概率 1/' + p + '，求首次成功所需次数的期望',
+      latex: 'P(X = k) = @left(1 - @dfrac{1}{' + p + '}@right)^{k-1}@dfrac{1}{' + p + '}，求 E(X)',
+      answer: String(p),
+      steps: [
+        '这是几何分布，E(X) = 1/p',
+        '也可由级数求和：Σ k·(1−p)^(k−1)·p = 1/p',
+        'p = 1/' + p + '，所以 E(X) = ' + p,
+      ],
+    });
+  }
+
+  const n = rndFusion(3, 40);
+  return mkFusion({
+      diff,
+    tag: '数论 × 数列',
+    question: '数列 aₙ = n² + n，求 a_' + n + ' 除以 2 的余数',
+    latex: 'a_n = n^{2} + n，求 a_{' + n + '} @bmod 2',
+    answer: '0',
+    steps: [
+      'aₙ = n(n+1)，是两个连续整数之积',
+      '连续整数必有一个偶数，所以积一定是偶数',
+      '对任意 n 都余 0（这里 n = ' + n + '）',
+    ],
+  });
+}
+
+function rndFusion(a: number, b: number) { return a + Math.floor(Math.random() * (b - a + 1)); }
+function pickOneFusion<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
 

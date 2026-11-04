@@ -69,6 +69,12 @@ if node scripts/check-variety.mjs >"$TMP/mf-check-variety.log" 2>&1; then
 else
   bad "variety"; head -6 "$TMP/mf-check-variety.log" | sed 's/^/    /'
 fi
+# 难度自检：基础/进阶/竞赛的步骤数应逐级递增
+if node scripts/check-difficulty.mjs >"$TMP/mf-check-diff.log" 2>&1; then
+  ok "difficulty（$(head -1 "$TMP/mf-check-diff.log")）"
+else
+  bad "difficulty"; head -6 "$TMP/mf-check-diff.log" | sed 's/^/    /'
+fi
 
 step "6/7 文本规范（标点 / 术语 / 占位符）"
 if node scripts/check-text.mjs >"$TMP/mf-check-text.log" 2>&1; then

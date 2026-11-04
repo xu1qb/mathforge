@@ -44,5 +44,6 @@ export const PRACTICE_TOPICS: PracticeTopic[] = [
   { key: 'matrix-op', label: '矩阵运算', icon: 'Grid3x3', description: '2×2 矩阵加减、乘法、行列式', answerPlaceholder: '如：5 或 [[1,2],[3,4]]', category: 'algebra', level: '基础', },
   { key: 'complex-equation', label: '复数方程', icon: 'PlusSquare', description: '复数运算与方程求解', answerPlaceholder: '如：1+2i 或 3-i', category: 'algebra', level: '进阶', },
   { key: 'combinatorics-basic', label: '组合数学', icon: 'Puzzle', description: '鸽巢原理、容斥原理、计数基础', answerPlaceholder: '如：10 或 24', category: 'probability', level: '竞赛', },
+  { key: 'fusion', label: '综合创新', icon: 'Sparkles', description: '跨知识点融合题：数列×数论、矩阵×递推、概率×组合、极限×指数', answerPlaceholder: '如：5 或 1/2', category: 'application', level: '竞赛', },
   { key: 'inequality-amgm', label: '均值不等式', icon: 'Trophy', description: 'AM-GM 最值应用题', answerPlaceholder: '如：25 或 10', category: 'algebra', level: '竞赛', },
 ];

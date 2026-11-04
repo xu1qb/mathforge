@@ -33,6 +33,7 @@ import {
   genConicV2,
   genSolidV2,
   genProbabilityV2,
+  genFusion,
 } from './practice-v2';
 import { gcd } from 'mathjs';
 
@@ -1618,6 +1619,7 @@ export function generatePracticeQuestion(topicKey: string, difficulty: Difficult
     case 'limit-basic': return genLimitV2(difficulty);
     case 'nt-gcd': return genNumberTheoryV2(difficulty);
     case 'inequality-amgm': return genInequalityAmgmV2(difficulty);
+    case 'fusion': return genFusion(difficulty);
     case 'exp-power': return genExpPowerV2(difficulty);
     case 'log-equation': return genLogEquationV2(difficulty);
     case 'vector-op': return genVectorOpV2(difficulty);
