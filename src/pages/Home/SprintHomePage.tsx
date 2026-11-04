@@ -179,7 +179,7 @@ export default function SprintHomePage() {
           <div className="min-w-0">
             <h1 className="text-xl font-semibold text-foreground">数学计算工作台</h1>
             <p className="mt-0.5 text-sm text-muted-foreground">
-              11 个大类 · 66 个分支，从基础计算到竞赛冲刺
+              11 个大类 · 66 个分支 · 70 个考点，从基础计算到竞赛冲刺
             </p>
           </div>
           <div className="ml-auto flex items-center gap-3">

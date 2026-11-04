@@ -40,12 +40,18 @@ export default function ExplainerPage() {
   // 44 条平铺已经不好找，改成「搜索 + 按标签分组折叠」
   const [query, setQuery] = useState('');
   const [openTags, setOpenTags] = useState<Record<string, boolean>>({});
+  const [levelFilter, setLevelFilter] = useState<'全部' | '基础' | '进阶' | '竞赛'>('全部');
 
   const groups = useMemo(() => groupExplainersByTag(), []);
   const visibleGroups = useMemo(() => {
     const q = query.trim();
     let result = groups;
     if (tagFilter) result = result.filter((g) => g.tag === tagFilter);
+    if (levelFilter !== '全部') {
+      result = result
+        .map((g) => ({ tag: g.tag, items: g.items.filter((t) => t.level === levelFilter) }))
+        .filter((g) => g.items.length > 0);
+    }
     if (!q) return result;
     return result
       .map((g) => ({
@@ -55,7 +61,7 @@ export default function ExplainerPage() {
         ),
       }))
       .filter((g) => g.items.length > 0);
-  }, [groups, query, tagFilter]);
+  }, [groups, query, tagFilter, levelFilter]);
 
   const toggleTag = (tag: string) =>
     setOpenTags((prev) => ({ ...prev, [tag]: !prev[tag] }));
@@ -100,6 +106,23 @@ export default function ExplainerPage() {
                 placeholder="搜索考点…"
                 className="w-full rounded-lg border border-border bg-card py-2 pl-8 pr-3 text-sm outline-none transition-colors focus:border-primary"
               />
+            </div>
+
+            <div className="flex flex-wrap gap-1">
+              {(['全部', '基础', '进阶', '竞赛'] as const).map((lv) => (
+                <button
+                  key={lv}
+                  onClick={() => setLevelFilter(lv)}
+                  className={cn(
+                    'rounded-full border px-2.5 py-0.5 text-[11px] transition-colors',
+                    levelFilter === lv
+                      ? 'border-primary bg-primary/10 text-foreground'
+                      : 'border-border text-muted-foreground hover:border-primary/40 hover:text-foreground'
+                  )}
+                >
+                  {lv}
+                </button>
+              ))}
             </div>
 
             {tagFilter && (
@@ -154,7 +177,21 @@ export default function ExplainerPage() {
                                 : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                             )}
                           >
-                            {t.title.replace(/：.*$/, '')}
+                            <span className="flex items-center justify-between gap-1">
+                              <span className="truncate">{t.title.replace(/：.*$/, '')}</span>
+                              <span
+                                className={cn(
+                                  'shrink-0 text-[10px]',
+                                  t.level === '竞赛'
+                                    ? 'text-rose-500'
+                                    : t.level === '进阶'
+                                      ? 'text-amber-500'
+                                      : 'text-muted-foreground/70'
+                                )}
+                              >
+                                {t.level}
+                              </span>
+                            </span>
                           </button>
                         ))}
                       </div>
@@ -172,6 +209,20 @@ export default function ExplainerPage() {
 
         {/* 右侧讲解内容 */}
         <main className="min-w-0 flex-1 space-y-4">
+          {/* 当前考点标题 */}
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="text-base font-semibold text-foreground">{topic.title}</h2>
+            <Badge
+              variant={topic.level === '竞赛' ? 'destructive' : 'secondary'}
+              className="text-[10px]"
+            >
+              {topic.level}
+            </Badge>
+            <Badge variant="outline" className="text-[10px]">
+              {topic.tag}
+            </Badge>
+          </div>
+
           {/* 本质 */}
           <Card>
             <CardContent className="p-5">

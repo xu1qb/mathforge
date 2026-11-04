@@ -69,6 +69,7 @@ export default function BranchesPage() {
           { label: '分支总数', value: stats.total, icon: Circle },
           { label: '已有页面', value: stats.page, icon: CircleDot },
           { label: '待补', value: stats.empty, icon: CircleSlash },
+          { label: '考点', value: EXPLAINER_TOPICS.length, icon: BookOpen },
         ].map((s) => (
           <Card key={s.label} className="border-border/60">
             <CardContent className="flex items-center gap-3 p-4">

@@ -11,6 +11,8 @@ export interface ExplainerTopic {
   id: string;
   title: string;
   tag: string;
+  /** 难度：基础 / 进阶 / 竞赛 */
+  level: '基础' | '进阶' | '竞赛';
   essence: string;
   whenToUse: string[];
   steps: ExplainerStep[];
@@ -26,6 +28,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'rolle',
     title: '罗尔定理：构造辅助函数',
     tag: '中值定理',
+    level: '竞赛',
     essence:
       '要证"存在一点使某个等式成立"，把等式移项成"某函数的导数=0"，再验证这个函数在区间两端值相等，罗尔定理自动给出答案。',
     whenToUse: [
@@ -68,6 +71,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'squeeze',
     title: '夹逼定理：怎么"夹"',
     tag: '极限',
+    level: '基础',
     essence:
       '找两个上下界 g、h，让 g≤f≤h，且 g 和 h 的极限相等，那么 f 被"挤"到同一个极限。',
     whenToUse: [
@@ -110,6 +114,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'lhopital',
     title: '洛必达：什么时候才能用',
     tag: '极限',
+    level: '基础',
     essence:
       '只有 0/0 或 ∞/∞ 型，且求导后极限存在（或为 ∞）时，才能上下分别求导再取极限。乱用必错。',
     whenToUse: [
@@ -150,6 +155,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'taylor',
     title: '泰勒展开：阶数怎么选',
     tag: '级数',
+    level: '进阶',
     essence:
       '展到"抵消后余项刚好比需要的高阶"为止——多一项浪费，少一项消不掉。',
     whenToUse: [
@@ -190,6 +196,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'equivalent',
     title: '等价无穷小：能在哪儿换',
     tag: '极限',
+    level: '基础',
     essence:
       '乘除结构里可以把复杂的无穷小换成同阶的简单量，极限不变；加减结构里直接换会丢掉同阶项，必须多展一阶。',
     whenToUse: [
@@ -231,6 +238,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'riemann',
     title: '定积分定义：和式变积分',
     tag: '积分',
+    level: '基础',
     essence:
       'n 项和只要能凑成 (1/n)Σf(i/n)，它的极限就是 f 在 [0,1] 上的定积分——求和算不动时的标准出路。',
     whenToUse: [
@@ -272,6 +280,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'byparts',
     title: '分部积分：谁当 u',
     tag: '积分',
+    level: '基础',
     essence:
       '把不好积的 ∫u dv 换成 uv − ∫v du；u 选对了，剩下的积分一定比原来简单。',
     whenToUse: [
@@ -313,6 +322,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'series-test',
     title: '级数判敛：先排除再选法',
     tag: '级数',
+    level: '基础',
     essence:
       '通项不趋于 0 直接发散；正项级数用比值或比较，交错级数用莱布尼茨，任意项先看绝对收敛。',
     whenToUse: [
@@ -361,6 +371,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'rank',
     title: '矩阵的秩：一个数管三件事',
     tag: '线代',
+    level: '基础',
     essence:
       '秩等于阶梯形的非零行数，也等于极大线性无关组中向量的个数；它同时决定方程组解的自由度和向量组的线性相关性。',
     whenToUse: [
@@ -402,6 +413,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'positive-definite',
     title: '二次型正定：三种判法',
     tag: '线代',
+    level: '基础',
     essence:
       '正定等价于顺序主子式全正，也等价于对称矩阵特征值全正；只判正定用主子式，要标准形时用特征值。',
     whenToUse: [
@@ -444,6 +456,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'bayes',
     title: '全概率与贝叶斯：反推原因',
     tag: '概率',
+    level: '基础',
     essence:
       '结果是若干原因之一造成的时候，先按原因分组算全概率，再用贝叶斯把分母换成它，反推到底是哪个原因。',
     whenToUse: [
@@ -486,6 +499,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'distribution',
     title: '分布识别：数次数还是等时间',
     tag: '概率',
+    level: '基础',
     essence:
       '数成功次数用二项，稀有事件计数用泊松，不放回用超几何，等时间用指数；先定类型，再套期望方差。',
     whenToUse: [
@@ -532,6 +546,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'taylor-table',
     title: '泰勒常用展开：背这张表',
     tag: '极限',
+    level: '基础',
     essence:
       '求极限、判无穷小的阶、做近似，八成就用这几个展开；记到三次项，绝大多数题够用。',
     whenToUse: [
@@ -583,6 +598,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'mvt-construct',
     title: '中值定理：辅助函数对照表',
     tag: '中值定理',
+    level: '竞赛',
     essence:
       '结论里 f 与 f′ 的搭配方式，基本决定了辅助函数长什么样；记住几组对照，比现场硬猜快得多。',
     whenToUse: [
@@ -632,6 +648,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'lagrange',
     title: '拉格朗日乘数法：条件极值',
     tag: '多元',
+    level: '进阶',
     essence:
       '把约束乘上 λ 加进目标函数，条件极值就变成新函数的无条件驻点问题；λ 还顺便告诉你约束松一点能多赚多少。',
     whenToUse: [
@@ -678,6 +695,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'linear-ode',
     title: '一阶线性方程：通解公式',
     tag: '微分方程',
+    level: '基础',
     essence:
       'y′ + P(x)y = Q(x) 有一套固定解法，背下公式最快；记不住就用积分因子现场推，两分钟能推完。',
     whenToUse: [
@@ -722,6 +740,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'double-integral-order',
     title: '二重积分：换序与极坐标',
     tag: '多元',
+    level: '进阶',
     essence:
       '二重积分难的不是积分，是定限：先画区域图，再决定先对谁积；圆域直接上极坐标。',
     whenToUse: [
@@ -770,6 +789,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'plane-equation',
     title: '平面方程：五种写法与距离',
     tag: '空间几何',
+    level: '基础',
     essence:
       '一个平面由「一点 + 法向量」唯一确定，五种写法只是把法向量换不同的包装；点到平面的距离本质上是一段投影长度。',
     whenToUse: [
@@ -831,6 +851,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'sequence-limit',
     title: '数列极限：先证存在再求值',
     tag: '极限',
+    level: '进阶',
     essence:
       '递推数列给不出通项时，先证「有界 + 单调」把极限的存在性坐实，再对递推式两边取极限解出值。',
     whenToUse: [
@@ -877,6 +898,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'definite-integral-substitution',
     title: '定积分换元与区间再现',
     tag: '积分',
+    level: '竞赛',
     essence:
       '换元必须同时换上下限；遇到 f(x) 与 f(a+b−x) 配对的结构，用区间再现把两式相加，被积函数立刻变简单。',
     whenToUse: [
@@ -924,6 +946,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'eigen-diagonalization',
     title: '特征值与相似对角化',
     tag: '线代',
+    level: '进阶',
     essence:
       '特征值解 |λE−A| = 0，特征向量解 (λE−A)x = 0；凑够 n 个线性无关的特征向量，A 就能写成 PΛP⁻¹，幂运算随之变简单。',
     whenToUse: [
@@ -973,6 +996,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'function-of-rv',
     title: '随机变量函数的分布',
     tag: '概率',
+    level: '进阶',
     essence:
       '求 Y = g(X) 的分布，先写 F_Y(y) = P(g(X) ≤ y)，把事件翻译成 X 的区间，最后求导得密度——不要一上来就套公式。',
     whenToUse: [
@@ -1019,6 +1043,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'inequality-proof',
     title: '不等式证明：三条主线',
     tag: '不等式',
+    level: '竞赛',
     essence:
       '证不等式只有三条主线：移项求导看单调、用中值定理把差值换成导数、或者直接求最值；选哪条看式子里有没有 f(b)−f(a)。',
     whenToUse: [
@@ -1066,6 +1091,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'series-sum',
     title: '级数求和：先裂项，再幂级数',
     tag: '级数',
+    level: '竞赛',
     essence:
       '求和先看能不能裂成 telescoping，部分和会只剩首尾几项；裂不动就走幂级数，在收敛区间内逐项求导或积分把系数化掉。',
     whenToUse: [
@@ -1112,6 +1138,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'multivar-differentiability',
     title: '多元可微：偏导存在还不够',
     tag: '多元',
+    level: '进阶',
     essence:
       '偏导存在推不出可微；判可微要用定义式看 Δz 减去全微分后是不是比 ρ 高阶，而「偏导连续」只是充分条件。',
     whenToUse: [
@@ -1161,6 +1188,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'linear-system',
     title: '线性方程组：先判解再求通解',
     tag: '线代',
+    level: '基础',
     essence:
       '先比 r(A) 与 r(A|b) 定有没有解，再用 n − r(A) 定自由变量个数；非齐次通解 = 一个特解 + 齐次的基础解系。',
     whenToUse: [
@@ -1209,6 +1237,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'power-series-domain',
     title: '幂级数：收敛半径与收敛域',
     tag: '级数',
+    level: '进阶',
     essence:
       '先求收敛半径拿到开区间，再把两个端点代回去当数项级数单独判——半径只给一半答案，端点才是丢分点。',
     whenToUse: [
@@ -1256,6 +1285,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'second-order-ode',
     title: '二阶常系数方程：看特征根',
     tag: '微分方程',
+    level: '基础',
     essence:
       '把 y″ + py′ + qy = 0 换成特征方程 r² + pr + q = 0，三种根型对应三种通解；非齐次再按右端形式设特解。',
     whenToUse: [
@@ -1304,6 +1334,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'line-plane-angle',
     title: '空间直线与平面：夹角与距离',
     tag: '空间几何',
+    level: '基础',
     essence:
       '直线靠一个点加方向向量，平面靠一个点加法向量；所有夹角、距离问题都是在这两个向量之间做点积和叉积。',
     whenToUse: [
@@ -1351,6 +1382,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'classic-inequalities',
     title: '三个经典不等式：均值、柯西、琴生',
     tag: '不等式',
+    level: '竞赛',
     essence:
       '均值管「和与积」，柯西管「平方和与内积」，琴生管「凸函数的平均」；竞赛里的不等式题九成是这三个的变形。',
     whenToUse: [
@@ -1400,6 +1432,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'integral-applications',
     title: '定积分的几何应用',
     tag: '积分',
+    level: '基础',
     essence:
       '面积、体积、弧长都是「写微元再累加」：先想清楚一片微元是什么形状，再定上下限积分。',
     whenToUse: [
@@ -1447,6 +1480,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'lagrange-cauchy',
     title: '拉格朗日与柯西：把差值换成导数',
     tag: '中值定理',
+    level: '进阶',
     essence:
       '罗尔定理是最底层那根钉子；拉格朗日把函值之差换成导数乘区间长，柯西把两个函数的增量比换成导数比。',
     whenToUse: [
@@ -1492,6 +1526,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'reducible-ode',
     title: '可降阶方程与欧拉方程',
     tag: '微分方程',
+    level: '进阶',
     essence:
       '缺 y 的令 y′ = p(x)，缺 x 的令 y′ = p(y)；欧拉方程用 x = eᵗ 换成常系数，本质都是「换元降阶」。',
     whenToUse: [
@@ -1539,6 +1574,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'vector-algebra',
     title: '向量代数：三种乘积各管什么',
     tag: '空间几何',
+    level: '基础',
     essence:
       '数量积算夹角和投影，向量积算面积和法向量，混合积算体积和共面——空间几何题的第一步几乎都是在这三个里选一个。',
     whenToUse: [
@@ -1586,6 +1622,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'implicit-diff',
     title: '隐函数求导：两边求导再解出',
     tag: '多元',
+    level: '基础',
     essence:
       '方程 F(x,y)=0 确定 y=y(x) 时，两边对 x 求导并把 y 当复合函数，再解出 y′；二元情形用 F 的偏导直接写。',
     whenToUse: [
@@ -1632,6 +1669,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'directional-derivative',
     title: '方向导数与梯度',
     tag: '多元',
+    level: '基础',
     essence:
       '梯度是函数增长最快的方向，方向导数是梯度在该方向单位向量上的投影；两者用点积一串就完了。',
     whenToUse: [
@@ -1679,6 +1717,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'numeric-characteristics',
     title: '数字特征：期望与方差',
     tag: '概率',
+    level: '基础',
     essence:
       '期望是加权平均，方差是偏离程度的平方平均；记住 D(X)=E(X²)−[E(X)]² 和线性变换的两条性质，八成题就够了。',
     whenToUse: [
@@ -1726,6 +1765,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'linear-dependence',
     title: '向量组的线性相关性',
     tag: '线代',
+    level: '基础',
     essence:
       '一组向量线性相关，等价于存在不全为零的系数让它们的线性组合为零，也等价于以它们为列的矩阵秩小于向量个数。',
     whenToUse: [
@@ -1771,6 +1811,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'fourier-series',
     title: '傅里叶级数：系数怎么算',
     tag: '级数',
+    level: '进阶',
     essence:
       '周期函数展开成三角级数，系数靠正交性积分求出；奇函数只剩正弦项，偶函数只剩余弦项，先看奇偶性能省一半计算。',
     whenToUse: [
@@ -1818,6 +1859,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'one-to-infinity',
     title: '1 的无穷次型：三步取对数',
     tag: '极限',
+    level: '竞赛',
     essence:
       '底数趋于 1、指数趋于无穷时，直接算会得出「1」，必须取对数或改写成 (1+u)^{1/u} 的形式，答案通常是 e 的某个幂。',
     whenToUse: [
@@ -1862,6 +1904,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'radical-difference',
     title: '根式差：有理化再算',
     tag: '极限',
+    level: '竞赛',
     essence:
       '遇到 √A − √B 直接代会得到 0/0 或 ∞−∞，先乘共轭把根号差变成商，往往一步就能约掉因子。',
     whenToUse: [
@@ -1903,6 +1946,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'infinitesimal-order',
     title: '无穷小阶的比较',
     tag: '极限',
+    level: '竞赛',
     essence:
       '两个无穷小之比的极限决定它们的阶：趋于 0 是高阶，趋于无穷是低阶，趋于非零常数是同阶，等于 1 才是等价。',
     whenToUse: [
@@ -1945,6 +1989,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'double-integral-symmetry',
     title: '二重积分：先用对称性砍一半',
     tag: '多元',
+    level: '进阶',
     essence:
       '区域关于坐标轴对称时，被积函数对相应变量是奇函数就直接得 0，是偶函数就翻倍——先看对称性能省掉大半计算。',
     whenToUse: [
@@ -1986,6 +2031,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'integral-estimate',
     title: '定积分不等式：放缩估界',
     tag: '积分',
+    level: '竞赛',
     essence:
       '估界不用算出原函数：用被积函数的最值、单调性或柯西–施瓦茨，把积分夹在两个数之间即可。',
     whenToUse: [
@@ -2029,6 +2075,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'trig-identity',
     title: '三角恒等变换：三组公式够用',
     tag: '三角学',
+    level: '基础',
     essence:
       '和差角、倍角、辅助角三组公式串起来就能覆盖九成题；看到 a sin x + b cos x 的第一反应应该是辅助角。',
     whenToUse: [
@@ -2080,6 +2127,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'euclidean-geometry',
     title: '平面几何：相似与圆幂',
     tag: '欧氏几何',
+    level: '基础',
     essence:
       '平面几何题先找相似（角相等或边成比例），圆里的题则靠相交弦、切割线、弦切角三组定理把线段关系变成乘积。',
     whenToUse: [
@@ -2126,6 +2174,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'group-theory',
     title: '群论入门：先看阶',
     tag: '代数',
+    level: '进阶',
     essence:
       '群是「集合 + 运算 + 四条公理」；入门题几乎都在算元素的阶、找子群，然后用拉格朗日定理卡住可能的大小。',
     whenToUse: [
@@ -2173,6 +2222,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'topology-intro',
     title: '拓扑学入门：只看开集',
     tag: '拓扑',
+    level: '进阶',
     essence:
       '拓扑只关心「哪些子集算开集」；连续是开集的原像仍开，同胚是双向连续的双射——距离、角度全不重要。',
     whenToUse: [
@@ -2220,6 +2270,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'stochastic-process',
     title: '随机过程入门：马尔可夫与泊松',
     tag: '概率',
+    level: '进阶',
     essence:
       '随机过程是一族随机变量；入门只要抓住两条：离散状态看马尔可夫链的转移矩阵，计数事件看泊松过程。',
     whenToUse: [
@@ -2269,6 +2320,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'set-cardinality',
     title: '集合论：用双射比大小',
     tag: '集合论',
+    level: '基础',
     essence:
       '比较两个无限集合的大小，不比元素个数，比能不能一一配对（双射）；配不上的一方更大。',
     whenToUse: [
@@ -2311,6 +2363,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'graph-euler',
     title: '图论：欧拉公式与最短路',
     tag: '图论',
+    level: '基础',
     essence:
       '连通平面图满足 V − E + F = 2；求最短路径用 Dijkstra，每步都从当前最近的未访问点扩张。',
     whenToUse: [
@@ -2352,6 +2405,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'information-entropy',
     title: '信息论：熵就是不确定性',
     tag: '信息论',
+    level: '进阶',
     essence:
       '熵衡量一个随机变量的平均不确定性；分布越均匀，熵越大，公平硬币的熵正好是 1 bit。',
     whenToUse: [
@@ -2394,6 +2448,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'game-nash',
     title: '博弈论：纳什均衡怎么找',
     tag: '博弈论',
+    level: '基础',
     essence:
       '纳什均衡是一组策略组合，任何一方单独改变策略都不会让自己更好——找它的办法是「给定对方策略，看各自的最优反应」。',
     whenToUse: [
@@ -2434,6 +2489,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'crypto-rsa',
     title: '密码学：RSA 三步',
     tag: '密码学',
+    level: '基础',
     essence:
       'RSA 的安全性来自「大整数分解很难」：公钥加密、私钥解密，靠的是模逆元与欧拉定理。',
     whenToUse: [
@@ -2477,6 +2533,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'measure-theory',
     title: '测度论：把长度变成函数',
     tag: '测度论',
+    level: '进阶',
     essence:
       '测度是给集合赋「大小」的函数；勒贝格测度让「长度」适用于远比区间复杂的集合，也让积分能处理更多函数。',
     whenToUse: [
@@ -2523,6 +2580,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'galois-theory',
     title: '伽罗瓦理论：五次方程为什么解不出',
     tag: '伽罗瓦',
+    level: '进阶',
     essence:
       '方程能用根式解，当且仅当它的伽罗瓦群是可解群；一般五次方程的群是 S5，不可解，所以没有根式公式。',
     whenToUse: [
@@ -2570,6 +2628,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'linear-programming',
     title: '线性规划：最优解在顶点',
     tag: '运筹学',
+    level: '基础',
     essence:
       '目标与约束都是线性的，最优值一定在可行域的顶点取到；对偶问题给出同一最优值的上界。',
     whenToUse: [
@@ -2612,6 +2671,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'non-euclidean',
     title: '非欧几何：换掉平行公设',
     tag: '非欧几何',
+    level: '进阶',
     essence:
       '把欧几里得的第五公设换掉，就得到非欧几何；双曲几何里过直线外一点有无数条平行线，三角形内角和小于 180°。',
     whenToUse: [
@@ -2656,6 +2716,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'computability',
     title: '可计算性：停机问题不可判定',
     tag: '可计算性',
+    level: '进阶',
     essence:
       '不是所有函数都能被算法算出；停机问题就是第一个被证明不可判定的问题，靠对角线法构造矛盾。',
     whenToUse: [
@@ -2697,6 +2758,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'ring-ideal',
     title: '环论入门：理想与商环',
     tag: '环论',
+    level: '进阶',
     essence:
       '环是能加能乘的代数结构；理想是对乘法封闭的加法子群，用它做商就像整数模 n，把「倍数」一次性归零。',
     whenToUse: [
@@ -2745,6 +2807,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'projective-geometry',
     title: '射影几何：把平行线交于无穷远',
     tag: '射影几何',
+    level: '进阶',
     essence:
       '射影平面在欧氏平面上加了一条无穷远线，平行线在那里相交；齐次坐标让「无穷远」和普通点用同一套公式处理。',
     whenToUse: [
@@ -2787,6 +2850,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'fundamental-group',
     title: '代数拓扑：用基本群区分空间',
     tag: '代数拓扑',
+    level: '进阶',
     essence:
       '基本群记录「绕不回来的圈有多少种」；圆周的基本群是整数，球面是平凡群，这个差别证明两者不同胚。',
     whenToUse: [
@@ -2834,6 +2898,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'p-vs-np',
     title: '理论计算机：P 与 NP',
     tag: '计算复杂性',
+    level: '进阶',
     essence:
       'P 是能快速求解的问题，NP 是能快速验证解的问题；P 是否等于 NP 是理论计算机最大的开放问题。',
     whenToUse: [
@@ -2879,6 +2944,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'control-theory',
     title: '控制论：极点决定稳定性',
     tag: '控制论',
+    level: '进阶',
     essence:
       '线性系统的稳定性由极点在复平面的位置决定：全在左半平面就稳定，一旦进入右半平面就发散。',
     whenToUse: [
@@ -2926,6 +2992,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'category-theory',
     title: '范畴论：对象与态射',
     tag: '范畴论',
+    level: '进阶',
     essence:
       '范畴只关心对象之间的箭头（态射）以及它们怎么复合，不关心对象内部长什么样；函子是范畴之间的「保持结构的映射」。',
     whenToUse: [
@@ -2969,6 +3036,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'prime-theorem',
     title: '解析数论：素数有多少个',
     tag: '解析数论',
+    level: '进阶',
     essence:
       '素数越来越稀，但不会消失；素数定理说不超过 x 的素数大约有 x/ln x 个，欧拉乘积把这件事和 ζ 函数绑在一起。',
     whenToUse: [
@@ -3016,6 +3084,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'representation-theory',
     title: '表示论：把群变成矩阵',
     tag: '表示论',
+    level: '进阶',
     essence:
       '把抽象群元素映成可计算的矩阵，就是表示；特征标（矩阵的迹）是表示最轻量的指纹，正交关系用来分解表示。',
     whenToUse: [
@@ -3059,6 +3128,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'option-pricing',
     title: '金融数学：Black–Scholes 定价',
     tag: '金融数学',
+    level: '进阶',
     essence:
       '期权的公允价格由「无套利 + 连续对冲」唯一确定；在风险中性测度下，折现后的价格是鞅，直接给出闭式公式。',
     whenToUse: [
@@ -3106,6 +3176,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'lagrangian-mechanics',
     title: '力学：用能量代替力',
     tag: '力学',
+    level: '进阶',
     essence:
       '拉格朗日力学不写受力分析，只写动能减势能，再由欧拉–拉格朗日方程自动得到运动方程。',
     whenToUse: [
@@ -3148,6 +3219,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     id: 'lotka-volterra',
     title: '生物数学：捕食者与猎物',
     tag: '生物数学',
+    level: '进阶',
     essence:
       '捕食者–猎物模型没有稳定焦点，而是绕平衡点转圈：数量此消彼长，周期由初始条件决定。',
     whenToUse: [
