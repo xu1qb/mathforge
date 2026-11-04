@@ -26,12 +26,15 @@ src/pages/AiLab/       AI 出题实验室页面
 ## 二、启动
 
 ```bash
-cp .env.example .env      # 填 LLM_API_KEY（不填则为 mock 模式）
+cp .env.example .env      # 实际上服务器会自动读取项目根的 .env
 npm run server           # 只起后端，默认 127.0.0.1:8787
 npm run dev:full         # 后端 + Vite 一起起（Vite 把 /api 代理到 8787）
 ```
 
 没有 API Key 时 `mode=mock`，接口返回固定样例，用来验证前后端链路而不花钱。
+
+配置读取顺序：**已存在的环境变量 > 项目根 `.env` > 代码默认值**。
+`.env` 已加入 `.gitignore`，不会被提交。
 
 ## 三、接口
 

@@ -1,7 +1,37 @@
 // EXPORTS: config
-// 服务端配置：全部来自环境变量，缺省时退化为 mock 模式（无需联网也能端到端跑通）
+// 服务端配置：优先读 .env，其次环境变量；没有 API Key 时退化为 mock 模式
+
+import { existsSync, readFileSync } from 'node:fs';
+
+/** 读取项目根的 .env（不覆盖已存在的环境变量） */
+function loadDotEnv(): void {
+  try {
+    const text = readFileSync(new URL('../.env', import.meta.url), 'utf8');
+    for (const raw of text.split('\n')) {
+      const line = raw.trim();
+      if (!line || line.startsWith('#')) continue;
+      const eq = line.indexOf('=');
+      if (eq <= 0) continue;
+      const key = line.slice(0, eq).trim();
+      let value = line.slice(eq + 1).trim();
+      if (
+        (value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))
+      ) {
+        value = value.slice(1, -1);
+      }
+      if (!(key in process.env)) process.env[key] = value;
+    }
+  } catch {
+    // 没有 .env 就全靠环境变量（或退回 mock）
+  }
+}
+
+loadDotEnv();
 
 export interface ServerConfig {
+  /** 是否从 .env 读到了配置（用于健康检查提示） */
+  dotEnvLoaded: boolean;
   port: number;
   host: string;
   /** openai-compatible：任何兼容 /chat/completions 的服务（DeepSeek、火山方舟、OpenAI…） */
@@ -30,6 +60,7 @@ function env(key: string, fallback = ''): string {
 }
 
 export const config: ServerConfig = {
+  dotEnvLoaded: existsSync(new URL('../.env', import.meta.url)),
   port: Number(env('PORT', '8787')),
   host: env('HOST', '127.0.0.1'),
   provider: env('LLM_API_KEY') ? 'openai-compatible' : 'mock',
