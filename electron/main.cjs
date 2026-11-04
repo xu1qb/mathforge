@@ -122,12 +122,28 @@ ipcMain.handle('mf:get-config', () => {
 });
 
 ipcMain.handle('mf:set-config', async (_e, next) => {
-  const cfg = { ...readConfig(), ...next };
+  const prev = readConfig();
+  const cfg = { ...prev, ...next };
+  if (!next.apiKey) cfg.apiKey = prev.apiKey; // 留空表示不修改
   writeConfig(cfg);
-  stopServer();
-  startServer();
-  const ok = await waitForApi();
-  return { ok, hasKey: Boolean(cfg.apiKey) };
+
+  // 热更新：让正在运行的后端立刻换用新配置，避免重启带来的端口竞争
+  try {
+    const res = await fetch(API_BASE + '/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        apiKey: cfg.apiKey || '',
+        model: cfg.model,
+        baseUrl: cfg.baseUrl,
+        agentMode: Boolean(cfg.agentMode),
+      }),
+    });
+    const data = await res.json();
+    return { ok: res.ok, hasKey: Boolean(cfg.apiKey), mode: data.mode };
+  } catch {
+    return { ok: false, hasKey: Boolean(cfg.apiKey), mode: 'unknown' };
+  }
 });
 
 app.whenReady().then(async () => {

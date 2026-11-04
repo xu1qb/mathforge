@@ -63,6 +63,22 @@ function env(key: string, fallback = ''): string {
   return (process.env[key] ?? fallback).trim();
 }
 
+/** 运行时热更新（桌面端保存密钥后立刻生效，不必重启进程） */
+export function applyRuntimeConfig(next: {
+  apiKey?: string;
+  model?: string;
+  baseUrl?: string;
+  agentMode?: boolean;
+}): void {
+  if (typeof next.apiKey === 'string' && next.apiKey.trim()) config.apiKey = next.apiKey.trim();
+  if (typeof next.model === 'string' && next.model.trim()) config.model = next.model.trim();
+  if (typeof next.baseUrl === 'string' && next.baseUrl.trim()) {
+    config.baseUrl = next.baseUrl.trim().replace(/\/$/, '');
+  }
+  if (typeof next.agentMode === 'boolean') config.agentMode = next.agentMode;
+  config.provider = config.apiKey ? 'openai-compatible' : 'mock';
+}
+
 export const config: ServerConfig = {
   dotEnvLoaded: existsSync(new URL('../.env', import.meta.url)),
   port: Number(env('PORT', '8787')),

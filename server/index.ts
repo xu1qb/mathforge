@@ -2,7 +2,7 @@
 // HTTP 服务：只提供 /api/*，前端仍由 Vite 提供；生产可把 dist 交给静态服务器
 
 import { createServer } from 'node:http';
-import { config } from './config.ts';
+import { config, applyRuntimeConfig } from './config.ts';
 import { generateQuestions } from './generate.ts';
 import { llmMode } from './llm.ts';
 import { validateQuestion } from './validate.ts';
@@ -73,6 +73,15 @@ const server = createServer(async (req, res) => {
         batch.questions.every((q) => q.validation.dualSolve === 'match' || q.validation.dualSolve === 'judged');
       const stored = saveGenerated(batch.questions, 'ai:' + batch.model, allVerified);
       send(res, 200, { ...batch, questions: stored, saved: stored.length, autoApproved: allVerified });
+      return;
+    }
+
+    if (url.pathname === '/api/config' && req.method === 'POST') {
+      const body = JSON.parse(await readBody(req)) as {
+        apiKey?: string; model?: string; baseUrl?: string; agentMode?: boolean;
+      };
+      applyRuntimeConfig(body);
+      send(res, 200, { ok: true, mode: llmMode(), model: config.model });
       return;
     }
 

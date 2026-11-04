@@ -17,7 +17,7 @@ import { toast } from 'sonner';
 const STORAGE_KEY = 'mathforge_ai_questions';
 
 const desktop = (typeof window !== 'undefined'
-  ? (window as unknown as { mfDesktop?: { getConfig: () => Promise<DesktopConfigShape>; setConfig: (c: unknown) => Promise<{ ok: boolean; hasKey: boolean }> } }).mfDesktop
+  ? (window as unknown as { mfDesktop?: { getConfig: () => Promise<DesktopConfigShape>; setConfig: (c: unknown) => Promise<{ ok: boolean; hasKey: boolean; mode?: string }> } }).mfDesktop
   : undefined);
 
 interface DesktopConfigShape {
@@ -46,7 +46,11 @@ function DesktopConfig({ onSaved }: { onSaved: () => void }) {
         baseUrl: cfg?.baseUrl,
         agentMode: cfg?.agentMode,
       });
-      toast(res.ok ? '已保存，后端已重启' : '已保存，但后端启动超时');
+      toast(
+        res.ok
+          ? '已保存，后端已切换为 ' + (res.mode === 'live' ? '在线模型' : 'mock 模式')
+          : '已保存，但后端未响应'
+      );
       setApiKey('');
       setCfg(await desktop.getConfig());
       onSaved();
