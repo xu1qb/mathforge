@@ -47,7 +47,10 @@ export type VerifyClaim =
   | { kind: 'roots'; coeffs: [number, number, number]; which: 'sum' | 'product' | 'max'; claim: string }
   | { kind: 'gcd'; a: number; b: number; claim: string }
   | { kind: 'lcm'; a: number; b: number; claim: string }
-  | { kind: 'mod'; a: number; m: number; claim: string };
+  | { kind: 'mod'; a: number; m: number; claim: string }
+  | { kind: 'convergence'; type: 'p-series' | 'geometric' | 'alternating'; p?: number; q?: number; claim: string }
+  | { kind: 'parity'; expr: string; variable: string; claim: string }
+  | { kind: 'ode'; solution: string; variable: string; equation: { a: number; b?: number }; claim: string };
 
 export interface PracticeQuestion {
   /** 题目 id（随机种子） */

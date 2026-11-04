@@ -56,14 +56,29 @@ verify: { kind: 'limit', expr: 'sin(5*x)/x', variable: 'x', point: '0', claim: '
 `scripts/verify-generators.mjs` 抽样出题（每知识点每档 8 题），把声明交给
 `scripts/verify-claims.py`，用 **sympy 独立重算**再和答案比对——不是字符串比对。
 
-支持的声明类型：`limit` / `derivative` / `integral` / `value` / `roots` / `gcd` / `lcm` / `mod`。
+支持的声明类型：
 
-当前覆盖率：**261 / 720（36%）**，全部通过。尚未覆盖的知识点：
+| kind | 用来验什么 |
+|---|---|
+| `limit` | 极限值（含数列极限） |
+| `derivative` | 求导结果 |
+| `integral` | 定积分值 |
+| `value` | 任何可算的表达式（面积、体积、概率、期望…） |
+| `roots` | 两根之和/积/较大根（韦达） |
+| `gcd` / `lcm` / `mod` | 数论运算 |
+| `convergence` | p 级数 / 几何级数 / 交错级数的敛散性 |
+| `parity` | 函数奇偶性 |
+| `ode` | 一阶线性方程通解（代入残差为 0） |
 
-`algebra-factor`、`inequality-solve`、`function-property`、`sequence-recurrence`、
-`trig-special`、`trig-identity`、`conic-sections`、`vector-op`、`sequence-limit`、
-`series-convergence`、`hyperbolic-func`、`ode-solving`、`fourier-basic`、
-`probability-classical`、`random-variable`、`fusion`。
+当前覆盖率：**523 / 720（72.6%）**，全部通过。
+
+尚未覆盖：`inequality-solve`（解集是区间文本，需要专门解析）、`fusion`（跨知识点融合，结构各异）。
+
+**已知被这套复核抓到的真实 bug**：
+
+1. 特殊角生成器会产出 `tan 15°`、`sin 190°` 这类表里没有的角，答案直接变成 `'-0'`；
+2. `cos2α` 生成器对结果取了绝对值，导致 `cos2α` 为负时答案错误；
+3. `xⁿ·sin(x)` 的奇偶判断写反了（`sin` 是奇函数，但 `xⁿ` 的奇偶取决于 n），间歇性出错。
 
 新增题型时，**能给出 verify 就一定要给**；给不出说明这道题没法自动验证，要标出来。
 

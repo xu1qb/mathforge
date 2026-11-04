@@ -203,6 +203,7 @@ export function genHyperbolicV2(diff: Difficulty): PracticeQuestion {
       question: '求 ' + fn + '(ln ' + k + ') 的值',
       latex: '@' + fn + '(@ln ' + k + ') = ?',
       answer: frac(p, q),
+      verify: { kind: 'value', expr: (kind === 'sinhLn' ? 'sinh' : 'cosh') + '(log(' + k + '))', claim: frac(p, q) },
       steps: [
         fn + '(t) = (e^t ' + (kind === 'sinhLn' ? '−' : '+') + ' e^(−t))/2',
         'e^(ln ' + k + ') = ' + k + '，e^(−ln ' + k + ') = 1/' + k,
@@ -218,6 +219,7 @@ export function genHyperbolicV2(diff: Difficulty): PracticeQuestion {
       question: '求 tanh(ln ' + k + ') 的值',
       latex: '@tanh(@ln ' + k + ') = ?',
       answer: frac(k * k - 1, k * k + 1),
+      verify: { kind: 'value', expr: 'tanh(log(' + k + '))', claim: frac(k * k - 1, k * k + 1) },
       steps: [
         'tanh t = (e^t − e^(−t))/(e^t + e^(−t))',
         '代入 e^(ln ' + k + ') = ' + k,
@@ -234,6 +236,7 @@ export function genHyperbolicV2(diff: Difficulty): PracticeQuestion {
       question: '求导：d/dx [' + a + 'sinh(' + a + 'x) + ' + b + 'cosh(' + b + 'x)]',
       latex: '@dfrac{d}{dx}@left(' + a + '@sinh ' + a + 'x + ' + b + '@cosh ' + b + 'x@right)',
       answer: (a * a) + 'cosh(' + a + 'x)+' + (b * b) + 'sinh(' + b + 'x)',
+      verify: { kind: 'derivative', expr: String(a) + '*sinh(' + a + '*x) + ' + String(b) + '*cosh(' + b + '*x)', variable: 'x', claim: String(a * a) + '*cosh(' + a + '*x) + ' + String(b * b) + '*sinh(' + b + '*x)' },
       steps: [
         '(sinh u)′ = cosh u · u′，(cosh u)′ = sinh u · u′',
         '第一项：' + a + '·' + a + 'cosh(' + a + 'x) = ' + (a * a) + 'cosh(' + a + 'x)',
@@ -250,6 +253,7 @@ export function genHyperbolicV2(diff: Difficulty): PracticeQuestion {
       question: '化简：cosh²(' + k + 'x) − sinh²(' + k + 'x)',
       latex: '@cosh^{2}(' + k + 'x) - @sinh^{2}(' + k + 'x) = ?',
       answer: '1',
+      verify: { kind: 'value', expr: 'cosh(' + k + '*x)**2 - sinh(' + k + '*x)**2', claim: '1' },
       steps: ['基本恒等式 cosh²u − sinh²u = 1', '取 u = ' + k + 'x'],
     });
   }
@@ -260,6 +264,7 @@ export function genHyperbolicV2(diff: Difficulty): PracticeQuestion {
     question: '求 arsinh(' + k + ') 的精确值',
     latex: '@operatorname{arsinh} ' + k + ' = ?',
     answer: 'ln(' + k + '+sqrt(' + (k * k + 1) + '))',
+    verify: { kind: 'value', expr: 'asinh(' + k + ')', claim: 'ln(' + k + '+sqrt(' + (k * k + 1) + '))' },
     steps: [
       '反双曲正弦：arsinh y = ln(y + √(y² + 1))',
       '代入 y = ' + k + ' 得 ln(' + k + ' + √' + (k * k + 1) + ')',
@@ -288,6 +293,7 @@ export function genSeriesV2(diff: Difficulty): PracticeQuestion {
       question: '求等比级数 Σ(' + p + '/' + q + ')^n（n 从 0 到 ∞）的和',
       latex: '@sum_{n=0}^{@infty} @left(@dfrac{' + p + '}{' + q + '}@right)^{n} = ?',
       answer: sum,
+      verify: { kind: 'value', expr: '1/(1 - ' + p + '/' + q + ')', claim: sum },
       steps: [
         '等比级数求和：Σr^n = 1/(1−r)，要求 |r|<1',
         '这里 r = ' + p + '/' + q + '，满足收敛条件',
@@ -304,6 +310,7 @@ export function genSeriesV2(diff: Difficulty): PracticeQuestion {
       question: '判断 p 级数 Σ1/n^' + p + ' 的敛散性（填「收敛」或「发散」）',
       latex: '@sum_{n=1}^{@infty} @dfrac{1}{n^{' + p + '}}',
       answer: converge ? '收敛' : '发散',
+      verify: { kind: 'convergence', type: 'p-series', p, claim: converge ? '收敛' : '发散' },
       steps: [
         'p 级数 Σ1/n^p：p>1 收敛，p≤1 发散',
         '这里 p = ' + p,
@@ -321,6 +328,7 @@ export function genSeriesV2(diff: Difficulty): PracticeQuestion {
       question: '判断级数 Σ(' + p + '/' + q + ')^n 的敛散性（填「收敛」或「发散」）',
       latex: '@sum_{n=0}^{@infty} @left(@dfrac{' + p + '}{' + q + '}@right)^{n}',
       answer: '发散',
+      verify: { kind: 'convergence', type: 'geometric', p, q, claim: '发散' },
       steps: [
         '公比 r = ' + p + '/' + q,
         '|r| = ' + p + '/' + q + ' > 1',
@@ -337,6 +345,7 @@ export function genSeriesV2(diff: Difficulty): PracticeQuestion {
       question: '判断交错级数 Σ(−1)^n/n^' + p + ' 的敛散性（填「收敛」或「发散」）',
       latex: '@sum_{n=1}^{@infty} @dfrac{(-1)^{n}}{n^{' + p + '}}',
       answer: '收敛',
+      verify: { kind: 'convergence', type: 'alternating', p, claim: '收敛' },
       steps: [
         '去掉符号后是 p 级数，p = ' + p + (p > 1 ? ' > 1，绝对收敛' : ' = 1，条件收敛'),
         '交错级数判别法：通项单调递减趋于 0',
@@ -380,6 +389,7 @@ export function genFourierV2(diff: Difficulty): PracticeQuestion {
       question: '求函数 f(x) = ' + fn + '(' + k + 'x) 的周期（用 π 的倍数表示，答案填系数）',
       latex: 'f(x) = @' + fn + '(' + k + 'x)，周期 T = ? ' + '@cdot @pi',
       answer: frac(2, k),
+      verify: { kind: 'value', expr: '2/(' + k + ')', claim: frac(2, k) },
       steps: [
         fn + '(kx) 的周期为 T = 2π/k',
         '这里 k = ' + k,
@@ -396,6 +406,7 @@ export function genFourierV2(diff: Difficulty): PracticeQuestion {
       question: '函数 f(x) = ' + c + ' 在 [0, ' + T + '] 上的傅里叶系数 a₀ = ?',
       latex: 'f(x) = ' + c + '，x @in [0, ' + T + ']，a_0 = ?',
       answer: String(2 * c),
+      verify: { kind: 'value', expr: '2*(' + c + ')', claim: String(2 * c) },
       steps: [
         'a₀ = (2/T)∫₀ᵀ f(x)dx',
         '常函数积分 = ' + c + ' × ' + T + ' = ' + (c * T),
@@ -526,15 +537,18 @@ export function genFunctionPropertyV2(diff: Difficulty): PracticeQuestion {
 
   const n = pickOne([2, 3, 4]);
   const fn = pickOne(['sin', 'cos']);
-  const odd = fn === 'sin' || n % 2 === 1;
+  // x^n 奇偶由 n 决定；sin 是奇函数、cos 是偶函数；奇×奇=偶，奇×偶=奇
+  const xOdd = n % 2 === 1;
+  const odd = xOdd !== (fn === 'sin');
   return mk({
     topic: 'function-property', diff,
     question: '判断 f(x) = x^' + n + (fn === 'sin' ? '·sin(x)' : '·cos(x)') + ' 的奇偶性（填「奇函数」或「偶函数」）',
     latex: 'f(x) = x^{' + n + '}@' + fn + '(x)',
     answer: odd ? '奇函数' : '偶函数',
+    verify: { kind: 'parity', expr: 'x**' + n + '*' + fn + '(x)', variable: 'x', claim: odd ? '奇' : '偶' },
     steps: [
-      'x^' + n + ' 是' + (n % 2 === 1 ? '奇' : '偶') + '函数，' + fn + '(x) 是' + (fn === 'sin' ? '奇' : '偶') + '函数',
-      odd ? '奇 × 奇 = 奇，奇 × 偶 = 奇' : '偶 × 偶 = 偶',
+      'x^' + n + ' 是' + (xOdd ? '奇' : '偶') + '函数，' + fn + '(x) 是' + (fn === 'sin' ? '奇' : '偶') + '函数',
+      '奇偶相乘：奇×奇=偶，偶×奇=奇，偶×偶=偶',
       '所以 f(x) 是' + (odd ? '奇' : '偶') + '函数',
     ],
     type: 'expression',
@@ -558,6 +572,7 @@ export function genSequenceLimitV2(diff: Difficulty): PracticeQuestion {
       question: '求极限：lim(n→∞) (' + a + 'n² + ' + rnd(1, 9) + 'n)/(' + b + 'n² + ' + rnd(1, 9) + ')',
       latex: '@lim_{n @to @infty} @dfrac{' + a + 'n^{2} + 1}{' + b + 'n^{2} + 2}',
       answer: frac(a, b),
+      verify: { kind: 'limit', expr: '(' + a + '*n**2 + 1)/(' + b + '*n**2 + 2)', variable: 'n', point: 'oo', claim: frac(a, b) },
       steps: [
         '同除以 n²：分子趋于 ' + a + '，分母趋于 ' + b,
         '极限为 ' + a + '/' + b + ' = ' + frac(a, b),
@@ -584,6 +599,7 @@ export function genSequenceLimitV2(diff: Difficulty): PracticeQuestion {
       question: '求极限：lim(n→∞) ' + a + '^n/' + b + '^n',
       latex: '@lim_{n @to @infty} @dfrac{' + a + '^{n}}{' + b + '^{n}}',
       answer: '0',
+      verify: { kind: 'limit', expr: '(' + a + '**n)/(' + b + '**n)', variable: 'n', point: 'oo', claim: '0' },
       steps: [
         '化为 (' + a + '/' + b + ')^n',
         '底数 ' + a + '/' + b + ' < 1',
@@ -620,6 +636,7 @@ export function genSequenceLimitV2(diff: Difficulty): PracticeQuestion {
     question: '求极限：lim(n→∞) (√(n + ' + a + ') − √n)',
     latex: '@lim_{n @to @infty} @left(@sqrt{n + ' + a + '} - @sqrt{n}@right)',
     answer: '0',
+    verify: { kind: 'limit', expr: 'sqrt(n + ' + a + ') - sqrt(n)', variable: 'n', point: 'oo', claim: '0' },
     steps: ['分子有理化：' + a + '/(√(n+' + a + ') + √n)', '分母趋于无穷', '极限为 0'],
   });
 }
@@ -655,6 +672,7 @@ export function genTrigIdentityV2(diff: Difficulty): PracticeQuestion {
       question: '已知 sin α = ' + a.s + '/' + a.h + '，cos β = ' + b.c + '/' + b.h + '，α、β 均为锐角，求 sin(α+β)',
       latex: '@sin@alpha = @dfrac{' + a.s + '}{' + a.h + '}，@cos@beta = @dfrac{' + b.c + '}{' + b.h + '}，求 @sin(@alpha + @beta)',
       answer: frac(num, den),
+      verify: { kind: 'value', expr: '(' + a.s + '*(' + b.c + ') + ' + a.c + '*(' + b.s + '))/(' + a.h + '*' + b.h + ')', claim: frac(num, den) },
       steps: [
         '由勾股关系：cos α = ' + a.c + '/' + a.h + '，sin β = ' + b.s + '/' + b.h,
         '和角公式：sin(α+β) = sinαcosβ + cosαsinβ',
@@ -672,6 +690,7 @@ export function genTrigIdentityV2(diff: Difficulty): PracticeQuestion {
       question: '已知 sin α = ' + a.s + '/' + a.h + '（α 为锐角），求 sin 2α',
       latex: '@sin@alpha = @dfrac{' + a.s + '}{' + a.h + '}，求 @sin 2@alpha',
       answer: frac(num, den),
+      verify: { kind: 'value', expr: '2*(' + a.s + '/' + a.h + ')*(' + a.c + '/' + a.h + ')', claim: frac(num, den) },
       steps: [
         'cos α = ' + a.c + '/' + a.h,
         'sin2α = 2 sinα cosα',
@@ -688,11 +707,12 @@ export function genTrigIdentityV2(diff: Difficulty): PracticeQuestion {
       topic: 'trig-identity', diff,
       question: '已知 cos α = ' + a.c + '/' + a.h + '（α 为锐角），求 cos 2α',
       latex: '@cos@alpha = @dfrac{' + a.c + '}{' + a.h + '}，求 @cos 2@alpha',
-      answer: frac(Math.abs(num), den),
+      answer: frac(num, den),
+      verify: { kind: 'value', expr: '((' + a.c + '/' + a.h + ')**2 - (' + a.s + '/' + a.h + ')**2)', claim: frac(num, den) },
       steps: [
         'sin α = ' + a.s + '/' + a.h,
         'cos2α = cos²α − sin²α = (' + a.c + '² − ' + a.s + '²)/' + den,
-        '= ' + frac(Math.abs(num), den),
+        '= ' + frac(num, den),
       ],
     });
   }
@@ -707,6 +727,7 @@ export function genTrigIdentityV2(diff: Difficulty): PracticeQuestion {
       question: '已知 tan α = ' + t1[0] + '/' + t1[1] + '，tan β = ' + t2[0] + '/' + t2[1] + '，求 tan(α+β)',
       latex: '@tan@alpha = @dfrac{' + t1[0] + '}{' + t1[1] + '}，@tan@beta = @dfrac{' + t2[0] + '}{' + t2[1] + '}，求 @tan(@alpha + @beta)',
       answer: frac(num, den),
+      verify: { kind: 'value', expr: '((' + t1[0] + '/' + t1[1] + ') + (' + t2[0] + '/' + t2[1] + '))/(1 - (' + t1[0] + '/' + t1[1] + ')*(' + t2[0] + '/' + t2[1] + '))', claim: frac(num, den) },
       steps: [
         '和角公式：tan(α+β) = (tanα + tanβ)/(1 − tanα tanβ)',
         '分子 = ' + t1[0] + '/' + t1[1] + ' + ' + t2[0] + '/' + t2[1] + ' = ' + frac(num, t1[1] * t2[1]),
@@ -1035,6 +1056,7 @@ export function genRandomVariableV2(diff: Difficulty): PracticeQuestion {
       question: 'X ~ B(' + n + ', ' + p + ')，求 ' + (wantE ? 'E(X)' : 'Var(X)'),
       latex: 'X @sim B(' + n + ', ' + p + ')，求 ' + (wantE ? 'E(X)' : 'D(X)'),
       answer: String(Number(val.toFixed(4))),
+      verify: { kind: 'value', expr: wantE ? String(n) + '*(' + p + ')' : String(n) + '*(' + p + ')*(1 - (' + p + '))', claim: String(Number(val.toFixed(4))) },
       steps: [
         '二项分布：E(X) = np，D(X) = np(1−p)',
         'n = ' + n + '，p = ' + p,
@@ -1052,6 +1074,7 @@ export function genRandomVariableV2(diff: Difficulty): PracticeQuestion {
       question: 'X 在 1, 2, …, ' + n + ' 上等可能取值，求 ' + (wantE ? 'E(X)' : 'Var(X)'),
       latex: 'X @sim U@{1,2,@dots,' + n + '@}，求 ' + (wantE ? 'E(X)' : 'D(X)'),
       answer: String(Number(val.toFixed(4))),
+      verify: { kind: 'value', expr: wantE ? '((' + n + ') + 1)/2' : '((' + n + ')**2 - 1)/12', claim: String(Number(val.toFixed(4))) },
       steps: [
         wantE ? '离散均匀分布：E(X) = (n+1)/2' : '离散均匀分布：D(X) = (n²−1)/12',
         'n = ' + n,
@@ -1067,6 +1090,7 @@ export function genRandomVariableV2(diff: Difficulty): PracticeQuestion {
     question: 'X ~ P(' + lam + ')（泊松分布），求 ' + (wantE ? 'E(X)' : 'Var(X)'),
     latex: 'X @sim P(' + lam + ')，求 ' + (wantE ? 'E(X)' : 'D(X)'),
     answer: String(lam),
+    verify: { kind: 'value', expr: String(lam), claim: String(lam) },
     steps: ['泊松分布：E(X) = D(X) = λ', '这里 λ = ' + lam, '所以结果为 ' + lam],
   });
 }
@@ -1087,6 +1111,7 @@ export function genOdeV2(diff: Difficulty): PracticeQuestion {
       question: '求通解：y′ + ' + a + 'y = 0',
       latex: "y' + " + a + 'y = 0',
       answer: 'C*e^(' + -a + 'x)',
+      verify: { kind: 'ode', solution: 'C*exp(' + -a + '*x)', variable: 'x', equation: { a }, claim: 'C*e^(' + -a + 'x)' },
       steps: ['特征方程 r + ' + a + ' = 0，r = ' + -a, '通解 y = Ce^(' + -a + 'x)'],
       type: 'expression',
     });
@@ -1099,6 +1124,7 @@ export function genOdeV2(diff: Difficulty): PracticeQuestion {
       question: '求通解：y′ = ' + a + 'y',
       latex: "y' = " + a + 'y',
       answer: 'C*e^(' + a + 'x)',
+      verify: { kind: 'ode', solution: 'C*exp(' + a + '*x)', variable: 'x', equation: { a: -a }, claim: 'C*e^(' + a + 'x)' },
       steps: ['分离变量 dy/y = ' + a + ' dx', '两边积分 ln|y| = ' + a + 'x + C', '通解 y = Ce^(' + a + 'x)'],
       type: 'expression',
     });
@@ -1112,6 +1138,7 @@ export function genOdeV2(diff: Difficulty): PracticeQuestion {
       question: '求通解：y′ + ' + a + 'y = ' + b,
       latex: "y' + " + a + 'y = ' + b,
       answer: 'C*e^(' + -a + 'x)+' + (b / a),
+      verify: { kind: 'ode', solution: 'C*exp(' + (-a) + '*x) + ' + (b / a), variable: 'x', equation: { a, b }, claim: 'C*e^(' + -a + 'x)+' + (b / a) },
       steps: [
         '先求齐次解 y_h = Ce^(' + -a + 'x)',
         '特解取常数 y_p = ' + b + '/' + a + ' = ' + (b / a),
@@ -1160,9 +1187,8 @@ export function genTrigSpecialV2(diff: Difficulty): PracticeQuestion {
   const kind = pickOne(kinds);
 
   if (kind === 'known') {
-    const base = pickOne([30, 45, 60]);
-    const k = rnd(1, 11);
-    const deg = k * 15 + (deg0(base));
+    const EXACT = [30, 45, 60, 120, 135, 150, 210, 225, 240, 300, 315, 330];
+    const deg = pickOne(EXACT);
     const fn = pickOne(['sin', 'cos', 'tan']);
     const val = specialValue(fn, deg % 360);
     if (!val) return genTrigSpecialV2(diff);
@@ -1171,6 +1197,7 @@ export function genTrigSpecialV2(diff: Difficulty): PracticeQuestion {
       question: '求 ' + fn + deg + '° 的值',
       latex: '@' + fn + ' ' + deg + '^{@circ} = ?',
       answer: val,
+      verify: { kind: 'value', expr: fn + '(' + deg + '*pi/180)', claim: val },
       steps: [
         '把 ' + deg + '° 化为锐角或特殊角的组合',
         '利用' + (fn === 'sin' ? '正弦' : fn === 'cos' ? '余弦' : '正切') + '的符号规律与诱导公式',
@@ -1191,6 +1218,7 @@ export function genTrigSpecialV2(diff: Difficulty): PracticeQuestion {
       question: '已知 α 在第 ' + q + ' 象限，且 α 的参考角为 ' + base + '°，求 ' + fn + 'α',
       latex: '@' + fn + '@alpha，@alpha @in ' + ['I', 'II', 'III', 'IV'][q - 1] + '@text{ 象限，参考角 }' + base + '^{@circ}',
       answer: val,
+      verify: { kind: 'value', expr: fn + '((' + quadrantAngle(q, base) + ')*pi/180)', claim: val },
       steps: [
         '先求参考角的函数值：' + fn + base + '° = ' + specialAbs(fn, base),
         '第 ' + q + ' 象限中 ' + fn + ' 的符号为 ' + (sign === '-' ? '负' : '正'),
@@ -1200,15 +1228,16 @@ export function genTrigSpecialV2(diff: Difficulty): PracticeQuestion {
     });
   }
 
-  const k = rnd(1, 8);
+  const k = rnd(1, 5);
   const fn = pickOne(['sin', 'cos']);
-  const deg = 180 + k * 10;
-  const val = specialValue(fn, deg % 360) ?? '0';
+  const deg = 180 + k * 30;
+  const val = specialValue(fn, deg % 360) || '0';
   return mk({
     topic: 'trig-special', diff,
     question: '化简 ' + fn + '(' + deg + '°)',
     latex: '@' + fn + '(' + deg + '^{@circ})',
     answer: val,
+    verify: { kind: 'value', expr: fn + '(' + deg + '*pi/180)', claim: val },
     steps: ['用诱导公式把角化到 [0°, 360°)', '再化为锐角求值', '结果为 ' + val],
     type: 'expression',
   });
@@ -1224,7 +1253,14 @@ function specialAbs(fn: string, deg: number): string {
     cos: { 30: 'sqrt(3)/2', 45: 'sqrt(2)/2', 60: '1/2' },
     tan: { 30: 'sqrt(3)/3', 45: '1', 60: 'sqrt(3)' },
   };
-  return table[fn][deg] ?? '0';
+  return table[fn]?.[deg] ?? '';
+}
+
+function quadrantAngle(q: number, base: number): string {
+  if (q === 1) return String(base);
+  if (q === 2) return '180 - ' + base;
+  if (q === 3) return '180 + ' + base;
+  return '360 - ' + base;
 }
 
 function quadrantSign(fn: string, q: number): string {
@@ -1264,6 +1300,7 @@ export function genSequenceRecurrenceV2(diff: Difficulty): PracticeQuestion {
       question: '等差数列首项 ' + a1 + '，公差 ' + d + '，求 ' + (askSum ? '前 ' + n + ' 项和 S_' + n : '第 ' + n + ' 项 a_' + n),
       latex: 'a_1 = ' + a1 + '，d = ' + d + '，求 ' + (askSum ? 'S_{' + n + '}' : 'a_{' + n + '}'),
       answer: String(askSum ? sum : an),
+      verify: { kind: 'value', expr: askSum ? String(n) + '*(' + a1 + ' + (' + a1 + ' + (' + n + ' - 1)*' + d + '))/2' : String(a1) + ' + (' + n + ' - 1)*(' + d + ')', claim: String(askSum ? sum : an) },
       steps: [
         '通项公式：a_n = a₁ + (n−1)d',
         'a_' + n + ' = ' + a1 + ' + ' + (n - 1) + ' × ' + d + ' = ' + an,
@@ -1284,6 +1321,7 @@ export function genSequenceRecurrenceV2(diff: Difficulty): PracticeQuestion {
       question: '等比数列首项 ' + a1 + '，公比 ' + q + '，求 ' + (askSum ? '前 ' + n + ' 项和 S_' + n : '第 ' + n + ' 项 a_' + n),
       latex: 'a_1 = ' + a1 + '，q = ' + q + '，求 ' + (askSum ? 'S_{' + n + '}' : 'a_{' + n + '}'),
       answer: String(askSum ? sum : an),
+      verify: { kind: 'value', expr: askSum ? String(a1) + '*((' + q + ')**' + n + ' - 1)/(' + q + ' - 1)' : String(a1) + '*(' + q + ')**(' + n + ' - 1)', claim: String(askSum ? sum : an) },
       steps: [
         '通项：a_n = a₁q^(n−1)',
         'a_' + n + ' = ' + a1 + ' × ' + q + '^' + (n - 1) + ' = ' + an,
@@ -1300,6 +1338,7 @@ export function genSequenceRecurrenceV2(diff: Difficulty): PracticeQuestion {
     question: '数列满足 a₁ = ' + a1 + '，a_(n+1) = a_n + n，求 a_' + n,
     latex: 'a_1 = ' + a1 + '，a_{n+1} = a_n + n，求 a_{' + n + '}',
     answer: String(an),
+    verify: { kind: 'value', expr: String(a1) + ' + (' + n + ')*(' + n + ' - 1)/2', claim: String(an) },
     steps: [
       '累加法：a_n = a₁ + (1 + 2 + … + ' + (n - 1) + ')',
       '括号内 = ' + ((n * (n - 1)) / 2),
@@ -1350,6 +1389,9 @@ export function genAlgebraFactorV2(diff: Difficulty): PracticeQuestion {
     question: '分解因式：' + a + 'x² ' + sb + 'x ' + sc + '，求' + (askRoot ? '较大根' : '常数项与首项系数之积'),
     latex: a + 'x^{2} ' + sb + 'x ' + sc,
     answer: String(askRoot ? Math.max(r1, r2) : a * c),
+    verify: askRoot
+      ? { kind: 'roots', coeffs: [a, b, c], which: 'max', claim: String(Math.max(r1, r2)) }
+      : { kind: 'value', expr: String(a) + '*(' + c + ')', claim: String(a * c) },
     steps: [
       '找两个数，积为 a·c = ' + a * c + '，和为 −b = ' + -b,
       '这两个数是 ' + a * r1 + ' 与 ' + a * r2 + '（按分解式）',
@@ -1538,6 +1580,7 @@ export function genVectorOpV2(diff: Difficulty): PracticeQuestion {
       question: '求向量 (' + a + ', ' + b + ') 与 (' + c + ', ' + d + ') 的数量积',
       latex: '@vec{u} = (' + a + ', ' + b + ')，@vec{v} = (' + c + ', ' + d + ')，求 @vec{u} @cdot @vec{v}',
       answer: String(a * c + b * d),
+      verify: { kind: 'value', expr: '(' + a + ')*(' + c + ') + (' + b + ')*(' + d + ')', claim: String(a * c + b * d) },
       steps: ['数量积：对应分量相乘再相加', a + '×' + c + ' + ' + b + '×' + d + ' = ' + (a * c + b * d)],
     });
   }
@@ -1559,6 +1602,7 @@ export function genVectorOpV2(diff: Difficulty): PracticeQuestion {
       question: '求向量 (' + a + ', ' + b + ') 与 (' + c + ', ' + d + ') 的叉积的模',
       latex: '@left@|(' + a + ', ' + b + ') @times (' + c + ', ' + d + ')@right@|',
       answer: String(Math.abs(a * d - b * c)),
+      verify: { kind: 'value', expr: 'abs((' + a + ')*(' + d + ') - (' + b + ')*(' + c + '))', claim: String(Math.abs(a * d - b * c)) },
       steps: ['二维叉积的模 = |ad − bc|', '= |' + a + '×' + d + ' − ' + b + '×' + c + '| = ' + Math.abs(a * d - b * c)],
     });
   }
@@ -1824,6 +1868,7 @@ export function genConicV2(diff: Difficulty): PracticeQuestion {
         question: '椭圆 x²/' + (a * a) + ' + y²/' + (b * b) + ' = 1 的离心率',
         latex: '@dfrac{x^{2}}{' + a * a + '} + @dfrac{y^{2}}{' + b * b + '} = 1，求 e',
         answer: frac(c, a),
+        verify: { kind: 'value', expr: 'sqrt(' + a + '**2 - ' + b + '**2)/' + a, claim: frac(c, a) },
         steps: ['c² = a² − b²', 'c = ' + c, 'e = c/a = ' + frac(c, a)],
       });
     }
@@ -1832,6 +1877,7 @@ export function genConicV2(diff: Difficulty): PracticeQuestion {
       question: '椭圆 x²/' + (a * a) + ' + y²/' + (b * b) + ' = 1 的半焦距 c',
       latex: '@dfrac{x^{2}}{' + a * a + '} + @dfrac{y^{2}}{' + b * b + '} = 1，求 c',
       answer: String(c),
+      verify: { kind: 'value', expr: 'sqrt(' + a + '**2 - ' + b + '**2)', claim: String(c) },
       steps: ['c² = a² − b² = ' + (a * a - b * b), 'c = ' + c],
     });
   }
@@ -1928,6 +1974,7 @@ export function genProbabilityV2(diff: Difficulty): PracticeQuestion {
       question: '掷两枚均匀骰子，点数和为 ' + s + ' 的概率（用分数表示）',
       latex: 'P(X + Y = ' + s + ')',
       answer: frac(count, 36),
+      verify: { kind: 'value', expr: String(count) + '/36', claim: frac(count, 36) },
       steps: ['总情况 36 种', '和为 ' + s + ' 的情况有 ' + count + ' 种', '概率 = ' + frac(count, 36)],
       type: 'expression',
     });
@@ -1941,6 +1988,7 @@ export function genProbabilityV2(diff: Difficulty): PracticeQuestion {
       question: '抛 ' + n + ' 枚均匀硬币，恰有 ' + k + ' 枚正面的概率（用分数表示）',
       latex: 'P = @dfrac{C_{' + n + '}^{' + k + '}}{2^{' + n + '}}',
       answer: frac(c, Math.pow(2, n)),
+      verify: { kind: 'value', expr: 'binomial(' + n + ', ' + k + ')/2**' + n, claim: frac(c, Math.pow(2, n)) },
       steps: ['总情况 2^' + n + ' = ' + Math.pow(2, n), '有利情况 C(' + n + ',' + k + ') = ' + c, '概率 = ' + frac(c, Math.pow(2, n))],
       type: 'expression',
     });
@@ -1951,6 +1999,7 @@ export function genProbabilityV2(diff: Difficulty): PracticeQuestion {
     question: '袋中有 ' + r + ' 个红球、' + w + ' 个白球，任取一个为红球的概率（用分数表示）',
     latex: 'P = @dfrac{' + r + '}{' + r + ' + ' + w + '}',
     answer: frac(r, r + w),
+    verify: { kind: 'value', expr: '(' + r + ')/(' + r + ' + ' + w + ')', claim: frac(r, r + w) },
     steps: ['总球数 ' + (r + w), '红球 ' + r + ' 个', '概率 = ' + frac(r, r + w)],
     type: 'expression',
   });
