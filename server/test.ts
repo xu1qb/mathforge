@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import { validateQuestion, parseModelJson } from './validate.ts';
 import { generateQuestions } from './generate.ts';
+import { savePending, listQueue, reviewQuestion } from './store.ts';
 
 let pass = 0;
 function check(name: string, fn: () => void | Promise<void>) {
@@ -59,6 +60,20 @@ await check('mock 模式能产出合格题目', async () => {
     assert.ok(q.steps.length >= 2);
   }
   assert.equal(batch.mode, 'mock');
+});
+
+await check('入库 → 审核 → 通过 全链路', async () => {
+  // 用唯一 topic 避免与历史数据按题干去重后互相干扰
+  const topic = '审核测试-' + Date.now();
+  const batch = await generateQuestions({ topic, difficulty: 'basic', count: 2 });
+  const stored = savePending(batch.questions, 'test');
+  assert.ok(stored.length >= 1);
+  const pending = listQueue('pending', topic);
+  assert.ok(pending.length >= 1, '入库后应在待审核队列');
+  const target = pending[0];
+  const updated = reviewQuestion(target.id, 'approve');
+  assert.equal(updated?.status, 'approved');
+  assert.ok(listQueue('approved', topic).some((q) => q.id === target.id));
 });
 
 console.log('服务端测试：' + pass + ' 项通过');

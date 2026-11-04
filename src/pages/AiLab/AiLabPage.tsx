@@ -2,6 +2,7 @@
 // AI 出题实验室：调用后端模型生成题目，服务端已做 LaTeX/书写校验
 
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Sparkles, Loader2, AlertTriangle, CheckCircle2, Save, Cpu } from 'lucide-react';
 import PageShell from '@/components/PageShell';
 import MathRenderer from '@/components/MathRenderer';
@@ -21,6 +22,7 @@ const DIFFICULTIES = [
 ] as const;
 
 export default function AiLabPage() {
+  const navigate = useNavigate();
   const [health, setHealth] = useState<AiHealth | null>(null);
   const [topic, setTopic] = useState('极限计算');
   const [difficulty, setDifficulty] = useState<'basic' | 'advanced' | 'competition'>('basic');
@@ -174,6 +176,9 @@ export default function AiLabPage() {
             </div>
 
             <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={() => navigate('/ai-review')} className="gap-1.5">
+                审核队列
+              </Button>
               <Button onClick={generate} disabled={loading} className="gap-1.5">
                 {loading ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
                 {loading ? '生成中…' : '生成题目'}

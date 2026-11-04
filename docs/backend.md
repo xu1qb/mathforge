@@ -58,10 +58,29 @@ npm run dev:full         # 后端 + Vite 一起起（Vite 把 /api 代理到 878
 - 数量上限 10 道/次，超时 60s，失败最多重试 2 次
 - mock 模式可把整条链路跑通而不产生费用
 
-## 六、当前边界
+## 六、题库与审核队列
+
+AI 生成的题**不会直接可用**：它们先入库为 `pending`，人工在「AI 审核」页通过后才算数。
+
+| 状态 | 含义 | 入口 |
+|---|---|---|
+| pending | 待审核，默认落点 | `#/ai-review` |
+| approved | 人工通过 | `#/ai-review` 已通过 |
+| rejected | 驳回 | `#/ai-review` 已驳回 |
+
+存储：`.cache/ai/library.json`（JSON 文件，单进程写入；按题干+答案去重）。
+
+接口：
+
+| 方法 | 路径 | 说明 |
+|---|---|---|
+| GET | `/api/ai/queue?status=pending` | 列表 + 各状态计数 |
+| POST | `/api/ai/review` | `{ id, action: approve\|reject }` |
+
+## 七、当前边界
 
 - 只实现了「生成题目」；「生成讲解内容」的接口在 `server/prompts.ts` 里已有模板，尚未接页面
-- 生成的题目目前保存在浏览器 localStorage（`mathforge_ai_questions`），还没有入库
+- 已审核题目还没有进入练习页的抽题池（下一步接）
 - 没有账号体系与配额，若公开部署需要加鉴权与限流
 
 ## 七、下一步

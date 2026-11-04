@@ -56,6 +56,30 @@ export function fetchAiHealth(): Promise<AiHealth> {
   return request<AiHealth>('/health', { method: 'GET' }, 5000);
 }
 
+export type ReviewStatus = 'pending' | 'approved' | 'rejected';
+
+export interface StoredQuestion extends AiQuestion {
+  status: ReviewStatus;
+  createdAt: string;
+  reviewedAt?: string;
+  note?: string;
+  source: string;
+}
+
+export interface QueueResponse {
+  questions: StoredQuestion[];
+  stats: Record<ReviewStatus | 'total', number>;
+}
+
+export function fetchQueue(status: ReviewStatus | 'all' = 'pending'): Promise<QueueResponse> {
+  const qs = status === 'all' ? '' : '?status=' + status;
+  return request<QueueResponse>('/ai/queue' + qs, { method: 'GET' }, 15000);
+}
+
+export function reviewQuestion(id: string, action: 'approve' | 'reject', note?: string): Promise<{ question: StoredQuestion; stats: QueueResponse['stats'] }> {
+  return request('/ai/review', { method: 'POST', body: JSON.stringify({ id, action, note }) });
+}
+
 export function fetchAiQuestions(req: {
   topic: string;
   difficulty: 'basic' | 'advanced' | 'competition';

@@ -6,6 +6,7 @@ import { config } from './config.ts';
 import { generateQuestions } from './generate.ts';
 import { llmMode } from './llm.ts';
 import { validateQuestion } from './validate.ts';
+import { savePending, listQueue, reviewQuestion, stats, type ReviewStatus } from './store.ts';
 import type { AiQuestionRequest } from './types.ts';
 
 const MAX_BODY = 1024 * 256;
@@ -66,7 +67,31 @@ const server = createServer(async (req, res) => {
         return;
       }
       const batch = await generateQuestions(body);
-      send(res, 200, batch);
+      // 生成结果直接入库，状态 pending，等人工审核
+      const stored = savePending(batch.questions, 'ai:' + batch.model);
+      send(res, 200, { ...batch, questions: stored, saved: stored.length });
+      return;
+    }
+
+    if (url.pathname === '/api/ai/queue' && req.method === 'GET') {
+      const status = (url.searchParams.get('status') ?? '') as ReviewStatus | '';
+      const topic = url.searchParams.get('topic') ?? '';
+      send(res, 200, { questions: listQueue(status || undefined, topic || undefined), stats: stats() });
+      return;
+    }
+
+    if (url.pathname === '/api/ai/review' && req.method === 'POST') {
+      const body = JSON.parse(await readBody(req)) as { id?: string; action?: string; note?: string };
+      if (!body.id || (body.action !== 'approve' && body.action !== 'reject')) {
+        send(res, 400, { error: '需要 id 与 action（approve|reject）' });
+        return;
+      }
+      const updated = reviewQuestion(body.id, body.action, body.note);
+      if (!updated) {
+        send(res, 404, { error: '题目不存在' });
+        return;
+      }
+      send(res, 200, { question: updated, stats: stats() });
       return;
     }
 
