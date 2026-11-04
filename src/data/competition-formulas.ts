@@ -528,7 +528,7 @@ export const FORMULA_ITEMS: CompetitionFormula[] = [
     category: 'multi-diff',
     title: '无条件极值判别（AC-B²）',
     latex:
-      `f_x=f_y=0 \\text{ 时, } A=f_{xx}, B=f_{xy}, C=f_{yy}:` +
+      `f_x=f_y=0 \\text{ 时， } A=f_{xx}, B=f_{xy}, C=f_{yy}:` +
       `\\begin{cases} AC-B^2 > 0 \\text{ 且 } A>0 \\implies \\text{极小值} \\\\ AC-B^2 > 0 \\text{ 且 } A<0 \\implies \\text{极大值} \\\\ AC-B^2 < 0 \\implies \\text{不是极值} \\end{cases}`,
     description: '驻点处用二阶偏导组成的判别式 AC-B² 判断极值类型',
     tags: ['极值', '判别'],
@@ -717,7 +717,7 @@ export const FORMULA_ITEMS: CompetitionFormula[] = [
     id: 'ser-6',
     category: 'series',
     title: '幂级数收敛半径',
-    latex: `R = \\lim_{n\\to\\infty} \\left| \\frac{a_n}{a_{n+1}} \\right| \\quad \\text{（比值法, } a_n \\neq 0\\text{）}`,
+    latex: `R = \\lim_{n\\to\\infty} \\left| \\frac{a_n}{a_{n+1}} \\right| \\quad \\text{（比值法， } a_n \\neq 0\\text{）}`,
     description: '收敛半径 = 相邻系数比的极限（绝对值），端点需单独讨论',
     tags: ['幂级数', '收敛半径'],
   },
@@ -792,7 +792,7 @@ export const FORMULA_ITEMS: CompetitionFormula[] = [
       `\\sum_{n=1}^\\infty \\frac{(-1)^{n-1}}{\\sqrt{n}} &\\;\\text{条件收敛（}p=1/2<1\\text{，绝对值发散）} \\\\ ` +
       `\\sum_{n=1}^\\infty \\frac{(-1)^{n-1}}{n^2} &\\;\\text{绝对收敛（}p=2>1\\text{）}` +
       `\\end{aligned}`,
-    description: '交错p-级数: p>1绝对收敛, 0<p≤1条件收敛, p≤0发散。条件收敛的典型参照',
+    description: '交错p-级数：p>1绝对收敛， 0<p≤1条件收敛， p≤0发散。条件收敛的典型参照',
     tags: ['级数', '条件收敛', '交错级数'],
   },
   {

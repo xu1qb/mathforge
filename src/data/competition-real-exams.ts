@@ -77,7 +77,7 @@ export const REAL_EXAM_PAPERS_META: RealExamMeta[] = [
     session: '第16届',
     year: 2024,
     date: '2024-11-23',
-    category: '非数学A类',
+    category: '非数学 A 类',
     stage: '初赛',
     subtitle: '第16届全国大学生数学竞赛初赛',
     totalQuestions: 10,
@@ -90,7 +90,7 @@ export const REAL_EXAM_PAPERS_META: RealExamMeta[] = [
     session: '第15届',
     year: 2023,
     date: '2023-11-12',
-    category: '非数学类A',
+    category: '非数学类 A',
     stage: '初赛',
     subtitle: '精选真题',
     totalQuestions: 4,
@@ -549,7 +549,7 @@ export const REAL_EXAM_QUESTIONS: RealExamQuestion[] = [
 
 
 // ============================================================
-// 第16届全国大学生数学竞赛初赛（非数学A类，2024年11月）· 完整10题
+// 第16届全国大学生数学竞赛初赛（非数学 A 类，2024年11月）· 完整10题
 // ============================================================
 
 // ===== 填空题（每题 6 分，共 5 题 30 分）=====
@@ -565,7 +565,7 @@ export const REAL_EXAM_QUESTIONS: RealExamQuestion[] = [
     answer: "ln2 - 2 + pi/2",
     solution: "**方法：分部积分法**\n\n令 $I = \\int_0^1 \\ln(1+x^2)\\, dx$，用分部积分，$u = \\ln(1+x^2)$，$dv = dx$：\n$\\begin{aligned} I &= \\left. x\\ln(1+x^2)\\right|_0^1 - \\int_0^1 x \\cdot \\frac{2x}{1+x^2} dx \\\\ &= \\ln 2 - 2\\int_0^1 \\frac{x^2}{1+x^2} dx \\end{aligned}$\n\n而 $\\dfrac{x^2}{1+x^2} = 1 - \\dfrac{1}{1+x^2}$，所以：\n$\\int_0^1 \\frac{x^2}{1+x^2} dx = \\int_0^1 1\\, dx - \\int_0^1 \\frac{1}{1+x^2} dx = 1 - \\left.\\arctan x\\right|_0^1 = 1 - \\frac{\\pi}{4}$\n\n代入得：\n$I = \\ln 2 - 2\\left(1 - \\frac{\\pi}{4}\\right) = \\ln 2 - 2 + \\frac{\\pi}{2}$\n\n**数值验证**：$\\ln 2 \\approx 0.6931$，$\\pi/2 \\approx 1.5708$，故 $I \\approx 0.2639$，与数值积分一致。",
     hint: "分部积分，把 ln(1+x²) 当作 u，dx 当作 dv",
-    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学A类·2024",
+    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学 A 类·2024",
   },
   {
     id: "real-16-2",
@@ -579,7 +579,7 @@ export const REAL_EXAM_QUESTIONS: RealExamQuestion[] = [
     answer: "pi/2",
     solution: "**方法：极坐标 + 泰勒展开**\n\n**第一步：极坐标变换**\n令 $x = \\rho\\cos\\theta$，$y = \\rho\\sin\\theta$，则 $D: 0 \\leq \\rho \\leq r$，$0 \\leq \\theta \\leq 2\\pi$，$dxdy = \\rho\\,d\\rho d\\theta$。\n\n$\\iint_D (e^{x^2+y^2} - 1) dxdy = \\int_0^{2\\pi} \\int_0^r (e^{\\rho^2} - 1) \\rho\\, d\\rho d\\theta = 2\\pi \\int_0^r (e^{\\rho^2} - 1)\\rho\\,d\\rho$\n\n令 $u = \\rho^2$，则 $du = 2\\rho d\\rho$：\n$\\int_0^r (e^{\\rho^2} - 1)\\rho d\\rho = \\frac{1}{2}\\int_0^{r^2} (e^u - 1) du = \\frac{1}{2}(e^{r^2} - 1 - r^2)$\n\n所以二重积分 $I(r) = \\pi(e^{r^2} - 1 - r^2)$\n\n**第二步：取极限**\n由泰勒展开：$e^u = 1 + u + \\frac{u^2}{2} + o(u^2)$，令 $u = r^2$：\n$e^{r^2} - 1 - r^2 = \\frac{r^4}{2} + o(r^4)$\n\n$\\lim_{r\\to 0^+} \\frac{I(r)}{r^4} = \\lim_{r\\to 0^+} \\frac{\\pi \\cdot r^4/2 + o(r^4)}{r^4} = \\frac{\\pi}{2}$",
     hint: "极坐标化为单积分，再用泰勒展开或洛必达法则求极限",
-    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学A类·2024",
+    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学 A 类·2024",
   },
   {
     id: "real-16-3",
@@ -593,7 +593,7 @@ export const REAL_EXAM_QUESTIONS: RealExamQuestion[] = [
     answer: "f_1 + xy f_11 + (x+y)e^(x+y) f_12 + e^(2(x+y)) f_22 + e^(x+y) f_2",
     solution: "**方法：链式法则（二阶混合偏导）**\n\n令 $u = xy$，$v = e^{x+y}$，则 $z = f(u, v)$。\n\n**一阶偏导**：\n$\\frac{\\partial z}{\\partial x} = f_1 \\cdot y + f_2 \\cdot e^{x+y} = y\\,f_1 + e^{x+y}\\,f_2$\n\n**二阶混合偏导**（对 y 再求偏导）：\n$\\frac{\\partial^2 z}{\\partial x \\partial y} = f_1 + y\\cdot\\frac{\\partial f_1}{\\partial y} + e^{x+y}f_2 + e^{x+y}\\cdot\\frac{\\partial f_2}{\\partial y}$\n\n其中由链式法则：\n$\\frac{\\partial f_1}{\\partial y} = f_{11}\\cdot x + f_{12}\\cdot e^{x+y}$\n$\\frac{\\partial f_2}{\\partial y} = f_{21}\\cdot x + f_{22}\\cdot e^{x+y}$\n\n由二阶连续偏导，$f_{12} = f_{21}$。代入合并得：\n$\\frac{\\partial^2 z}{\\partial x \\partial y} = f_1 + xy\\,f_{11} + (x+y)e^{x+y}f_{12} + e^{2(x+y)}f_{22} + e^{x+y}f_2$",
     hint: "先求 z 对 x 的偏导，再对 y 求偏导；注意 f₁ f₂ 仍是 u,v 的函数，要用链式法则",
-    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学A类·2024",
+    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学 A 类·2024",
   },
   {
     id: "real-16-4",
@@ -607,7 +607,7 @@ export const REAL_EXAM_QUESTIONS: RealExamQuestion[] = [
     answer: "(-4/sqrt(21), -2/sqrt(21), 1/sqrt(21))",
     solution: "**方法：平面束法求投影直线**\n\n**第一步：写出直线 L 的一般方程**\n由 $\\dfrac{x-1}{1} = \\dfrac{y}{1}$ 得 $x - y - 1 = 0$\n由 $\\dfrac{y}{1} = \\dfrac{z-1}{-1}$ 得 $y + z - 1 = 0$\n\n**第二步：过 L 作垂直于 π 的平面**\n过 L 的平面束：$x - y - 1 + \\lambda(y + z - 1) = 0$，即\n$x + (\\lambda-1)y + \\lambda\\, z - (1+\\lambda) = 0$\n\n其法向量 $\\mathbf{n}_\\lambda = (1, \\lambda-1, \\lambda)$。平面 $\\pi$ 的法向量 $\\mathbf{n} = (1, -1, 2)$。\n\n两平面垂直 ⇔ 法向量点积为 0：\n$\\mathbf{n} \\cdot \\mathbf{n}_\\lambda = 1 + (1-\\lambda) + 2\\lambda = 2 + \\lambda = 0 \\implies \\lambda = -2$\n\n**第三步：投影平面**\n代入 $\\lambda = -2$：$x - 3y - 2z + 1 = 0$\n\n**第四步：求投影直线 L₀ 的方向向量**\n$\\mathbf{v} = \\mathbf{n} \\times \\mathbf{n}_{-2} = \\begin{vmatrix}\\mathbf{i} & \\mathbf{j} & \\mathbf{k} \\\\ 1 & -1 & 2 \\\\ 1 & -3 & -2\\end{vmatrix} = (8, 4, -2)$\n\n$|\\mathbf{v}| = \\sqrt{64 + 16 + 4} = \\sqrt{84} = 2\\sqrt{21}$\n\n**单位方向向量**：$\\pm\\dfrac{\\mathbf{v}}{|\\mathbf{v}|} = \\pm\\left(\\dfrac{4}{\\sqrt{21}}, \\dfrac{2}{\\sqrt{21}}, \\dfrac{-1}{\\sqrt{21}}\\right)$\n即 $\\pm\\left(-\\dfrac{4}{\\sqrt{21}}, -\\dfrac{2}{\\sqrt{21}}, \\dfrac{1}{\\sqrt{21}}\\right)$（方向相反等价）。",
     hint: "用平面束求过 L 且垂直于 π 的平面，投影直线方向向量 = 两平面法向量叉乘",
-    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学A类·2024",
+    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学 A 类·2024",
   },
   {
     id: "real-16-5",
@@ -621,7 +621,7 @@ export const REAL_EXAM_QUESTIONS: RealExamQuestion[] = [
     answer: "pi",
     solution: "**方法：格林公式挖洞法**\n\n设 $P = \\dfrac{-y}{4x^2+y^2}$，$Q = \\dfrac{x}{4x^2+y^2}$。\n\n**注意**：原点是奇点（分母为 0），不能直接对 L 所围区域用格林公式。\n\n**第一步：验证除奇点外 ∂Q/∂x = ∂P/∂y**\n$\\dfrac{\\partial Q}{\\partial x} = \\frac{(4x^2+y^2) - x\\cdot 8x}{(4x^2+y^2)^2} = \\frac{y^2 - 4x^2}{(4x^2+y^2)^2}$\n$\\dfrac{\\partial P}{\\partial y} = \\frac{-(4x^2+y^2) + y\\cdot 2y}{(4x^2+y^2)^2} = \\frac{y^2 - 4x^2}{(4x^2+y^2)^2}$\n\n故 $\\dfrac{\\partial Q}{\\partial x} - \\dfrac{\\partial P}{\\partial y} = 0$（对所有 $(x,y) \\neq (0,0)$）。\n\n**第二步：挖洞法**\n取小椭圆 $L_\\varepsilon: 4x^2 + y^2 = \\varepsilon^2$，逆时针方向（含于 L 内）。\n在 L 与 L_ε 之间的复连通区域上用格林公式：\n$\\oint_{L + L_\\varepsilon^-} Pdx + Qdy = 0$，故 $\\oint_L = \\oint_{L_\\varepsilon}$\n\n**第三步：计算 L_ε 上的积分**\n在 L_ε 上 $4x^2+y^2 = \\varepsilon^2$，代入：\n$\\oint_{L_\\varepsilon} \\frac{-y\\,dx + x\\,dy}{\\varepsilon^2} = \\frac{1}{\\varepsilon^2} \\oint_{L_\\varepsilon} x\\,dy - y\\,dx$\n\n由格林公式：$\\oint xdy - ydx = 2\\cdot \\text{椭圆面积}$\n椭圆 $4x^2+y^2 = \\varepsilon^2$ 即 $\\dfrac{x^2}{(\\varepsilon/2)^2} + \\dfrac{y^2}{\\varepsilon^2} = 1$，面积 $= \\pi \\cdot \\dfrac{\\varepsilon}{2} \\cdot \\varepsilon = \\dfrac{\\pi\\varepsilon^2}{2}$\n\n$\\oint_{L_\\varepsilon} xdy - ydx = 2 \\cdot \\dfrac{\\pi\\varepsilon^2}{2} = \\pi\\varepsilon^2$\n\n所以原积分 $= \\dfrac{1}{\\varepsilon^2} \\cdot \\pi\\varepsilon^2 = \\pi$。",
     hint: "原点是奇点，挖一个小椭圆洞；在多连通区域上用格林公式",
-    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学A类·2024",
+    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学 A 类·2024",
   },
   {
     id: "real-16-6",
@@ -635,7 +635,7 @@ export const REAL_EXAM_QUESTIONS: RealExamQuestion[] = [
     answer: "(1 + x) * sqrt(x^2 + y^2) = C x",
     solution: "**方法：积分因子法**\n\n原方程：$(x^3 - y^2)dx + xy(x+1)dy = 0$\n\n令 $M = x^3 - y^2$，$N = xy(x+1) = x^2y + xy$\n\n$M_y = -2y$，$N_x = 2xy + y = y(2x+1)$\n\n$\\dfrac{M_y - N_x}{N} = \\dfrac{-2y - 2xy - y}{xy(x+1)} = \\dfrac{-y(2x+3)}{xy(x+1)} = \\dfrac{-(2x+3)}{x(x+1)}$\n仅与 x 有关，故存在积分因子 $\\mu(x)$：\n\n$\\mu(x) = \\exp\\left(-\\int \\frac{2x+3}{x(x+1)} dx\\right)$\n\n部分分式：$\\dfrac{2x+3}{x(x+1)} = \\dfrac{3}{x} - \\dfrac{1}{x+1}$\n$\\int \\frac{2x+3}{x(x+1)} dx = 3\\ln|x| - \\ln|x+1| = \\ln\\dfrac{x^3}{|x+1|}$\n\n$\\mu(x) = e^{-\\ln\\frac{x^3}{x+1}} = \\dfrac{x+1}{x^3}$\n\n**方程两边乘 μ(x) 后变为全微分方程**：\n$\\dfrac{(x+1)(x^3-y^2)}{x^3} dx + \\dfrac{(x+1) \\cdot xy(x+1)}{x^3} dy = 0$\n\n整理：$\\left(1 + \\dfrac{1}{x} - \\dfrac{(x+1)y^2}{x^3}\\right) dx + \\dfrac{y(x+1)^2}{x^2} dy = 0$\n\n**求原函数 u(x, y)**：\n$\\dfrac{\\partial u}{\\partial y} = \\dfrac{y(x+1)^2}{x^2}$，对 y 积分得 $u = \\dfrac{y^2(x+1)^2}{2x^2} + C(x)$\n\n对 x 求偏导并与 M 比较，求得 C(x) = x + ln|x| + C₀。\n\n**通解**：$(1+x)^2(x^2+y^2) = C^2 x^2$，即\n$(1+x)\\sqrt{x^2+y^2} = C|x|$（C 为任意常数，可简写为 $(1+x)\\sqrt{x^2+y^2} = Cx$，约定 C 可正可负）。",
     hint: "用积分因子法：计算 (M_y - N_x)/N 仅与 x 有关，找积分因子 μ(x)",
-    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学A类·2024",
+    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学 A 类·2024",
   },
   {
     id: "real-16-7",
@@ -649,7 +649,7 @@ export const REAL_EXAM_QUESTIONS: RealExamQuestion[] = [
     answer: "(1) k = 1/2; (2) min = 1/ln2 - 1, max = 1/2",
     solution: "**(1) 求 k 使 f 在 [0,1] 连续**\n\n只需 $\\lim_{x\\to 0^+} f(x) = f(0) = k$。\n\n$\\lim_{x\\to 0^+} \\left(\\frac{1}{\\ln(1+x)} - \\frac{1}{x}\\right) = \\lim_{x\\to 0^+} \\frac{x - \\ln(1+x)}{x\\ln(1+x)}$\n\n泰勒展开：$\\ln(1+x) = x - \\frac{x^2}{2} + o(x^2)$\n分子：$x - \\ln(1+x) = \\frac{x^2}{2} + o(x^2)$\n分母：$x\\ln(1+x) = x^2 + o(x^2)$\n\n极限 $= \\dfrac{1}{2}$，所以 $k = \\dfrac{1}{2}$。\n\n**(2) 求最值**\n\n对 f(x) 求导：\n$f'(x) = -\\dfrac{1}{(1+x)\\ln^2(1+x)} + \\dfrac{1}{x^2} = \\dfrac{1}{x^2} - \\dfrac{1}{(1+x)\\ln^2(1+x)}$\n\n令 $g(t) = (1+t)\\ln^2(1+t) - t^2$（$t \\geq 0$），$g(0) = 0$。\n$g'(t) = \\ln^2(1+t) + 2\\ln(1+t) - 2t$，$g'(0) = 0$\n$g''(t) = \\frac{2[\\ln(1+t) - t]}{1+t}$\n\n因为 $\\ln(1+t) < t$（t > 0），所以 $g''(t) < 0$，从而 $g'(t) < 0$，$g(t) < 0$。\n\n即 $(1+x)\\ln^2(1+x) < x^2$，故 $\\dfrac{1}{(1+x)\\ln^2(1+x)} > \\dfrac{1}{x^2}$。\n\n因此 $f'(x) < 0$，f(x) 在 (0,1] 上严格递减。\n\n**最值**：\n- 最大值 $\\mu = f(0) = \\dfrac{1}{2}$\n- 最小值 $\\lambda = f(1) = \\dfrac{1}{\\ln 2} - 1$",
     hint: "(1) 通分后用泰勒展开求极限；(2) 求导后构造辅助函数判断单调性",
-    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学A类·2024",
+    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学 A 类·2024",
   },
   {
     id: "real-16-8",
@@ -663,7 +663,7 @@ export const REAL_EXAM_QUESTIONS: RealExamQuestion[] = [
     answer: "2*pi*(R^4/4 - R^3)",
     solution: "**方法：高斯公式（补面法）**\n\n补底圆面 $S_0: z=0,\\ x^2+y^2 \\leq R^2$，取下侧。则 $S \\cup S_0$ 构成闭合曲面外侧。\n\n设上半球体 $\\Omega: x^2+y^2+z^2 \\leq R^2,\\ z \\geq 0$。\n\n**第一步：应用高斯公式**\n\n$\\oiint_{S \\cup S_0} = \\iiint_\\Omega (2x-1 + 2y-1 + 2z-1) dV = \\iiint_\\Omega (2x + 2y + 2z - 3) dV$\n\n由对称性，$\\iiint_\\Omega x\\,dV = 0$，$\\iiint_\\Omega y\\,dV = 0$。\n\n三重积分 $= 2\\iiint_\\Omega z\\,dV - 3V_\\Omega$\n\n半球体积 $V_\\Omega = \\frac{2}{3}\\pi R^3$\n\n**计算 ∭z dV（球坐标）**：\n$\\iiint_\\Omega z\\,dV = \\int_0^{2\\pi}d\\theta\\int_0^{\\pi/2}\\int_0^R r\\cos\\phi \\cdot r^2\\sin\\phi\\,drd\\phi$\n$= 2\\pi \\int_0^{\\pi/2} \\cos\\phi\\sin\\phi\\,d\\phi \\int_0^R r^3 dr = 2\\pi \\cdot \\frac{1}{2} \\cdot \\frac{R^4}{4} = \\frac{\\pi R^4}{4}$\n\n三重积分结果：$2 \\cdot \\dfrac{\\pi R^4}{4} - 3 \\cdot \\dfrac{2}{3}\\pi R^3 = \\dfrac{\\pi R^4}{2} - 2\\pi R^3$\n\n**第二步：计算 S₀ 上的积分**\n在 $S_0$ 上 $z=0$，取下侧。前两项投影面积为 0，第三项：\n$\\iint_{S_0} (z^2-z)dxdy = \\iint_{S_0} 0\\,dxdy = 0$\n\n**第三步：求 I**\n$I = \\oiint_{外侧} - \\iint_{S_0下侧} = \\frac{\\pi R^4}{2} - 2\\pi R^3 - 0 = 2\\pi\\left(\\frac{R^4}{4} - R^3\\right)$",
     hint: "补底面 S₀: z=0 取下侧，用高斯公式；减去 S₀ 上的积分（注意方向）",
-    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学A类·2024",
+    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学 A 类·2024",
   },
   {
     id: "real-16-9",
@@ -677,7 +677,7 @@ export const REAL_EXAM_QUESTIONS: RealExamQuestion[] = [
     answer: "证明见解析",
     solution: "**证明：Newton-Leibniz 公式 + 导数 Lipschitz 条件**\n\n任取 $x \\in \\mathbb{R}$。对任意 $h > 0$，由 Newton-Leibniz 公式：\n$f(x) - f(x-h) = \\int_0^h f'(x-s)\\,ds$\n\n由条件 $|f'(x) - f'(y)| \\leq M|x-y|$，得 $f'(x-s) \\geq f'(x) - Ms$。\n\n两边积分：\n$f(x) - f(x-h) \\geq \\int_0^h [f'(x) - Ms] ds = h f'(x) - \\frac{1}{2}M h^2$\n\n由于 $f(x-h) \\geq 0$（f 非负），故：\n$f(x) \\geq f(x-h) + h f'(x) - \\frac{M}{2}h^2 \\geq h f'(x) - \\frac{M}{2}h^2$\n\n以上是 $f'(x) \\geq 0$ 时的估计。若 $f'(x) < 0$，考虑向右的 $f(x+h)$ 方向，同理可得。\n\n**取最优 h**：右边关于 h 的二次函数开口向下，最大值在\n$h = \\frac{|f'(x)|}{M}$ 处取得，最大值为 $\\dfrac{(f'(x))^2}{2M}$。\n\n因此：\n$f(x) \\geq \\frac{(f'(x))^2}{2M} \\quad \\Longleftrightarrow \\quad (f'(x))^2 \\leq 2M f(x)$\n\n证毕。",
     hint: "利用牛顿-莱布尼茨公式把 f(x) 与 f(x-h) 联系，导数用 Lipschitz 条件放缩，然后对 h 取最大值",
-    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学A类·2024",
+    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学 A 类·2024",
   },
   {
     id: "real-16-10",
@@ -691,10 +691,10 @@ export const REAL_EXAM_QUESTIONS: RealExamQuestion[] = [
     answer: "证明见解析",
     solution: "**证明：先对 k 求和估值 + 按 ⌊√n⌋ 分组 + 交错级数判别法**\n\n记 $a_{n,k} = \\dfrac{(-1)^{\\lfloor\\sqrt{n}\\rfloor}}{n^2 + k^2}$。\n\n**第一步：对 k 求和的估计**\n对固定 n，用积分估计：\n$\\sum_{k=1}^\\infty \\frac{1}{n^2 + k^2} < \\int_0^\\infty \\frac{dx}{n^2+x^2} = \\frac{\\pi}{2n}$\n同理 $\\sum_{k=1}^\\infty \\frac{1}{n^2+k^2} > \\int_1^\\infty \\frac{dx}{n^2+x^2} \\sim \\frac{\\pi}{2n}$\n\n即存在常数 $C_1, C_2 > 0$，使得 $\\dfrac{C_1}{n} \\leq \\sum_{k=1}^\\infty \\frac{1}{n^2+k^2} \\leq \\dfrac{C_2}{n}$。\n\n**第二步：令 bₙ = 内层和，按 ⌊√n⌋ 分组**\n设 $b_n = (-1)^{\\lfloor\\sqrt{n}\\rfloor} \\sum_{k=1}^\\infty \\frac{1}{n^2+k^2}$，原级数 $= \\sum_{n=1}^\\infty b_n$。\n\n令 $m = \\lfloor\\sqrt{n}\\rfloor$，则 $n \\in [m^2, (m+1)^2)$，共 $2m+1$ 个 n。\n每组内符号同为 $(-1)^m$，组和 $S_m = (-1)^m \\sum_{n=m^2}^{(m+1)^2 - 1} \\sum_k \\frac{1}{n^2+k^2}$。\n\n**第三步：估计 |S_m| 的阶**\n当 $n \\approx m^2$ 时，$\\sum_k 1/(n^2+k^2) \\approx \\pi/(2n) \\approx \\pi/(2m^2)$。\n每组有 $2m+1$ 项，所以 $|S_m| \\approx (2m) \\cdot \\pi/(2m^2) = \\pi/m$。\n\n更精确地：$|S_m| \\sim \\dfrac{\\pi}{m}$（$m \\to \\infty$），且 $|S_m|$ 单调递减趋于 0。\n\n**第四步：交错级数收敛**\n$\\sum_{m=1}^\\infty S_m$ 是交错级数，通项绝对值单调递减趋于 0，由 Leibniz 判别法收敛。\n\n**第五步：原二重级数收敛**\n由于原级数按 n 分组后收敛，且每组内各项同号，故原二重级数收敛。\n\n证毕。",
     hint: "先对 k 求和得 ~ π/(2n)；再按 ⌊√n⌋ 分组，每 2m+1 个同号项构成交错级数，用 Leibniz 判别法",
-    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学A类·2024",
+    sourceLabel: "第16届全国大学生数学竞赛初赛·非数学 A 类·2024",
   },
 
-  // ===== 第15届（2023）初赛·非数学类A·精选真题 =====
+  // ===== 第15届（2023）初赛·非数学类 A·精选真题 =====
   {
     id: 'real-15-a-1',
     examId: 'real-15th-2023-a',
@@ -720,7 +720,7 @@ export const REAL_EXAM_QUESTIONS: RealExamQuestion[] = [
       + '$z_{xy} = f_2 - 4xy\,f_{11} + 2x^2 f_{12} - 2y^2 f_{12} + xy\,f_{22}$\n\n'
       + '$z_{xy} = f_2 - 4xy\,f_{11} + 2(x^2-y^2)f_{12} + xy\,f_{22}$\n',
     hint: '链式法则，注意 $f_1,f_2$ 仍是 $u,v$ 的函数，求二阶偏导时再用一次链式法则；混合偏导连续时 $f_{12}=f_{21}$。',
-    sourceLabel: '第15届全国大学生数学竞赛初赛·非数学类A·2023',
+    sourceLabel: '第15届全国大学生数学竞赛初赛·非数学类 A·2023',
   },
   {
     id: 'real-15-a-2',
@@ -749,7 +749,7 @@ export const REAL_EXAM_QUESTIONS: RealExamQuestion[] = [
       + '因此：\n'
       + '$\\iint_\\Sigma(x+y+z)\\,dS = \\sqrt2\\cdot(0 + 5\\cdot25\\pi) = 125\\sqrt2\\,\\pi$\n',
     hint: '第一类曲面积分先投影到平面，注意将曲面方程代入被积函数；充分利用奇偶对称性。',
-    sourceLabel: '第15届全国大学生数学竞赛初赛·非数学类A·2023',
+    sourceLabel: '第15届全国大学生数学竞赛初赛·非数学类 A·2023',
   },
   {
     id: 'real-15-a-3',
@@ -795,7 +795,7 @@ export const REAL_EXAM_QUESTIONS: RealExamQuestion[] = [
       + '但此时 $f(x)=c\\int_0^x\\frac{1}{(1-t)^2}dt = c\\cdot\\frac{x}{1-x}$，在 $x\\to1$ 时趋于无穷，与 $f$ 在 $[0,1]$ 连续矛盾（除非 $c=0$）。\n'
       + '故等号成立当且仅当 $f\\equiv 0$。\n',
     hint: '利用 $f(x)=\\int_0^x f\'(t)dt$ 表示函数，再用 Cauchy-Schwarz 积分不等式；等号条件结合 $f$ 在端点有界分析。',
-    sourceLabel: '第15届全国大学生数学竞赛初赛·非数学类A·2023',
+    sourceLabel: '第15届全国大学生数学竞赛初赛·非数学类 A·2023',
   },
   {
     id: 'real-15-a-4',
@@ -841,7 +841,7 @@ export const REAL_EXAM_QUESTIONS: RealExamQuestion[] = [
       + '$ = \\dfrac{1}{a_0-1} - \\dfrac{1}{a_{N+1}-1} = \\dfrac{1}{3-1} - \\dfrac{1}{a_{N+1}-1} = \\dfrac12 - \\dfrac{1}{a_{N+1}-1}$\n\n'
       + '当 $N\\to\\infty$ 时，$a_{N+1}\\to\\infty$（因 $x_n\\to0$），故 $\\sum_{n=0}^\\infty x_n = \\dfrac12$。\n',
     hint: '递推级数常用裂项法。先对递推式取倒数，构造可裂项的差分式；或利用反函数性质构造 telescoping series。',
-    sourceLabel: '第15届全国大学生数学竞赛初赛·非数学类A·2023',
+    sourceLabel: '第15届全国大学生数学竞赛初赛·非数学类 A·2023',
   },
 ];
 // ============================================================
