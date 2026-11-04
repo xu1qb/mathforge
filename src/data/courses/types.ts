@@ -1,5 +1,16 @@
 // EXPORTS: Course, CourseChapter, CourseApplication, CourseCrossing
 
+export interface CourseExercise {
+  id: string;
+  question: string;
+  answer: string;
+  /** 思路提示（先给方向，不直接给答案） */
+  hint?: string;
+  /** 完整解答步骤 */
+  steps: string[];
+  level: '基础' | '进阶' | '竞赛';
+}
+
 export interface CourseChapter {
   id: string;
   title: string;
@@ -13,6 +24,8 @@ export interface CourseChapter {
   practiceTopics: string[];
   /** 一句话概括本章 */
   summary: string;
+  /** 本章练习题（带完整解答） */
+  exercises: CourseExercise[];
 }
 
 export interface CourseApplication {

@@ -192,6 +192,58 @@ export default function CoursePage() {
                           </div>
                         </div>
 
+                        <div>
+                          <div className="mb-1.5 text-xs font-medium text-foreground">
+                            本章练习（{ch.exercises.length} 题，点开看解答）
+                          </div>
+                          <div className="space-y-2">
+                            {ch.exercises.map((ex, i) => (
+                              <details
+                                key={ex.id}
+                                className="rounded-lg border border-border bg-card px-3 py-2"
+                              >
+                                <summary className="flex cursor-pointer items-start gap-2 text-xs">
+                                  <span className="mt-0.5 shrink-0 font-mono text-muted-foreground">
+                                    {i + 1}.
+                                  </span>
+                                  <span className="flex-1 text-foreground">{ex.question}</span>
+                                  <span
+                                    className={cn(
+                                      'shrink-0 text-[10px]',
+                                      ex.level === '竞赛'
+                                        ? 'text-rose-500'
+                                        : ex.level === '进阶'
+                                          ? 'text-amber-500'
+                                          : 'text-muted-foreground/70'
+                                    )}
+                                  >
+                                    {ex.level}
+                                  </span>
+                                </summary>
+                                <div className="mt-2 space-y-1.5 border-t border-border/60 pt-2 text-xs text-muted-foreground">
+                                  {ex.hint && (
+                                    <div>
+                                      <span className="font-medium text-foreground">思路：</span>
+                                      {ex.hint}
+                                    </div>
+                                  )}
+                                  <ol className="space-y-1">
+                                    {ex.steps.map((s, k) => (
+                                      <li key={k}>
+                                        {k + 1}. {s}
+                                      </li>
+                                    ))}
+                                  </ol>
+                                  <div className="text-foreground">
+                                    <span className="font-medium">答案：</span>
+                                    {ex.answer}
+                                  </div>
+                                </div>
+                              </details>
+                            ))}
+                          </div>
+                        </div>
+
                         <div className="flex flex-wrap gap-2">
                           <Button
                             size="sm"

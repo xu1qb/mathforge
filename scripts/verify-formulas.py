@@ -474,6 +474,32 @@ _Q = sp.Matrix([[1, 1], [1, 2]])
 chk('二次型 x²+2xy+2y² 正定',
     _Q[0, 0] > 0 and _Q.det() > 0)
 
+# ---- 线代课程练习答案（抽验） ----
+chk('练习 la1-1：det[[2,1],[3,4]]=5', sp.Matrix([[2, 1], [3, 4]]).det() == 5)
+chk('练习 la1-2：逆矩阵吻合',
+    sp.Matrix([[1, 2], [3, 4]]).inv() == sp.Matrix([[-2, 1], [sp.Rational(3, 2), sp.Rational(-1, 2)]]))
+chk('练习 la1-3：det[[1,2],[2,4]]=0（不可逆）', sp.Matrix([[1, 2], [2, 4]]).det() == 0)
+
+chk('练习 la2-1：x+y=3, x−y=1 解为 (2,1)',
+    sp.solve([sp.Symbol('x') + sp.Symbol('y') - 3, sp.Symbol('x') - sp.Symbol('y') - 1],
+             [sp.Symbol('x'), sp.Symbol('y')]) == {sp.Symbol('x'): 2, sp.Symbol('y'): 1})
+chk('练习 la2-3：秩不相等 → 无解',
+    sp.Matrix([[1, 1]]).rank() == 1 and sp.Matrix([[1, 1, 1], [1, 1, 2]]).rank() == 2)
+
+chk('练习 la3-1：(1,2) 与 (2,4) 线性相关', sp.Matrix([[1, 2], [2, 4]]).det() == 0)
+chk('练习 la3-3：(1,1),(1,-1) 构成基', sp.Matrix([[1, 1], [1, -1]]).det() != 0)
+
+chk('练习 la4-1：对角阵特征值 2,3', sorted(float(k) for k in sp.Matrix([[2, 0], [0, 3]]).eigenvals()) == [2.0, 3.0])
+# 注意：要算 A−λI 的零空间（λ=1），不是 A 的零空间
+chk('练习 la4-2：[[1,1],[0,1]] 的 λ=1 特征空间仅 1 维',
+    len((sp.Matrix([[1, 1], [0, 1]]) - sp.eye(2)).nullspace()) == 1)
+chk('练习 la4-3：[[0,1],[1,0]] 特征值 1,-1', sorted(float(k) for k in sp.Matrix([[0, 1], [1, 0]]).eigenvals()) == [-1.0, 1.0])
+
+chk('练习 la5-1：[[1,0],[0,2]] 正定', sp.Matrix([[1, 0], [0, 2]]).is_positive_definite)
+chk('练习 la5-2：[[1,0],[0,-1]] 不正定', not sp.Matrix([[1, 0], [0, -1]]).is_positive_definite)
+chk('练习 la5-3：[[1,1],[1,1]] 半正定（det=0 且特征值非负）',
+    sp.Matrix([[1, 1], [1, 1]]).det() == 0 and all(float(v) >= 0 for v in sp.Matrix([[1, 1], [1, 1]]).eigenvals()))
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:
