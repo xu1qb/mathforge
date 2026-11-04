@@ -122,7 +122,7 @@ export default function DungeonMapSection({ masteredTopics, onSelectTopic }: Dun
     });
   }, [stats, masteredTopics]);
 
-  if (skin !== 'pixel') return null;
+  if ((skin as string) !== 'pixel') return null;
 
   const handleNodeClick = (node: DungeonNode) => {
     if (node.state === 'locked') {

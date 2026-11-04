@@ -99,7 +99,7 @@ export default function CompetitionPracticeMode({
 
   // 像素皮肤 HP 耗尽 → 强制结束本组练习
   useEffect(() => {
-    if (skin !== 'pixel' || mode !== 'practicing') return;
+    if ((skin as string) !== 'pixel' || mode !== 'practicing') return;
     const onHpDead = () => {
       // 延迟一下，让玩家看到 MISS 动画和 HP 弹窗
       setTimeout(() => {
@@ -433,7 +433,7 @@ export default function CompetitionPracticeMode({
       )}
 
       {mode === 'practicing' && q && (
-        skin === 'pixel' ? (
+        (skin as string) === 'pixel' ? (
           <PixelBattlePanel
             question={q}
             index={currentIdx}
@@ -476,7 +476,7 @@ export default function CompetitionPracticeMode({
       )}
 
       {mode === 'result' && (
-        skin === 'pixel' ? (
+        (skin as string) === 'pixel' ? (
           <PixelBattleResult
             total={questions.length}
             correct={correctCount}

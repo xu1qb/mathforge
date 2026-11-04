@@ -156,7 +156,7 @@ export default function PixelHud() {
   const { coins, bump } = useCoins();
   const { hp, maxHp, damageFlash, healFlash, dead, restHeal } = usePixelHp();
 
-  if (skin !== 'pixel') return null;
+  if ((skin as string) !== 'pixel') return null;
 
   // 经验条分段（8-bit 跳跃式，每 10% 一格）
   const expSegments = 10;

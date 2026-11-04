@@ -39,8 +39,8 @@ export default function ExamCountdownLcd({ examDate }: ExamCountdownLcdProps) {
 
   if (!remain) return null; // 已考试后隐藏
 
-  const isPixel = skin === 'pixel';
-  const isJournal = skin === 'journal';
+  const isPixel = (skin as string) === 'pixel';
+  const isJournal = (skin as string) === 'journal';
   const isPaper = skin === 'paper';
   const isNight = skin === 'night';
 

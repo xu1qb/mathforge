@@ -3,7 +3,7 @@ import { scopedStorage } from '@/lib/lark-mock';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 export type ResolvedTheme = 'light' | 'dark';
-export type SkinType = 'night' | 'paper' | 'pixel' | 'journal';
+export type SkinType = 'night' | 'paper';
 
 interface ThemeContextValue {
   /** 用户选择的主题模式 */
@@ -49,7 +49,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [skin, setSkinState] = useState<SkinType>(() => {
     try {
       const saved = scopedStorage.getItem(SKIN_STORAGE_KEY);
-      if (saved === 'night' || saved === 'paper' || saved === 'pixel' || saved === 'journal') return saved;
+      if (saved === 'night' || saved === 'paper') return saved;
+      // 旧皮肤已被移除：像素（深色）迁移到夜航，手账（浅色）迁移到草稿纸
+      if (saved === 'pixel') return 'night';
+      if (saved === 'journal') return 'paper';
     } catch {
       // ignore
     }

@@ -735,18 +735,18 @@ export default function ScientificCalculatorPage() {
                       backgroundColor:
                         skin === 'night' ? '#1a2f1a' :
                         skin === 'paper' ? '#f5edd6' :
-                        skin === 'pixel' ? '#141a16' :
-                        skin === 'journal' ? '#fffdf5' :
+                        (skin as string) === 'pixel' ? '#141a16' :
+                        (skin as string) === 'journal' ? '#fffdf5' :
                         '#0d1b21',
                       color:
                         skin === 'night' ? '#f59e0b' :
                         skin === 'paper' ? '#4a3f35' :
-                        skin === 'pixel' ? '#7dff9a' :
-                        skin === 'journal' ? '#4a3f35' :
+                        (skin as string) === 'pixel' ? '#7dff9a' :
+                        (skin as string) === 'journal' ? '#4a3f35' :
                         undefined,
                       boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.35), inset 0 -1px 2px rgba(255,255,255,0.05)',
                       fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
-                      border: skin === 'pixel' ? '4px solid #0d120e' : 'none',
+                      border: (skin as string) === 'pixel' ? '4px solid #0d120e' : 'none',
                     }}
                   >
                     <input
@@ -762,7 +762,7 @@ export default function ScientificCalculatorPage() {
                       placeholder="输入 √2 + π/3 或点击符号按键"
                       className="w-full bg-transparent text-right text-xl md:text-2xl font-mono outline-none placeholder:opacity-40"
                       style={{
-                        color: skin === 'night' ? '#f59e0b' : skin === 'paper' ? '#4a3f35' : skin === 'pixel' ? '#7dff9a' : skin === 'journal' ? '#4a3f35' : '#cbd5e1',
+                        color: skin === 'night' ? '#f59e0b' : skin === 'paper' ? '#4a3f35' : (skin as string) === 'pixel' ? '#7dff9a' : (skin as string) === 'journal' ? '#4a3f35' : '#cbd5e1',
                       }}
                       spellCheck={false}
                     />
@@ -775,7 +775,7 @@ export default function ScientificCalculatorPage() {
                     <div className="h-px bg-emerald-800/40 my-3" />
                     {/* 结果行 + 切换按钮 */}
                     <div className="flex items-start gap-2">
-                      <div className="flex-1 text-right text-2xl md:text-3xl font-mono min-h-[2.5rem] whitespace-pre-line break-all" style={{ color: error ? (skin === 'night' || skin === 'pixel' ? '#ff6b6b' : '#c0392b') : skin === 'night' ? '#f59e0b' : skin === 'paper' ? '#4a3f35' : skin === 'pixel' ? '#7dff9a' : skin === 'journal' ? '#4a3f35' : '#6ee7b7' }}>
+                      <div className="flex-1 text-right text-2xl md:text-3xl font-mono min-h-[2.5rem] whitespace-pre-line break-all" style={{ color: error ? (skin === 'night' || (skin as string) === 'pixel' ? '#ff6b6b' : '#c0392b') : skin === 'night' ? '#f59e0b' : skin === 'paper' ? '#4a3f35' : (skin as string) === 'pixel' ? '#7dff9a' : (skin as string) === 'journal' ? '#4a3f35' : '#6ee7b7' }}>
                         {error
                           ? error
                           : result || exactResult

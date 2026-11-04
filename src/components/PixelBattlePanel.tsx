@@ -36,7 +36,7 @@ export default function PixelBattlePanel(props: PixelBattlePanelProps) {
   const { skin } = useTheme();
   const { dead } = usePixelHp();
 
-  if (skin !== 'pixel') return null;
+  if ((skin as string) !== 'pixel') return null;
   if (dead) return null; // HP 耗尽时不显示题目
 
   return (
@@ -618,7 +618,7 @@ export function BattleFeedbackOverlay() {
     return () => window.removeEventListener('mathforge:answer-result', onResult);
   }, []);
 
-  if (skin !== 'pixel') return null;
+  if ((skin as string) !== 'pixel') return null;
   if (!showHit) return null;
 
   const isCritical = showHit === 'critical';
@@ -803,7 +803,7 @@ export function PixelBattleResult({
   const rankStars = accuracy >= 90 ? 3 : accuracy >= 70 ? 2 : accuracy >= 50 ? 1 : 0;
   const rankText = accuracy >= 90 ? 'S' : accuracy >= 70 ? 'A' : accuracy >= 50 ? 'B' : 'C';
 
-  if (skin !== 'pixel') return null;
+  if ((skin as string) !== 'pixel') return null;
 
   return (
     <div

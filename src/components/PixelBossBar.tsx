@@ -112,7 +112,7 @@ export default function PixelBossBar({ totalWrong, pendingWrong }: PixelBossBarP
     setShowVictory(false);
   }, [totalWrong]);
 
-  if (skin !== 'pixel') return null;
+  if ((skin as string) !== 'pixel') return null;
 
   return (
     <>

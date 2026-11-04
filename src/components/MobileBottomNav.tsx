@@ -23,22 +23,22 @@ export default function MobileBottomNav() {
   const activeColor =
     skin === 'night' ? 'hsl(42 90% 55%)' :
     skin === 'paper' ? 'hsl(28 40% 35%)' :
-    skin === 'pixel' ? '#7dff9a' :
-    skin === 'journal' ? '#c0392b' :
+    (skin as string) === 'pixel' ? '#7dff9a' :
+    (skin as string) === 'journal' ? '#c0392b' :
     'hsl(170 60% 32%)';
 
   const bgColor =
     skin === 'night' ? 'hsl(222 25% 11%)' :
     skin === 'paper' ? 'hsl(45 35% 92%)' :
-    skin === 'pixel' ? '#1a2f23' :
-    skin === 'journal' ? '#f6efe2' :
+    (skin as string) === 'pixel' ? '#1a2f23' :
+    (skin as string) === 'journal' ? '#f6efe2' :
     '#f8fafc';
 
   const dividerColor =
     skin === 'night' ? 'rgba(245,158,11,0.15)' :
     skin === 'paper' ? 'rgba(74,63,53,0.12)' :
-    skin === 'pixel' ? '#0d120e' :
-    skin === 'journal' ? 'rgba(242,196,196,0.4)' :
+    (skin as string) === 'pixel' ? '#0d120e' :
+    (skin as string) === 'journal' ? 'rgba(242,196,196,0.4)' :
     'rgba(0,0,0,0.06)';
 
   return (
@@ -51,7 +51,7 @@ export default function MobileBottomNav() {
           minHeight: '56px',
           paddingBottom: 'calc(0.5rem + env(safe-area-inset-bottom, 0px))',
           boxShadow:
-            skin === 'pixel'
+            (skin as string) === 'pixel'
               ? '0 -4px 0 0 #0d120e'
               : '0 -1px 3px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.6)',
         }}
@@ -82,7 +82,7 @@ export default function MobileBottomNav() {
                   width: '36px',
                   height: '32px',
                   background:
-                    skin === 'pixel'
+                    (skin as string) === 'pixel'
                       ? isActive
                         ? '#1f3a2b'
                         : 'transparent'
@@ -90,14 +90,14 @@ export default function MobileBottomNav() {
                       ? 'linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.04) 100%)'
                       : 'transparent',
                   boxShadow:
-                    skin === 'pixel'
+                    (skin as string) === 'pixel'
                       ? isActive
                         ? '2px 2px 0 0 #0d120e'
                         : 'none'
                       : isActive
                       ? 'inset 0 1px 0 rgba(255,255,255,0.8), 0 1px 2px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.08)'
                       : 'none',
-                  border: isActive && skin !== 'pixel' ? `1px solid ${activeColor}30` : 'none',
+                  border: isActive && (skin as string) !== 'pixel' ? `1px solid ${activeColor}30` : 'none',
                 }}
               >
                 <Icon className="size-5" style={{ strokeWidth: 2 }} />

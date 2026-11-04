@@ -1055,7 +1055,7 @@ function TopicsTabContent({ topics, mastered, onSelect }: {
 }) {
   const { skin } = useTheme();
 
-  if (skin === 'pixel') {
+  if ((skin as string) === 'pixel') {
     return (
       <motion.div
         initial={{ opacity: 0, y: 10 }}

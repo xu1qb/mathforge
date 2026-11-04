@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Palette, Check, Moon, FileText, Gamepad2, StickyNote } from 'lucide-react';
+import { Palette, Check, Moon, FileText } from 'lucide-react';
 
 const SKINS: { key: SkinType; label: string; desc: string; icon: typeof Moon; colors: string[] }[] = [
   {
@@ -24,20 +24,6 @@ const SKINS: { key: SkinType; label: string; desc: string; icon: typeof Moon; co
     desc: '米黄纸色 · 横线纹理',
     icon: FileText,
     colors: ['hsl(45 35% 94%)', 'hsl(170 45% 30%)', 'hsl(25 20% 22%)'],
-  },
-  {
-    key: 'pixel',
-    label: '像素闯关',
-    desc: '8-bit 游戏风 · 荧光绿',
-    icon: Gamepad2,
-    colors: ['#1a2f23', '#7dff9a', '#ffd93d'],
-  },
-  {
-    key: 'journal',
-    label: '手账拼贴',
-    desc: '便签纸 · 胶带贴纸',
-    icon: StickyNote,
-    colors: ['#f6efe2', '#c0392b', '#f2c4c4'],
   },
 ];
 

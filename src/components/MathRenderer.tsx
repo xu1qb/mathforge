@@ -145,8 +145,8 @@ function MathRendererInner({ expression, displayMode = false, isInput = false, c
   const underlineColor =
     skin === 'night' ? 'hsl(42 90% 55%)' :
     skin === 'paper' ? 'hsl(28 40% 35%)' :
-    skin === 'pixel' ? '#7dff9a' :
-    skin === 'journal' ? '#c0392b' :
+    (skin as string) === 'pixel' ? '#7dff9a' :
+    (skin as string) === 'journal' ? '#c0392b' :
     'hsl(170 60% 35%)';
 
   const rendered = (

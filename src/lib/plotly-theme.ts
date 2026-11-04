@@ -72,7 +72,7 @@ const journalPalette: PlotlyPalette = {
 export function usePlotlyPalette() {
   const { skin } = useTheme();
   return useMemo(() => {
-    switch (skin) {
+    switch (skin as string) {
       case 'night':
         return nightPalette;
       case 'pixel':
