@@ -33,13 +33,19 @@ else
   bad "build"; dump "$TMP/mf-check-build.log"
 fi
 
-step "4/8 公式正确性（数学断言）"
+step "4/8 公式正确性（数学断言 + 生成器复核）"
 WS="$(cd .. && pwd)"
 if [ -d "$WS/.tooling/py" ]; then
   if PYTHONPATH="$WS/.tooling/py" python3 scripts/verify-formulas.py >"$TMP/mf-check-formula.log" 2>&1; then
     ok "formulas（$(grep -o '[0-9]*/[0-9]* passed' "$TMP/mf-check-formula.log" | tail -1)）"
   else
     bad "formulas"; grep '^FAIL' "$TMP/mf-check-formula.log" | sed 's/^/    /'
+  fi
+  # 生成器复核：抽样出题，用 sympy 独立重算答案
+  if PYTHONPATH="$WS/.tooling/py" node scripts/verify-generators.mjs >"$TMP/mf-check-claims.log" 2>&1; then
+    ok "claims（$(head -1 "$TMP/mf-check-claims.log")）"
+  else
+    bad "claims"; grep 'FAIL' "$TMP/mf-check-claims.log" | head -6 | sed 's/^/    /'
   fi
 else
   printf '  - 跳过：没找到 %s/.tooling/py\n' "$WS"

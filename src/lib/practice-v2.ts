@@ -1,7 +1,7 @@
 // EXPORTS: genLimitV2, genHyperbolicV2, genSeriesV2, genFourierV2, genFunctionPropertyV2, genSequenceLimitV2, genTrigIdentityV2, genIntegralV2
 // 参数化出题：题型 × 随机参数，单知识点可产出数百至数千道不同的题
 // 约定：源码里用 @ 代表反斜杠，由 mk() 统一还原，避免转义地狱
-import type { Difficulty, PracticeQuestion } from './math-practice';
+import type { Difficulty, PracticeQuestion, VerifyClaim } from './math-practice';
 
 const BS = String.fromCharCode(92);
 const L = (s: string) => s.split('@').join(BS);
@@ -34,6 +34,7 @@ function wrapCJK(latex: string): string {
 interface Q {
   topic: string; diff: Difficulty; question: string; latex: string; answer: string;
   display?: string; steps: string[]; type?: 'numeric' | 'expression';
+  verify?: VerifyClaim;
 }
 
 const mk = (q: Q): PracticeQuestion => {
@@ -55,6 +56,7 @@ const mk = (q: Q): PracticeQuestion => {
     answerType: q.type ?? 'numeric',
     steps,
     difficulty: q.diff,
+    verify: q.verify,
   };
 };
 
@@ -74,6 +76,7 @@ export function genLimitV2(diff: Difficulty): PracticeQuestion {
       question: '求极限：lim(x→' + a + ') (x² − ' + (a * a) + ')/(x − ' + a + ')',
       latex: '@lim_{x @to ' + a + '} @dfrac{x^{2} - ' + (a * a) + '}{x - ' + a + '}',
       answer: String(2 * a),
+      verify: { kind: 'limit', expr: '(x**2 - ' + (a * a) + ')/(x - (' + a + '))', variable: 'x', point: String(a), claim: String(2 * a) },
       steps: [
         '分子因式分解：x² − ' + (a * a) + ' = (x − ' + a + ')(x + ' + a + ')',
         '约去 (x − ' + a + ') 后得到 x + ' + a,
@@ -89,6 +92,7 @@ export function genLimitV2(diff: Difficulty): PracticeQuestion {
       question: '求极限：lim(x→0) sin(' + k + 'x)/x',
       latex: '@lim_{x @to 0} @dfrac{@sin ' + k + 'x}{x}',
       answer: String(k),
+      verify: { kind: 'limit', expr: 'sin(' + k + '*x)/x', variable: 'x', point: '0', claim: String(k) },
       steps: [
         '重要极限：lim(x→0) sin(ax)/x = a',
         '这里 a = ' + k,
@@ -125,6 +129,7 @@ export function genLimitV2(diff: Difficulty): PracticeQuestion {
       question: '已知 lim(x→∞) (1 + ' + a + '/x)^(' + b + 'x) = e^k，求 k',
       latex: '@lim_{x @to @infty} @left(1 + @dfrac{' + a + '}{x}@right)^{' + b + 'x} = e^{k}',
       answer: String(a * b),
+      verify: { kind: 'limit', expr: '(1 + ' + a + '/x)**(' + b + '*x)', variable: 'x', point: 'oo', claim: 'exp(' + a * b + ')' },
       steps: [
         '重要极限：lim(1 + a/x)^(bx) = e^(ab)',
         '这里 a = ' + a + '，b = ' + b,
@@ -141,6 +146,7 @@ export function genLimitV2(diff: Difficulty): PracticeQuestion {
       question: '求极限：lim(x→0) (1 − cos(' + k + 'x))/x²',
       latex: '@lim_{x @to 0} @dfrac{1 - @cos ' + k + 'x}{x^{2}}',
       answer: ans,
+      verify: { kind: 'limit', expr: '(1 - cos(' + k + '*x))/x**2', variable: 'x', point: '0', claim: ans.replace('/', '/') },
       steps: [
         '等价无穷小：1 − cos t ~ t²/2',
         '令 t = ' + k + 'x，则 1 − cos(' + k + 'x) ~ ' + (k * k) + 'x²/2',
@@ -751,6 +757,7 @@ export function genIntegralV2(diff: Difficulty): PracticeQuestion {
       question: '计算 ∫ 从 ' + a + ' 到 ' + b + ' 的 x^' + n + ' dx',
       latex: '@int_{' + a + '}^{' + b + '} x^{' + n + '} @, dx',
       answer: String(total),
+      verify: { kind: 'integral', expr: 'x**' + n, variable: 'x', lower: String(a), upper: String(b), claim: String(total) },
       steps: [
         '原函数：x^(n+1)/(n+1) = x^' + (n + 1) + '/' + (n + 1),
         '代入上下限：(' + Math.pow(b, n + 1) + ' − ' + Math.pow(a, n + 1) + ')/' + (n + 1),
@@ -838,6 +845,7 @@ export function genDerivativeV2(diff: Difficulty): PracticeQuestion {
       question: '求导：d/dx (' + a + 'x^' + n + ')',
       latex: '@dfrac{d}{dx}(' + a + 'x^{' + n + '})',
       answer: (a * n) + '*x^' + (n - 1),
+      verify: { kind: 'derivative', expr: String(a) + '*x**' + n, variable: 'x', claim: String(a * n) + '*x**' + (n - 1) },
       steps: [
         '(x^n)′ = n x^(n−1)',
         '系数保持不变：' + a + '·' + n + 'x^' + (n - 1),
@@ -875,6 +883,7 @@ export function genDerivativeV2(diff: Difficulty): PracticeQuestion {
       question: '求导：d/dx (' + a + 'e^(' + b + 'x))',
       latex: '@dfrac{d}{dx}(' + a + 'e^{' + b + 'x})',
       answer: (a * b) + '*e^(' + b + 'x)',
+      verify: { kind: 'derivative', expr: String(a) + '*exp(' + b + '*x)', variable: 'x', claim: String(a * b) + '*exp(' + b + '*x)' },
       steps: ['(e^u)′ = e^u · u′', 'u = ' + b + 'x，u′ = ' + b, '结果 = ' + (a * b) + 'e^(' + b + 'x)'],
       type: 'expression',
     });
@@ -1317,6 +1326,7 @@ export function genAlgebraQuadV2(diff: Difficulty): PracticeQuestion {
     question: '已知方程 ' + a + 'x² ' + sb + 'x ' + sc + ' = 0 的两根为整数，求' + (kind === 'sum' ? '两根之和' : kind === 'product' ? '两根之积' : '较大的根'),
     latex: a + 'x^{2} ' + sb + 'x ' + sc + ' = 0，求' + (kind === 'sum' ? 'x_1 + x_2' : kind === 'product' ? 'x_1 x_2' : '@max(x_1, x_2)'),
     answer: String(ans),
+    verify: { kind: 'roots', coeffs: [a, b, c], which: kind === 'sum' ? 'sum' : kind === 'product' ? 'product' : 'max', claim: String(ans) },
     steps: [
       '因式分解：' + a + '(x − ' + r1 + ')(x − ' + r2 + ') = 0',
       '两根为 ' + r1 + ' 与 ' + r2,
@@ -1373,6 +1383,7 @@ export function genNumberTheoryV2(diff: Difficulty): PracticeQuestion {
       question: '求 gcd(' + a + ', ' + b + ')',
       latex: '@gcd(' + a + ', ' + b + ')',
       answer: String(gcdAB),
+      verify: { kind: 'gcd', a, b, claim: String(gcdAB) },
       steps: ['辗转相除：' + a + ' = q·' + b + ' + r 逐步化简', '最大公因数为 ' + gcdAB],
     });
   }
@@ -1382,6 +1393,7 @@ export function genNumberTheoryV2(diff: Difficulty): PracticeQuestion {
       question: '求 lcm(' + a + ', ' + b + ')',
       latex: '@mathrm{lcm}(' + a + ', ' + b + ')',
       answer: String((a * b) / gcdAB),
+      verify: { kind: 'lcm', a, b, claim: String((a * b) / gcdAB) },
       steps: ['lcm(a,b) = ab / gcd(a,b)', 'gcd = ' + gcdAB, 'lcm = ' + (a * b) / gcdAB],
     });
   }
@@ -1391,6 +1403,7 @@ export function genNumberTheoryV2(diff: Difficulty): PracticeQuestion {
     question: '求 ' + a + ' 除以 ' + m + ' 的余数',
     latex: a + ' @bmod ' + m,
     answer: String(a % m),
+    verify: { kind: 'mod', a, m, claim: String(a % m) },
     steps: [a + ' = ' + Math.floor(a / m) + ' × ' + m + ' + ' + (a % m), '余数为 ' + (a % m)],
   });
 }
@@ -1406,6 +1419,7 @@ export function genInequalityAmgmV2(diff: Difficulty): PracticeQuestion {
       question: 'x > 0，求 x + ' + k + '/x 的最小值',
       latex: 'x > 0，求 x + @dfrac{' + k + '}{x} 的最小值',
       answer: String(2 * t),
+      verify: { kind: 'value', expr: '2*sqrt(' + k + ')', claim: String(2 * t) },
       steps: ['均值不等式：x + k/x ≥ 2√k', 'k = ' + k + '，2√' + k + ' = ' + 2 * t, '当 x = ' + t + ' 时取到最小值 ' + 2 * t],
     });
   }
@@ -1416,6 +1430,7 @@ export function genInequalityAmgmV2(diff: Difficulty): PracticeQuestion {
       question: 'a, b > 0 且 a + b = ' + s + '，求 ab 的最大值',
       latex: 'a + b = ' + s + '，求 ab 的最大值',
       answer: String((s * s) / 4),
+      verify: { kind: 'value', expr: '(' + s + ')**2/4', claim: String((s * s) / 4) },
       steps: ['ab ≤ ((a+b)/2)²', '= (' + s + '/2)² = ' + (s * s) / 4, 'a = b = ' + s / 2 + ' 时取到'],
     });
   }
@@ -1425,6 +1440,7 @@ export function genInequalityAmgmV2(diff: Difficulty): PracticeQuestion {
     question: 'x, y > 0 且 x + y = ' + s + '，求 1/x + 1/y 的最小值',
     latex: 'x + y = ' + s + '，求 @dfrac{1}{x} + @dfrac{1}{y} 的最小值',
     answer: String(4 / s),
+    verify: { kind: 'value', expr: '4/(' + s + ')', claim: String(4 / s) },
     steps: ['1/x + 1/y = (x+y)/(xy) = ' + s + '/(xy)', 'xy ≤ ' + (s * s) / 4, '所以最小值为 4/' + s + ' = ' + 4 / s],
   });
 }
@@ -1441,6 +1457,7 @@ export function genExpPowerV2(diff: Difficulty): PracticeQuestion {
       question: '解方程 ' + a + '^x = ' + val + '，求 x',
       latex: a + '^{x} = ' + val,
       answer: String(x),
+      verify: { kind: 'value', expr: 'log(' + val + ', ' + a + ')', claim: String(x) },
       steps: [val + ' = ' + a + '^' + x, '所以 x = ' + x],
     });
   }
@@ -1452,6 +1469,7 @@ export function genExpPowerV2(diff: Difficulty): PracticeQuestion {
       question: '化简 ' + a + '^' + m + ' × ' + a + '^' + n + ' = ' + a + '^k，求 k',
       latex: a + '^{' + m + '} @cdot ' + a + '^{' + n + '} = ' + a + '^{k}',
       answer: String(m + n),
+      verify: { kind: 'value', expr: 'log(' + a + '**' + m + ' * ' + a + '**' + n + ', ' + a + ')', claim: String(m + n) },
       steps: ['同底数相乘，指数相加', 'k = ' + m + ' + ' + n + ' = ' + (m + n)],
     });
   }
@@ -1462,6 +1480,7 @@ export function genExpPowerV2(diff: Difficulty): PracticeQuestion {
     question: '化简 (' + a + '^' + m + ')^' + n + ' = ' + a + '^k，求 k',
     latex: '@left(' + a + '^{' + m + '}@right)^{' + n + '} = ' + a + '^{k}',
     answer: String(m * n),
+    verify: { kind: 'value', expr: 'log((' + a + '**' + m + ')**' + n + ', ' + a + ')', claim: String(m * n) },
     steps: ['幂的乘方，指数相乘', 'k = ' + m + ' × ' + n + ' = ' + m * n],
   });
 }
@@ -1478,6 +1497,7 @@ export function genLogEquationV2(diff: Difficulty): PracticeQuestion {
       question: '解方程 log_' + a + ' x = ' + b,
       latex: '@log_{' + a + '} x = ' + b,
       answer: String(x),
+      verify: { kind: 'value', expr: a + '**' + b, claim: String(x) },
       steps: ['对数定义：x = ' + a + '^' + b, 'x = ' + x],
     });
   }
@@ -1488,6 +1508,7 @@ export function genLogEquationV2(diff: Difficulty): PracticeQuestion {
       question: '求 log_' + a + '(' + Math.pow(a, b) + ')',
       latex: '@log_{' + a + '} ' + Math.pow(a, b),
       answer: String(b),
+      verify: { kind: 'value', expr: 'log(' + Math.pow(a, b) + ', ' + a + ')', claim: String(b) },
       steps: [Math.pow(a, b) + ' = ' + a + '^' + b, '所以对数值为 ' + b],
     });
   }
@@ -1500,6 +1521,7 @@ export function genLogEquationV2(diff: Difficulty): PracticeQuestion {
     question: '已知 log_' + a + ' x = ' + px + '，log_' + a + ' y = ' + py + '，求 xy',
     latex: '@log_{' + a + '} x = ' + px + '，@log_{' + a + '} y = ' + py,
     answer: String(x * y),
+    verify: { kind: 'value', expr: a + '**' + px + ' * ' + a + '**' + py, claim: String(x * y) },
     steps: ['x = ' + a + '^' + px + ' = ' + x + '，y = ' + a + '^' + py + ' = ' + y, 'xy = ' + x * y],
   });
 }
@@ -1562,6 +1584,7 @@ export function genMatrixOpV2(diff: Difficulty): PracticeQuestion {
       question: '求行列式 |A|，A = [[' + a + ', ' + b + '], [' + c + ', ' + d + ']]',
       latex: 'A = ' + mat + '，求 @det A',
       answer: String(a * d - b * c),
+      verify: { kind: 'value', expr: '(' + a + ')*(' + d + ') - (' + b + ')*(' + c + ')', claim: String(a * d - b * c) },
       steps: ['二阶行列式：ad − bc', '= ' + a + '×' + d + ' − ' + b + '×' + c + ' = ' + (a * d - b * c)],
     });
   }
@@ -1571,6 +1594,7 @@ export function genMatrixOpV2(diff: Difficulty): PracticeQuestion {
       question: '求矩阵 A 的迹，A = [[' + a + ', ' + b + '], [' + c + ', ' + d + ']]',
       latex: 'A = ' + mat + '，求 @mathrm{tr}(A)',
       answer: String(a + d),
+      verify: { kind: 'value', expr: String(a) + ' + ' + d, claim: String(a + d) },
       steps: ['迹 = 主对角线元素之和', a + ' + ' + d + ' = ' + (a + d)],
     });
   }
@@ -1615,6 +1639,7 @@ export function genComplexV2(diff: Difficulty): PracticeQuestion {
       question: '求 |' + a + ' + ' + b + 'i|',
       latex: '@left@| ' + a + ' + ' + b + 'i @right@|',
       answer: String(m * m + n * n),
+      verify: { kind: 'value', expr: 'sqrt(' + a + '**2 + ' + b + '**2)', claim: String(m * m + n * n) },
       steps: ['|a + bi| = √(a² + b²)', a + '² + ' + b + '² = ' + (a * a + b * b) + ' = ' + (m * m + n * n) + '²'],
     });
   }
@@ -1624,6 +1649,7 @@ export function genComplexV2(diff: Difficulty): PracticeQuestion {
       question: '求 z · z̄，其中 z = ' + a + ' + ' + b + 'i',
       latex: 'z = ' + a + ' + ' + b + 'i，求 z @overline{z}',
       answer: String(a * a + b * b),
+      verify: { kind: 'value', expr: '(' + a + ')**2 + (' + b + ')**2', claim: String(a * a + b * b) },
       steps: ['z·z̄ = |z|² = a² + b²', '= ' + (a * a + b * b)],
     });
   }
@@ -1660,6 +1686,7 @@ export function genGeometryV2(diff: Difficulty): PracticeQuestion {
       question: '三角形底边 ' + b + '，高 ' + h + '，求面积',
       latex: 'S = @dfrac{1}{2} @cdot ' + b + ' @cdot ' + h,
       answer: String((b * h) / 2),
+      verify: { kind: 'value', expr: '(' + b + ')*(' + h + ')/2', claim: String((b * h) / 2) },
       steps: ['三角形面积 = 底 × 高 ÷ 2', '= ' + b + ' × ' + h + ' ÷ 2 = ' + (b * h) / 2],
     });
   }
@@ -1671,6 +1698,7 @@ export function genGeometryV2(diff: Difficulty): PracticeQuestion {
       question: '直角三角形两直角边为 ' + p + ' 与 ' + q + '，求斜边',
       latex: 'a = ' + p + '，b = ' + q + '，c = ?',
       answer: String(r),
+      verify: { kind: 'value', expr: 'sqrt((' + p + ')**2 + (' + q + ')**2)', claim: String(r) },
       steps: ['勾股定理：c² = a² + b²', p + '² + ' + q + '² = ' + (p * p + q * q) + ' = ' + r + '²', 'c = ' + r],
     });
   }
@@ -1681,6 +1709,7 @@ export function genGeometryV2(diff: Difficulty): PracticeQuestion {
     question: '矩形长 ' + w + '、宽 ' + h + '，求对角线长度（结果保留 2 位小数）',
     latex: '@sqrt{' + w + '^{2} + ' + h + '^{2}}',
     answer: String(Number(Math.hypot(w, h).toFixed(2))),
+      verify: { kind: 'value', expr: 'sqrt((' + w + ')**2 + (' + h + ')**2)', claim: String(Number(Math.hypot(w, h).toFixed(2))) },
     steps: ['对角线 = √(w² + h²)', '= √' + (w * w + h * h), '≈ ' + Math.hypot(w, h).toFixed(2)],
   });
 }
@@ -1697,6 +1726,7 @@ export function genCombinatoricsV2(diff: Difficulty): PracticeQuestion {
       question: '求 C(' + n + ', ' + k + ')',
       latex: 'C_{' + n + '}^{' + k + '}',
       answer: String(fact(n) / (fact(k) * fact(n - k))),
+      verify: { kind: 'value', expr: 'binomial(' + n + ', ' + k + ')', claim: String(fact(n) / (fact(k) * fact(n - k))) },
       steps: ['C(n,k) = n!/(k!(n−k)!)', '= ' + fact(n) + '/(' + fact(k) + '×' + fact(n - k) + ')', '= ' + fact(n) / (fact(k) * fact(n - k))],
     });
   }
@@ -1708,6 +1738,7 @@ export function genCombinatoricsV2(diff: Difficulty): PracticeQuestion {
       question: '求 P(' + n + ', ' + k + ')',
       latex: 'P_{' + n + '}^{' + k + '}',
       answer: String(fact(n) / fact(n - k)),
+      verify: { kind: 'value', expr: 'factorial(' + n + ')/factorial(' + n + ' - ' + k + ')', claim: String(fact(n) / fact(n - k)) },
       steps: ['P(n,k) = n!/(n−k)!', '= ' + fact(n) + '/' + fact(n - k) + ' = ' + fact(n) / fact(n - k)],
     });
   }
@@ -1717,6 +1748,7 @@ export function genCombinatoricsV2(diff: Difficulty): PracticeQuestion {
     question: '求 ' + n + '!',
     latex: n + '!',
     answer: String(fact(n)),
+    verify: { kind: 'value', expr: 'factorial(' + n + ')', claim: String(fact(n)) },
     steps: [n + '! = ' + Array.from({ length: n }, (_, i) => n - i).join(' × '), '= ' + fact(n)],
   });
 }
@@ -1732,6 +1764,7 @@ export function genCoordinateV2(diff: Difficulty): PracticeQuestion {
       question: '求点 (' + dx + ', ' + dy + ') 到原点的距离',
       latex: '@sqrt{(' + dx + ')^{2} + (' + dy + ')^{2}}',
       answer: String(m * m + n * n),
+      verify: { kind: 'value', expr: 'sqrt((' + dx + ')**2 + (' + dy + ')**2)', claim: String(m * m + n * n) },
       steps: ['距离 = √(x² + y²)', dx + '² + ' + dy + '² = ' + (m * m + n * n) + '²', '距离为 ' + (m * m + n * n)],
     });
   }
@@ -1744,6 +1777,7 @@ export function genCoordinateV2(diff: Difficulty): PracticeQuestion {
       question: '求 (' + x1 + ', ' + y1 + ') 与 (' + x2 + ', ' + y2 + ') 中点' + (evenX ? '的横坐标' : '横坐标的两倍'),
       latex: '@left(' + x1 + ', ' + y1 + '@right)，@left(' + x2 + ', ' + y2 + '@right)',
       answer: String(evenX ? (x1 + x2) / 2 : x1 + x2),
+      verify: { kind: 'value', expr: evenX ? '(' + x1 + ' + ' + x2 + ')/2' : '(' + x1 + ' + ' + x2 + ')', claim: String(evenX ? (x1 + x2) / 2 : x1 + x2) },
       steps: ['中点横坐标 = (x₁ + x₂)/2', '= (' + x1 + ' + ' + x2 + ')/2', evenX ? '= ' + (x1 + x2) / 2 : '两倍为 ' + (x1 + x2)],
     });
   }
@@ -1834,6 +1868,7 @@ export function genSolidV2(diff: Difficulty): PracticeQuestion {
       question: '正方体棱长 ' + a + '，求体积',
       latex: 'V = a^{3}，a = ' + a,
       answer: String(a * a * a),
+      verify: { kind: 'value', expr: '(' + a + ')**3', claim: String(a * a * a) },
       steps: ['正方体体积 = a³', '= ' + a + '³ = ' + a * a * a],
     });
   }
@@ -1844,6 +1879,7 @@ export function genSolidV2(diff: Difficulty): PracticeQuestion {
       question: '长方体长宽高为 ' + a + '、' + b + '、' + c + '，求体积',
       latex: 'a = ' + a + '，b = ' + b + '，c = ' + c + '，求 V',
       answer: String(a * b * c),
+      verify: { kind: 'value', expr: '(' + a + ')*(' + b + ')*(' + c + ')', claim: String(a * b * c) },
       steps: ['体积 = 长 × 宽 × 高', '= ' + a + '×' + b + '×' + c + ' = ' + a * b * c],
     });
   }
@@ -1854,6 +1890,7 @@ export function genSolidV2(diff: Difficulty): PracticeQuestion {
       question: '圆柱底面半径 ' + r + '、高 ' + h + '，体积写成 kπ，求 k',
       latex: 'V = @pi r^{2} h，r = ' + r + '，h = ' + h,
       answer: String(r * r * h),
+      verify: { kind: 'value', expr: '(' + r + ')**2*(' + h + ')', claim: String(r * r * h) },
       steps: ['圆柱体积 = πr²h', 'k = r²h = ' + r * r * h],
     });
   }
@@ -1865,6 +1902,7 @@ export function genSolidV2(diff: Difficulty): PracticeQuestion {
       question: '圆锥底面半径 ' + r + '、高 ' + h + '，体积写成 kπ，求 k（结果保留 2 位小数）',
       latex: 'V = @dfrac{1}{3}@pi r^{2} h，r = ' + r + '，h = ' + h,
       answer: String(Number(((r * r * h) / 3).toFixed(2))),
+      verify: { kind: 'value', expr: '(' + r + ')**2*(' + h + ')/3', claim: String(Number(((r * r * h) / 3).toFixed(2))) },
       steps: ['圆锥体积 = (1/3)πr²h', 'k = ' + r + '²×' + h + '/3 = ' + ((r * r * h) / 3).toFixed(2)],
     });
   }
@@ -1874,6 +1912,7 @@ export function genSolidV2(diff: Difficulty): PracticeQuestion {
     question: '球半径 ' + r + '，体积写成 kπ，求 k（结果保留 2 位小数）',
     latex: 'V = @dfrac{4}{3}@pi r^{3}，r = ' + r,
     answer: String(Number(((4 * r * r * r) / 3).toFixed(2))),
+      verify: { kind: 'value', expr: '4*(' + r + ')**3/3', claim: String(Number(((4 * r * r * r) / 3).toFixed(2))) },
     steps: ['球体积 = (4/3)πr³', 'k = 4×' + r + '³/3 = ' + ((4 * r * r * r) / 3).toFixed(2)],
   });
 }

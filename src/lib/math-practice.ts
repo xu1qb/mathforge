@@ -39,6 +39,16 @@ import { gcd } from 'mathjs';
 
 export type Difficulty = 'basic' | 'advanced' | 'competition';
 
+export type VerifyClaim =
+  | { kind: 'limit'; expr: string; variable: string; point: string; claim: string }
+  | { kind: 'derivative'; expr: string; variable: string; claim: string }
+  | { kind: 'integral'; expr: string; variable: string; lower?: string; upper?: string; claim: string }
+  | { kind: 'value'; expr: string; claim: string }
+  | { kind: 'roots'; coeffs: [number, number, number]; which: 'sum' | 'product' | 'max'; claim: string }
+  | { kind: 'gcd'; a: number; b: number; claim: string }
+  | { kind: 'lcm'; a: number; b: number; claim: string }
+  | { kind: 'mod'; a: number; m: number; claim: string };
+
 export interface PracticeQuestion {
   /** 题目 id（随机种子） */
   id: string;
@@ -58,6 +68,11 @@ export interface PracticeQuestion {
   steps: string[];
   /** 难度 */
   difficulty: Difficulty;
+  /**
+   * 可复核声明：生成的题同时给出「用 sympy 能独立算一遍」的数据。
+   * 有 claim 的题会被 scripts/verify-generators.mjs 抽样复算，防止答案写错。
+   */
+  verify?: VerifyClaim;
   /** 苏格拉底式三层提示（方向/中间步/完整思路），长度 3 */
   hints?: string[];
 }

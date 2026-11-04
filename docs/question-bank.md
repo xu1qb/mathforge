@@ -45,7 +45,29 @@
 | 组合 / 概率 / 随机变量 | `genCombinatoricsV2` / `genProbabilityV2` / `genRandomVariableV2` | 3 / 3 / 4 |
 | 微分方程 | `genOdeV2` | 5 |
 
-## 三、多样性门槛
+## 三、答案复核（claims）
+
+生成器除了题目和答案，还会给出**可复核声明**（`verify`），例如：
+
+```ts
+verify: { kind: 'limit', expr: 'sin(5*x)/x', variable: 'x', point: '0', claim: '5' }
+```
+
+`scripts/verify-generators.mjs` 抽样出题（每知识点每档 8 题），把声明交给
+`scripts/verify-claims.py`，用 **sympy 独立重算**再和答案比对——不是字符串比对。
+
+支持的声明类型：`limit` / `derivative` / `integral` / `value` / `roots` / `gcd` / `lcm` / `mod`。
+
+当前覆盖率：**261 / 720（36%）**，全部通过。尚未覆盖的知识点：
+
+`algebra-factor`、`inequality-solve`、`function-property`、`sequence-recurrence`、
+`trig-special`、`trig-identity`、`conic-sections`、`vector-op`、`sequence-limit`、
+`series-convergence`、`hyperbolic-func`、`ode-solving`、`fourier-basic`、
+`probability-classical`、`random-variable`、`fusion`。
+
+新增题型时，**能给出 verify 就一定要给**；给不出说明这道题没法自动验证，要标出来。
+
+## 四、多样性门槛
 
 `check-variety.mjs`：每个知识点抽 60 次，要求
 
@@ -54,7 +76,7 @@
 
 当前：**83.9%**（1460/1740），最低的知识点也有 40/60。
 
-## 四、新增题型的写法
+## 五、新增题型的写法
 
 1. 在 `src/lib/practice-v2.ts` 加 `genXxxV2`，用 `mk({...})` 构造；
 2. 参数要**出现在 LaTeX 里**，否则去重会把它当成同一题；
