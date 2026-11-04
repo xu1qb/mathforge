@@ -36,6 +36,8 @@ npm run dev:full         # 后端 + Vite 一起起（Vite 把 /api 代理到 878
 配置读取顺序：**已存在的环境变量 > 项目根 `.env` > 代码默认值**。
 `.env` 已加入 `.gitignore`，不会被提交。
 
+> 注意：`npm run test:server` 会强制 `LLM_API_KEY=`（空值）跑 mock，避免测试打到真实模型花钱。
+
 ## 三、接口
 
 | 方法 | 路径 | 说明 |

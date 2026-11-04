@@ -92,7 +92,8 @@ fi
 
 
 step "8/8 服务端（校验与生成链路）"
-if node --experimental-strip-types server/test.ts >"$TMP/mf-check-server.log" 2>&1; then
+# 强制 mock：测试绝不能打到真实模型（会花钱且结果不稳定）
+if LLM_API_KEY= DUAL_SOLVE=0 AGENT_MODE=0 node --experimental-strip-types server/test.ts >"$TMP/mf-check-server.log" 2>&1; then
   ok "server（$(tail -1 "$TMP/mf-check-server.log")）"
 else
   bad "server"; tail -6 "$TMP/mf-check-server.log" | sed 's/^/    /'

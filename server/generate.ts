@@ -34,7 +34,14 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
     return { ...cached, cached: cached.questions.length, generatedAt: new Date().toISOString() };
   }
 
-  const { system, user } = buildQuestionPrompt(req);
+  const { system: baseSystem, user } = buildQuestionPrompt(req);
+  const system = useAgent
+    ? baseSystem +
+      '\n\n你可以调用工具。提交前请务必：\n' +
+      '1) 用 check_latex 检查最终 LaTeX 能否渲染；\n' +
+      '2) 对自己的答案做一次独立验算，必要时用 check_equivalent 对比另一种解法得到的答案；\n' +
+      '3) 只有工具确认无误后再输出最终 JSON。'
+    : baseSystem;
   const accepted: AiQuestion[] = [];
   let repairNotes: string[] = [];
   let totalToolCalls = 0;
