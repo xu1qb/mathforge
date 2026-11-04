@@ -35,6 +35,10 @@ const rules = [
   { id: 'doubleminus', name: '双负号 (x--4)', test: (s) => /--/.test(s) },
   { id: 'brackets', name: '残留 [[ ]]', test: (s) => /\[\[/.test(s) },
   { id: 'star', name: '用 * 当乘号', test: (s) => /\*/.test(s) },
+  { id: 'slashfrac', name: '斜杠分式 (a/b)', test: (s) => /(?<![\\a-zA-Z])[0-9a-zA-Z]+\/[0-9a-zA-Z]+/.test(s) && !s.includes('\\dfrac') && !s.includes('\\frac') },
+  { id: 'arrows', name: '箭头写成 ->', test: (s) => /->|=>/.test(s) },
+  { id: 'cmpops', name: '比较符写成 <= >= !=', test: (s) => /<=|>=|!=/.test(s) },
+  { id: 'ellipsis', name: '省略号写成 ...', test: (s) => /\.\.\./.test(s) },
 ];
 const stats = {};
 const samples = {};

@@ -2,6 +2,7 @@
 
 import { evaluate, simplify, derivative } from 'mathjs';
 import { normalizeMathInput } from './math-normalize';
+import { expressionToLatex } from './expression-to-latex';
 import { gcd } from 'mathjs';
 
 export type Difficulty = 'basic' | 'advanced' | 'competition';
@@ -411,7 +412,7 @@ function genLimit(diff: Difficulty): PracticeQuestion {
 
   const t = pick(templates);
   const question = `计算极限：lim(x → ${t.point}) ${t.expr.replace(/\*/g, '')}`;
-  const questionLatex = `\\text{计算极限： } \\lim_{x \\to ${t.point === '∞' ? '\\infty' : t.point}} ${t.expr.replace(/\*/g, '')}`;
+  const questionLatex = `\\text{计算极限： } \\lim_{x \\to ${t.point === '∞' ? '\\infty' : t.point}} ${expressionToLatex(t.expr).replace(/\\frac/g, '\\dfrac')}`;
 
   return {
     id: `lim-${Date.now()}`,
