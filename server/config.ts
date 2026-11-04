@@ -53,6 +53,8 @@ export interface ServerConfig {
   agentMode: boolean;
   /** 工具调用最大轮数 */
   agentMaxRounds: number;
+  /** 是否做新颖度过滤 */
+  noveltyFilter: boolean;
 }
 
 function env(key: string, fallback = ''): string {
@@ -74,4 +76,5 @@ export const config: ServerConfig = {
   dualSolve: env('DUAL_SOLVE', '1') !== '0',
   agentMode: env('AGENT_MODE', '0') === '1',
   agentMaxRounds: Number(env('AGENT_MAX_ROUNDS', '6')),
+  noveltyFilter: env('NOVELTY_FILTER', '1') !== '0',
 };

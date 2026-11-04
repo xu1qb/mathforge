@@ -3,9 +3,45 @@
 
 import { chat, type ChatMessage } from './llm.ts';
 
+
+
 export interface IndependentResult {
   answer: string;
   steps: string[];
+}
+
+export interface JudgeResult {
+  correct: boolean;
+  computed: string;
+}
+
+/** 裁决：给定题面与一个待检验答案，模型必须重新计算后判断对错（不锚定原答案的推导过程） */
+export async function judgeAnswer(questionLatex: string, claimed: string): Promise<JudgeResult | null> {
+  const messages: ChatMessage[] = [
+    {
+      role: 'system',
+      content:
+        '你是核验员。必须自己从头计算，不要默认给定答案正确。' +
+        '只输出 JSON：{"computed":"你算出的答案","correct":true|false}，不要解释。',
+    },
+    {
+      role: 'user',
+      content: '题目：' + questionLatex + '\n待检验答案：' + claimed + '\n请独立计算后判断该答案是否正确。',
+    },
+  ];
+  const reply = await chat(messages);
+  const start = reply.indexOf('{');
+  const end = reply.lastIndexOf('}');
+  if (start < 0 || end <= start) return null;
+  try {
+    const parsed = JSON.parse(reply.slice(start, end + 1)) as { correct?: unknown; computed?: unknown };
+    return {
+      correct: parsed.correct === true,
+      computed: typeof parsed.computed === 'string' ? parsed.computed.trim() : '',
+    };
+  } catch {
+    return null;
+  }
 }
 
 export async function independentSolve(questionLatex: string): Promise<IndependentResult | null> {

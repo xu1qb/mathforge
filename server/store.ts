@@ -66,6 +66,30 @@ export function savePending(questions: AiQuestion[], source: string): StoredQues
   return stored;
 }
 
+/** 自动核验失败的题：以 rejected 入库，留下证据供人工查看 */
+export function saveRejected(questions: AiQuestion[], source: string, note: string): StoredQuestion[] {
+  const data = read();
+  const now = new Date().toISOString();
+  const stored = questions.map((q) => ({
+    ...q,
+    status: 'rejected' as ReviewStatus,
+    createdAt: now,
+    reviewedAt: now,
+    note,
+    source,
+  }));
+  const keyOf = (q: StoredQuestion) => q.topic + '||' + q.questionLatex + '||' + q.answer;
+  const existing = new Set(data.questions.map(keyOf));
+  for (const q of stored) {
+    if (!existing.has(keyOf(q))) {
+      data.questions.unshift(q);
+      existing.add(keyOf(q));
+    }
+  }
+  write(data);
+  return stored;
+}
+
 export function listQueue(status?: ReviewStatus, topic?: string): StoredQuestion[] {
   const data = read();
   return data.questions.filter(

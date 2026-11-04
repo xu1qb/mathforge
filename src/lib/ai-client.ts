@@ -17,9 +17,11 @@ export interface AiQuestion {
     notationOk: boolean;
     issues: string[];
     attempts: number;
-    dualSolve?: 'match' | 'mismatch' | 'skipped';
+    dualSolve?: 'match' | 'judged' | 'mismatch' | 'skipped';
     secondAnswer?: string;
     method?: string;
+    novelty?: 'novel' | 'similar';
+    noveltyScore?: number;
   };
 }
 

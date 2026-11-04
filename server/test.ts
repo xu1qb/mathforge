@@ -7,6 +7,7 @@ import { answersEquivalent, verifyAvailable } from './verify.ts';
 import { classifyIssues, buildRepairPrompt } from './feedback.ts';
 import { executeTool } from './tools.ts';
 import { runAgent } from './agent.ts';
+import { checkNovelty, loadBaseline } from './novelty.ts';
 
 let pass = 0;
 function check(name: string, fn: () => void | Promise<void>) {
@@ -113,6 +114,19 @@ await check('agent 循环在 mock 下返回内容', async () => {
   const r = await runAgent('system', 'user');
   assert.ok(r.content.includes('questions'));
   assert.equal(r.toolCalls.length, 0);
+});
+
+await check('新颖度：同模板换数字判为重复', () => {
+  const baseline = loadBaseline();
+  if (baseline.length === 0) return;
+  const sample = baseline[0];
+  const r = checkNovelty(sample.latex, sample.answer);
+  assert.equal(r.novel, false);
+});
+
+await check('新颖度：不同结构判为新题', () => {
+  const r = checkNovelty('\\sum_{k=1}^{n} \\cos\\dfrac{k\\pi}{3}', '0');
+  assert.equal(r.novel, true);
 });
 
 if (verifyAvailable()) {

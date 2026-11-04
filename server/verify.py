@@ -49,7 +49,12 @@ def latex_to_plain(s):
 
 
 def norm(v):
-    return latex_to_plain((v or "").strip().replace(" ", ""))
+    s = (v or "").strip().replace(" ", "")
+    s = latex_to_plain(s)
+    # 去掉变量前缀：n=7 / x=7 / \{7\} 与 7 视为同一答案
+    s = re.sub(r"^[a-zA-Z]\s*=\s*", "", s)
+    s = s.strip("{}")
+    return s
 
 
 def main():

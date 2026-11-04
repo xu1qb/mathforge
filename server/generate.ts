@@ -8,11 +8,13 @@ import { cacheKey, readCache, writeCache } from './cache.ts';
 import { buildQuestionPrompt } from './prompts.ts';
 import { parseModelJson, validateQuestion, type RawQuestion } from './validate.ts';
 import { answersEquivalent } from './verify.ts';
-import { independentSolve } from './solve.ts';
+import { independentSolve, judgeAnswer } from './solve.ts';
 import { classifyIssues } from './feedback.ts';
+import { checkNovelty } from './novelty.ts';
+import { saveRejected } from './store.ts';
 import type { AiQuestion, AiQuestionBatch, AiQuestionRequest } from './types.ts';
 
-const PROMPT_VERSION = 4;
+const PROMPT_VERSION = 7;
 
 function normalize(req: AiQuestionRequest): Required<AiQuestionRequest> {
   return {
@@ -43,6 +45,7 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
       '3) 只有工具确认无误后再输出最终 JSON。'
     : baseSystem;
   const accepted: AiQuestion[] = [];
+  const rejected: AiQuestion[] = [];
   let repairNotes: string[] = [];
   let totalToolCalls = 0;
   let attempts = 0;
@@ -95,23 +98,67 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
       const duplicate = accepted.some((x) => x.questionLatex === String(raw.questionLatex));
       if (duplicate) continue;
 
-      let dualSolve: 'match' | 'mismatch' | 'skipped' = 'skipped';
+      let dualSolve: 'match' | 'judged' | 'mismatch' | 'skipped' = 'skipped';
       let secondAnswer: string | undefined;
       let method: string | undefined;
       if (config.dualSolve && llmMode() === 'live') {
-        const second = await independentSolve(String(raw.questionLatex)).catch(() => null);
+        let second = await independentSolve(String(raw.questionLatex)).catch(() => null);
+        // 独立求解没给出可比答案时再试一次；仍失败则视为不可验证
+        if (!second) second = await independentSolve(String(raw.questionLatex)).catch(() => null);
+        if (!second) {
+          lastIssues.push('无法独立验证（独立求解未返回可比较的答案）：' + String(raw.questionLatex).slice(0, 60));
+          continue;
+        }
         if (second) {
           const eq = await answersEquivalent(String(raw.answer), second.answer);
           secondAnswer = second.answer;
           method = eq.method;
           dualSolve = eq.equal ? 'match' : 'mismatch';
           if (!eq.equal) {
-            lastIssues.push(
-              '答案与独立求解不一致（题面：' + String(raw.questionLatex).slice(0, 60) +
-                '；你的答案 ' + String(raw.answer) + '，独立解 ' + second.answer + '）'
-            );
-            continue;
+            // 独立解也可能是错的（实测遇到过），所以再让模型复算一次做裁决
+            const judged = await judgeAnswer(String(raw.questionLatex), String(raw.answer)).catch(() => null);
+            if (judged && judged.correct && judged.computed) {
+              const recheck = await answersEquivalent(String(raw.answer), judged.computed);
+              if (recheck.equal) {
+                dualSolve = 'judged';
+              }
+            }
+            if (dualSolve !== 'judged') {
+              lastIssues.push(
+                '答案无法通过核验（题面：' + String(raw.questionLatex).slice(0, 60) +
+                  '；你的答案 ' + String(raw.answer) + '，独立解 ' + second.answer + '）'
+              );
+              rejected.push({
+                id: 'ai-rej-' + Date.now().toString(36),
+                topic: req.topic,
+                difficulty: req.difficulty,
+                question: String(raw.question),
+                questionLatex: String(raw.questionLatex),
+                answer: String(raw.answer),
+                answerType: 'numeric',
+                steps: (raw.steps as string[]).map(String),
+                validation: { latexOk: true, notationOk: true, issues: [lastIssues[lastIssues.length - 1]], attempts, dualSolve, secondAnswer: second.answer },
+              });
+              continue;
+            }
           }
+        }
+      }
+
+      // 新颖度：与已有题库/本地题型比对，挡住旧题换皮
+      let novelty: 'novel' | 'similar' = 'novel';
+      let noveltyScore = 0;
+      // mock 模式不启用：固定样例必然与基线重复，否则永远出不了题
+      if (config.noveltyFilter && llmMode() === 'live') {
+        const nov = checkNovelty(String(raw.questionLatex), String(raw.answer));
+        noveltyScore = Number(nov.similarity.toFixed(3));
+        if (!nov.novel) {
+          novelty = 'similar';
+          lastIssues.push(
+            '与已有题目高度相似（' + Math.round(nov.similarity * 100) + '%）：' +
+              (nov.closest ?? '').slice(0, 60) + '。请换一种考法或结构。'
+          );
+          continue;
         }
       }
 
@@ -134,6 +181,8 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
           dualSolve,
           secondAnswer,
           method,
+          novelty,
+          noveltyScore,
         },
       });
     }
@@ -143,6 +192,10 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
   }
 
   if (accepted.length === 0) {
+    // 核验失败的候选也入库（rejected），让审核的人看到模型出了什么、为什么没过
+    if (rejected.length > 0) {
+      saveRejected(rejected, 'ai:unverified', '自动核验未通过：' + (lastIssues.slice(0, 3).join('；') || '未知'));
+    }
     throw new Error(
       '模型连续 ' + attempts + ' 次没有产出合格题目：' + (lastIssues.slice(0, 5).join('；') || '未知原因')
     );

@@ -121,6 +121,11 @@ export default function AiReviewPage() {
                     独立解：{q.validation.secondAnswer}
                   </span>
                 )}
+                {q.validation.noveltyScore != null && (
+                  <Badge variant={q.validation.novelty === 'novel' ? 'secondary' : 'outline'} className="ml-2 text-[10px]">
+                    新颖度 {Math.round((1 - q.validation.noveltyScore) * 100)}%
+                  </Badge>
+                )}
               </div>
 
               <ol className="space-y-1 text-xs text-muted-foreground">

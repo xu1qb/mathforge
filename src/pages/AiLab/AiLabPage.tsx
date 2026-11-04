@@ -224,6 +224,11 @@ export default function AiLabPage() {
                       <CheckCircle2 className="size-3" /> 双解一致
                     </span>
                   )}
+                  {q.validation.dualSolve === 'judged' && (
+                    <span className="flex items-center gap-1 text-[11px] text-emerald-600">
+                      <CheckCircle2 className="size-3" /> 复算确认
+                    </span>
+                  )}
                   {q.validation.dualSolve === 'skipped' && (
                     <span className="text-[11px] text-muted-foreground">未做双解（mock 模式）</span>
                   )}
