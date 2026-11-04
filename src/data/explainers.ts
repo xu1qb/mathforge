@@ -4302,6 +4302,94 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
       result: 'A=\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}',
     },
   },
+
+  {
+    id: 'kernel-image',
+    title: '核与像：线性变换的两把尺子',
+    tag: '线代',
+    level: '进阶',
+    essence:
+      '核是「被映成零」的向量集合，像是「能映出来的」向量集合；两者维数之和等于定义域维数，这是秩-零化度定理的几何版本。',
+    whenToUse: [
+      '判断线性变换是否单射或满射',
+      '求变换的核空间与像空间',
+      '验证维数公式',
+    ],
+    steps: [
+      {
+        title: '核（零空间）',
+        body: '映到零向量的所有输入，反映「信息损失」。',
+        formula: '\\ker T=\\{x\\mid T(x)=0\\}',
+      },
+      {
+        title: '像（值域）',
+        body: '所有可能的输出构成的空间，等于矩阵的列空间。',
+        formula: '\\mathrm{im}\\,T=\\{T(x)\\mid x\\in V\\}',
+      },
+      {
+        title: '维数公式',
+        body: '核的维数加像的维数等于定义域的维数。',
+        formula: '\\dim\\ker T+\\dim\\mathrm{im}\\,T=\\dim V',
+      },
+      {
+        title: '单射与满射',
+        body: '核为零则单射；像等于目标空间则满射；有限维同维数时两者等价。',
+      },
+    ],
+    example: {
+      problem: '求 $T(x,y)=(x+y,\\\\ x-y)$ 的核与像。',
+      walkthrough: [
+        '令 $T(x,y)=(0,0)$：$x+y=0$ 且 $x-y=0$。',
+        '两式相加得 $2x=0$，所以 $x=y=0$。',
+        '核只有零向量，维数为 $0$。',
+        '由维数公式，像的维数 $=2-0=2$，即整个 $\\\\mathbb{R}^{2}$，是满射。',
+      ],
+      result: '\\\\ker T=\\\\{0\\\\},\\\\ \\\\dim\\\\mathrm{im}\\\\,T=2',
+    },
+  },
+  {
+    id: 'isomorphism',
+    title: '同构：维数相同就本质相同',
+    tag: '线代',
+    level: '进阶',
+    essence:
+      '两个线性空间之间存在可逆的线性映射，就叫同构；有限维下只需维数相等，因此所有 $n$ 维空间都同构于 $\\\\mathbb{R}^{n}$。',
+    whenToUse: [
+      '判断两个空间是否「本质上一样」',
+      '把抽象空间的问题搬到 $\\\\mathbb{R}^{n}$ 计算',
+      '理解坐标映射的意义',
+    ],
+    steps: [
+      {
+        title: '定义',
+        body: '存在线性双射 $T:V\\\\to W$，就称 $V$ 与 $W$ 同构。',
+        formula: 'V\\\\cong W',
+      },
+      {
+        title: '有限维判据',
+        body: '有限维下，同构当且仅当维数相等。',
+        formula: '\\\\dim V=\\\\dim W',
+      },
+      {
+        title: '坐标映射',
+        body: '取一组基，每个向量对应它的坐标向量，这就是到 $\\\\mathbb{R}^{n}$ 的同构。',
+      },
+      {
+        title: '意义',
+        body: '同构保持线性运算，所以抽象空间的问题都能翻译成矩阵问题。',
+      },
+    ],
+    example: {
+      problem: '判断 $P_{2}[x]$ 与 $\\\\mathbb{R}^{3}$ 是否同构。',
+      walkthrough: [
+        '$P_{2}[x]$ 的基是 $1,x,x^{2}$，维数为 $3$。',
+        '$\\\\mathbb{R}^{3}$ 的维数也是 $3$。',
+        '映射 $a+bx+cx^{2}\\\\mapsto(a,b,c)$ 是线性双射。',
+        '所以两者同构。',
+      ],
+      result: 'P_{2}[x]\\\\cong\\\\mathbb{R}^{3}',
+    },
+  },
 ];
 
 

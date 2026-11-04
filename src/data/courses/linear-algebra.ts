@@ -523,7 +523,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
         '求多项式空间、矩阵空间的维数',
         '写出线性变换在给定基下的矩阵',
       ],
-      lessonIds: ['linear-space', 'transition-matrix', 'linear-transformation'],
+      lessonIds: ['linear-space', 'transition-matrix', 'linear-transformation', 'kernel-image', 'isomorphism'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -596,6 +596,31 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
             '$P$ 的两列正是 $A$ 的特征向量。',
             '换基后矩阵等于 $\\mathrm{diag}(\\lambda_{1},\\lambda_{2})$。',
             '$A$ 的特征值是 $3$ 与 $1$，所以 $B=\\mathrm{diag}(3,1)$。',
+          ],
+        },
+        {
+          id: 'la6-7',
+          level: '基础',
+          question: '求 $T(x,y)=(x+y,\\ x-y)$ 的核的维数。',
+          answer: '$0$（只有零向量）',
+          hint: '令输出为零解方程组。',
+          steps: [
+            '$x+y=0$ 且 $x-y=0$。',
+            '两式相加得 $2x=0$，故 $x=y=0$。',
+            '核只含零向量，维数为 $0$，因此 $T$ 是单射。',
+          ],
+        },
+        {
+          id: 'la6-8',
+          level: '进阶',
+          question: '判断 $P_{2}[x]$ 与 $\\mathbb{R}^{3}$ 是否同构。',
+          answer: '同构（维数都是 3）',
+          hint: '看维数是否相等。',
+          steps: [
+            '$P_{2}[x]$ 的基 $1,x,x^{2}$ 有 $3$ 个向量，维数 $3$。',
+            '$\\mathbb{R}^{3}$ 维数 $3$。',
+            '映射 $a+bx+cx^{2}\\mapsto(a,b,c)$ 是线性双射。',
+            '同维数即同构。',
           ],
         },
       ],

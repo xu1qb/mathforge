@@ -2,7 +2,7 @@
 // 课程页：/course/:subject 课程首页，/course/:subject/:chapterId 展开某章
 // 结构：课程信息 → 学科介绍 → 章节树（知识点 + 练习） → 应用 → 交叉
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   BookOpen,
@@ -13,6 +13,7 @@ import {
   Wrench,
   Compass,
   Network,
+  ListTree,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -45,6 +46,15 @@ export default function CoursePage() {
 
   const activeChapter = chapterId ? course.chapters.find((c) => c.id === chapterId) : undefined;
   const totalLessons = course.chapters.reduce((n, c) => n + c.lessonIds.length, 0);
+  const totalExercises = course.chapters.reduce((n, c) => n + c.exercises.length, 0);
+
+  // 从目录点进来时，滚动到对应章节
+  const chapterRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  useEffect(() => {
+    if (!activeChapter) return;
+    const el = chapterRefs.current[activeChapter.id];
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [activeChapter]);
 
   return (
     <PageShell
@@ -60,7 +70,46 @@ export default function CoursePage() {
         </Button>
       }
     >
-      <div className="space-y-6">
+      <div className="space-y-6 lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:items-start lg:gap-6 lg:space-y-0">
+        {/* 左侧章节目录（宽屏粘性） */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-4 space-y-2">
+            <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+              <ListTree className="size-3.5" />
+              目录
+            </div>
+            <nav className="space-y-0.5">
+              {course.chapters.map((ch, i) => {
+                const isActive = activeChapter?.id === ch.id;
+                return (
+                  <button
+                    key={ch.id}
+                    onClick={() => navigate('/course/' + course.id + '/' + ch.id)}
+                    className={cn(
+                      'flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-xs transition-colors',
+                      isActive
+                        ? 'bg-primary/10 font-medium text-foreground'
+                        : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                    )}
+                  >
+                    <span className="mt-0.5 shrink-0 font-mono text-[10px] opacity-70">{i + 1}</span>
+                    <span className="min-w-0">
+                      <span className="block truncate">{ch.title}</span>
+                      <span className="block text-[10px] opacity-70">
+                        {ch.lessonIds.length} 知识点 · {ch.exercises.length} 题
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
+            </nav>
+            <div className="rounded-md border border-border/60 p-2 text-[11px] text-muted-foreground">
+              共 {course.chapters.length} 章 · {totalLessons} 知识点 · {totalExercises} 题
+            </div>
+          </div>
+        </aside>
+
+        <div className="space-y-6">
         {/* 课程信息 */}
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {[
@@ -80,6 +129,37 @@ export default function CoursePage() {
             </Card>
           ))}
         </div>
+
+        {/* 教材对照 */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <BookOpen className="size-4 text-primary" />
+              教材对照
+            </CardTitle>
+            <CardDescription className="text-xs">
+              {course.textbook.name}（{course.textbook.edition}）· 下表可对照纸质书使用
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="divide-y divide-border/60">
+              {course.chapters.map((ch, i) => (
+                <button
+                  key={ch.id}
+                  onClick={() => navigate('/course/' + course.id + '/' + ch.id)}
+                  className="flex w-full items-center gap-3 px-4 py-2 text-left transition-colors hover:bg-accent/60"
+                >
+                  <span className="w-5 shrink-0 font-mono text-xs text-muted-foreground">{i + 1}</span>
+                  <span className="w-28 shrink-0 text-xs text-muted-foreground">{ch.textbookRef}</span>
+                  <span className="min-w-0 flex-1 truncate text-sm text-foreground">{ch.title}</span>
+                  <span className="shrink-0 text-[11px] text-muted-foreground">
+                    {ch.lessonIds.length} 知识点 · {ch.exercises.length} 题
+                  </span>
+                </button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* 学科介绍 */}
         <Card>
@@ -135,7 +215,13 @@ export default function CoursePage() {
               return (
                 <Card
                   key={ch.id}
-                  className={cn('border-border/60 transition-colors', isActive && 'border-primary/50')}
+                  ref={(el) => {
+                    chapterRefs.current[ch.id] = el;
+                  }}
+                  className={cn(
+                    'scroll-mt-4 border-border/60 transition-colors',
+                    isActive && 'border-primary/50'
+                  )}
                 >
                   <CardContent className="p-0">
                     <button
@@ -325,6 +411,7 @@ export default function CoursePage() {
         <CardDescription className="text-center text-xs">
           本课程按「同济大学《线性代数》第七版」章节组织，讲解与例题为原创内容
         </CardDescription>
+        </div>
       </div>
     </PageShell>
   );

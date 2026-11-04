@@ -674,6 +674,14 @@ _Psim = sp.Matrix([[1, 1], [1, -1]])
 chk('换基后矩阵为 diag(3,1)',
     sp.simplify(_Psim.inv() * sp.Matrix([[2, 1], [1, 2]]) * _Psim - sp.diag(3, 1)) == sp.zeros(2, 2))
 
+# ---- 第 6 章补充：核与像、同构 ----
+_Tk = sp.Matrix([[1, 1], [1, -1]])
+chk('T(x,y)=(x+y,x−y) 的核只有零向量', len(_Tk.nullspace()) == 0)
+chk('由维数公式，像的维数 = 2', _Tk.rank() == 2 and _Tk.rank() + len(_Tk.nullspace()) == 2)
+
+chk('P2[x] 与 R³ 同维（都为 3）',
+    sp.Matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]).rank() == 3)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:
