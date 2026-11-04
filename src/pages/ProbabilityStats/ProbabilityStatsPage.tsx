@@ -859,7 +859,7 @@ export default function ProbabilityStatsPage() {
         />
 
         {result && !error ? (
-          <Card className="bg-[var(--board-bg)] border-0 shadow-lg">
+          <Card className="board-surface board-surface bg-[var(--board-bg)] border-0 shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-3">
                 <div className="text-xs text-emerald-400/70 font-medium tracking-wider">计算结果</div>
@@ -921,7 +921,7 @@ export default function ProbabilityStatsPage() {
 
 function ResultBox({ text }: { text: string }) {
   return (
-    <div className="bg-[var(--board-bg)] rounded-xl p-4 overflow-x-auto">
+    <div className="board-surface board-surface bg-[var(--board-bg)] rounded-xl p-4 overflow-x-auto">
       <div className="text-xs text-emerald-400/70 mb-2 font-medium tracking-wider">结果</div>
       <div className="text-emerald-300 text-base leading-relaxed">
         <MathRenderer expression={text} isInput />

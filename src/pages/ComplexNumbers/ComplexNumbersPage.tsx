@@ -814,7 +814,7 @@ export default function ComplexNumbersPage() {
     return (
       <>
         {text && (
-          <div className="bg-[var(--board-bg)] rounded-xl p-4">
+          <div className="board-surface board-surface bg-[var(--board-bg)] rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
               <div className="text-xs text-emerald-400/70 font-medium tracking-wider">结果</div>
               <div className="flex items-center gap-1">
@@ -968,7 +968,7 @@ export default function ComplexNumbersPage() {
                     <Play className="size-4 mr-2" />计算 n 次方根
                   </Button>
                   {rootResult.length > 0 && (
-                    <div className="bg-[var(--board-bg)] rounded-xl p-4">
+                    <div className="board-surface board-surface bg-[var(--board-bg)] rounded-xl p-4">
                       <div className="text-xs text-emerald-400/70 mb-2 font-medium tracking-wider">z 的 {rootN} 次方根（共 {rootResult.length} 个）</div>
                       <div className="text-emerald-300 font-mono text-sm space-y-1">
                         {rootResult.map((r, i) => (
@@ -1292,7 +1292,7 @@ export default function ComplexNumbersPage() {
                         <Play className="size-4 mr-2" />分析极点与逆变换形式
                       </Button>
                       {lapResult && (
-                        <div className="bg-[var(--board-bg)] rounded-xl p-4">
+                        <div className="board-surface board-surface bg-[var(--board-bg)] rounded-xl p-4">
                           <div className="text-emerald-300 font-mono text-sm whitespace-pre-wrap break-all">{lapResult}</div>
                         </div>
                       )}
@@ -1334,7 +1334,7 @@ export default function ComplexNumbersPage() {
                     <Sparkles className="size-4 mr-2" />求全部复根
                   </Button>
                   {polyRootsResult.length > 0 && (
-                    <div className="bg-[var(--board-bg)] rounded-xl p-4">
+                    <div className="board-surface board-surface bg-[var(--board-bg)] rounded-xl p-4">
                       <div className="text-xs text-emerald-400/70 mb-2 font-medium tracking-wider">结果（共 {polyRootsResult.length} 个根）</div>
                       <div className="space-y-1">
                         {polyRootsResult.map((r, i) => (

@@ -410,7 +410,7 @@ export default function SymbolicAlgebraPage() {
         </Card>
 
         {/* 结果显示 */}
-        <Card className="bg-[var(--board-bg)] border-0 shadow-lg">
+        <Card className="board-surface board-surface bg-[var(--board-bg)] border-0 shadow-lg">
           <CardContent className="p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="text-xs text-emerald-400/70 font-medium tracking-wider flex items-center gap-1.5">

@@ -734,7 +734,7 @@ export default function FourierSeriesPage() {
 
         {/* 复数形式结果 */}
         {activeTab === 'complex' && (
-          <Card className="bg-[var(--board-bg)] border-0 shadow-lg">
+          <Card className="board-surface board-surface bg-[var(--board-bg)] border-0 shadow-lg">
             <CardContent className="p-6">
               <div className="text-xs text-emerald-400/70 mb-3 font-medium tracking-wider">复数傅里叶系数 c_n</div>
               {(() => {
@@ -807,7 +807,7 @@ export default function FourierSeriesPage() {
 
         {/* Parseval 结果 */}
         {activeTab === 'parseval' && parsevalResult && (
-          <Card className="bg-[var(--board-bg)] border-0 shadow-lg">
+          <Card className="board-surface board-surface bg-[var(--board-bg)] border-0 shadow-lg">
             <CardContent className="p-6">
               <div className="text-xs text-emerald-400/70 mb-3 font-medium tracking-wider">帕塞瓦尔等式验证</div>
               <div className="text-emerald-300 font-mono text-sm space-y-2 whitespace-pre-wrap">
@@ -824,7 +824,7 @@ ${parsevalResult.ratio < 0.05 ? '✓ 帕塞瓦尔等式成立（误差 < 5%）' 
         {/* 吉布斯现象结果 */}
         {activeTab === 'gibbs' && gibbsResult && (
           <>
-            <Card className="bg-[var(--board-bg)] border-0 shadow-lg">
+            <Card className="board-surface board-surface bg-[var(--board-bg)] border-0 shadow-lg">
               <CardContent className="p-6">
                 <div className="text-xs text-emerald-400/70 mb-3 font-medium tracking-wider">吉布斯现象</div>
                 <div className="text-emerald-300 font-mono text-sm space-y-2">
@@ -880,7 +880,7 @@ ${Math.abs(gibbsResult.overshootPercent - 8.95) < 2 ? '✓ 符合吉布斯现象
         {/* 奇偶延拓结果 */}
         {activeTab === 'half-range' && extResult && (
           <>
-            <Card className="bg-[var(--board-bg)] border-0 shadow-lg">
+            <Card className="board-surface board-surface bg-[var(--board-bg)] border-0 shadow-lg">
               <CardContent className="p-6">
                 <div className="text-xs text-emerald-400/70 mb-2 font-medium tracking-wider">{extResult.type}</div>
                 <pre className="text-emerald-100 font-mono text-sm whitespace-pre-wrap leading-relaxed">{extResult.formula}</pre>
@@ -906,7 +906,7 @@ ${Math.abs(gibbsResult.overshootPercent - 8.95) < 2 ? '✓ 符合吉布斯现象
 
         {/* 狄利克雷收敛结果 */}
         {activeTab === 'dirichlet' && dirResult && (
-          <Card className="bg-[var(--board-bg)] border-0 shadow-lg">
+          <Card className="board-surface board-surface bg-[var(--board-bg)] border-0 shadow-lg">
             <CardContent className="p-6">
               <div className="text-xs text-emerald-400/70 mb-3 font-medium tracking-wider">狄利克雷收敛性</div>
               <div className="space-y-3 text-emerald-100 text-sm">
@@ -928,7 +928,7 @@ ${Math.abs(gibbsResult.overshootPercent - 8.95) < 2 ? '✓ 符合吉布斯现象
         {/* 卷积定理结果 */}
         {activeTab === 'convolution' && convResult && (
           <>
-            <Card className="bg-[var(--board-bg)] border-0 shadow-lg">
+            <Card className="board-surface board-surface bg-[var(--board-bg)] border-0 shadow-lg">
               <CardContent className="p-6">
                 <div className="text-xs text-emerald-400/70 mb-2 font-medium tracking-wider">卷积定理验证</div>
                 <div className="text-emerald-100 text-sm space-y-2">
@@ -993,7 +993,7 @@ ${Math.abs(gibbsResult.overshootPercent - 8.95) < 2 ? '✓ 符合吉布斯现象
         {/* 弦振动结果 */}
         {activeTab === 'string' && stringResult && (
           <>
-            <Card className="bg-[var(--board-bg)] border-0 shadow-lg">
+            <Card className="board-surface board-surface bg-[var(--board-bg)] border-0 shadow-lg">
               <CardContent className="p-6">
                 <div className="text-xs text-emerald-400/70 mb-2 font-medium tracking-wider">弦振动傅里叶系数</div>
                 <div className="text-emerald-100 text-sm space-y-1 max-h-40 overflow-y-auto font-mono text-xs">
@@ -1030,7 +1030,7 @@ ${Math.abs(gibbsResult.overshootPercent - 8.95) < 2 ? '✓ 符合吉布斯现象
         {/* DFT 结果 */}
         {activeTab === 'dft' && (
           <>
-            <Card className="bg-[var(--board-bg)] border-0 shadow-lg">
+            <Card className="board-surface board-surface bg-[var(--board-bg)] border-0 shadow-lg">
               <CardContent className="p-6">
                 <div className="text-xs text-emerald-400/70 mb-3 font-medium tracking-wider">DFT 频谱</div>
                 {(() => {
@@ -1081,7 +1081,7 @@ ${Math.abs(gibbsResult.overshootPercent - 8.95) < 2 ? '✓ 符合吉布斯现象
         {/* 采样定理结果 */}
         {activeTab === 'sampling' && (
           <>
-            <Card className="bg-[var(--board-bg)] border-0 shadow-lg">
+            <Card className="board-surface board-surface bg-[var(--board-bg)] border-0 shadow-lg">
               <CardContent className="p-6">
                 <div className="text-xs text-emerald-400/70 mb-3 font-medium tracking-wider">采样定理演示</div>
                 {(() => {

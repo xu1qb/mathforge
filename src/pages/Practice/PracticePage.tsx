@@ -1089,7 +1089,7 @@ export default function PracticePage() {
                   </CardHeader>
                 <CardContent className="space-y-6">
                   {/* 题目 */}
-                  <div className="bg-[var(--board-bg)] rounded-xl p-6 text-center">
+                  <div className="board-surface board-surface bg-[var(--board-bg)] rounded-xl p-6 text-center">
                     <div className="text-xs text-emerald-400/70 font-medium tracking-wider mb-3">题目</div>
                     <div className="text-emerald-100 text-lg leading-relaxed">
                       <MathRenderer expression={question.questionLatex} displayMode />

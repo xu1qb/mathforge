@@ -84,7 +84,7 @@ function ResultBox({ text, error }: { text: string; error: string | null }) {
   return (
     <>
       {text && (
-        <div className="bg-[var(--board-bg)] rounded-xl p-4">
+        <div className="board-surface board-surface bg-[var(--board-bg)] rounded-xl p-4">
           <div className="flex items-center justify-between mb-2">
             <div className="text-xs text-emerald-400/70 font-medium tracking-wider">结果</div>
             <button

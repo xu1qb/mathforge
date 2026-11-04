@@ -934,7 +934,7 @@ export default function WrongBookSection() {
                               ) : (
                                 <div className="space-y-4">
                                   {/* 重做题目面板 */}
-                                  <div className="bg-[var(--board-bg)] rounded-xl p-4 text-center">
+                                  <div className="board-surface board-surface bg-[var(--board-bg)] rounded-xl p-4 text-center">
                                     <div className="text-xs text-emerald-400/70 font-medium tracking-wider mb-2">重做题目</div>
                                     <div className="text-emerald-100 text-base leading-relaxed">
                                       <MathRenderer expression={w.question.questionLatex} displayMode />
