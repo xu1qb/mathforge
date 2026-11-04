@@ -50,7 +50,13 @@ export type VerifyClaim =
   | { kind: 'mod'; a: number; m: number; claim: string }
   | { kind: 'convergence'; type: 'p-series' | 'geometric' | 'alternating'; p?: number; q?: number; claim: string }
   | { kind: 'parity'; expr: string; variable: string; claim: string }
-  | { kind: 'ode'; solution: string; variable: string; equation: { a: number; b?: number }; claim: string };
+  | { kind: 'ode'; solution: string; variable: string; equation: { a: number; b?: number }; claim: string }
+  | {
+      kind: 'interval';
+      type: 'quad' | 'absLe' | 'absGe' | 'linear';
+      params: Record<string, number | string | boolean>;
+      claim: string;
+    };
 
 export interface PracticeQuestion {
   /** 题目 id（随机种子） */

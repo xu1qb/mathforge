@@ -497,6 +497,7 @@ export function genFunctionPropertyV2(diff: Difficulty): PracticeQuestion {
       question: '求 f(x) = ' + a + 'x ' + s + ' 的反函数 f⁻¹(x)',
       latex: 'f(x) = ' + a + 'x ' + s + '，求 f^{-1}(x)',
       answer: '(x-' + b + ')/' + a,
+      verify: { kind: 'value', expr: String(a) + '*((x - (' + b + '))/' + a + ') + (' + b + ')', claim: 'x' },
       steps: [
         '令 y = ' + a + 'x ' + s,
         '解出 x = (y − ' + b + ')/' + a,
@@ -960,6 +961,7 @@ export function genInequalitySolveV2(diff: Difficulty): PracticeQuestion {
       question: '解不等式：(x' + sgn(-r1) + ')(x' + sgn(-r2) + ') ' + (lt ? '<' : '>') + ' 0',
       latex: '@text{解不等式：}(x' + sgn(-r1) + ')(x' + sgn(-r2) + ') ' + (lt ? '<' : '>') + ' 0',
       answer: lt ? r1 + '<x<' + r2 : 'x<' + r1 + ' 或 x>' + r2,
+      verify: { kind: 'interval', type: 'quad', params: { r1, r2, rel: lt ? '<' : '>' }, claim: lt ? r1 + '<x<' + r2 : 'x<' + r1 + ' 或 x>' + r2 },
       steps: [
         '两根为 x = ' + r1 + ' 与 x = ' + r2,
         '开口向上的二次函数，' + (lt ? '小于零取两根之间' : '大于零取两根之外'),
@@ -977,6 +979,7 @@ export function genInequalitySolveV2(diff: Difficulty): PracticeQuestion {
       question: '解不等式：|x| ' + (le ? '≤' : '<') + ' ' + a,
       latex: '|x| ' + (le ? '@leq' : '<') + ' ' + a,
       answer: (le ? '-' + a + '<=x<=' + a : '-' + a + '<x<' + a),
+      verify: { kind: 'interval', type: 'absLe', params: { a, strict: !le }, claim: le ? '-' + a + '<=x<=' + a : '-' + a + '<x<' + a },
       steps: [
         '|x| ≤ a 等价于 −a ≤ x ≤ a',
         '代入 a = ' + a,
@@ -993,6 +996,7 @@ export function genInequalitySolveV2(diff: Difficulty): PracticeQuestion {
       question: '解不等式：|x| ≥ ' + a,
       latex: '|x| @geq ' + a,
       answer: 'x<=' + -a + ' 或 x>=' + a,
+      verify: { kind: 'interval', type: 'absGe', params: { a }, claim: 'x<=' + -a + ' 或 x>=' + a },
       steps: ['|x| ≥ a 等价于 x ≥ a 或 x ≤ −a', '解集：(−∞, −' + a + '] ∪ [' + a + ', +∞)'],
       type: 'expression',
     });
@@ -1007,6 +1011,7 @@ export function genInequalitySolveV2(diff: Difficulty): PracticeQuestion {
     question: '解不等式：' + a + 'x ' + s + ' > ' + c,
     latex: a + 'x ' + s + ' > ' + c,
     answer: 'x>' + ((c - b) / a),
+    verify: { kind: 'interval', type: 'linear', params: { a, b, c }, claim: 'x>' + ((c - b) / a) },
     steps: [
       '移项：' + a + 'x > ' + (c - b),
       '两边除以 ' + a + '（正数，不等号不变）',
@@ -2016,6 +2021,7 @@ const frac2 = (p: number, q: number) => { const g = gcd2(p, q) || 1; const np = 
 
 function mkFusion(p: {
   tag: string; question: string; latex: string; answer: string; steps: string[]; type?: 'numeric' | 'expression'; diff: Difficulty;
+  verify?: VerifyClaim;
 }): PracticeQuestion {
   const steps = p.steps.map(L2);
   if (p.diff === 'competition') {
@@ -2034,6 +2040,7 @@ function mkFusion(p: {
     answerType: p.type ?? 'numeric',
     steps,
     difficulty: p.diff,
+    verify: p.verify,
   };
 }
 
@@ -2098,6 +2105,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       question: '1 到 ' + N + ' 中与 6 互素的整数有多少个？',
       latex: '@left@{1, 2, @dots, ' + N + '@right@}@text{ 中与 } 6 @text{ 互素的个数}',
       answer: String(count),
+      verify: { kind: 'value', expr: '(' + N + ') - floor((' + N + ')/2) - floor((' + N + ')/3) + floor((' + N + ')/6)', claim: String(count) },
       steps: [
         '6 = 2 × 3，互素即不被 2 也不被 3 整除',
         '容斥：N − ⌊N/2⌋ − ⌊N/3⌋ + ⌊N/6⌋',
@@ -2115,6 +2123,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       question: '数列 aₙ = n/(n² + ' + a * a + ')（n ≥ 1）的最大值出现在 n = ' + a + ' 处，求该最大值',
       latex: 'a_n = @dfrac{n}{n^{2} + ' + a * a + '}',
       answer: frac2(1, 2 * a),
+      verify: { kind: 'value', expr: '1/(2*(' + a + '))', claim: frac2(1, 2 * a) },
       steps: [
         '由均值不等式：n + ' + a * a + '/n ≥ 2a',
         '所以 aₙ = 1/(n + ' + a * a + '/n) ≤ 1/(2a)',
@@ -2132,6 +2141,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       question: 'Fibonacci 数列 F₁ = F₂ = 1，Fₙ = Fₙ₋₁ + Fₙ₋₂。用矩阵 [[' + 1 + ',1],[1,0]] 的幂求 F_' + n,
       latex: 'F_{' + n + '} = ?@quad @begin{pmatrix} 1 & 1 @ 1 & 0 @end{pmatrix}^{n-1} = @begin{pmatrix} F_n & F_{n-1} @ F_{n-1} & F_{n-2} @end{pmatrix}',
       answer: String(fib(n)),
+      verify: { kind: 'value', expr: 'fibonacci(' + n + ')', claim: String(fib(n)) },
       steps: [
         '转移到矩阵的特征值为 (1±√5)/2（黄金分割）',
         '矩阵幂的左上角元素就是 F_' + n,
@@ -2151,6 +2161,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       question: '袋中 ' + r + ' 红 ' + w + ' 白，任取 2 个，求两个都是红球的概率',
       latex: 'P = @dfrac{C_{' + r + '}^{2}}{C_{' + r + w + '}^{2}}',
       answer: frac2(fav, total),
+      verify: { kind: 'value', expr: 'binomial(' + r + ', 2)/binomial(' + (r + w) + ', 2)', claim: frac2(fav, total) },
       steps: [
         '总取法 C(' + (r + w) + ', 2) = ' + total,
         '有利取法 C(' + r + ', 2) = ' + fav,
@@ -2194,6 +2205,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       question: 'z = cos' + theta + '° + i·sin' + theta + '°，求 z^' + n + ' 的实部',
       latex: 'z = @cos ' + theta + '^{@circ} + i@sin ' + theta + '^{@circ}，求 @Re(z^{' + n + '})',
       answer: val,
+      verify: { kind: 'value', expr: 'cos((' + n + ')*(' + theta + ')*pi/180)', claim: val },
       steps: [
         '棣莫弗定理：zⁿ = cos(nθ) + i·sin(nθ)',
         'nθ = ' + n * theta + '°',
@@ -2212,6 +2224,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       question: '求 f(x) = x³ − ' + 3 * a + 'x 的极小值',
       latex: 'f(x) = x^{3} - ' + 3 * a + 'x',
       answer: String(-2 * a * t),
+      verify: { kind: 'value', expr: '-2*(' + t + ')**3', claim: String(-2 * a * t) },
       steps: [
         "f'(x) = 3x² − " + 3 * a + ' = 0，得 x = ±' + t,
         "f''(x) = 6x，x = " + t + ' 处为正，是极小值点',
@@ -2228,6 +2241,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       question: '每次试验成功概率 1/' + p + '，求首次成功所需次数的期望',
       latex: 'P(X = k) = @left(1 - @dfrac{1}{' + p + '}@right)^{k-1}@dfrac{1}{' + p + '}，求 E(X)',
       answer: String(p),
+      verify: { kind: 'value', expr: String(p), claim: String(p) },
       steps: [
         '这是几何分布，E(X) = 1/p',
         '也可由级数求和：Σ k·(1−p)^(k−1)·p = 1/p',
@@ -2314,6 +2328,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       question: '向量 v₁ = (' + x + ', ' + yv + ')，每次左乘 M = [[1,1],[0,1]]，求 v_' + n + ' 的第一个分量',
       latex: '@vec{v}_{k+1} = @begin{pmatrix} 1 & 1 @@ 0 & 1 @end{pmatrix}@vec{v}_k，@vec{v}_1 = (' + x + ', ' + yv + ')，求 v_{' + n + ',1}',
       answer: String(x + (n - 1) * yv),
+      verify: { kind: 'value', expr: '(' + x + ') + (' + (n - 1) + ')*(' + yv + ')', claim: String(x + (n - 1) * yv) },
       steps: [
         '每次乘 M 相当于 (a, b) ↦ (a + b, b)',
         '第二个分量不变，第一个分量每次加 ' + yv,
@@ -2408,6 +2423,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       question: '向量 (' + a + ', ' + b + ') 绕原点旋转 90°，求旋转后向量的模',
       latex: '@vec{v} = (' + a + ', ' + b + ')，R_{90}@vec{v}@text{ 的模}',
       answer: String(r),
+      verify: { kind: 'value', expr: 'sqrt((' + a + ')**2 + (' + b + ')**2)', claim: String(r) },
       steps: [
         '旋转矩阵 R = [[cos90°, −sin90°],[sin90°, cos90°]] = [[0,−1],[1,0]]',
         '旋转后为 (−b, a)，模不变',
