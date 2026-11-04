@@ -19,6 +19,9 @@ build/
 .cache/
 server-dist/
 
+# 临时探针脚本
+scripts/_probe_stats.mjs
+
 # 安卓构建产物
 android-native/build-*/
 android-native/assets/public/

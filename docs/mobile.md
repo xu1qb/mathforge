@@ -52,7 +52,23 @@ javac → d8 → aapt2 → zipalign → apksigner
 npm run build:android    # = vite build + 打包 APK
 ```
 
-## 五、为什么只有 3.4 MB
+## 五、为什么用本地 HTTP 服务托管资源
+
+第一次打出来的 APK 打开是**白屏**，原因：
+
+- Vite 产物是 ES module（`<script type="module">`）；
+- `file://` 下模块脚本的 origin 是 `null`，被 Chromium 的 CORS 策略直接拦掉；
+- 于是 JS 一行都没执行，只剩白屏。
+
+修法：App 启动时用 `ServerSocket` 在 `127.0.0.1` 起一个极简 HTTP 服务（纯 JDK 类，无第三方依赖），
+把 `assets/public/` 按 MIME 返回，然后用 `http://127.0.0.1:<随机端口>/index.html` 加载。
+这样模块脚本有了正常 origin，能跑起来。
+
+同时也补了 `onReceivedError`：加载失败会显示错误原因，不再白屏。
+
+> 换新包前请**先卸载旧版**，否则签名/缓存可能让旧内容继续生效。
+
+## 六、为什么只有 3.4 MB
 
 APK 里只有两样东西：一个 WebView Activity（dex 几 KB）+ 打好的静态前端。
 
@@ -73,7 +89,7 @@ APK 里只有两样东西：一个 WebView Activity（dex 几 KB）+ 打好的�
 ⚠️ 之前一版是 4.9 MB，因为 `vite build` 反复写同一个 `dist/` 不清空，历史 hash chunk 越积越多。
 现在脚本每次构建到全新的临时目录，体积稳定在 3.4 MB。
 
-## 六、当前边界
+## 七、当前边界
 
 | 项 | 状态 |
 |---|---|
@@ -83,7 +99,7 @@ APK 里只有两样东西：一个 WebView Activity（dex 几 KB）+ 打好的�
 | 正式签名上架 | ❌ 目前是 debug 签名 |
 | 横竖屏适配 | 走 WebView，随网页响应式 |
 
-## 七、后续可选
+## 八、后续可选
 
 1. 用 Capacitor 的 Gradle 构建做正式版（需要能访问 GitHub 的网络）
 2. 把后端部署到公网，App 内置固定地址，免去手动配置
