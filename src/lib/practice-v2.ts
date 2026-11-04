@@ -1952,8 +1952,9 @@ function mkFusion(p: {
 export function genFusion(diff: Difficulty): PracticeQuestion {
   // 两科融合（进阶）/ 两科或三科融合（竞赛）
   const twoTopic = ['seqMod', 'seqDigit', 'seqMax', 'probCombo', 'complexDemoivre', 'derivMin', 'limitExp'];
-  const threeTopic = ['countPowMod', 'fibRatio', 'cosSum', 'oddMultiple', 'matrixIterate', 'coprimeCount', 'fibMatrix', 'geoExpect', 'seqDivisible'];
-  const kinds = diff === 'competition' ? twoTopic.concat(threeTopic) : twoTopic;
+  const threeTopic = ['countPowMod', 'fibRatio', 'cosSum', 'oddMultiple', 'matrixIterate', 'sinCount', 'oddTripleProb', 'coprimeCount', 'fibMatrix', 'geoExpect', 'seqDivisible'];
+  const fourTopic = ['coprimeProb', 'fibParity', 'rotationNorm', 'sinLimit'];
+  const kinds = diff === 'competition' ? twoTopic.concat(threeTopic, fourTopic) : twoTopic;
   const kind = kinds[Math.floor(Math.random() * kinds.length)];
 
   if (kind === 'seqMod') {
@@ -2154,7 +2155,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       diff,
       tag: '数列 × 数论 × 组合',
       question: '1 到 ' + N + ' 中有多少个 n 使 2ⁿ 除以 7 余 1？',
-      latex: '@@left@@{n @@le ' + N + ' : 2^{n} @@equiv 1 @@pmod{7}@@right@@}@@text{ 的个数}',
+      latex: '@left@{n @le ' + N + ' : 2^{n} @equiv 1 @pmod{7}@right@}@text{ 的个数}',
       answer: String(cnt),
       steps: [
         '先找周期：2¹=2，2²=4，2³≡1 (mod 7)，周期为 3',
@@ -2170,7 +2171,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       diff,
       tag: '矩阵 × 递推 × 极限',
       question: 'Fibonacci 数列相邻两项之比 Fₙ₊₁/Fₙ 当 n→∞ 时的极限',
-      latex: '@@lim_{n @@to @@infty} @@dfrac{F_{n+1}}{F_{n}}',
+      latex: '@lim_{n @to @infty} @dfrac{F_{n+1}}{F_{n}}',
       answer: '(1+sqrt(5))/2',
       steps: [
         '设极限为 L，由 Fₙ₊₁ = Fₙ + Fₙ₋₁ 得 L = 1 + 1/L',
@@ -2188,7 +2189,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       diff,
       tag: '三角 × 复数 × 数列',
       question: '求 cos(π/3) + cos(2π/3) + … + cos(' + n + 'π/3)',
-      latex: '@@sum_{k=1}^{' + n + '} @@cos@@left(@@dfrac{k@@pi}{3}@@right)',
+      latex: '@sum_{k=1}^{' + n + '} @cos@left(@dfrac{k@pi}{3}@right)',
       answer: '0',
       steps: [
         'cos(kπ/3) 以 6 为周期，一个周期内六项之和为 0',
@@ -2205,7 +2206,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       diff,
       tag: '数论 × 组合 × 数列',
       question: '1 到 ' + N + ' 中，既是 3 的倍数又是奇数的整数有多少个？',
-      latex: '@@left@@{n @@le ' + N + ' : 3 @@mid n,@@ 2 @@nmid n@@right@@}@@text{ 的个数}',
+      latex: '@left@{n @le ' + N + ' : 3 @mid n,@@ 2 @nmid n@right@}@text{ 的个数}',
       answer: String(cnt),
       steps: [
         '3 的倍数为 3, 6, 9, 12, …，其中奇数的是 3, 9, 15, …（每隔 6 一个）',
@@ -2223,12 +2224,122 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       diff,
       tag: '向量 × 矩阵 × 数列',
       question: '向量 v₁ = (' + x + ', ' + yv + ')，每次左乘 M = [[1,1],[0,1]]，求 v_' + n + ' 的第一个分量',
-      latex: '@@vec{v}_{k+1} = @@begin{pmatrix} 1 & 1 @@ 0 & 1 @@end{pmatrix}@@vec{v}_k，@@vec{v}_1 = (' + x + ', ' + yv + ')，求 v_{' + n + ',1}',
+      latex: '@vec{v}_{k+1} = @begin{pmatrix} 1 & 1 @@ 0 & 1 @end{pmatrix}@vec{v}_k，@vec{v}_1 = (' + x + ', ' + yv + ')，求 v_{' + n + ',1}',
       answer: String(x + (n - 1) * yv),
       steps: [
         '每次乘 M 相当于 (a, b) ↦ (a + b, b)',
         '第二个分量不变，第一个分量每次加 ' + yv,
         '经过 ' + (n - 1) + ' 次：' + x + ' + ' + (n - 1) + '×' + yv + ' = ' + (x + (n - 1) * yv),
+      ],
+    });
+  }
+
+
+
+  if (kind === 'sinCount') {
+    const N = rndFusion(12, 120);
+    const cnt = Math.floor((N + 3) / 6);
+    return mkFusion({
+      diff,
+      tag: '三角 × 数论 × 组合',
+      question: '1 到 ' + N + ' 中有多少个 n 使 sin(nπ/6) = 1/2？',
+      latex: '@left@{n @le ' + N + ' : @sin@dfrac{n@pi}{6} = @dfrac{1}{2}@right@}',
+      answer: String(cnt),
+      steps: [
+        'sin(θ) = 1/2 在 [0,2π) 内 θ = π/6 或 5π/6',
+        '因此 n ≡ 1 或 5 (mod 12)，合并后每 6 个有一个 n 满足',
+        '个数为 ⌊(' + N + ' + 3)/6⌋ = ' + cnt,
+      ],
+    });
+  }
+
+  if (kind === 'oddTripleProb') {
+    const N = rndFusion(30, 240);
+    const cnt = Math.floor((N + 3) / 6);
+    return mkFusion({
+      diff,
+      tag: '概率 × 数论 × 组合',
+      question: '从 1 到 ' + N + ' 中等概率取一个整数，求它是 3 的倍数且为奇数的概率',
+      latex: 'P = @dfrac{@left@{n @le ' + N + ' : 3 @mid n,@@ 2 @nmid n@right@}}{' + N + '}',
+      answer: frac2(cnt, N),
+      steps: [
+        '既是 3 的倍数又是奇数：3, 9, 15, …（每 6 个一个）',
+        '个数 = ⌊(' + N + ' + 3)/6⌋ = ' + cnt,
+        '概率 = ' + frac2(cnt, N),
+      ],
+      type: 'expression',
+    });
+  }
+
+  if (kind === 'coprimeProb') {
+    const N = rndFusion(24, 240);
+    const cnt = N - Math.floor(N / 2) - Math.floor(N / 3) + Math.floor(N / 6);
+    return mkFusion({
+      diff,
+      tag: '数论 × 组合 × 概率 × 数列',
+      question: '从 1 到 ' + N + ' 中等概率取一个整数，求它与 6 互素的概率',
+      latex: 'P = @dfrac{@varphi_6(' + N + ')}{' + N + '}',
+      answer: frac2(cnt, N),
+      steps: [
+        '容斥计数：与 6 互素 ⟺ 既不被 2 也不被 3 整除',
+        '个数 = ' + N + ' − ⌊N/2⌋ − ⌊N/3⌋ + ⌊N/6⌋ = ' + cnt,
+        '概率 = ' + frac2(cnt, N),
+      ],
+      type: 'expression',
+    });
+  }
+
+  if (kind === 'fibParity') {
+    const n = rndFusion(4, 24);
+    const fib = (k: number): number => (k <= 2 ? 1 : fib(k - 1) + fib(k - 2));
+    const v = fib(n);
+    return mkFusion({
+      diff,
+      tag: '矩阵 × 递推 × 数论 × 数列',
+      question: '用转移矩阵 [[1,1],[1,0]] 求 F_' + n + '（F₁=F₂=1），判断它的奇偶性（填「奇」或「偶」）',
+      latex: 'F_{' + n + '} = ?@quad @begin{pmatrix} 1 & 1 @@ 1 & 0 @end{pmatrix}^{n-1}',
+      answer: v % 2 === 1 ? '奇' : '偶',
+      steps: [
+        'Fₙ 的奇偶以 3 为周期：奇、奇、偶循环',
+        n + ' mod 3 = ' + (n % 3) + (n % 3 === 0 ? '，所以是偶数' : '，所以是奇数'),
+        '验证：F_' + n + ' = ' + v,
+      ],
+      type: 'expression',
+    });
+  }
+
+  if (kind === 'rotationNorm') {
+    const m = rndFusion(2, 9);
+    const n0 = rndFusion(1, m - 1);
+    const a = m * m - n0 * n0;
+    const b = 2 * m * n0;
+    const r = m * m + n0 * n0;
+    return mkFusion({
+      diff,
+      tag: '向量 × 矩阵 × 三角 × 复数',
+      question: '向量 (' + a + ', ' + b + ') 绕原点旋转 90°，求旋转后向量的模',
+      latex: '@vec{v} = (' + a + ', ' + b + ')，R_{90}@vec{v}@text{ 的模}',
+      answer: String(r),
+      steps: [
+        '旋转矩阵 R = [[cos90°, −sin90°],[sin90°, cos90°]] = [[0,−1],[1,0]]',
+        '旋转后为 (−b, a)，模不变',
+        '|v| = √(' + a + '² + ' + b + '²) = ' + r,
+      ],
+    });
+  }
+
+  if (kind === 'sinLimit') {
+    const k = rndFusion(1, 9);
+    return mkFusion({
+      diff,
+      tag: '极限 × 三角 × 数列',
+      question: '求 lim(n→∞) n·sin(' + k + '/n)',
+      latex: '@lim_{n @to @infty} n@sin@dfrac{' + k + '}{n}',
+      answer: String(k),
+    steps: [
+        '令 t = ' + k + '/n，则 t → 0，n = ' + k + '/t',
+        'n·sin(' + k + '/n) = ' + k + '·sin(t)/t → ' + k,
+        '用到重要极限 sin(t)/t → 1',
       ],
     });
   }
