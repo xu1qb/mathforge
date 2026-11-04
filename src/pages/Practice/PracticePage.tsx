@@ -531,6 +531,16 @@ export default function PracticePage() {
   };
 
   const currentTopic = PRACTICE_TOPICS.find((t) => t.key === activeTopic)!;
+
+  // 知识点多了以后平铺太长，加搜索过滤
+  const [topicQuery, setTopicQuery] = useState('');
+  const filteredTopics = useMemo(() => {
+    const q = topicQuery.trim();
+    if (!q) return PRACTICE_TOPICS;
+    return PRACTICE_TOPICS.filter(
+      (t) => t.label.includes(q) || t.category.includes(q) || t.key.includes(q)
+    );
+  }, [topicQuery]);
   const diffInfo = DIFFICULTY_OPTIONS.find((d) => d.value === difficulty)!;
 
   // 结束页：按专题分类统计
@@ -660,9 +670,20 @@ export default function PracticePage() {
               </CardTitle>
               <CardDescription className="text-xs">选择练习的知识点</CardDescription>
             </CardHeader>
-            <CardContent className="pt-0 space-y-3 max-h-[calc(100vh-180px)] overflow-y-auto pr-1">
+            <CardContent className="pt-0 space-y-3">
+              <div className="relative">
+                <Hash className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  value={topicQuery}
+                  onChange={(e) => setTopicQuery(e.target.value)}
+                  placeholder="搜索知识点…"
+                  className="w-full rounded-md border border-border bg-card py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:border-emerald-400"
+                />
+              </div>
+
+              <div className="space-y-3 max-h-[calc(100vh-240px)] overflow-y-auto pr-1">
               {TOPIC_CATEGORIES.map((cat) => {
-                const topics = PRACTICE_TOPICS.filter((t) => t.category === cat.key);
+                const topics = filteredTopics.filter((t) => t.category === cat.key);
                 if (topics.length === 0) return null;
                 const CatIcon = cat.icon;
                 return (
@@ -733,6 +754,10 @@ export default function PracticePage() {
                   </div>
                 );
               })}
+              {filteredTopics.length === 0 && (
+                <p className="px-1 py-3 text-xs text-muted-foreground">没有匹配的知识点</p>
+              )}
+              </div>
             </CardContent>
           </Card>
         </div>
