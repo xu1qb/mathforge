@@ -567,7 +567,7 @@ function genNumberTheory(diff: Difficulty): PracticeQuestion {
       if (x % m1 === r1 && x % m2 === r2) { answer = x; break; }
     }
     const question = `解同余方程组：x ≡ ${r1} (mod ${m1})，x ≡ ${r2} (mod ${m2})，求最小非负整数解`;
-    const questionLatex = `\\begin{cases} x \\equiv ${r1} \\pmod{${m1}} \\\\ x \\equiv ${r2} \\pmod{${m2}} \\end{cases} \\text{，求最小非负解}`;
+    const questionLatex = `\\begin{cases} x \\equiv ${r1} \\pmod{${m1}} \\\\\ x \\equiv ${r2} \\pmod{${m2}} \\end{cases} \\text{，求最小非负解}`;
     const steps = [
       `因为 gcd(${m1}, ${m2}) = 1，由中国剩余定理，解在模 ${M} 下唯一`,
       `枚举验证：x = ${answer} 时`,
@@ -762,7 +762,7 @@ function genExpPower(diff: Difficulty): PracticeQuestion {
   if (type === 'exp-eval') {
     const n = diff === 'basic' ? randInt(1, 3) : randInt(2, 5);
     const question = `化简：e^${n} × e^${n + 1} / e^${n - 1}`;
-    const questionLatex = `\\frac{e^{${n}} \cdot e^{${n+1}}}{e^{${n-1}}} = ?`;
+    const questionLatex = `\\frac{e^{${n}} \\cdot e^{${n+1}}}{e^{${n-1}}} = ?`;
     const result = n + n + 1 - n + 1; // = n+2
     const steps = [
       '指数运算法则：a^m × a^n = a^(m+n)，a^m / a^n = a^(m-n)',
@@ -835,7 +835,7 @@ function genLogEquation(diff: Difficulty): PracticeQuestion {
     const exp = randInt(2, 4);
     const answer = Math.pow(base, exp);
     const question = `解方程：log_${base}(x) = ${exp}`;
-    const questionLatex = `\log_{${base}} x = ${exp}`;
+    const questionLatex = `\\log_{${base}} x = ${exp}`;
     const steps = [
       '对数定义：log_b(x) = y  ⇔  x = b^y',
       `x = ${base}^${exp} = ${answer}`,
@@ -852,7 +852,7 @@ function genLogEquation(diff: Difficulty): PracticeQuestion {
   if (type === 'ln-eq') {
     const ans = randInt(2, 6);
     const question = `解方程：ln(x) = ${ans}`;
-    const questionLatex = `\ln x = ${ans}`;
+    const questionLatex = `\\ln x = ${ans}`;
     const steps = [
       '自然对数：ln(x) = y  ⇔  x = e^y',
       `x = e^${ans}`,
@@ -871,7 +871,7 @@ function genLogEquation(diff: Difficulty): PracticeQuestion {
     const a = randInt(2, 6);
     const b = randInt(2, 6);
     const question = `计算：log_${base}(${a}) + log_${base}(${b})`;
-    const questionLatex = `\log_{${base}} ${a} + \log_{${base}} ${b} = ?`;
+    const questionLatex = `\\log_{${base}} ${a} + \\log_{${base}} ${b} = ?`;
     const answer = a * b;
     const steps = [
       '对数加法法则：log_b(x) + log_b(y) = log_b(xy)',
@@ -892,7 +892,7 @@ function genLogEquation(diff: Difficulty): PracticeQuestion {
   const otherBases = bases.filter(v => v !== a);
   const b = pick(otherBases);
   const question = `用换底公式化简：log_${a}(x) / log_${b}(x)`;
-  const questionLatex = `\\frac{\log_{${a}} x}{\log_{${b}} x} = ?`;
+  const questionLatex = `\\frac{\\log_{${a}} x}{\\log_{${b}} x} = ?`;
   const steps = [
     '换底公式：log_a(b) = log_c(b) / log_c(a)',
     `原式 = log_${a}(${b}) = ln(${b})/ln(${a})`,
@@ -924,7 +924,7 @@ function genVectorOp(diff: Difficulty): PracticeQuestion {
     const rx = ax + bx;
     const ry = ay + by;
     const question = `已知 a⃗ = (${ax}, ${ay})，b⃗ = (${bx}, ${by})，求 a⃗ + b⃗`;
-    const questionLatex = `\\vec{a}=(${ax},${ay}),\ \\vec{b}=(${bx},${by})\ \Rightarrow\ \\vec{a}+\\vec{b}=?`;
+    const questionLatex = `\\vec{a}=(${ax},${ay}),\ \\vec{b}=(${bx},${by})\ \\Rightarrow\ \\vec{a}+\\vec{b}=?`;
     const steps = [
       '向量加法：对应分量相加',
       `a⃗ + b⃗ = (${ax} + ${bx}, ${ay} + ${by}) = (${rx}, ${ry})`,
@@ -959,7 +959,7 @@ function genVectorOp(diff: Difficulty): PracticeQuestion {
   if (type === 'dot') {
     const dot = ax * bx + ay * by;
     const question = `已知 a⃗ = (${ax}, ${ay})，b⃗ = (${bx}, ${by})，求 a⃗ · b⃗（点积）`;
-    const questionLatex = `\\vec{a} \cdot \\vec{b} = ?`;
+    const questionLatex = `\\vec{a} \\cdot \\vec{b} = ?`;
     const steps = [
       '点积公式：a·b = a_x·b_x + a_y·b_y',
       `a·b = ${ax} × ${bx} + ${ay} × ${by} = ${ax * bx} + ${ay * by} = ${dot}`,
@@ -976,7 +976,7 @@ function genVectorOp(diff: Difficulty): PracticeQuestion {
   if (type === 'mag') {
     const mag2 = ax * ax + ay * ay;
     const question = `求向量 a⃗ = (${ax}, ${ay}) 的模长 |a⃗|`;
-    const questionLatex = `|\\vec{a}| = ?\quad (\\vec{a}=(${ax},${ay}))`;
+    const questionLatex = `|\\vec{a}| = ?\\quad (\\vec{a}=(${ax},${ay}))`;
     const steps = [
       '模长公式：|a⃗| = √(a_x² + a_y²)',
       `|a⃗| = √((${ax})² + (${ay})²) = √(${ax * ax} + ${ay * ay}) = √${mag2}`,
@@ -995,7 +995,7 @@ function genVectorOp(diff: Difficulty): PracticeQuestion {
   const magA2 = ax * ax + ay * ay;
   const magB2 = bx * bx + by * by;
   const question = `已知 a⃗ = (${ax}, ${ay})，b⃗ = (${bx}, ${by})，求 cos(θ) （两向量夹角余弦）`;
-  const questionLatex = `\cos\\theta = \\frac{\\vec{a} \cdot \\vec{b}}{|\\vec{a}||\\vec{b}|} = ?`;
+  const questionLatex = `\\cos\\theta = \\frac{\\vec{a} \\cdot \\vec{b}}{|\\vec{a}||\\vec{b}|} = ?`;
   const steps = [
     '夹角公式：cos(θ) = (a·b) / (|a|·|b|)',
     `a·b = ${dot}, |a| = √${magA2}, |b| = √${magB2}`,
@@ -1027,7 +1027,7 @@ function genMatrixOp(diff: Difficulty): PracticeQuestion {
   if (type === 'det2') {
     const det = a * d - b * c;
     const question = `求行列式 det([[${a}, ${b}], [${c}, ${d}]])`;
-    const questionLatex = `\\begin{vmatrix} ${a} & ${b} \\ ${c} & ${d} \\end{vmatrix} = ?`;
+    const questionLatex = `\\begin{vmatrix} ${a} & ${b} \\\\ ${c} & ${d} \\end{vmatrix} = ?`;
     const steps = [
       '二阶行列式：ad - bc',
       `det = ${a} × ${d} - ${b} × ${c} = ${a * d} - ${b * c} = ${det}`,
@@ -1044,7 +1044,7 @@ function genMatrixOp(diff: Difficulty): PracticeQuestion {
   if (type === 'trace') {
     const tr = a + d;
     const question = `求矩阵 [[${a}, ${b}], [${c}, ${d}]] 的迹 tr(A)`;
-    const questionLatex = `\mathrm{tr}(A) = ?\quad A=\\begin{pmatrix} ${a} & ${b} \\ ${c} & ${d} \\end{pmatrix}`;
+    const questionLatex = `\\mathrm{tr}(A) = ?\\quad A=\\begin{pmatrix} ${a} & ${b} \\\\ ${c} & ${d} \\end{pmatrix}`;
     const steps = [
       '矩阵的迹 = 主对角线元素之和',
       `tr(A) = ${a} + ${d} = ${tr}`,
@@ -1065,7 +1065,7 @@ function genMatrixOp(diff: Difficulty): PracticeQuestion {
     const h = randInt(-4, 4);
     const r1 = a + e, r2 = b + f, r3 = c + g, r4 = d + h;
     const question = `矩阵相加：[[${a},${b}],[${c},${d}]] + [[${e},${f}],[${g},${h}]]`;
-    const questionLatex = `\\begin{pmatrix} ${a} & ${b} \\ ${c} & ${d} \\end{pmatrix} + \\begin{pmatrix} ${e} & ${f} \\ ${g} & ${h} \\end{pmatrix} = ?`;
+    const questionLatex = `\\begin{pmatrix} ${a} & ${b} \\\\ ${c} & ${d} \\end{pmatrix} + \\begin{pmatrix} ${e} & ${f} \\\\ ${g} & ${h} \\end{pmatrix} = ?`;
     const steps = [
       '矩阵加法：对应元素相加',
       `= [(${a}+${e}, ${b}+${f}), (${c}+${g}, ${d}+${h})]`,
@@ -1083,7 +1083,7 @@ function genMatrixOp(diff: Difficulty): PracticeQuestion {
   // mul2: 2×2 矩阵乘一个列向量或乘标量（简化）
   const scalar = randInt(2, 5);
   const question = `标量乘法：${scalar} × [[${a}, ${b}], [${c}, ${d}]]`;
-  const questionLatex = `${scalar} \cdot \\begin{pmatrix} ${a} & ${b} \\ ${c} & ${d} \\end{pmatrix} = ?`;
+  const questionLatex = `${scalar} \\cdot \\begin{pmatrix} ${a} & ${b} \\\\ ${c} & ${d} \\end{pmatrix} = ?`;
   const steps = [
     '标量乘法：每个元素乘以标量',
     `= [[${scalar}×${a}, ${scalar}×${b}], [${scalar}×${c}, ${scalar}×${d}]]`,
@@ -1154,7 +1154,7 @@ function genComplexEquation(diff: Difficulty): PracticeQuestion {
   }
   if (type === 'conj') {
     const question = `求复数 z = ${a}+${b}i 的共轭复数 z̄`;
-    const questionLatex = `\\bar{z} = ?\quad z=${a}+${b}i`;
+    const questionLatex = `\\bar{z} = ?\\quad z=${a}+${b}i`;
     const steps = [
       '共轭复数：虚部取反',
       `z = ${a} + ${b}i  ⇒  z̄ = ${a} - ${b}i`,
@@ -1171,7 +1171,7 @@ function genComplexEquation(diff: Difficulty): PracticeQuestion {
   if (type === 'modulus') {
     const mod2 = a * a + b * b;
     const question = `求复数 z = ${a}+${b}i 的模 |z|`;
-    const questionLatex = `|z| = ?\quad z=${a}+${b}i`;
+    const questionLatex = `|z| = ?\\quad z=${a}+${b}i`;
     const steps = [
       '复数模长：|z| = √(a² + b²)',
       `|z| = √((${a})² + (${b})²) = √(${a * a} + ${b * b}) = √${mod2}`,
@@ -1189,7 +1189,7 @@ function genComplexEquation(diff: Difficulty): PracticeQuestion {
   const realAns = c - a;
   const imagAns = d - b;
   const question = `解方程：z + (${a}+${b}i) = ${c}+${d}i`;
-  const questionLatex = `z + (${a}+${b}i) = ${c}+${d}i \Rightarrow z = ?`;
+  const questionLatex = `z + (${a}+${b}i) = ${c}+${d}i \\Rightarrow z = ?`;
   const steps = [
     '移项：z = (c+di) - (a+bi)',
     `z = (${c} - ${a}) + (${d} - ${b})i`,
@@ -1955,7 +1955,7 @@ export function genSequenceLimit(diff: Difficulty): PracticeQuestion {
       const question = `用夹逼准则求：lim(n→∞) Σ (k=1到n) 1/√(n²+k)`;
       const questionLatex = `用夹逼准则求：$\\lim\\limits_{n\\to\\infty} \\sum_{k=1}^{n} \\dfrac{1}{\\sqrt{n^2+k}}$`;
       const steps = [
-        '对每一项进行放缩：$\\dfrac{1}{\\sqrt{n^2+n}} \\le \\dfrac{1}{\\sqrt{n^2+k}} \\le \\dfrac{1}{\\sqrt{n^2+1}} \quad (1\\le k\\le n)$',
+        '对每一项进行放缩：$\\dfrac{1}{\\sqrt{n^2+n}} \\le \\dfrac{1}{\\sqrt{n^2+k}} \\le \\dfrac{1}{\\sqrt{n^2+1}} \\quad (1\\le k\\le n)$',
         '对不等式求和：$\\dfrac{n}{\\sqrt{n^2+n}} \\le S_n \\le \\dfrac{n}{\\sqrt{n^2+1}}$',
         '两端极限均为 1：$\\lim_{n\\to\\infty}\\dfrac{n}{\\sqrt{n^2+n}} = \\lim_{n\\to\\infty}\\dfrac{n}{\\sqrt{n^2+1}} = 1$',
         '由夹逼准则得：$\\lim_{n\\to\\infty} S_n = 1$',

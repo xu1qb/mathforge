@@ -51,6 +51,12 @@ if node scripts/check-formulas.mjs >"$TMP/mf-check-render.log" 2>&1; then
 else
   bad "render"; grep -A 2 '渲染失败' "$TMP/mf-check-render.log" | head -12 | sed 's/^/    /'
 fi
+# 表达式 → 书面 LaTeX 的转换回归（矩阵、元组、上标、根号等）
+if node scripts/check-latex.mjs >"$TMP/mf-check-latex.log" 2>&1; then
+  ok "latex（$(tail -1 "$TMP/mf-check-latex.log")）"
+else
+  bad "latex"; grep -A 2 'FAIL' "$TMP/mf-check-latex.log" | head -10 | sed 's/^/    /'
+fi
 
 step "6/7 文本规范（标点 / 术语 / 占位符）"
 if node scripts/check-text.mjs >"$TMP/mf-check-text.log" 2>&1; then

@@ -1,4 +1,5 @@
 // EXPORTS: expressionToLatex
+import { normalizeMathInput } from './math-normalize';
 
 /**
  * 把 math.js 风格的表达式字符串转成 LaTeX 排版字符串
@@ -780,11 +781,90 @@ class LatexParser {
  * @param expr math.js 表达式，如 "sin(x)/x", "x^2+1", "sqrt(x+1)"
  * @returns LaTeX 字符串，如 "\\frac{\\sin x}{x}"
  */
+/** 按顶层运算符号切分（不进入括号内部） */
+function splitTopLevel(s: string): string[] {
+  const out: string[] = [];
+  let depth = 0;
+  let cur = '';
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if ('([{'.includes(c)) depth += 1;
+    else if (')]}'.includes(c)) depth -= 1;
+    const isOp = (c === '+' || c === '-' || c === '=') && depth === 0 && i > 0;
+    if (isOp) {
+      out.push(cur);
+      out.push(c);
+      cur = '';
+    } else {
+      cur += c;
+    }
+  }
+  out.push(cur);
+  return out;
+}
+
+/** [[1,2],[3,4]] → pmatrix；单个 [1,2,3] → 行向量 */
+function renderMatrixLiteral(literal: string, inner: (s: string) => string): string | null {
+  const trimmed = literal.trim();
+  const isBracket = trimmed.startsWith('[') && trimmed.endsWith(']');
+  if (!isBracket) return null;
+  const body = trimmed.slice(1, -1).trim();
+  if (!body.includes('[') && !body.includes(',')) return null;
+
+  const rows: string[] = [];
+  if (body.startsWith('[')) {
+    // 二维：逐行提取 [..]
+    const rowMatches = body.match(/\[[^\[\]]*\]/g) || [];
+    for (const r of rowMatches) {
+      rows.push(r.slice(1, -1).split(',').map((x) => inner(x.trim())).join(' & '));
+    }
+    if (rows.length === 0) return null;
+    return '\\begin{pmatrix} ' + rows.join(' \\\\ ') + ' \\end{pmatrix}';
+  }
+  // 一维：[a,b,c] → 行向量
+  const items = body.split(',').map((x) => inner(x.trim()));
+  return '\\begin{pmatrix} ' + items.join(' & ') + ' \\end{pmatrix}';
+}
+
+/** (a,b,c) → 圆括号元组；单元素括号交给普通解析 */
+function renderTuple(literal: string, inner: (s: string) => string): string | null {
+  const trimmed = literal.trim();
+  if (!trimmed.startsWith('(') || !trimmed.endsWith(')')) return null;
+  const body = trimmed.slice(1, -1);
+  if (!body.includes(',')) return null;
+  const items = body.split(',').map((x) => inner(x.trim()));
+  return '\\left( ' + items.join(',\\ ') + ' \\right)';
+}
+
 export function expressionToLatex(expr: string): string {
   if (!expr || !expr.trim()) return '';
+  // 统一 Unicode 数学符号（²、√、π、− 等）后再解析
+  const normalized = normalizeMathInput(expr);
   try {
     const parser = new LatexParser();
-    const result = parser.parse(expr);
+    const inner = (s: string) => {
+      if (!s) return '';
+      try {
+        return new LatexParser().parse(s);
+      } catch {
+        return s;
+      }
+    };
+
+    // 顶层出现矩阵 / 元组时，先结构化渲染，再逐个组合
+    const parts = splitTopLevel(normalized);
+    if (parts.some((piece) => piece.trim().startsWith('[[') || piece.trim().startsWith('[') || /^\(.+,.*\)$/.test(piece.trim()))) {
+      const rendered = parts.map((piece) => {
+        const t = piece.trim();
+        if (!t) return '';
+        if (t === '+' || t === '-' || t === '=') return ' ' + t + ' ';
+        return renderMatrixLiteral(t, inner) ?? renderTuple(t, inner) ?? inner(t);
+      });
+      const joined = rendered.join('').replace(/\s+/g, ' ').trim();
+      if (joined) return joined;
+    }
+
+    const result = parser.parse(normalized);
     // 后处理：± 符号（normalize 会把 ± 变成 +/-，解析后变成 + / -）
     let final = result.trim();
     final = final.replace(/\+\s*\/\s*-/g, '\\pm ');
