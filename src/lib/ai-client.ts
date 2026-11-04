@@ -55,7 +55,9 @@ import { Capacitor, CapacitorHttp } from '@capacitor/core';
 export const API_BASE_KEY = 'mf_api_base';
 
 export function isNativeApp(): boolean {
-  return typeof window !== 'undefined' && Capacitor.isNativePlatform();
+  if (typeof window === 'undefined') return false;
+  // Capacitor 运行时，或我们自己的 Android WebView 壳
+  return Capacitor.isNativePlatform() || /Android/i.test(navigator.userAgent);
 }
 
 /** 桌面端由 Electron 注入；安卓端由用户填局域网地址；网页端走 Vite 代理 */
