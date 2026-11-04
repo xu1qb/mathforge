@@ -6,9 +6,9 @@
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",
-    "server": "node --experimental-strip-types server/index.ts",
+    "server": "tsx server/index.ts",
     "dev:full": "concurrently -k \"npm run server\" \"npm run dev\"",
-    "test:server": "LLM_API_KEY= DUAL_SOLVE=0 AGENT_MODE=0 node --experimental-strip-types server/test.ts",
+    "test:server": "LLM_API_KEY= DUAL_SOLVE=0 AGENT_MODE=0 tsx server/test.ts",
     "build": "vite build",
     "typecheck": "tsc -p tsconfig.app.json --noEmit",
     "check": "bash scripts/check-all.sh",
@@ -89,6 +89,7 @@
     "electron": "^45.1.0",
     "electron-builder": "^26.18.0",
     "eslint": "^9",
+    "tsx": "^4.23.15",
     "typescript": "~5.9",
     "vite": "^8",
     "wait-on": "^9.5.1"
