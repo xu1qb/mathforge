@@ -20,7 +20,7 @@ def parse(expr, var="x"):
     return parse_expr(
         expr.replace("^", "**"),
         transformations=standard_transformations + (implicit_multiplication_application,),
-        local_dict={var: sp.Symbol(var)},
+        local_dict={var: sp.Symbol(var), "e": sp.E, "pi": sp.pi, "oo": sp.oo},
         evaluate=True,
     )
 
@@ -128,6 +128,10 @@ def parse_interval_claim(claim):
             def pred(x, m1=m1, m2=m2):
                 return cmp_pred(x, m1.group(1), float(m1.group(2))) or cmp_pred(x, m2.group(1), float(m2.group(2)))
             return pred
+    m = re.fullmatch(r"x!=(-?\d+(?:\.\d+)?)", s)
+    if m:
+        v = float(m.group(1))
+        return lambda x, v=v: x != v
     m = re.fullmatch(r"x(<=|<|>=|>)(-?\d+(?:\.\d+)?)", s)
     if m:
         return lambda x: cmp_pred(x, m.group(1), float(m.group(2)))
@@ -153,6 +157,12 @@ def true_predicate(c):
     if t == "linear":
         a, b, cc = p["a"], p["b"], p["c"]
         return lambda x: a * x + b > cc
+    if t == "domainSqrt":
+        a = p["a"]
+        return lambda x: x >= a
+    if t == "domainFrac":
+        a = p["a"]
+        return lambda x: x != a
     raise ValueError("unknown interval type " + t)
 
 
@@ -190,6 +200,10 @@ def main():
                     not getattr(simplified, "free_symbols", set())
                     and abs(complex(simplified)) < 1e-9
                 )
+            elif getattr(computed, "is_infinite", False) and computed is not None:
+                # ±∞：直接比较符号，不能做减法
+                import sympy as sp
+                ok = parse(it["claim"]["claim"]) == computed
             elif isinstance(computed, str):
                 ok = computed.strip() == str(it["claim"]["claim"]).strip()
             else:

@@ -112,6 +112,7 @@ export function genLimitV2(diff: Difficulty): PracticeQuestion {
       question: '求极限：lim(x→∞) (' + a + 'x^' + n + ' + 1)/(' + b + 'x^' + m + ' + 1)',
       latex: '@lim_{x @to @infty} @dfrac{' + a + 'x^{' + n + '} + 1}{' + b + 'x^{' + m + '} + 1}',
       answer: ans,
+      verify: { kind: 'limit', expr: '(' + a + '*x**' + n + ' + 1)/(' + b + '*x**' + m + ' + 1)', variable: 'x', point: 'oo', claim: ans === '无穷大' ? 'oo' : ans },
       steps: [
         '比较分子分母最高次：' + n + ' 与 ' + m,
         n === m ? '次数相同，极限为系数比 ' + a + '/' + b + ' = ' + frac(a, b)
@@ -162,6 +163,7 @@ export function genLimitV2(diff: Difficulty): PracticeQuestion {
       question: '求极限：lim(x→0) ln(1 + ' + a + 'x)/x',
       latex: '@lim_{x @to 0} @dfrac{@ln(1 + ' + a + 'x)}{x}',
       answer: String(a),
+      verify: { kind: 'limit', expr: 'log(1 + ' + a + '*x)/x', variable: 'x', point: '0', claim: String(a) },
       steps: [
         '等价无穷小：ln(1 + t) ~ t',
         '所以 ln(1 + ' + a + 'x) ~ ' + a + 'x',
@@ -176,6 +178,7 @@ export function genLimitV2(diff: Difficulty): PracticeQuestion {
     question: '求极限：lim(x→∞) (√(x² + ' + a + ') − x)',
     latex: '@lim_{x @to @infty} @left(@sqrt{x^{2} + ' + a + '} - x@right)',
     answer: '0',
+    verify: { kind: 'limit', expr: 'sqrt(x**2 + ' + a + ') - x', variable: 'x', point: 'oo', claim: '0' },
     steps: [
       '分子有理化：乘以 (√(x²+' + a + ') + x)/(√(x²+' + a + ') + x)',
       '分子化为 ' + a + '，分母趋于无穷',
@@ -440,12 +443,14 @@ export function genFourierV2(diff: Difficulty): PracticeQuestion {
 
   const n = rnd(1, 4);
   const T = rnd(2, 8);
-  const val = frac(Math.round(Math.pow(T, n + 1)), n + 1);
+  // a₀ = (2/T)∫₀ᵀ xⁿ dx = 2Tⁿ/(n+1)（漏掉 2/T 会在 T≠2 时算错）
+  const val = frac(2 * Math.round(Math.pow(T, n)), n + 1);
   return mk({
     topic: 'fourier-basic', diff,
     question: '函数 f(x) = x^' + n + ' 在 [0, ' + T + '] 上的 a₀ = ?',
     latex: 'f(x) = x^{' + n + '}，x @in [0, ' + T + ']，a_0 = ?',
     answer: val,
+    verify: { kind: 'value', expr: '2*(' + T + ')**' + n + '/' + (n + 1), claim: val },
     steps: [
       'a₀ = (2/T)∫₀ᵀ x^n dx',
       '∫₀ᵀ x^n dx = T^(n+1)/(n+1) = ' + frac(Math.round(Math.pow(T, n + 1)), n + 1),
@@ -471,6 +476,7 @@ export function genFunctionPropertyV2(diff: Difficulty): PracticeQuestion {
       question: '求函数 f(x) = √(x ' + op + ' ' + Math.abs(a) + ') 的定义域（填 x>=k 或 x<=k）',
       latex: 'f(x) = @sqrt{x ' + op + ' ' + Math.abs(a) + '}',
       answer: 'x>=' + a,
+      verify: { kind: 'interval', type: 'domainSqrt', params: { a }, claim: 'x>=' + a },
       steps: ['根号内必须非负：x ' + op + ' ' + Math.abs(a) + ' ≥ 0', '解得 x ≥ ' + a],
       type: 'expression',
     });
@@ -483,6 +489,7 @@ export function genFunctionPropertyV2(diff: Difficulty): PracticeQuestion {
       question: '求函数 f(x) = 1/(x − ' + a + ') 的定义域（填 x!=k）',
       latex: 'f(x) = @dfrac{1}{x - ' + a + '}',
       answer: 'x!=' + a,
+      verify: { kind: 'interval', type: 'domainFrac', params: { a }, claim: 'x!=' + a },
       steps: ['分母不能为零：x − ' + a + ' ≠ 0', '所以 x ≠ ' + a],
       type: 'expression',
     });
@@ -588,6 +595,7 @@ export function genSequenceLimitV2(diff: Difficulty): PracticeQuestion {
       question: '求极限：lim(n→∞) (n + ' + k + ')/(n² + 1)',
       latex: '@lim_{n @to @infty} @dfrac{n + ' + k + '}{n^{2} + 1}',
       answer: '0',
+      verify: { kind: 'limit', expr: '(n + ' + k + ')/(n**2 + 1)', variable: 'n', point: 'oo', claim: '0' },
       steps: ['分母次数高于分子', '同除以 n² 后分子趋于 0', '极限为 0'],
     });
   }
@@ -814,6 +822,7 @@ export function genIntegralV2(diff: Difficulty): PracticeQuestion {
       question: '计算 ∫ 从 0 到 π 的 sin(' + k + 'x) dx',
       latex: '@int_{0}^{@pi} @sin(' + k + 'x) @, dx',
       answer: val,
+      verify: { kind: 'integral', expr: 'sin(' + k + '*x)', variable: 'x', lower: '0', upper: 'pi', claim: val },
       steps: [
         '原函数：−cos(kx)/k',
         '代入上下限：(1 − cos(kπ))/k',
@@ -829,6 +838,7 @@ export function genIntegralV2(diff: Difficulty): PracticeQuestion {
       question: '求不定积分 ∫e^(' + k + 'x)dx',
       latex: '@int e^{' + k + 'x} @, dx',
       answer: 'e^(' + k + 'x)/' + k,
+      verify: { kind: 'derivative', expr: 'exp(' + k + '*x)/' + k, variable: 'x', claim: 'exp(' + k + '*x)' },
       steps: ['∫e^(kx)dx = e^(kx)/k + C', '这里 k = ' + k, '结果为 e^(' + k + 'x)/' + k],
       type: 'expression',
     });
@@ -840,6 +850,7 @@ export function genIntegralV2(diff: Difficulty): PracticeQuestion {
     question: '计算 ∫ 从 ' + a + ' 到 e 的 1/x dx（提示：ln e = 1）',
     latex: '@int_{' + a + '}^{e} @dfrac{1}{x} @, dx',
     answer: String(1 - Math.log(a)),
+    verify: { kind: 'integral', expr: '1/x', variable: 'x', lower: String(a), upper: 'e', claim: String(1 - Math.log(a)) },
     steps: [
       '原函数 ln|x|',
       '代入上下限：ln e − ln ' + a + ' = 1 − ln ' + a,
@@ -888,6 +899,7 @@ export function genDerivativeV2(diff: Difficulty): PracticeQuestion {
       question: '求导：d/dx (' + a + fn + '(' + b + 'x))',
       latex: '@dfrac{d}{dx}(' + a + '@' + fn + '(' + b + 'x))',
       answer: sign + (a * b) + '*' + other + '(' + b + 'x)',
+      verify: { kind: 'derivative', expr: String(a) + '*' + fn + '(' + b + '*x)', variable: 'x', claim: sign + String(a * b) + '*' + other + '(' + b + '*x)' },
       steps: [
         '(' + fn + ' u)′ = ' + (kind === 'sin' ? 'cos' : '−sin') + ' u · u′',
         'u = ' + b + 'x，u′ = ' + b,
@@ -919,6 +931,7 @@ export function genDerivativeV2(diff: Difficulty): PracticeQuestion {
       question: '求导：d/dx (' + a + 'ln(' + b + 'x))',
       latex: '@dfrac{d}{dx}(' + a + '@ln(' + b + 'x))',
       answer: (a / b) + '*(1/x)',
+      verify: { kind: 'derivative', expr: String(a) + '*log(' + b + '*x)', variable: 'x', claim: String(a) + '/x' },
       steps: ['(ln u)′ = u′/u', 'u = ' + b + 'x，u′ = ' + b, '结果 = ' + a + '·' + b + '/(' + b + 'x) = ' + (a / b) + '/x'],
       type: 'expression',
     });
@@ -933,6 +946,7 @@ export function genDerivativeV2(diff: Difficulty): PracticeQuestion {
     question: '求导：d/dx (' + a + 'x^' + n + ' + ' + b + 'x^' + m + ')',
     latex: '@dfrac{d}{dx}(' + a + 'x^{' + n + '} + ' + b + 'x^{' + m + '})',
     answer: (a * n) + '*x^' + (n - 1) + '+' + (b * m) + '*x^' + (m - 1),
+    verify: { kind: 'derivative', expr: String(a) + '*x**' + n + ' + ' + b + '*x**' + m, variable: 'x', claim: String(a * n) + '*x**' + (n - 1) + ' + ' + (b * m) + '*x**' + (m - 1) },
     steps: [
       '逐项求导',
       '第一项：' + a + '·' + n + 'x^' + (n - 1) + ' = ' + (a * n) + 'x^' + (n - 1),
@@ -1597,6 +1611,7 @@ export function genVectorOpV2(diff: Difficulty): PracticeQuestion {
       question: '求向量 (' + p + ', ' + q + ') 的模',
       latex: '@left@|(' + p + ', ' + q + ')@right@|',
       answer: String(m * m + n * n),
+      verify: { kind: 'value', expr: 'sqrt((' + p + ')**2 + (' + q + ')**2)', claim: String(m * m + n * n) },
       steps: ['模 = √(p² + q²)', p + '² + ' + q + '² = ' + (p * p + q * q), '= (' + (m * m + n * n) + ')²，模为 ' + (m * m + n * n)],
     });
   }
@@ -1654,6 +1669,7 @@ export function genMatrixOpV2(diff: Difficulty): PracticeQuestion {
       question: '求 A + B 的第 1 行第 2 列元素，A = [[' + a + ', ' + b + '], [' + c + ', ' + d + ']]，B 的第 1 行第 2 列为 ' + f,
       latex: 'A = ' + mat + '，B_{12} = ' + f + '，求 (A+B)_{12}',
       answer: String(b + f),
+      verify: { kind: 'value', expr: String(b) + ' + ' + f, claim: String(b + f) },
       steps: ['矩阵加法逐元素相加', b + ' + ' + f + ' = ' + (b + f)],
     });
   }
@@ -1664,6 +1680,7 @@ export function genMatrixOpV2(diff: Difficulty): PracticeQuestion {
       question: '求 ' + k + 'A 的第 2 行第 1 列元素，A = [[' + a + ', ' + b + '], [' + c + ', ' + d + ']]',
       latex: k + 'A，A = ' + mat + '，求第 2 行第 1 列',
       answer: String(k * c),
+      verify: { kind: 'value', expr: String(k) + '*(' + c + ')', claim: String(k * c) },
       steps: ['数乘矩阵：每个元素乘 ' + k, k + ' × ' + c + ' = ' + k * c],
     });
   }
@@ -1673,6 +1690,7 @@ export function genMatrixOpV2(diff: Difficulty): PracticeQuestion {
     question: '求 AB 的第 1 行第 1 列元素，A 第 1 行 = (' + a + ', ' + b + ')，B 第 1 列 = (' + e + ', ' + f + ')',
     latex: '(AB)_{11} = (' + a + ', ' + b + ') @cdot (' + e + ', ' + f + ')^{T}',
     answer: String(a * e + b * f),
+    verify: { kind: 'value', expr: '(' + a + ')*(' + e + ') + (' + b + ')*(' + f + ')', claim: String(a * e + b * f) },
     steps: ['矩阵乘法的元素 = 左行 · 右列', a + '×' + e + ' + ' + b + '×' + f + ' = ' + (a * e + b * f)],
   });
 }
@@ -1709,6 +1727,7 @@ export function genComplexV2(diff: Difficulty): PracticeQuestion {
       question: '求 z + w 的实部，z = ' + a + ' + ' + b + 'i，w = ' + c + ' + ' + d + 'i',
       latex: 'z = ' + a + ' + ' + b + 'i，w = ' + c + ' + ' + d + 'i，求 @Re(z + w)',
       answer: String(a + c),
+      verify: { kind: 'value', expr: String(a) + ' + ' + c, claim: String(a + c) },
       steps: ['复数相加：实部加实部', a + ' + ' + c + ' = ' + (a + c)],
     });
   }
@@ -1718,6 +1737,7 @@ export function genComplexV2(diff: Difficulty): PracticeQuestion {
     question: '求 z·w 的虚部，z = ' + a + ' + ' + b + 'i，w = ' + c + ' + ' + d + 'i',
     latex: 'z = ' + a + ' + ' + b + 'i，w = ' + c + ' + ' + d + 'i，求 @Im(zw)',
     answer: String(a * d + b * c),
+    verify: { kind: 'value', expr: String(a) + '*(' + d + ') + ' + b + '*(' + c + ')', claim: String(a * d + b * c) },
     steps: ['(a+bi)(c+di) = (ac − bd) + (ad + bc)i', '虚部 = ad + bc = ' + a + '×' + d + ' + ' + b + '×' + c + ' = ' + (a * d + b * c)],
   });
 }
@@ -1841,6 +1861,7 @@ export function genCoordinateV2(diff: Difficulty): PracticeQuestion {
       question: '求过 (' + x1 + ', ' + y1 + ') 与 (' + x2 + ', ' + y2 + ') 的直线斜率',
       latex: 'k = @dfrac{' + y2 + ' - ' + y1 + '}{' + x2 + ' - ' + x1 + '}',
       answer: String(k),
+      verify: { kind: 'value', expr: '((' + y2 + ') - (' + y1 + '))/((' + x2 + ') - (' + x1 + '))', claim: String(k) },
       steps: ['斜率 k = (y₂ − y₁)/(x₂ − x₁)', '= ' + (y2 - y1) + '/' + (x2 - x1), '= ' + k],
     });
   }
@@ -1852,6 +1873,7 @@ export function genCoordinateV2(diff: Difficulty): PracticeQuestion {
     question: '直线 y = ' + k + 'x + ' + b + ' 在 x = ' + x + ' 处的函数值',
     latex: 'y = ' + k + 'x + ' + b + '，x = ' + x,
     answer: String(k * x + b),
+    verify: { kind: 'value', expr: String(k) + '*(' + x + ') + (' + b + ')', claim: String(k * x + b) },
     steps: ['代入 x = ' + x, k + '×' + x + ' + ' + b + ' = ' + (k * x + b)],
   });
 }
@@ -1896,6 +1918,7 @@ export function genConicV2(diff: Difficulty): PracticeQuestion {
       question: '双曲线 x²/' + (a * a) + ' − y²/' + (b * b) + ' = 1 的半焦距 c',
       latex: '@dfrac{x^{2}}{' + a * a + '} - @dfrac{y^{2}}{' + b * b + '} = 1，求 c',
       answer: String(m * m + n * n),
+      verify: { kind: 'value', expr: 'sqrt((' + a + ')**2 + (' + b + ')**2)', claim: String(m * m + n * n) },
       steps: ['c² = a² + b² = ' + (a * a + b * b), 'c = ' + (m * m + n * n)],
     });
   }
@@ -1905,6 +1928,7 @@ export function genConicV2(diff: Difficulty): PracticeQuestion {
     question: '抛物线 y² = ' + p + 'x 的焦点到准线的距离',
     latex: 'y^{2} = ' + p + 'x',
     answer: String(p),
+    verify: { kind: 'value', expr: '(' + p + ')/2 - (-(' + p + ')/2)', claim: String(p) },
     steps: ['标准形式 y² = 2px，焦点 (p/2, 0)，准线 x = −p/2', '距离 = p = ' + p],
   });
 }
@@ -2259,6 +2283,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       question: '1 到 ' + N + ' 中有多少个 n 使 2ⁿ 除以 7 余 1？',
       latex: '@left@{n @le ' + N + ' : 2^{n} @equiv 1 @pmod{7}@right@}@text{ 的个数}',
       answer: String(cnt),
+      verify: { kind: 'value', expr: 'floor(' + N + '/3)', claim: String(cnt) },
       steps: [
         '先找周期：2¹=2，2²=4，2³≡1 (mod 7)，周期为 3',
         '所以 n 必须是 3 的倍数',

@@ -53,7 +53,7 @@ export type VerifyClaim =
   | { kind: 'ode'; solution: string; variable: string; equation: { a: number; b?: number }; claim: string }
   | {
       kind: 'interval';
-      type: 'quad' | 'absLe' | 'absGe' | 'linear';
+      type: 'quad' | 'absLe' | 'absGe' | 'linear' | 'domainSqrt' | 'domainFrac';
       params: Record<string, number | string | boolean>;
       claim: string;
     };

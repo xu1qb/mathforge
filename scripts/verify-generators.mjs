@@ -60,8 +60,17 @@ console.log('生成器复核：抽样 ' + sampled + ' 题，可复核 ' + claims
 // 覆盖率：哪些知识点还没有可复核声明
 const coverage = {};
 for (const it of claims) coverage[it.topic] = (coverage[it.topic] ?? 0) + 1;
-const missing = mod.PRACTICE_TOPICS.map((t) => t.key).filter((k) => !coverage[k]);
-if (missing.length) console.log('  未覆盖知识点（' + missing.length + '）：' + missing.join(', '));
+const perTopic = {};
+for (const t of mod.PRACTICE_TOPICS) perTopic[t.key] = { sampled: 0, claimed: 0 };
+for (const t of mod.PRACTICE_TOPICS) perTopic[t.key].sampled = PER_TOPIC * 3;
+for (const it of claims) perTopic[it.topic].claimed++;
+const low = Object.entries(perTopic)
+  .filter(([, v]) => v.claimed < v.sampled)
+  .sort((a, b) => a[1].claimed - b[1].claimed)
+  .slice(0, 8);
+if (low.length) {
+  console.log('  低覆盖知识点：' + low.map(([k, v]) => k + ' ' + v.claimed + '/' + v.sampled).join('，'));
+}
 for (const f of failed.slice(0, 10)) {
   console.log('  FAIL [' + f.topic + '] claim=' + f.claim + ' computed=' + f.computed + (f.error ? ' err=' + f.error : ''));
 }
