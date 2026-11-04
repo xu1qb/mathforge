@@ -534,13 +534,16 @@ export default function PracticePage() {
 
   // 知识点多了以后平铺太长，加搜索过滤
   const [topicQuery, setTopicQuery] = useState('');
+  const [topicLevel, setTopicLevel] = useState<'全部' | '基础' | '进阶' | '竞赛'>('全部');
   const filteredTopics = useMemo(() => {
     const q = topicQuery.trim();
-    if (!q) return PRACTICE_TOPICS;
-    return PRACTICE_TOPICS.filter(
+    let list = PRACTICE_TOPICS;
+    if (topicLevel !== '全部') list = list.filter((t) => t.level === topicLevel);
+    if (!q) return list;
+    return list.filter(
       (t) => t.label.includes(q) || t.category.includes(q) || t.key.includes(q)
     );
-  }, [topicQuery]);
+  }, [topicQuery, topicLevel]);
   const diffInfo = DIFFICULTY_OPTIONS.find((d) => d.value === difficulty)!;
 
   // 结束页：按专题分类统计
@@ -681,7 +684,23 @@ export default function PracticePage() {
                 />
               </div>
 
-              <div className="space-y-3 max-h-[calc(100vh-240px)] overflow-y-auto pr-1">
+              <div className="flex flex-wrap gap-1">
+                {(['全部', '基础', '进阶', '竞赛'] as const).map((lv) => (
+                  <button
+                    key={lv}
+                    onClick={() => setTopicLevel(lv)}
+                    className="rounded-full border px-2.5 py-0.5 text-[11px] transition-colors"
+                    style={{
+                      borderColor: topicLevel === lv ? 'rgb(16 185 129)' : undefined,
+                      color: topicLevel === lv ? 'rgb(5 150 105)' : undefined,
+                    }}
+                  >
+                    {lv}
+                  </button>
+                ))}
+              </div>
+
+              <div className="space-y-3 max-h-[calc(100vh-280px)] overflow-y-auto pr-1">
               {TOPIC_CATEGORIES.map((cat) => {
                 const topics = filteredTopics.filter((t) => t.category === cat.key);
                 if (topics.length === 0) return null;
@@ -733,6 +752,9 @@ export default function PracticePage() {
                                 <span className="text-xs text-muted-foreground">
                                   {stats?.questions ?? 0}题
                                 </span>
+                                <span className="text-[10px] text-muted-foreground/70">
+                                  {topic.level}
+                                </span>
                                 {accuracy !== null && (
                                   <span className={`text-xs font-medium ${
                                     accuracy >= 70 ? 'text-emerald-600 dark:text-emerald-400'
@@ -777,7 +799,7 @@ export default function PracticePage() {
           <Card>
             <CardContent className="py-4 flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">难度：</span>
+                <span className="text-sm text-muted-foreground">出题难度：</span>
                 <div className="flex gap-1">
                   {DIFFICULTY_OPTIONS.map((d) => (
                     <button
