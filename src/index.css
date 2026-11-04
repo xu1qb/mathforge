@@ -707,6 +707,14 @@ html.theme-transition * {
   transform: translateX(-50%) rotate(20deg);
 }
 
+/* 数学助手展开时，手机上隐藏公式速查悬浮球，避免两者重叠 */
+@media (max-width: 767px) {
+  body:has([data-buddy-expanded='true']) .formula-fab,
+  body:has([data-buddy-expanded='true']) .radial-menu {
+    display: none;
+  }
+}
+
 /* 解题流程图打印：节点不跨页，标题不与正文分离 */
 @media print {
   .flow-node {

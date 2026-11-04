@@ -105,7 +105,7 @@ export default function StudyBuddy() {
   }
 
   return (
-    <div className="fixed bottom-20 right-3 z-40 flex flex-col items-end gap-1 select-none md:right-24">
+    <div className="fixed bottom-20 right-3 z-40 flex flex-col items-end gap-1 select-none md:right-24" data-buddy-expanded="true">
       {quip && (
         <div className="max-w-[180px] rounded-xl bg-popover text-popover-foreground text-xs px-3 py-2 shadow-md border border-border animate-in fade-in slide-in-from-bottom-2">
           {quip}

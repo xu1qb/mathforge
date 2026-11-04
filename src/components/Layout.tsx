@@ -140,7 +140,7 @@ export function Layout() {
         <button
           type="button"
           onClick={() => setQuickSheetOpen(true)}
-          className="md:hidden fixed right-4 bottom-[152px] z-40 size-12 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+          className="formula-fab md:hidden fixed right-4 bottom-[152px] z-40 size-12 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
           aria-label="公式速查"
         >
           <BookOpenText className="size-5" />

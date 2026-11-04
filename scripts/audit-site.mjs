@@ -65,10 +65,11 @@ const PROBE = [
   '    if (s.position !== "fixed" || s.display === "none" || s.visibility === "hidden" || Number(s.opacity) === 0) return false;',
   '    const r = e.getBoundingClientRect();',
   '    return r.width > 18 && r.height > 18 && r.bottom > 0 && r.top < window.innerHeight;',
-  '  }).map(e => { const r = e.getBoundingClientRect(); return { cls: String(e.className).slice(0, 34), l: Math.round(r.left), t: Math.round(r.top), r2: Math.round(r.right), b: Math.round(r.bottom) }; });',
+  '  }).map(e => { const r = e.getBoundingClientRect(); return { el: e, cls: String(e.className).slice(0, 34), l: Math.round(r.left), t: Math.round(r.top), r2: Math.round(r.right), b: Math.round(r.bottom) }; });',
   '  const overlaps = [];',
   '  for (let i = 0; i < fixed.length; i++) for (let j = i + 1; j < fixed.length; j++) {',
   '    const a = fixed[i], b = fixed[j];',
+  '    if (a.el.contains(b.el) || b.el.contains(a.el)) continue;',
   '    const w = Math.min(a.r2, b.r2) - Math.max(a.l, b.l);',
   '    const h = Math.min(a.b, b.b) - Math.max(a.t, b.t);',
   '    if (w > 6 && h > 6) overlaps.push([a.cls, b.cls]);',
@@ -79,9 +80,12 @@ const PROBE = [
 
 fs.mkdirSync(SHOT_DIR, { recursive: true });
 const out = [];
+// 参数化路由（/course/:subject）在静态审计里没有实际内容，跳过
+const AUDIT_ROUTES = ROUTES.filter((r) => !r.includes(':'));
+
 for (const width of WIDTHS) {
   await send('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 600 });
-  for (const route of ROUTES) {
+  for (const route of AUDIT_ROUTES) {
     errors = [];
     await send('Page.navigate', { url: BASE + '/#' + route });
     await sleep(WAIT);
@@ -105,7 +109,7 @@ for (const width of WIDTHS) {
     const flags = [];
     if (rec.overflow) flags.push('OVERFLOW(' + rec.sw + '>' + rec.vw + ')');
     if (rec.h1.length > 1) flags.push('DUP-H1(' + rec.h1.length + ')');
-    if (rec.overlaps.length) flags.push('FIXED-OVERLAP');
+    if (rec.overlaps.length) flags.push('FIXED-OVERLAP ' + JSON.stringify(rec.overlaps[0]));
     if (rec.errors.length) flags.push('ERR:' + rec.errors[0]);
     if (flags.length) console.log(width + 'px ' + route + '  ' + flags.join(' | '));
   }

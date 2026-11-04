@@ -44,7 +44,7 @@ export default function RadialMenu() {
   }, [open]);
 
   return (
-    <div className="fixed bottom-24 right-4 z-50">
+    <div className="radial-menu fixed bottom-24 right-4 z-50">
       {/* 弹出面板：4 列 x 2 行，右对齐到按钮上方，永远在视口内 */}
       <div
         className={cn(
