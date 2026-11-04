@@ -63,6 +63,12 @@ if node scripts/check-generators.mjs >"$TMP/mf-check-gen.log" 2>&1; then
 else
   bad "generators"; grep -E 'FAIL|存在问题' "$TMP/mf-check-gen.log" | head -8 | sed 's/^/    /'
 fi
+# 出题多样性：同一知识点不能反复出几道题
+if node scripts/check-variety.mjs >"$TMP/mf-check-variety.log" 2>&1; then
+  ok "variety（$(head -1 "$TMP/mf-check-variety.log")）"
+else
+  bad "variety"; head -6 "$TMP/mf-check-variety.log" | sed 's/^/    /'
+fi
 
 step "6/7 文本规范（标点 / 术语 / 占位符）"
 if node scripts/check-text.mjs >"$TMP/mf-check-text.log" 2>&1; then

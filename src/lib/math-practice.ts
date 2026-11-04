@@ -3,6 +3,22 @@
 import { evaluate, simplify, derivative } from 'mathjs';
 import { normalizeMathInput } from './math-normalize';
 import { expressionToLatex } from './expression-to-latex';
+import {
+  genLimitV2,
+  genHyperbolicV2,
+  genSeriesV2,
+  genFourierV2,
+  genFunctionPropertyV2,
+  genSequenceLimitV2,
+  genTrigIdentityV2,
+  genIntegralV2,
+  genDerivativeV2,
+  genInequalitySolveV2,
+  genRandomVariableV2,
+  genOdeV2,
+  genTrigSpecialV2,
+  genSequenceRecurrenceV2,
+} from './practice-v2';
 import { gcd } from 'mathjs';
 
 export type Difficulty = 'basic' | 'advanced' | 'competition';
@@ -1581,10 +1597,10 @@ export function generatePracticeQuestion(topicKey: string, difficulty: Difficult
   switch (topicKey) {
     case 'algebra-quad': return genQuadEq(difficulty);
     case 'algebra-factor': return genFactor(difficulty);
-    case 'trig-special': return genTrigSpecial(difficulty);
-    case 'derivative-basic': return genDerivative(difficulty);
-    case 'integral-basic': return genIntegral(difficulty);
-    case 'limit-basic': return genLimit(difficulty);
+    case 'trig-special': return genTrigSpecialV2(difficulty);
+    case 'derivative-basic': return genDerivativeV2(difficulty);
+    case 'integral-basic': return genIntegralV2(difficulty);
+    case 'limit-basic': return genLimitV2(difficulty);
     case 'nt-gcd': return genNumberTheory(difficulty);
     case 'inequality-amgm': return genAMGM(difficulty);
     case 'exp-power': return genExpPower(difficulty);
@@ -1594,20 +1610,20 @@ export function generatePracticeQuestion(topicKey: string, difficulty: Difficult
     case 'complex-equation': return genComplexEquation(difficulty);
     case 'geometry-basic': return genGeometryBasic(difficulty);
     case 'combinatorics-basic': return genCombinatoricsBasic(difficulty);
-    case 'trig-identity': return genTrigIdentity(difficulty);
-    case 'sequence-limit': return genSequenceLimit(difficulty);
+    case 'trig-identity': return genTrigIdentityV2(difficulty);
+    case 'sequence-limit': return genSequenceLimitV2(difficulty);
     case 'coordinate-geometry': return genCoordinateGeometry(difficulty);
     case 'conic-sections': return genConicSections(difficulty);
     case 'solid-geometry': return genSolidGeometry(difficulty);
     case 'probability-classical': return genProbabilityClassical(difficulty);
-    case 'random-variable': return genRandomVariable(difficulty);
-    case 'ode-solving': return genOdeSolving(difficulty);
-    case 'series-convergence': return genSeriesConvergence(difficulty);
-    case 'fourier-basic': return genFourierBasic(difficulty);
-    case 'function-property': return genFunctionProperty(difficulty);
-    case 'hyperbolic-func': return genHyperbolicFunc(difficulty);
-    case 'inequality-solve': return genInequalitySolve(difficulty);
-    case 'sequence-recurrence': return genSequenceRecurrence(difficulty);
+    case 'random-variable': return genRandomVariableV2(difficulty);
+    case 'ode-solving': return genOdeV2(difficulty);
+    case 'series-convergence': return genSeriesV2(difficulty);
+    case 'fourier-basic': return genFourierV2(difficulty);
+    case 'function-property': return genFunctionPropertyV2(difficulty);
+    case 'hyperbolic-func': return genHyperbolicV2(difficulty);
+    case 'inequality-solve': return genInequalitySolveV2(difficulty);
+    case 'sequence-recurrence': return genSequenceRecurrenceV2(difficulty);
     default: return genQuadEq(difficulty);
   }
 }
