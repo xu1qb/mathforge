@@ -68,10 +68,10 @@
 | 组合数学 Combinatorics | ◐ | 离散数学 |
 | 图论 Graph Theory | ◐ | 离散数学、现代数学 |
 | 数理逻辑 Mathematical Logic | ◐ | 离散数学 |
-| 集合论 Set Theory | — | |
+| 集合论 Set Theory | ◐ | 考点「集合论：用双射比大小」 |
 | 范畴论 Category Theory | — | |
 | 格论 Lattice Theory | — | |
-| 信息论 Information Theory | — | |
+| 信息论 Information Theory | ◐ | 考点「信息论：熵就是不确定性」 |
 | 可计算性 Computability | — | |
 
 ## 6. 概率与统计 Probability & Statistics
@@ -81,8 +81,8 @@
 | 概率论 Probability Theory | ✅ | 概率统计、原理讲解（贝叶斯/数字特征） |
 | 数理统计 Mathematical Statistics | ✅ | 概率统计 |
 | 随机过程 Stochastic Processes | ◐ | 考点「随机过程入门：马尔可夫与泊松」 |
-| 信息论 Information Theory | — | |
-| 博弈论 Game Theory | — | |
+| 信息论 Information Theory | ◐ | 见组合与离散一节 |
+| 博弈论 Game Theory | ◐ | 考点「博弈论：纳什均衡怎么找」 |
 | 金融数学 Mathematical Finance | — | |
 
 ## 7. 计算与算法 Computation & Algorithms
@@ -92,7 +92,7 @@
 | 数值分析 Numerical Analysis | ✅ | 数值分析 |
 | 计算数学 Computational Mathematics | ◐ | 数值分析 |
 | 离散数学 Discrete Mathematics | ✅ | 离散数学 |
-| 密码学 Cryptography | — | |
+| 密码学 Cryptography | ◐ | 考点「密码学：RSA 三步」 |
 | 理论计算机科学 TCS | — | |
 
 ## 8. 应用数学 Applied Mathematics
