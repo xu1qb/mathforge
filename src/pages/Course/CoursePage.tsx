@@ -2,7 +2,7 @@
 // 课程页：/course/:subject 课程首页，/course/:subject/:chapterId 展开某章
 // 结构：课程信息 → 学科介绍 → 章节树（知识点 + 练习） → 应用 → 交叉
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   BookOpen,
@@ -44,17 +44,33 @@ export default function CoursePage() {
     );
   }
 
-  const activeChapter = chapterId ? course.chapters.find((c) => c.id === chapterId) : undefined;
   const totalLessons = course.chapters.reduce((n, c) => n + c.lessonIds.length, 0);
   const totalExercises = course.chapters.reduce((n, c) => n + c.exercises.length, 0);
 
-  // 从目录点进来时，滚动到对应章节
-  const chapterRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  // 折叠式切换：点目录只展开对应章节，不跳路由也不滚动，避免闪烁
+  const [openId, setOpenId] = useState<string | null>(
+    chapterId && course.chapters.some((c) => c.id === chapterId)
+      ? chapterId
+      : course.chapters[0]?.id ?? null
+  );
+
+  // 深链进入（/course/:id/:chapter）时同步一次
   useEffect(() => {
-    if (!activeChapter) return;
-    const el = chapterRefs.current[activeChapter.id];
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, [activeChapter]);
+    if (chapterId && course.chapters.some((c) => c.id === chapterId)) {
+      setOpenId(chapterId);
+    }
+  }, [chapterId, course.chapters]);
+
+  const selectChapter = (id: string | null) => {
+    setOpenId(id);
+    // 只改地址栏，不触发路由重渲染（避免闪一下）
+    if (typeof window !== 'undefined') {
+      const path = id ? '/#/course/' + course.id + '/' + id : '/#/course/' + course.id;
+      window.history.replaceState(null, '', path);
+    }
+  };
+
+  const activeChapter = openId ? course.chapters.find((c) => c.id === openId) : undefined;
 
   return (
     <PageShell
@@ -70,21 +86,21 @@ export default function CoursePage() {
         </Button>
       }
     >
-      <div className="space-y-6 lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:items-start lg:gap-6 lg:space-y-0">
+      <div className="space-y-6 lg:grid lg:h-[calc(100dvh-7rem)] lg:grid-cols-[220px_minmax(0,1fr)] lg:items-stretch lg:gap-6 lg:space-y-0 lg:overflow-hidden">
         {/* 左侧章节目录（宽屏粘性） */}
-        <aside className="hidden lg:block">
-          <div className="sticky top-4 space-y-2">
+        <aside className="hidden lg:block lg:h-full lg:overflow-y-auto lg:pr-1">
+          <div className="space-y-2">
             <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
               <ListTree className="size-3.5" />
               目录
             </div>
             <nav className="space-y-0.5">
               {course.chapters.map((ch, i) => {
-                const isActive = activeChapter?.id === ch.id;
+                const isActive = openId === ch.id;
                 return (
                   <button
                     key={ch.id}
-                    onClick={() => navigate('/course/' + course.id + '/' + ch.id)}
+                    onClick={() => selectChapter(ch.id)}
                     className={cn(
                       'flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-xs transition-colors',
                       isActive
@@ -109,7 +125,27 @@ export default function CoursePage() {
           </div>
         </aside>
 
-        <div className="space-y-6">
+        {/* 手机端：横向章节条（吸顶） */}
+        <div className="sticky top-0 z-20 -mx-4 mb-2 border-b border-border/60 bg-background/95 px-4 py-2 backdrop-blur lg:hidden">
+          <div className="flex gap-1.5 overflow-x-auto pb-1">
+            {course.chapters.map((ch, i) => (
+              <button
+                key={ch.id}
+                onClick={() => selectChapter(ch.id)}
+                className={cn(
+                  'shrink-0 rounded-full border px-2.5 py-1 text-xs transition-colors',
+                  openId === ch.id
+                    ? 'border-primary bg-primary/10 font-medium text-foreground'
+                    : 'border-border text-muted-foreground'
+                )}
+              >
+                {i + 1}. {ch.title}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-6 lg:h-full lg:overflow-y-auto lg:pr-1">
         {/* 课程信息 */}
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {[
@@ -210,26 +246,25 @@ export default function CoursePage() {
         <section>
           <h2 className="mb-3 text-base font-semibold text-foreground">章节</h2>
           <div className="space-y-2">
-            {course.chapters.map((ch, idx) => {
-              const isActive = activeChapter?.id === ch.id;
+            {course.chapters
+              .filter((ch) => ch.id === openId)
+              .map((ch, idx) => {
+              const isActive = true;
               return (
                 <Card
                   key={ch.id}
-                  ref={(el) => {
-                    chapterRefs.current[ch.id] = el;
-                  }}
                   className={cn(
-                    'scroll-mt-4 border-border/60 transition-colors',
+                    'border-border/60 transition-colors',
                     isActive && 'border-primary/50'
                   )}
                 >
                   <CardContent className="p-0">
                     <button
-                      onClick={() => navigate('/course/' + course.id + '/' + ch.id)}
+                      onClick={() => selectChapter(ch.id)}
                       className="flex w-full items-center gap-3 p-4 text-left"
                     >
                       <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary">
-                        {idx + 1}
+                        {course.chapters.findIndex((c) => c.id === ch.id) + 1}
                       </span>
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
