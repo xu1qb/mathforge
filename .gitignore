@@ -11,7 +11,12 @@ build/
 */build/
 
 # Environment files
+.env
 .env.local
+.env.*.local
+
+# 后端缓存与临时产物
+.cache/
 
 # Logs
 npm-debug.log*

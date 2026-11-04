@@ -71,6 +71,7 @@ const NAV_GROUPS: NavGroup[] = [
       { path: '/', label: '首页', icon: Home },
       { path: '/competition', label: '竞赛备战中心', icon: Trophy },
       { path: '/practice', label: '练习训练', icon: GraduationCap },
+      { path: '/ai-lab', label: 'AI 出题', icon: Sparkles },
       { path: '/explainer', label: '原理讲解', icon: Lightbulb },
       { path: '/flow', label: '解题流程图', icon: Workflow },
     ],

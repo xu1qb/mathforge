@@ -18,13 +18,13 @@ ok()   { printf '  \033[32m✓\033[0m %s\n' "$1"; }
 bad()  { printf '  \033[31m✗\033[0m %s\n' "$1"; FAIL=1; }
 dump() { tail -15 "$1" 2>/dev/null | sed 's/^/    /'; }
 
-step "1/7 类型检查"
+step "1/8 类型检查"
 if npm run typecheck >"$TMP/mf-check-ts.log" 2>&1; then ok "typecheck"; else bad "typecheck"; dump "$TMP/mf-check-ts.log"; fi
 
-step "2/7 代码规范"
+step "2/8 代码规范"
 if npm run lint >"$TMP/mf-check-lint.log" 2>&1; then ok "lint"; else bad "lint"; dump "$TMP/mf-check-lint.log"; fi
 
-step "3/7 生产构建"
+step "3/8 生产构建"
 OUT="$TMP/mf-check-dist"
 rm -rf "$OUT" 2>/dev/null || true
 if npx vite build --outDir "$OUT" --emptyOutDir >"$TMP/mf-check-build.log" 2>&1; then
@@ -33,7 +33,7 @@ else
   bad "build"; dump "$TMP/mf-check-build.log"
 fi
 
-step "4/7 公式正确性（数学断言）"
+step "4/8 公式正确性（数学断言）"
 WS="$(cd .. && pwd)"
 if [ -d "$WS/.tooling/py" ]; then
   if PYTHONPATH="$WS/.tooling/py" python3 scripts/verify-formulas.py >"$TMP/mf-check-formula.log" 2>&1; then
@@ -45,7 +45,7 @@ else
   printf '  - 跳过：没找到 %s/.tooling/py\n' "$WS"
 fi
 
-step "5/7 公式渲染（KaTeX strict）"
+step "5/8 公式渲染（KaTeX strict）"
 if node scripts/check-formulas.mjs >"$TMP/mf-check-render.log" 2>&1; then
   ok "render（$(grep -o '[0-9]*$' <<< "$(head -1 "$TMP/mf-check-render.log")") 条公式）"
 else
@@ -76,18 +76,26 @@ else
   bad "difficulty"; head -6 "$TMP/mf-check-diff.log" | sed 's/^/    /'
 fi
 
-step "6/7 文本规范（标点 / 术语 / 占位符）"
+step "6/8 文本规范（标点 / 术语 / 占位符）"
 if node scripts/check-text.mjs >"$TMP/mf-check-text.log" 2>&1; then
   ok "text（$(grep -o '扫描字符串: [0-9]*' "$TMP/mf-check-text.log" | head -1)）"
 else
   bad "text"; grep -E '问题数|^  - ' "$TMP/mf-check-text.log" | head -8 | sed 's/^/    /'
 fi
 
-step "7/7 交叉引用与死链"
+step "7/8 交叉引用与死链"
 if node scripts/check-refs.mjs >"$TMP/mf-check-refs.log" 2>&1; then
   ok "refs（$(grep -o '问题数: 0' "$TMP/mf-check-refs.log" | head -1)）"
 else
   bad "refs"; grep -E '问题数|^  \[' "$TMP/mf-check-refs.log" | head -8 | sed 's/^/    /'
+fi
+
+
+step "8/8 服务端（校验与生成链路）"
+if node --experimental-strip-types server/test.ts >"$TMP/mf-check-server.log" 2>&1; then
+  ok "server（$(tail -1 "$TMP/mf-check-server.log")）"
+else
+  bad "server"; tail -6 "$TMP/mf-check-server.log" | sed 's/^/    /'
 fi
 
 echo

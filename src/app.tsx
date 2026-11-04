@@ -68,6 +68,7 @@ class AppErrorBoundary extends Component<{ children: React.ReactNode }, { hasErr
 }
 
 // 非首屏工具页同样懒加载，避免进入首屏主包；仅首页 HomePage 保留直接 import
+const AiLabPageLazy = lazy(() => import("@/pages/AiLab/AiLabPage"));
 const FormulaHandbookLazy = lazy(() => import("@/pages/FormulaHandbook/FormulaHandbookPage"));
 const ScientificCalculatorLazy = lazy(() => import("@/pages/ScientificCalculator/ScientificCalculatorPage"));
 const SymbolicAlgebraLazy = lazy(() => import("@/pages/SymbolicAlgebra/SymbolicAlgebraPage"));
@@ -228,6 +229,7 @@ export default function App() {
           <Route path="diff-geo" element={<DiffGeoPage />} />
           <Route path="competition" element={<CompetitionPage />} />
           <Route path="practice" element={<PracticePage />} />
+          <Route path="ai-lab" element={<AiLabPageLazy />} />
           <Route path="integral-visualization" element={<IntegralVisPage />} />
           <Route path="knowledge-map" element={<Suspense fallback={<ModuleFallback />}><KnowledgeMapLazy /></Suspense>} />
           <Route path="tools" element={<ToolsPage />} />

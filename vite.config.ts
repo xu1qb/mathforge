@@ -10,6 +10,12 @@ const __dirname = dirname(__filename)
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   base: './',
+  // 开发期把 /api 转发到本地后端（server/index.ts）
+  server: {
+    proxy: {
+      '/api': 'http://127.0.0.1:8787',
+    },
+  },
   // plotly.js 按需源码包的 WebGL 内核在浏览器里裸用 Node 全局 global，
   // 统一映射到 globalThis（浏览器即 window），避免 ReferenceError: Can't find variable: global
   define: {

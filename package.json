@@ -6,6 +6,9 @@
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",
+    "server": "node --experimental-strip-types server/index.ts",
+    "dev:full": "concurrently -k \"npm run server\" \"npm run dev\"",
+    "test:server": "node --experimental-strip-types server/test.ts",
     "build": "vite build",
     "typecheck": "tsc -p tsconfig.app.json --noEmit",
     "check": "bash scripts/check-all.sh",
