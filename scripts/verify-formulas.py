@@ -649,6 +649,31 @@ chk('练习 la5-8：x²-2xy+y² 半正定（行列式为 0）',
     sp.Matrix([[1, -1], [-1, 1]]).det() == 0
     and all(float(v) >= 0 for v in sp.Matrix([[1, -1], [-1, 1]]).eigenvals()))
 
+# ---- 对照教材补充：行列式展开 / 初等矩阵 / 线性空间 / 线性变换 ----
+_V = sp.Matrix([[1, 1, 1], [1, 2, 3], [1, 4, 9]])
+chk('三阶范德蒙德（1,2,3）= 2', _V.det() == 2)
+chk('范德蒙德公式 (x2-x1)(x3-x1)(x3-x2)',
+    (2 - 1) * (3 - 1) * (3 - 2) == _V.det())
+
+_Pswap = sp.Matrix([[0, 1], [1, 0]])
+_Ae = sp.Matrix([[1, 2], [3, 4]])
+chk('初等矩阵左乘实现行交换', _Pswap * _Ae == sp.Matrix([[3, 4], [1, 2]]))
+
+chk('P2[x] 的基 {1,x,x²} 线性无关',
+    sp.Matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]).rank() == 3)
+
+_rot90 = sp.Matrix([[0, -1], [1, 0]])
+chk('旋转 90° 矩阵正交且行列式为 1',
+    _rot90.T * _rot90 == sp.eye(2) and _rot90.det() == 1)
+_T = sp.Matrix([[1, 1], [1, -1]])
+chk('T(x,y)=(x+y,x−y) 的矩阵为 [[1,1],[1,-1]]', _T * sp.Matrix([1, 0]) == sp.Matrix([1, 1]))
+chk('T(x,y)=(2x,3y) 的矩阵为 diag(2,3)',
+    sp.diag(2, 3) * sp.Matrix([1, 0]) == sp.Matrix([2, 0]))
+
+_Psim = sp.Matrix([[1, 1], [1, -1]])
+chk('换基后矩阵为 diag(3,1)',
+    sp.simplify(_Psim.inv() * sp.Matrix([[2, 1], [1, 2]]) * _Psim - sp.diag(3, 1)) == sp.zeros(2, 2))
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:

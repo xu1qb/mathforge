@@ -28,7 +28,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
         '掌握矩阵乘法与逆矩阵的判定',
         '理解秩是「有效信息量」',
       ],
-      lessonIds: ['det-basics', 'matrix-algebra', 'special-matrices', 'inverse-adjugate', 'rank'],
+      lessonIds: ['det-basics', 'determinant-expansion', 'matrix-algebra', 'special-matrices', 'inverse-adjugate', 'rank'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -119,7 +119,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
       textbookRef: '第 3 章',
       summary: '高斯消元 + 秩判据，一次性看清唯一解、无穷多解、无解',
       goals: ['用初等行变换化阶梯形', '用秩判断解的情况', '会写基础解系与通解'],
-      lessonIds: ['gauss-elimination', 'linear-system', 'cramers-rule', 'rank-nullity', 'homogeneous-basis'],
+      lessonIds: ['gauss-elimination', 'elementary-matrix', 'linear-system', 'cramers-rule', 'rank-nullity', 'homogeneous-basis'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -219,7 +219,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
       textbookRef: '第 4 章',
       summary: '基与维数，是「用几个数描述一个对象」的严格版本',
       goals: ['判断线性相关与无关', '求极大无关组与秩', '理解基、维数、坐标'],
-      lessonIds: ['linear-dependence', 'vector-space-basis', 'gram-schmidt', 'subspace-test', 'transition-matrix'],
+      lessonIds: ['linear-dependence', 'vector-space-basis', 'gram-schmidt', 'subspace-test'],
       practiceTopics: ['vector-op'],
       exercises: [
         {
@@ -415,7 +415,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
     {
       id: 'quadratic',
       title: '二次型',
-      textbookRef: '第 6 章',
+      textbookRef: '第 5 章（后半）',
       summary: '把二次多项式写成矩阵形式，正定与否一眼看出',
       goals: ['写出二次型的矩阵', '用配方法或正交变换化标准形', '判定正定性'],
       lessonIds: ['quadratic-form', 'positive-definite', 'inertia-theorem', 'orthogonal-diagonalization', 'rayleigh-quotient'],
@@ -509,6 +509,93 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
             '存在非零向量 $(1,1)$ 使 $f=0$，所以取不到严格正。',
             '矩阵 $\\begin{pmatrix}1&-1\\\\-1&1\\end{pmatrix}$ 的行列式为 $0$，有零特征值。',
             '因此是半正定，不是正定。',
+          ],
+        },
+      ],
+    },
+    {
+      id: 'linear-space',
+      title: '线性空间与线性变换',
+      textbookRef: '第 6 章',
+      summary: '把 $\\mathbb{R}^{n}$ 抽象成线性空间，把变换写成矩阵',
+      goals: [
+        '理解线性空间是满足八条公理的集合',
+        '求多项式空间、矩阵空间的维数',
+        '写出线性变换在给定基下的矩阵',
+      ],
+      lessonIds: ['linear-space', 'transition-matrix', 'linear-transformation'],
+      practiceTopics: ['matrix-op'],
+      exercises: [
+        {
+          id: 'la6-1',
+          level: '基础',
+          question: '求次数不超过 $2$ 的多项式空间 $P_{2}[x]$ 的维数。',
+          answer: '$3$',
+          hint: '找一组基。',
+          steps: [
+            '任意元素可写成 $a+bx+cx^{2}$。',
+            '$1, x, x^{2}$ 线性无关且能张成整个空间。',
+            '所以维数为 $3$。',
+          ],
+        },
+        {
+          id: 'la6-2',
+          level: '基础',
+          question: '求 $2\\times2$ 矩阵构成的线性空间的维数。',
+          answer: '$4$',
+          hint: '数一数有几个自由参数。',
+          steps: [
+            '一般元素 $\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix}$ 有 $4$ 个独立参数。',
+            '四个基矩阵 $E_{11},E_{12},E_{21},E_{22}$ 线性无关。',
+            '所以维数为 $4$。',
+          ],
+        },
+        {
+          id: 'la6-3',
+          level: '基础',
+          question: '求平面绕原点旋转 $90^{\\circ}$ 的线性变换矩阵。',
+          answer: '$\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}$',
+          hint: '看两个基向量被映到哪里。',
+          steps: [
+            '$e_{1}=(1,0)$ 旋转后是 $(0,1)$。',
+            '$e_{2}=(0,1)$ 旋转后是 $(-1,0)$。',
+            '把像按列排成矩阵。',
+          ],
+        },
+        {
+          id: 'la6-4',
+          level: '进阶',
+          question: '判断 $T(x,y)=(x+y,\\ x-y)$ 是否为线性变换。',
+          answer: '是',
+          hint: '验证加法与数乘两条。',
+          steps: [
+            '$T((x_{1},y_{1})+(x_{2},y_{2}))=T(x_{1}+x_{2},y_{1}+y_{2})$，展开后等于两像之和。',
+            '$T(kx,ky)=(kx+ky,kx-ky)=kT(x,y)$。',
+            '两条都满足，是线性变换。',
+          ],
+        },
+        {
+          id: 'la6-5',
+          level: '进阶',
+          question: '求 $T(x,y)=(2x,\\ 3y)$ 在标准基下的矩阵。',
+          answer: '$\\begin{pmatrix}2&0\\\\0&3\\end{pmatrix}$',
+          hint: '把基向量的像按列排。',
+          steps: [
+            '$T(1,0)=(2,0)$，是第一列。',
+            '$T(0,1)=(0,3)$，是第二列。',
+            '所以矩阵为 $\\mathrm{diag}(2,3)$。',
+          ],
+        },
+        {
+          id: 'la6-6',
+          level: '进阶',
+          question: '取 $P=\\begin{pmatrix}1&1\\\\1&-1\\end{pmatrix}$，$A=\\begin{pmatrix}2&1\\\\1&2\\end{pmatrix}$，求 $B=P^{-1}AP$。',
+          answer: '$\\begin{pmatrix}3&0\\\\0&1\\end{pmatrix}$',
+          hint: '这是换基后的矩阵，结果是 $A$ 的对角化。',
+          steps: [
+            '$P$ 的两列正是 $A$ 的特征向量。',
+            '换基后矩阵等于 $\\mathrm{diag}(\\lambda_{1},\\lambda_{2})$。',
+            '$A$ 的特征值是 $3$ 与 $1$，所以 $B=\\mathrm{diag}(3,1)$。',
           ],
         },
       ],
