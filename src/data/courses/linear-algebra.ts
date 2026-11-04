@@ -28,7 +28,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
         '掌握矩阵乘法与逆矩阵的判定',
         '理解秩是「有效信息量」',
       ],
-      lessonIds: ['det-basics', 'matrix-algebra', 'special-matrices', 'rank'],
+      lessonIds: ['det-basics', 'matrix-algebra', 'special-matrices', 'inverse-adjugate', 'rank'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -79,6 +79,38 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
             '$\\det Q=0\\times0-(-1)\\times1=1$，符合正交阵行列式为 $\\pm1$。',
           ],
         },
+        {
+          id: 'la1-6',
+          level: '基础',
+          question: '求 $A=\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}$ 的伴随矩阵。',
+          answer: '$A^{*}=\\begin{pmatrix}4&-2\\\\-3&1\\end{pmatrix}$',
+          hint: '主对角互换、副对角变号（二阶伴随就是二阶逆矩阵的分子）。',
+          steps: [
+            '主对角元互换：$1\\leftrightarrow4$。',
+            '副对角元变号：$2\\to-2$，$3\\to-3$。',
+            '得到 $A^{*}=\\begin{pmatrix}4&-2\\\\-3&1\\end{pmatrix}$，与 $A^{-1}$ 只差 $1/|A|$。',
+          ],
+        },
+        {
+          id: 'la1-7',
+          level: '基础',
+          question: '已知三阶矩阵 $A$ 满足 $|A|=3$，求 $|A^{*}|$。',
+          answer: '$9$',
+          hint: '用 $|A^{*}|=|A|^{n-1}$。',
+          steps: ['由 $AA^{*}=|A|I$ 取行列式得 $|A||A^{*}|=|A|^{3}$。', '代入 $|A|=3$：$3|A^{*}|=27$。', '所以 $|A^{*}|=9=3^{2}$。'],
+        },
+        {
+          id: 'la1-8',
+          level: '进阶',
+          question: '求 $V=\\{(x,y,z)\\mid x+y+z=0\\}$ 的维数。',
+          answer: '$2$',
+          hint: '用秩-零化度定理，或直接看自由变量个数。',
+          steps: [
+            '系数矩阵是 $1\\times3$，秩 $r=1$。',
+            '未知数个数 $n=3$，零空间维数 $=3-1=2$。',
+            '$V$ 是一个过原点的平面，维数为 $2$。',
+          ],
+        },
       ],
     },
     {
@@ -87,7 +119,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
       textbookRef: '第 3 章',
       summary: '高斯消元 + 秩判据，一次性看清唯一解、无穷多解、无解',
       goals: ['用初等行变换化阶梯形', '用秩判断解的情况', '会写基础解系与通解'],
-      lessonIds: ['gauss-elimination', 'linear-system', 'cramers-rule'],
+      lessonIds: ['gauss-elimination', 'linear-system', 'cramers-rule', 'rank-nullity', 'homogeneous-basis'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -142,6 +174,43 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
             '两式等价于 $x+y=0$，通解 $x=-t$、$y=t$（$t$ 任意）。',
           ],
         },
+        {
+          id: 'la2-6',
+          level: '基础',
+          question: '求 $x+y+z=0$ 的基础解系。',
+          answer: '$\\xi_{1}=(-1,1,0)$，$\\xi_{2}=(-1,0,1)$',
+          hint: '自由变量逐个取 $1$、其余取 $0$。',
+          steps: [
+            '主元是 $x$，自由变量 $y,z$。',
+            '令 $y=1,z=0$：$x=-1$，得 $(-1,1,0)$。',
+            '令 $y=0,z=1$：$x=-1$，得 $(-1,0,1)$。',
+            '通解是两者的线性组合。',
+          ],
+        },
+        {
+          id: 'la2-7',
+          level: '进阶',
+          question: '判断 $x+y+z=0$ 与 $2x+2y+2z=0$ 的解空间维数。',
+          answer: '$2$',
+          hint: '两式等价，秩仍然是 1。',
+          steps: [
+            '第二个方程是第一个的 $2$ 倍，不增加信息。',
+            '秩 $r=1$，未知数 $n=3$。',
+            '解空间维数 $=n-r=2$。',
+          ],
+        },
+        {
+          id: 'la2-8',
+          level: '基础',
+          question: '判断 $S=\\{(x,y)\\mid x+y=1\\}$ 是否为 $\\mathbb{R}^{2}$ 的子空间。',
+          answer: '不是（不含零向量）',
+          hint: '先看零向量在不在集合里。',
+          steps: [
+            '零向量 $(0,0)$ 代入得 $0+0=1$，不成立。',
+            '子空间必须含零向量。',
+            '所以 $S$ 不是子空间（它是一条不过原点的直线）。',
+          ],
+        },
       ],
     },
     {
@@ -150,7 +219,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
       textbookRef: '第 4 章',
       summary: '基与维数，是「用几个数描述一个对象」的严格版本',
       goals: ['判断线性相关与无关', '求极大无关组与秩', '理解基、维数、坐标'],
-      lessonIds: ['linear-dependence', 'vector-space-basis', 'gram-schmidt'],
+      lessonIds: ['linear-dependence', 'vector-space-basis', 'gram-schmidt', 'subspace-test', 'transition-matrix'],
       practiceTopics: ['vector-op'],
       exercises: [
         {
@@ -201,6 +270,44 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
           hint: '正交矩阵的逆等于它的转置。',
           steps: ['正交矩阵满足 $Q^{T}Q=I$。', '两边左乘 $Q^{-1}$ 得 $Q^{-1}=Q^{T}$。', '直接转置即可。'],
         },
+        {
+          id: 'la3-6',
+          level: '基础',
+          question: '求 $\\mathrm{span}\\{(1,0,0),(0,1,0),(1,1,0)\\}$ 的维数。',
+          answer: '$2$',
+          hint: '第三个向量是前两个之和。',
+          steps: [
+            '$(1,1,0)=(1,0,0)+(0,1,0)$，线性相关。',
+            '极大无关组可取前两个向量。',
+            '所以维数为 $2$（张成 $xOy$ 平面）。',
+          ],
+        },
+        {
+          id: 'la3-7',
+          level: '进阶',
+          question: '新基 $\\beta_{1}=(1,1)$、$\\beta_{2}=(1,-1)$，向量旧坐标 $(2,0)$，求新坐标。',
+          answer: '$(1,1)^{T}$',
+          hint: '过渡矩阵的逆乘旧坐标。',
+          steps: [
+            '过渡矩阵 $P=\\begin{pmatrix}1&1\\\\1&-1\\end{pmatrix}$，满足旧坐标 $=P\\times$ 新坐标。',
+            '$P^{-1}=\\frac{1}{-2}\\begin{pmatrix}-1&-1\\\\-1&1\\end{pmatrix}$。',
+            '$P^{-1}(2,0)^{T}=(1,1)^{T}$。',
+            '验证：$1\\cdot(1,1)+1\\cdot(1,-1)=(2,0)$。',
+          ],
+        },
+        {
+          id: 'la3-8',
+          level: '进阶',
+          question: '判断 $W=\\{(x,y,z)\\mid x=y\\}$ 是否为子空间，并求维数。',
+          answer: '是子空间，维数 $2$',
+          hint: '检查三条封闭性。',
+          steps: [
+            '零向量满足 $0=0$，在 $W$ 内。',
+            '若两个向量都满足 $x=y$，其和仍满足；数乘也保持相等。',
+            '所以是子空间。',
+            '约束 $x-y=0$ 只有一个方程，维数 $=3-1=2$。',
+          ],
+        },
       ],
     },
     {
@@ -209,7 +316,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
       textbookRef: '第 5 章',
       summary: '找到「不被变换改变方向」的那些向量，矩阵就变简单了',
       goals: ['求特征值与特征向量', '判断能否对角化', '理解相似与迹、行列式的关系'],
-      lessonIds: ['eigen-basics', 'eigen-diagonalization', 'jordan-form'],
+      lessonIds: ['eigen-basics', 'eigen-diagonalization', 'jordan-form', 'eigen-properties', 'matrix-power'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -266,6 +373,43 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
             '几何重数等于代数重数，可以对角化。',
           ],
         },
+        {
+          id: 'la4-6',
+          level: '基础',
+          question: '三阶矩阵特征值为 $1,2,x$，且 $|A|=24$，求 $x$。',
+          answer: '$12$',
+          hint: '特征值之积等于行列式。',
+          steps: [
+            '$1\\times2\\times x=24$。',
+            '所以 $x=12$。',
+            '顺便：迹 $=1+2+12=15$，等于对角元之和。',
+          ],
+        },
+        {
+          id: 'la4-7',
+          level: '进阶',
+          question: '已知 $A=\\begin{pmatrix}2&1\\\\1&2\\end{pmatrix}$，求 $A^{3}$。',
+          answer: '$\\begin{pmatrix}14&13\\\\13&14\\end{pmatrix}$',
+          hint: '先算 $A^{2}$ 再乘一次。',
+          steps: [
+            '$A^{2}=\\begin{pmatrix}5&4\\\\4&5\\end{pmatrix}$。',
+            '$A^{3}=A^{2}A=\\begin{pmatrix}5&4\\\\4&5\\end{pmatrix}\\begin{pmatrix}2&1\\\\1&2\\end{pmatrix}$。',
+            '计算得 $\\begin{pmatrix}14&13\\\\13&14\\end{pmatrix}$。',
+            '也可用 $A^{k}=\\frac{1}{2}\\begin{pmatrix}3^{k}+1&3^{k}-1\\\\3^{k}-1&3^{k}+1\\end{pmatrix}$ 验证。',
+          ],
+        },
+        {
+          id: 'la4-8',
+          level: '基础',
+          question: '用迹与行列式验证 $A=\\begin{pmatrix}2&1\\\\1&2\\end{pmatrix}$ 的特征值是 $3$ 和 $1$。',
+          answer: '迹 $=4=3+1$，行列式 $=3=3\\times1$',
+          hint: '两条性质同时核对。',
+          steps: [
+            '$\\mathrm{tr}A=2+2=4$，而 $3+1=4$，吻合。',
+            '$|A|=2\\times2-1\\times1=3$，而 $3\\times1=3$，吻合。',
+            '两条性质都满足，特征值 $3$ 与 $1$ 可信。',
+          ],
+        },
       ],
     },
     {
@@ -274,7 +418,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
       textbookRef: '第 6 章',
       summary: '把二次多项式写成矩阵形式，正定与否一眼看出',
       goals: ['写出二次型的矩阵', '用配方法或正交变换化标准形', '判定正定性'],
-      lessonIds: ['quadratic-form', 'positive-definite', 'inertia-theorem'],
+      lessonIds: ['quadratic-form', 'positive-definite', 'inertia-theorem', 'orthogonal-diagonalization', 'rayleigh-quotient'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -328,6 +472,43 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
             '标准形系数为 $1,1,-1$。',
             '正惯性指数 $p=2$，负惯性指数 $q=1$，秩 $r=3$。',
             '既有正又有负，属于不定二次型。',
+          ],
+        },
+        {
+          id: 'la5-6',
+          level: '进阶',
+          question: '用正交变换化 $f=2x^{2}+2y^{2}+2xy$ 为标准形。',
+          answer: '$f=3y_{1}^{2}+y_{2}^{2}$',
+          hint: '写出矩阵，求特征值。',
+          steps: [
+            '矩阵 $A=\\begin{pmatrix}2&1\\\\1&2\\end{pmatrix}$。',
+            '特征值 $3$ 与 $1$。',
+            '正交变换后标准形系数就是特征值：$3y_{1}^{2}+y_{2}^{2}$。',
+          ],
+        },
+        {
+          id: 'la5-7',
+          level: '进阶',
+          question: '求 $f=x_{1}^{2}+2x_{2}^{2}$ 在 $x_{1}^{2}+x_{2}^{2}=1$ 上的最大值与最小值。',
+          answer: '最大值 $2$，最小值 $1$',
+          hint: '瑞利商的取值范围是 $[\\lambda_{\\min},\\lambda_{\\max}]$。',
+          steps: [
+            '矩阵 $\\mathrm{diag}(1,2)$，特征值 $1$ 与 $2$。',
+            '瑞利商范围 $[1,2]$。',
+            '最大值 $2$ 在 $(0,1)$ 处取到，最小值 $1$ 在 $(1,0)$ 处取到。',
+          ],
+        },
+        {
+          id: 'la5-8',
+          level: '竞赛',
+          question: '判断 $f=x^{2}-2xy+y^{2}$ 的正定性。',
+          answer: '半正定（$f=(x-y)^{2}$）',
+          hint: '先配方。',
+          steps: [
+            '配方：$f=(x-y)^{2}\\geq0$，恒非负。',
+            '存在非零向量 $(1,1)$ 使 $f=0$，所以取不到严格正。',
+            '矩阵 $\\begin{pmatrix}1&-1\\\\-1&1\\end{pmatrix}$ 的行列式为 $0$，有零特征值。',
+            '因此是半正定，不是正定。',
           ],
         },
       ],

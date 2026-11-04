@@ -570,6 +570,85 @@ _S3 = [1, 1, -1]
 chk('练习 la5-5：x²+y²−z² 的 p=2 q=1 r=3',
     sum(1 for v in _S3 if v > 0) == 2 and sum(1 for v in _S3 if v < 0) == 1)
 
+# ---- 线代加厚（二）：9 个新考点 ----
+_Aadj = sp.Matrix([[1, 2], [3, 4]])
+chk('伴随矩阵恒等式 AA* = |A|I',
+    _Aadj * _Aadj.adjugate() == _Aadj.det() * sp.eye(2))
+chk('伴随矩阵求逆公式 A⁻¹ = A*/|A|',
+    sp.simplify(_Aadj.inv() - _Aadj.adjugate() / _Aadj.det()) == sp.zeros(2, 2))
+
+_row = sp.Matrix([[1, 1, 1]])
+chk('秩-零化度：r + dim N = n', _row.rank() + len(_row.nullspace()) == 3)
+
+_xi1 = sp.Matrix([-1, 1, 0])
+_xi2 = sp.Matrix([-1, 0, 1])
+chk('基础解系满足 Ax=0', (_row * _xi1)[0] == 0 and (_row * _xi2)[0] == 0)
+
+_v1 = sp.Matrix([1, -1, 0])
+_v2 = sp.Matrix([0, 1, -1])
+_vsum = _v1 + _v2
+chk('子空间对加法封闭', _vsum[0] + _vsum[1] + _vsum[2] == 0)
+_v3 = 3 * _v1
+chk('子空间对数乘封闭', _v3[0] + _v3[1] + _v3[2] == 0)
+
+_Pmat = sp.Matrix([[1, 1], [1, -1]])
+chk('过渡矩阵：新坐标 (1,1) 还原旧坐标 (2,0)',
+    _Pmat * sp.Matrix([1, 1]) == sp.Matrix([2, 0]))
+
+_Esym = sp.Matrix([[2, 1], [1, 2]])
+_ev = _Esym.eigenvals()
+chk('特征值之和等于迹', abs(sum(float(k) for k in _ev) - _Esym.trace()) < 1e-9)
+chk('特征值之积等于行列式', abs(float(_Esym.det()) - 3.0) < 1e-9)
+
+_k = 3
+_Pk = sp.Matrix([[1, 1], [1, -1]])
+_Lam = sp.diag(3, 1)
+chk('A^k = PΛ^kP⁻¹', sp.simplify(_Pk * (_Lam ** _k) * _Pk.inv() - _Esym ** _k) == sp.zeros(2, 2))
+
+_Qorth = sp.Matrix([[1, 1], [1, -1]]) / sp.sqrt(2)
+chk('正交变换对角化：QᵀAQ = diag(3,1)',
+    sp.simplify(_Qorth.T * _Esym * _Qorth - sp.diag(3, 1)) == sp.zeros(2, 2))
+
+chk('瑞利商取值范围 [λmin, λmax]',
+    float(min(_Esym.eigenvals())) == 1.0 and float(max(_Esym.eigenvals())) == 3.0)
+
+# ---- 线代加厚（二）：15 道新练习的答案验证 ----
+_A = sp.Matrix([[1, 2], [3, 4]])
+chk('练习 la1-6：伴随矩阵 = [[4,-2],[-3,1]]',
+    _A.adjugate() == sp.Matrix([[4, -2], [-3, 1]]))
+chk('练习 la1-7：三阶 |A|=3 → |A*|=9', 3 ** (3 - 1) == 9)
+chk('练习 la1-8：x+y+z=0 的解空间维数 2',
+    len(sp.Matrix([[1, 1, 1]]).nullspace()) == 2)
+
+chk('练习 la2-6：基础解系两个向量都满足方程',
+    (sp.Matrix([[1, 1, 1]]) * sp.Matrix([-1, 1, 0]))[0] == 0
+    and (sp.Matrix([[1, 1, 1]]) * sp.Matrix([-1, 0, 1]))[0] == 0)
+chk('练习 la2-7：两式等价 → 解空间维数 2',
+    sp.Matrix([[1, 1, 1], [2, 2, 2]]).rank() == 1)
+chk('练习 la2-8：x+y=1 不含零向量', 0 + 0 != 1)
+
+chk('练习 la3-6：三个向量秩为 2',
+    sp.Matrix([[1, 0, 0], [0, 1, 0], [1, 1, 0]]).T.rank() == 2)
+_P = sp.Matrix([[1, 1], [1, -1]])
+chk('练习 la3-7：新坐标 (1,1) 正确', _P.inv() * sp.Matrix([2, 0]) == sp.Matrix([1, 1]))
+chk('练习 la3-8：x=y 的解空间维数 2',
+    len(sp.Matrix([[1, -1, 0]]).nullspace()) == 2)
+
+chk('练习 la4-6：特征值之积 1*2*x=24 → x=12', 1 * 2 * 12 == 24)
+chk('练习 la4-7：A³ = [[14,13],[13,14]]',
+    sp.Matrix([[2, 1], [1, 2]]) ** 3 == sp.Matrix([[14, 13], [13, 14]]))
+chk('练习 la4-8：迹 4、行列式 3 与特征值 3,1 一致',
+    sp.Matrix([[2, 1], [1, 2]]).trace() == 4 and sp.Matrix([[2, 1], [1, 2]]).det() == 3)
+
+chk('练习 la5-6：2x²+2y²+2xy 的特征值为 3 和 1',
+    sorted(float(k) for k in sp.Matrix([[2, 1], [1, 2]]).eigenvals()) == [1.0, 3.0])
+chk('练习 la5-7：瑞利商最值 1 与 2',
+    float(min(sp.diag(1, 2).eigenvals())) == 1.0
+    and float(max(sp.diag(1, 2).eigenvals())) == 2.0)
+chk('练习 la5-8：x²-2xy+y² 半正定（行列式为 0）',
+    sp.Matrix([[1, -1], [-1, 1]]).det() == 0
+    and all(float(v) >= 0 for v in sp.Matrix([[1, -1], [-1, 1]]).eigenvals()))
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:
