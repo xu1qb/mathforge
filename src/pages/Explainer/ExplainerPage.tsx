@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   Lightbulb,
+  GraduationCap,
+  ArrowRight,
   CheckCircle2,
   ListChecks,
   Printer,
@@ -8,7 +10,7 @@ import {
   ChevronDown,
   ChevronRight,
 } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -16,10 +18,13 @@ import MathRenderer from '@/components/MathRenderer';
 import PageShell from '@/components/PageShell';
 import ExplainersCheatsheet from '@/components/print/ExplainersCheatsheet';
 import { EXPLAINER_TOPICS, groupExplainersByTag, type ExplainerTopic } from '@/data/explainers';
+import { PRACTICE_TOPICS } from '@/data/practice-topics';
+import { practiceLinksFor } from '@/data/topic-practice-links';
 import { cn } from '@/lib/utils';
 
 export default function ExplainerPage() {
   const [params, setParams] = useSearchParams();
+  const navigate = useNavigate();
 
   // ?topic=lhopital 之类的深链；?tag=概率 表示只看某个分支
   const activeId = params.get('topic');
@@ -36,6 +41,8 @@ export default function ExplainerPage() {
     setParams(tagFilter ? { topic: id, tag: tagFilter } : { topic: id }, { replace: true });
 
   const clearTagFilter = () => setParams({}, { replace: true });
+
+  const practiceLinks = practiceLinksFor(topic);
 
   // 44 条平铺已经不好找，改成「搜索 + 按标签分组折叠」
   const [query, setQuery] = useState('');
@@ -298,6 +305,36 @@ export default function ExplainerPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* 配套练习 */}
+          {practiceLinks.length > 0 && (
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="flex flex-wrap items-center gap-3 p-4">
+                <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                  <GraduationCap className="h-4 w-4 text-primary" />
+                  看完去练几道
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {practiceLinks.map((key) => {
+                    const pt = PRACTICE_TOPICS.find((t) => t.key === key);
+                    if (!pt) return null;
+                    return (
+                      <Button
+                        key={key}
+                        variant="outline"
+                        size="sm"
+                        className="gap-1.5"
+                        onClick={() => navigate('/practice?topic=' + key + '&from=' + topic.id)}
+                      >
+                        {pt.label}
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </Button>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </main>
       </div>
     </PageShell>

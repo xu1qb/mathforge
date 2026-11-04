@@ -11,7 +11,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { EXPLAINER_TOPICS } from '@/data/explainers';
+import { practiceLinksFor } from '@/data/topic-practice-links';
 import { SidebarTrigger } from '@/components/AppSidebar';
 import ThemeToggle from '@/components/ThemeToggle';
 import {
@@ -130,7 +132,14 @@ const TOPIC_CATEGORIES = [
 
 export default function PracticePage() {
   const navigate = useNavigate();
-  const [activeTopic, setActiveTopic] = useState(PRACTICE_TOPICS[0].key);
+  // 支持 /practice?topic=xxx 深链（从原理讲解的「配套练习」进来）
+  // 注意：HashRouter 下参数在 hash 内，必须用 useSearchParams 而不是 window.location.search
+  const [searchParams] = useSearchParams();
+  const [activeTopic, setActiveTopic] = useState(() => {
+    const fromUrl = searchParams.get('topic');
+    if (fromUrl && PRACTICE_TOPICS.some((t) => t.key === fromUrl)) return fromUrl;
+    return PRACTICE_TOPICS[0].key;
+  });
   const [difficulty, setDifficulty] = useState<Difficulty>('basic');
   const [question, setQuestion] = useState<PracticeQuestion | null>(null);
   const [userAnswer, setUserAnswer] = useState('');
@@ -532,6 +541,15 @@ export default function PracticePage() {
 
   const currentTopic = PRACTICE_TOPICS.find((t) => t.key === activeTopic)!;
 
+  // 反查：优先用地址栏带过来的考点（from=xxx），否则取第一个关联考点
+  const fromExplainer = searchParams.get('from');
+  const relatedExplainer = useMemo(
+    () =>
+      EXPLAINER_TOPICS.find((t) => t.id === fromExplainer) ??
+      EXPLAINER_TOPICS.find((t) => practiceLinksFor(t).includes(activeTopic)),
+    [activeTopic, fromExplainer]
+  );
+
   // 知识点多了以后平铺太长，加搜索过滤
   const [topicQuery, setTopicQuery] = useState('');
   const [topicLevel, setTopicLevel] = useState<'全部' | '基础' | '进阶' | '竞赛'>('全部');
@@ -672,6 +690,14 @@ export default function PracticePage() {
                 知识点
               </CardTitle>
               <CardDescription className="text-xs">选择练习的知识点</CardDescription>
+              {relatedExplainer && (
+                <button
+                  onClick={() => navigate('/explainer?topic=' + relatedExplainer.id)}
+                  className="mt-1 text-left text-xs text-emerald-600 hover:underline dark:text-emerald-400"
+                >
+                  看「{relatedExplainer.title}」原理讲解 →
+                </button>
+              )}
             </CardHeader>
             <CardContent className="pt-0 space-y-3">
               <div className="relative">
@@ -990,6 +1016,14 @@ export default function PracticePage() {
                         <Badge variant="secondary" className="font-normal">
                           {currentTopic.label}
                         </Badge>
+                        {relatedExplainer && (
+                          <button
+                            onClick={() => navigate('/explainer?topic=' + relatedExplainer.id)}
+                            className="text-xs text-emerald-600 hover:text-emerald-500 dark:text-emerald-400"
+                          >
+                            看原理讲解
+                          </button>
+                        )}
                         {answerMode === 'auto' && (
                           <Badge variant="outline" className={cn(
                             'font-mono tabular-nums',
