@@ -42,11 +42,11 @@
 | 分支 | 状态 | 对应页面 |
 |---|---|---|
 | 非欧几何 Non-Euclidean | ◐ | 考点「非欧几何：换掉平行公设」 |
-| 射影几何 Projective | — | |
+| 射影几何 Projective | ◐ | 考点「射影几何：把平行线交于无穷远」 |
 | 微分几何 Differential Geometry | ✅ | 微分几何 |
 | 代数几何 Algebraic Geometry | — | |
 | 拓扑学 Topology | ◐ | 考点「拓扑学入门：只看开集」 |
-| 代数拓扑 Algebraic Topology | — | |
+| 代数拓扑 Algebraic Topology | ◐ | 考点「代数拓扑：用基本群区分空间」 |
 | 微分拓扑 Differential Topology | — | |
 
 ## 4. 代数与数论 Algebra & Number Theory
@@ -54,7 +54,7 @@
 | 分支 | 状态 | 对应页面 |
 |---|---|---|
 | 群论 Group Theory | ◐ | 考点「群论入门：先看阶」 |
-| 环论 Ring Theory | — | |
+| 环论 Ring Theory | ◐ | 考点「环论入门：理想与商环」 |
 | 域论 Field Theory | ◐ | 考点「伽罗瓦理论：五次方程为什么解不出」 |
 | 伽罗瓦理论 Galois Theory | ◐ | 同上（一个考点覆盖两分支） |
 | 代数数论 | — | |
@@ -69,7 +69,7 @@
 | 图论 Graph Theory | ◐ | 离散数学、现代数学 |
 | 数理逻辑 Mathematical Logic | ◐ | 离散数学 |
 | 集合论 Set Theory | ◐ | 考点「集合论：用双射比大小」 |
-| 范畴论 Category Theory | — | |
+| 范畴论 Category Theory | ◐ | 考点「范畴论：对象与态射」 |
 | 格论 Lattice Theory | — | |
 | 信息论 Information Theory | ◐ | 考点「信息论：熵就是不确定性」 |
 | 可计算性 Computability | ◐ | 考点「可计算性：停机问题不可判定」 |
@@ -93,7 +93,7 @@
 | 计算数学 Computational Mathematics | ◐ | 数值分析 |
 | 离散数学 Discrete Mathematics | ✅ | 离散数学 |
 | 密码学 Cryptography | ◐ | 考点「密码学：RSA 三步」 |
-| 理论计算机科学 TCS | — | |
+| 理论计算机科学 TCS | ◐ | 考点「理论计算机：P 与 NP」 |
 
 ## 8. 应用数学 Applied Mathematics
 
@@ -102,7 +102,8 @@
 | 数学物理 Mathematical Physics | ◐ | 偏微分方程 |
 | 力学 / 流体力学 | — | |
 | 运筹学 Operations Research | ◐ | 考点「线性规划：最优解在顶点」 |
-| 生物数学 / 控制论 | — | |
+| 控制论 Control Theory | ◐ | 考点「控制论：极点决定稳定性」 |
+| 生物数学 | — | |
 
 ## 9. 逻辑与基础 Logic & Foundations
 

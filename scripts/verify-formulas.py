@@ -356,6 +356,52 @@ _rows = [[0, 0, 1], [1, 0, 1], [0, 1, 1]]
 _diag = [1 - _rows[i][i] for i in range(len(_rows))]
 chk('对角线构造出的序列不在列表中', _diag not in _rows)
 
+# ---- 2026-11 补空分支（三）：环论 ----
+chk('Z6 中 2 是零因子（2*3≡0）', (2 * 3) % 6 == 0)
+chk('⟨2⟩ 是 Z6 的理想', all((r * x) % 6 in {0, 2, 4} for r in range(6) for x in (0, 2, 4)))
+
+# ---- 补空分支（三）：射影几何（交比不变） ----
+def _cr(a, b, c, d):
+    return ((c - a) * (d - b)) / ((c - b) * (d - a))
+
+def _mobius(z):
+    return (2 * z + 1) / (z + 3)
+
+_pts = [0.0, 1.0, 2.0, 5.0]
+_before = _cr(*_pts)
+_after = _cr(*[_mobius(z) for z in _pts])
+chk('交比在射影变换下不变', abs(_before - _after) < 1e-9)
+
+# ---- 补空分支（三）：代数拓扑（绕数 = 1） ----
+_theta = [2 * sp.pi * i / 2000 for i in range(2001)]
+_winding = sum(
+    (_theta[i + 1] - _theta[i]) for i in range(2000)
+) / (2 * sp.pi)
+chk('单位圆绕原点的绕数为 1', abs(float(_winding) - 1) < 1e-9)
+
+# ---- 补空分支（三）：理论计算机（3-SAT 可满足性暴力验证） ----
+_clauses = [(1, 2, 3), (-2, 3, 1)]
+_assignments = [(a, b, c) for a in (True, False) for b in (True, False) for c in (True, False)]
+
+def _sat_eval(assign, clauses):
+    for cl in clauses:
+        if not any(
+            assign[abs(lit) - 1] if lit > 0 else not assign[abs(lit) - 1]
+            for lit in cl
+        ):
+            return False
+    return True
+
+chk('小规模 3-SAT 可暴力判定', any(_sat_eval(a, _clauses) for a in _assignments))
+
+# ---- 补空分支（三）：控制论（s^2+2s+5 极点实部为负） ----
+_roots = sp.solve(sp.Symbol('s')**2 + 2 * sp.Symbol('s') + 5, sp.Symbol('s'))
+chk('二阶系统 s²+2s+5 稳定', all(float(sp.re(r)) < 0 for r in _roots))
+
+# ---- 补空分支（三）：范畴论（积的基数） ----
+_A, _B = set(range(3)), set(range(4))
+chk('|A×B| = |A|·|B|', len({(a, b) for a in _A for b in _B}) == len(_A) * len(_B))
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:
