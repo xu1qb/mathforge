@@ -153,7 +153,7 @@ export default function CoursePage() {
                           </Badge>
                         </div>
                         <div className="truncate text-xs text-muted-foreground">
-                          {ch.summary}
+                          <RichMath text={ch.summary} />
                         </div>
                         <div className="mt-0.5 text-[11px] text-muted-foreground/70">
                           {ch.lessonIds.length} 个知识点 · {ch.exercises.length} 道题
