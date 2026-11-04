@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input';
 import PageShell from '@/components/PageShell';
 import RelatedExplainers from '@/components/RelatedExplainers';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
-import { Play, Sparkles, History, Trash2, Clock, Calculator, Type, Lightbulb, ListOrdered } from 'lucide-react';
+import { Play, Sparkles, History, Trash2, Clock, Calculator, Type, Lightbulb, ListOrdered, BookOpen } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import MathRenderer from '@/components/MathRenderer';
 import LearningSection from '@/components/LearningSection';
 import { useHistory } from '@/hooks/useHistory';
@@ -106,6 +107,7 @@ function fmtMatrix(mat: number[][]): string {
 }
 
 export default function LinearAlgebraPage() {
+  const navigate = useNavigate();
   const [result, setResultState] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('basic');
@@ -515,6 +517,12 @@ export default function LinearAlgebraPage() {
         description="矩阵运算、线性方程组、向量空间、二次型、矩阵分解。每行输入一行元素，空格分隔列。"
         eyebrow="学科 · 基础数学"
         onCheatsheet={() => setCheatsheetOpen(true)}
+        actions={
+          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => navigate('/course/linear-algebra')}>
+            <BookOpen className="size-4" />
+            <span className="hidden sm:inline">去上课程</span>
+          </Button>
+        }
       />
 
       <div className="px-4 md:px-6 lg:px-8 py-8 md:py-10 max-w-4xl mx-auto space-y-8">

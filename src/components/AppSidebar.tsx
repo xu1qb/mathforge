@@ -87,7 +87,10 @@ const NAV_GROUPS: NavGroup[] = [
   },
   {
     name: '学科',
-    items: [{ path: '/branches', label: '分支总览', icon: Library }],
+    items: [
+      { path: '/branches', label: '分支总览', icon: Library },
+      { path: '/course/linear-algebra', label: '线性代数课程', icon: GraduationCap },
+    ],
   },
   {
     name: '基础数学',

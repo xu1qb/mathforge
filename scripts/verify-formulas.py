@@ -452,6 +452,28 @@ chk('Lotka-Volterra 平衡点 (20,10)', abs(_xs - 20) < 1e-9 and abs(_ys - 10) <
 chk('平衡点处导数为零',
     abs(_a * _xs - _b * _xs * _ys) < 1e-9 and abs(_c * _xs * _ys - _d * _ys) < 1e-9)
 
+# ---- 线代课程包：新增 6 个考点 ----
+_A3 = sp.Matrix([[1, 2, 3], [0, 4, 5], [0, 0, 6]])
+chk('上三角行列式 = 24', _A3.det() == 24)
+
+_A2 = sp.Matrix([[1, 2], [3, 4]])
+chk('二阶逆矩阵正确', _A2.inv() == sp.Matrix([[-2, 1], [sp.Rational(3, 2), sp.Rational(-1, 2)]]))
+
+_M = sp.Matrix([[1, 1], [2, 2]])
+chk('秩相等且小于未知数 → 无穷多解', _M.rank() == 1 and _M.rank() < 2)
+
+_B = sp.Matrix([[1, 1], [1, -1]])
+chk('(1,1),(1,-1) 线性无关', _B.det() != 0)
+
+_E = sp.Matrix([[2, 1], [1, 2]])
+_ev = _E.eigenvals()
+chk('A=[[2,1],[1,2]] 特征值为 3 和 1',
+    sorted(float(k) for k in _ev) == [1.0, 3.0])
+
+_Q = sp.Matrix([[1, 1], [1, 2]])
+chk('二次型 x²+2xy+2y² 正定',
+    _Q[0, 0] > 0 and _Q.det() > 0)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:
