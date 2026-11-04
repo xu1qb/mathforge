@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Check, X, RefreshCw, Clock, CheckCircle2, XCircle } from 'lucide-react';
 import PageShell from '@/components/PageShell';
 import MathRenderer from '@/components/MathRenderer';
+import RichTextRenderer from '@/components/RichTextRenderer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -55,7 +56,7 @@ export default function AiReviewPage() {
     <PageShell
       title="AI 题库审核"
       eyebrow="质量把关"
-      description="模型生成的题目先进入待审核，人工确认后才进入正式题库"
+      description="严格档机器验证通过的题已自动入库（可撤销）；平衡/关闭档的题在此人工审核"
       width="wide"
       back
     >
@@ -109,7 +110,9 @@ export default function AiReviewPage() {
 
               <div className="text-sm">
                 <span className="text-muted-foreground">答案：</span>
-                <span className="font-medium text-foreground">{q.answerDisplay ?? q.answer}</span>
+                <span className="font-medium text-foreground">
+                  <RichTextRenderer text={q.answerDisplay ?? q.answer} />
+                </span>
                 {q.validation.dualSolve === 'match' && (
                   <Badge variant="secondary" className="ml-2 text-[10px]">双解一致</Badge>
                 )}
@@ -132,7 +135,9 @@ export default function AiReviewPage() {
                 {q.steps.map((s, i) => (
                   <li key={i} className="flex gap-2">
                     <span className="shrink-0 font-mono opacity-60">{i + 1}.</span>
-                    <span>{s}</span>
+                    <span className="min-w-0">
+                      <RichTextRenderer text={s} />
+                    </span>
                   </li>
                 ))}
               </ol>
@@ -144,6 +149,16 @@ export default function AiReviewPage() {
                   </Button>
                   <Button size="sm" className="gap-1.5" onClick={() => void act(q.id, 'approve')}>
                     <Check className="size-3.5" /> 通过
+                  </Button>
+                </div>
+              )}
+              {q.status === 'approved' && (
+                <div className="flex items-center justify-end gap-2">
+                  <span className="text-[11px] text-muted-foreground">
+                    {q.note ?? '已通过'}
+                  </span>
+                  <Button size="sm" variant="ghost" className="gap-1.5 text-destructive" onClick={() => void act(q.id, 'reject')}>
+                    <X className="size-3.5" /> 撤销
                   </Button>
                 </div>
               )}

@@ -12,6 +12,9 @@ export interface AiQuestion {
   answerType: 'numeric' | 'expression';
   steps: string[];
   fusion?: string[];
+  /** 入库状态：approved 可直接练习，pending 待人工审核 */
+  status?: 'pending' | 'approved' | 'rejected';
+  note?: string;
   validation: {
     latexOk: boolean;
     notationOk: boolean;
@@ -36,6 +39,8 @@ export interface AiQuestionBatch {
   generatedAt: string;
   agent?: boolean;
   toolCalls?: number;
+  /** 本批是否因机器验证通过而自动入库 */
+  autoApproved?: boolean;
 }
 
 export interface AiHealth {

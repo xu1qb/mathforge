@@ -47,6 +47,35 @@ function write(data: StoreFile): void {
   }
 }
 
+/** 机器验证通过的题可直接标 approved；未验证的进 pending 等人工 */
+export function saveGenerated(
+  questions: AiQuestion[],
+  source: string,
+  autoApprove: boolean
+): StoredQuestion[] {
+  const data = read();
+  const now = new Date().toISOString();
+  const status: ReviewStatus = autoApprove ? 'approved' : 'pending';
+  const stored = questions.map((q) => ({
+    ...q,
+    status,
+    createdAt: now,
+    reviewedAt: autoApprove ? now : undefined,
+    note: autoApprove ? '机器验证通过（双解一致 / 复算确认）' : undefined,
+    source,
+  }));
+  const keyOf = (q: StoredQuestion) => q.topic + '||' + q.questionLatex + '||' + q.answer;
+  const existing = new Set(data.questions.map(keyOf));
+  for (const q of stored) {
+    if (!existing.has(keyOf(q))) {
+      data.questions.unshift(q);
+      existing.add(keyOf(q));
+    }
+  }
+  write(data);
+  return stored;
+}
+
 /** 新生成的题一律进 pending，等人工审核 */
 export function savePending(questions: AiQuestion[], source: string): StoredQuestion[] {
   const data = read();

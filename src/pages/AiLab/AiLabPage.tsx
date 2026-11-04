@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Sparkles, Loader2, AlertTriangle, CheckCircle2, Save, Cpu } from 'lucide-react';
 import PageShell from '@/components/PageShell';
 import MathRenderer from '@/components/MathRenderer';
+import RichTextRenderer from '@/components/RichTextRenderer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -34,7 +35,11 @@ export default function AiLabPage() {
   const [error, setError] = useState('');
   const [questions, setQuestions] = useState<AiQuestion[]>([]);
   const [savedIds, setSavedIds] = useState<string[]>([]);
-  const [meta, setMeta] = useState<{ agent: boolean; toolCalls: number }>({ agent: false, toolCalls: 0 });
+  const [meta, setMeta] = useState<{ agent: boolean; toolCalls: number; autoApproved: boolean }>({
+    agent: false,
+    toolCalls: 0,
+    autoApproved: false,
+  });
 
   const topics = useMemo(() => PRACTICE_TOPICS.map((t) => t.label), []);
 
@@ -57,7 +62,7 @@ export default function AiLabPage() {
         verifyMode,
       });
       setQuestions(batch.questions);
-      setMeta({ agent: Boolean(batch.agent), toolCalls: batch.toolCalls ?? 0 });
+      setMeta({ agent: Boolean(batch.agent), toolCalls: batch.toolCalls ?? 0, autoApproved: Boolean(batch.autoApproved) });
       if (batch.cached > 0) toast('命中缓存，没有重复调用模型');
     } catch (e) {
       setError(e instanceof Error ? e.message : '生成失败');
@@ -78,7 +83,7 @@ export default function AiLabPage() {
     <PageShell
       title="AI 出题实验室"
       eyebrow="模型驱动"
-      description="由后端调用模型生成题目，服务端会校验 LaTeX 能否渲染、书写是否规范，不合格会自动重试"
+      description="严格档：机器验证通过的题直接可用；平衡/关闭档：生成的题进人工审核队列"
       width="wide"
       back
     >
@@ -250,6 +255,13 @@ export default function AiLabPage() {
                   {q.validation.dualSolve === 'skipped' && !q.validation.unverified && (
                     <span className="text-[11px] text-muted-foreground">未做双解</span>
                   )}
+                  {q.status === 'approved' ? (
+                    <span className="flex items-center gap-1 text-[11px] text-emerald-600">
+                      <CheckCircle2 className="size-3" /> 已自动入库，可直接练习
+                    </span>
+                  ) : (
+                    <span className="text-[11px] text-amber-600">待人工审核</span>
+                  )}
                   <span className="text-[11px] text-muted-foreground">第 {q.validation.attempts} 次生成</span>
                 </div>
 
@@ -259,14 +271,18 @@ export default function AiLabPage() {
 
                 <div className="text-sm">
                   <span className="text-muted-foreground">答案：</span>
-                  <span className="font-medium text-foreground">{q.answerDisplay ?? q.answer}</span>
+                  <span className="font-medium text-foreground">
+                    <RichTextRenderer text={q.answerDisplay ?? q.answer} />
+                  </span>
                 </div>
 
                 <ol className="space-y-1 text-xs text-muted-foreground">
                   {q.steps.map((s, i) => (
                     <li key={i} className="flex gap-2">
                       <span className="shrink-0 font-mono opacity-60">{i + 1}.</span>
-                      <span>{s}</span>
+                      <span className="min-w-0">
+                        <RichTextRenderer text={s} />
+                      </span>
                     </li>
                   ))}
                 </ol>

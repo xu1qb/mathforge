@@ -6,7 +6,7 @@ import { config } from './config.ts';
 import { generateQuestions } from './generate.ts';
 import { llmMode } from './llm.ts';
 import { validateQuestion } from './validate.ts';
-import { savePending, listQueue, reviewQuestion, stats, type ReviewStatus } from './store.ts';
+import { saveGenerated, listQueue, reviewQuestion, stats, type ReviewStatus } from './store.ts';
 import type { AiQuestionRequest } from './types.ts';
 
 const MAX_BODY = 1024 * 256;
@@ -67,9 +67,12 @@ const server = createServer(async (req, res) => {
         return;
       }
       const batch = await generateQuestions(body);
-      // 生成结果直接入库，状态 pending，等人工审核
-      const stored = savePending(batch.questions, 'ai:' + batch.model);
-      send(res, 200, { ...batch, questions: stored, saved: stored.length });
+      // 严格档且验证通过的题直接可用；其余进待审核
+      const allVerified =
+        (body.verifyMode ?? 'balanced') === 'strict' &&
+        batch.questions.every((q) => q.validation.dualSolve === 'match' || q.validation.dualSolve === 'judged');
+      const stored = saveGenerated(batch.questions, 'ai:' + batch.model, allVerified);
+      send(res, 200, { ...batch, questions: stored, saved: stored.length, autoApproved: allVerified });
       return;
     }
 
