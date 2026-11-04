@@ -80,6 +80,11 @@ def compute(claim):
         return sp.Integer(int(claim["a"]) % int(claim["m"]))
     if k == "convergence":
         t = claim["type"]
+        if t == "ratio":
+            n = sp.Symbol("n")
+            term = parse(claim["term"], "n")
+            r = sp.limit(sp.Abs(term.subs(n, n + 1) / term), n, sp.oo)
+            return "收敛" if r < 1 else "发散"
         if t == "p-series":
             return "收敛" if claim["p"] > 1 else "发散"
         if t == "geometric":
@@ -166,6 +171,86 @@ def true_predicate(c):
     raise ValueError("unknown interval type " + t)
 
 
+def check_property(claim_obj):
+    """性质判定：奇偶 / 单调 / 值域下界 / 垂直 / 数列奇偶"""
+    import sympy as sp
+
+    c = claim_obj
+    check = c["check"]
+    claim = str(c["claim"])
+    p = c.get("params", {})
+    var = p.get("variable", "x")
+    x = sp.Symbol(var)
+
+    if check == "parity":
+        f = parse(p["expr"], var)
+        if sp.simplify(f.subs(x, -x) - f) == 0:
+            result = "偶"
+        elif sp.simplify(f.subs(x, -x) + f) == 0:
+            result = "奇"
+        else:
+            result = "非奇非偶"
+        return result == claim, result
+
+    if check == "monotone":
+        f = parse(p["expr"], var)
+        a = sp.sympify(p["from"])
+        d = sp.diff(f, x)
+        # 在 a 右侧抽样：导数非负且函数递增
+        for k in range(1, 6):
+            xv = a + sp.Rational(k, 2)
+            dv = sp.simplify(d.subs(x, xv))
+            if dv.is_real and dv < 0:
+                return False, "x=" + str(xv) + " 处导数 " + str(dv)
+        return ("x>=" + str(a)) == claim, "x>=" + str(a)
+
+    if check == "range":
+        f = parse(p["expr"], var)
+        lower = sp.sympify(p["lower"])
+        # 抽样检查 f >= lower，且最小值取到 lower
+        best = None
+        for i in range(-60, 61):
+            xv = sp.Rational(i, 2)
+            v = sp.simplify(f.subs(x, xv))
+            if best is None or v < best:
+                best = v
+            if v < lower:
+                return False, "x=" + str(xv) + " 处 f=" + str(v) + " < " + str(lower)
+        ok = sp.simplify(best - lower) == 0 or abs(float(best - lower)) < 1e-9
+        return ok, "最小值 " + str(best)
+
+    if check == "fibParity":
+        n = int(p["n"])
+        v = sp.fibonacci(n)
+        return (("奇" if v % 2 == 1 else "偶") == claim), ("奇" if v % 2 == 1 else "偶")
+
+    if check == "harmonic":
+        y = parse(p["solution"], var)
+        w = sp.sympify(p["w"])
+        residual = sp.diff(y, x, 2) + w ** 2 * y
+        ok = sp.simplify(residual) == 0
+        return ok, "残差 " + str(sp.simplify(residual))
+
+    if check == "eSeq":
+        n = sp.Symbol("n")
+        k = sp.sympify(p["k"])
+        val = sp.limit((1 + k / n) ** n, n, sp.oo)
+        ok = sp.simplify(sp.log(val) - k) == 0
+        return ok, str(val)
+
+    if check == "prime":
+        n = int(p["n"])
+        ok = sp.isprime(n)
+        return (("是" if ok else "不是") == claim), ("是" if ok else "不是")
+
+    if check == "perp":
+        val = parse(p["expr"], var)
+        ok = sp.simplify(val) == 0
+        return ok, ("是" if ok else "否")
+
+    raise ValueError("unknown property check " + check)
+
+
 def check_interval(claim_obj):
     claim = claim_obj["claim"]
     pred_claim = parse_interval_claim(claim)
@@ -185,6 +270,11 @@ def main():
     for it in items:
         try:
             kind = it["claim"]["kind"]
+            if kind == "property":
+                ok, detail = check_property(it["claim"])
+                out.append({"id": it["id"], "topic": it["topic"], "ok": bool(ok),
+                            "computed": str(detail), "claim": it["claim"]["claim"]})
+                continue
             if kind == "interval":
                 ok, why = check_interval(it["claim"])
                 out.append({"id": it["id"], "topic": it["topic"], "ok": bool(ok),

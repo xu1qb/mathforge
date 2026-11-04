@@ -48,13 +48,19 @@ export type VerifyClaim =
   | { kind: 'gcd'; a: number; b: number; claim: string }
   | { kind: 'lcm'; a: number; b: number; claim: string }
   | { kind: 'mod'; a: number; m: number; claim: string }
-  | { kind: 'convergence'; type: 'p-series' | 'geometric' | 'alternating'; p?: number; q?: number; claim: string }
+  | { kind: 'convergence'; type: 'p-series' | 'geometric' | 'alternating' | 'ratio'; p?: number; q?: number; term?: string; claim: string }
   | { kind: 'parity'; expr: string; variable: string; claim: string }
   | { kind: 'ode'; solution: string; variable: string; equation: { a: number; b?: number }; claim: string }
   | {
       kind: 'interval';
       type: 'quad' | 'absLe' | 'absGe' | 'linear' | 'domainSqrt' | 'domainFrac';
       params: Record<string, number | string | boolean>;
+      claim: string;
+    }
+  | {
+      kind: 'property';
+      check: 'parity' | 'monotone' | 'range' | 'fibParity' | 'perp' | 'harmonic' | 'eSeq' | 'prime';
+      params: Record<string, number | string>;
       claim: string;
     };
 

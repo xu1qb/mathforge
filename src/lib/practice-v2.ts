@@ -359,10 +359,10 @@ export function genSeriesV2(diff: Difficulty): PracticeQuestion {
   }
 
   const forms = [
-    { tex: '@sum_{n=1}^{@infty} @dfrac{n!}{n^{n}}', name: 'n!/n^n', conv: true, why: '比值 |a_{n+1}/a_n| → 1/e < 1' },
-    { tex: '@sum_{n=0}^{@infty} @dfrac{2^{n}}{n!}', name: '2^n/n!', conv: true, why: '比值 → 0 < 1' },
-    { tex: '@sum_{n=1}^{@infty} @dfrac{n!}{3^{n}}', name: 'n!/3^n', conv: false, why: '比值 → ∞ > 1' },
-    { tex: '@sum_{n=1}^{@infty} @dfrac{2^{n}}{n^{2}}', name: '2^n/n²', conv: false, why: '通项不趋于 0' },
+        { tex: '@sum_{n=1}^{@infty} @dfrac{n!}{n^{n}}', name: 'n!/n^n', conv: true, why: '比值 |a_{n+1}/a_n| → 1/e < 1', term: 'factorial(n)/n**n' },
+    { tex: '@sum_{n=0}^{@infty} @dfrac{2^{n}}{n!}', name: '2^n/n!', conv: true, why: '比值 → 0 < 1', term: '2**n/factorial(n)' },
+    { tex: '@sum_{n=1}^{@infty} @dfrac{n!}{3^{n}}', name: 'n!/3^n', conv: false, why: '比值 → ∞ > 1', term: 'factorial(n)/3**n' },
+    { tex: '@sum_{n=1}^{@infty} @dfrac{2^{n}}{n^{2}}', name: '2^n/n²', conv: false, why: '通项不趋于 0', term: '2**n/n**2' },
   ];
   const f = pickOne(forms);
   return mk({
@@ -370,6 +370,7 @@ export function genSeriesV2(diff: Difficulty): PracticeQuestion {
     question: '判断级数 Σ' + f.name + ' 的敛散性（填「收敛」或「发散」）',
     latex: f.tex,
     answer: f.conv ? '收敛' : '发散',
+    verify: f.term ? { kind: 'convergence', type: 'ratio', term: f.term, claim: f.conv ? '收敛' : '发散' } : undefined,
     steps: ['用比值判别法：' + f.why, f.conv ? '极限小于 1，收敛' : '极限不小于 1，发散'],
     type: 'expression',
   });
@@ -420,12 +421,12 @@ export function genFourierV2(diff: Difficulty): PracticeQuestion {
 
   if (kind === 'parity') {
     const items = [
-      { expr: '@sin(x^{3})', fn: 'sin(x³)', odd: true },
-      { expr: '@cos(x^{2})', fn: 'cos(x²)', odd: false },
-      { expr: 'x^{3}', fn: 'x³', odd: true },
-      { expr: '@tanh(x)', fn: 'tanh(x)', odd: true },
-      { expr: 'x^{2}@cos(x)', fn: 'x²cos(x)', odd: false },
-      { expr: '@sin(x)@cos(x)', fn: 'sin(x)cos(x)', odd: true },
+      { expr: '@sin(x^{3})', fn: 'sin(x³)', odd: true, sym: 'sin(x**3)' },
+      { expr: '@cos(x^{2})', fn: 'cos(x²)', odd: false, sym: 'cos(x**2)' },
+      { expr: 'x^{3}', fn: 'x³', odd: true, sym: 'x**3' },
+      { expr: '@tanh(x)', fn: 'tanh(x)', odd: true, sym: 'tanh(x)' },
+      { expr: 'x^{2}@cos(x)', fn: 'x²cos(x)', odd: false, sym: 'x**2*cos(x)' },
+      { expr: '@sin(x)@cos(x)', fn: 'sin(x)cos(x)', odd: true, sym: 'sin(x)*cos(x)' },
     ];
     const it = pickOne(items);
     return mk({
@@ -433,6 +434,7 @@ export function genFourierV2(diff: Difficulty): PracticeQuestion {
       question: '判断 f(x) = ' + it.fn + ' 的奇偶性（填「奇函数」或「偶函数」）',
       latex: 'f(x) = ' + it.expr,
       answer: it.odd ? '奇函数' : '偶函数',
+      verify: { kind: 'property', check: 'parity', params: { expr: it.sym, variable: 'x' }, claim: it.odd ? '奇' : '偶' },
       steps: [
         '代入 −x 看与 f(x) 的关系',
         it.odd ? 'f(−x) = −f(x)，所以是奇函数' : 'f(−x) = f(x)，所以是偶函数',
@@ -521,6 +523,7 @@ export function genFunctionPropertyV2(diff: Difficulty): PracticeQuestion {
       question: '函数 f(x) = x² − ' + 2 * a + 'x 的单调递增区间是？',
       latex: 'f(x) = x^{2} - ' + 2 * a + 'x',
       answer: 'x>=' + a,
+      verify: { kind: 'property', check: 'monotone', params: { expr: 'x**2 - ' + 2 * a + '*x', variable: 'x', from: a }, claim: 'x>=' + a },
       steps: [
         '配方：f(x) = (x − ' + a + ')² − ' + a * a + '，对称轴 x = ' + a,
         '开口向上，对称轴右侧单调递增',
@@ -538,6 +541,7 @@ export function genFunctionPropertyV2(diff: Difficulty): PracticeQuestion {
       question: '求函数 f(x) = x² ' + s + ' 的值域（填 y>=k）',
       latex: 'f(x) = x^{2} ' + s,
       answer: 'y>=' + c,
+      verify: { kind: 'property', check: 'range', params: { expr: 'x**2 + (' + c + ')', variable: 'x', lower: c }, claim: 'y>=' + c },
       steps: ['x² ≥ 0', '所以 f(x) ≥ ' + c, '当 x = 0 时取到最小值 ' + c],
       type: 'expression',
     });
@@ -624,6 +628,7 @@ export function genSequenceLimitV2(diff: Difficulty): PracticeQuestion {
       question: '求极限：lim(n→∞) (1 + ' + k + '/n)^n = e^k，求 k',
       latex: '@lim_{n @to @infty} @left(1 + @dfrac{' + k + '}{n}@right)^{n} = e^{k}',
       answer: String(k),
+      verify: { kind: 'property', check: 'eSeq', params: { k }, claim: String(k) },
       steps: ['重要极限：(1 + a/n)^n → e^a', '这里 a = ' + k, '所以 k = ' + k],
     });
   }
@@ -759,6 +764,7 @@ export function genTrigIdentityV2(diff: Difficulty): PracticeQuestion {
     question: '求 ' + sp.fn + sp.deg + '° 的精确值',
     latex: '@' + sp.fn + ' ' + sp.deg + '^{@circ} = ?',
     answer: sp.val,
+    verify: { kind: 'value', expr: sp.fn + '(' + sp.deg + '*pi/180)', claim: sp.val },
     steps: [
       '拆角：' + sp.deg + '° = ' + sp.split,
       '用和差角公式展开',
@@ -805,6 +811,7 @@ export function genIntegralV2(diff: Difficulty): PracticeQuestion {
       question: '求不定积分 ∫(' + a + 'x ' + s + ')dx',
       latex: '@int (' + a + 'x ' + s + ') @, dx',
       answer: frac(a, 2) + 'x^2' + (b >= 0 ? '+' : '-') + Math.abs(b) + 'x',
+      verify: { kind: 'derivative', expr: frac(a, 2) + '*x**2' + (b >= 0 ? '+' : '-') + Math.abs(b) + '*x', variable: 'x', claim: a + '*x' + (b >= 0 ? '+' : '-') + Math.abs(b) },
       steps: [
         '逐项积分：∫x dx = x²/2，∫1 dx = x',
         '得 ' + frac(a, 2) + 'x² ' + s + 'x + C',
@@ -1056,6 +1063,7 @@ export function genRandomVariableV2(diff: Difficulty): PracticeQuestion {
       question: 'X ~ B(1, ' + p + ')，求 ' + (wantE ? 'E(X)' : 'Var(X)'),
       latex: 'X @sim B(1, ' + p + ')，求 ' + (wantE ? 'E(X)' : 'D(X)'),
       answer: String(Number(val.toFixed(4))),
+      verify: { kind: 'value', expr: wantE ? String(p) : String(p) + '*(1 - (' + p + '))', claim: String(Number(val.toFixed(4))) },
       steps: [
         '两点分布：E(X) = p，D(X) = p(1−p)',
         'p = ' + p,
@@ -1174,6 +1182,7 @@ export function genOdeV2(diff: Difficulty): PracticeQuestion {
       question: '求通解：y″ + ' + (w * w) + 'y = 0',
       latex: "y'' + " + (w * w) + 'y = 0',
       answer: 'C1*cos(' + w + 'x)+C2*sin(' + w + 'x)',
+      verify: { kind: 'property', check: 'harmonic', params: { solution: 'C1*cos(' + w + '*x) + C2*sin(' + w + '*x)', w }, claim: 'C1*cos(' + w + 'x)+C2*sin(' + w + 'x)' },
       steps: [
         '特征方程 r² + ' + (w * w) + ' = 0，r = ±' + w + 'i',
         '共轭复根对应振荡解',
@@ -1190,6 +1199,7 @@ export function genOdeV2(diff: Difficulty): PracticeQuestion {
     question: '求通解：y′ = ' + k + 'x^' + n,
     latex: "y' = " + k + 'x^{' + n + '}',
     answer: k + '/' + (n + 1) + '*x^' + (n + 1) + '+C',
+    verify: { kind: 'derivative', expr: String(k) + '/' + (n + 1) + '*x**' + (n + 1), variable: 'x', claim: String(k) + '*x**' + n },
     steps: [
       '直接积分：y = ∫' + k + 'x^' + n + ' dx',
       '= ' + k + 'x^' + (n + 1) + '/' + (n + 1) + ' + C',
@@ -1431,6 +1441,7 @@ export function genNumberTheoryV2(diff: Difficulty): PracticeQuestion {
       question: '判断 ' + n + ' 是否为质数（填「是」或「不是」）',
       latex: 'n = ' + n + '，' + n + ' @text{ 是质数吗？}',
       answer: p ? '是' : '不是',
+      verify: { kind: 'property', check: 'prime', params: { n }, claim: p ? '是' : '不是' },
       steps: ['只需检验不超过 √' + n + ' ≈ ' + Math.sqrt(n).toFixed(1) + ' 的质因子', p ? '没有质因子，所以是质数' : '存在质因子，所以不是质数'],
       type: 'expression',
     });
@@ -1632,6 +1643,7 @@ export function genVectorOpV2(diff: Difficulty): PracticeQuestion {
     question: '判断向量 (' + a + ', ' + b + ') 与 (' + b + ', ' + -a + ') 是否垂直（填「是」或「否」）',
     latex: '@vec{u} = (' + a + ', ' + b + ')，@vec{v} = (' + b + ', ' + -a + ')',
     answer: '是',
+    verify: { kind: 'property', check: 'perp', params: { expr: '(' + a + ')*(' + b + ') + (' + b + ')*(' + -a + ')', variable: 'x' }, claim: '是' },
     steps: ['数量积 = ' + a + '×' + b + ' + ' + b + '×(' + -a + ') = 0', '数量积为零，所以垂直'],
     type: 'expression',
   });
@@ -2220,7 +2232,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       2: { 30: '1/2', 45: '0', 60: '-1/2', 90: '-1' },
       3: { 30: '0', 45: '-sqrt(2)/2', 60: '-1', 90: '0' },
       4: { 30: '-1/2', 45: '-1', 60: '-1/2', 90: '1' },
-      6: { 30: '-1', 45: '0', 60: '1', 90: '1' },
+      6: { 30: '-1', 45: '0', 60: '1', 90: '-1' },
     };
     const val = mapping[n][theta];
     return mkFusion({
@@ -2335,6 +2347,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       question: '1 到 ' + N + ' 中，既是 3 的倍数又是奇数的整数有多少个？',
       latex: '@left@{n @le ' + N + ' : 3 @mid n,@@ 2 @nmid n@right@}@text{ 的个数}',
       answer: String(cnt),
+      verify: { kind: 'value', expr: 'floor((' + N + ' + 3)/6)', claim: String(cnt) },
       steps: [
         '3 的倍数为 3, 6, 9, 12, …，其中奇数的是 3, 9, 15, …（每隔 6 一个）',
         '个数 = ⌊(' + N + ' + 3)/6⌋',
@@ -2373,6 +2386,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       question: '1 到 ' + N + ' 中有多少个 n 使 sin(nπ/6) = 1/2？',
       latex: '@left@{n @le ' + N + ' : @sin@dfrac{n@pi}{6} = @dfrac{1}{2}@right@}',
       answer: String(cnt),
+      verify: { kind: 'value', expr: 'floor((' + N + ' + 3)/6)', claim: String(cnt) },
       steps: [
         'sin(θ) = 1/2 在 [0,2π) 内 θ = π/6 或 5π/6',
         '因此 n ≡ 1 或 5 (mod 12)，合并后每 6 个有一个 n 满足',
@@ -2427,6 +2441,7 @@ export function genFusion(diff: Difficulty): PracticeQuestion {
       question: '用转移矩阵 [[1,1],[1,0]] 求 F_' + n + '（F₁=F₂=1），判断它的奇偶性（填「奇」或「偶」）',
       latex: 'F_{' + n + '} = ?@quad @begin{pmatrix} 1 & 1 @@ 1 & 0 @end{pmatrix}^{n-1}',
       answer: v % 2 === 1 ? '奇' : '偶',
+      verify: { kind: 'property', check: 'fibParity', params: { n }, claim: v % 2 === 1 ? '奇' : '偶' },
       steps: [
         'Fₙ 的奇偶以 3 为周期：奇、奇、偶循环',
         n + ' mod 3 = ' + (n % 3) + (n % 3 === 0 ? '，所以是偶数' : '，所以是奇数'),
