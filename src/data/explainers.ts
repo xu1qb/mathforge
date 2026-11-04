@@ -3387,7 +3387,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         'r(A) = r(A|b) = 1 < 2，所以有无穷多解。',
         '通解：x = 3 − t，y = t。',
       ],
-      result: '\\text{无穷多解}',
+      result: '\\text{infinitely many solutions}',
     },
   },
   {
@@ -3430,7 +3430,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '所以它们构成一组基。',
         '任意向量 (a,b) 的坐标是 ((a+b)/2, (a−b)/2)。',
       ],
-      result: '\\text{是基},\\ \\dim=2',
+      result: '\\dim=2',
     },
   },
   {
@@ -3517,7 +3517,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '全部为正，所以二次型正定。',
         '配方验证：f = (x₁ + x₂)² + x₂²，两项平方和。',
       ],
-      result: '\\text{正定}',
+      result: '\\lambda_{1}>0,\\ \\lambda_{2}>0',
     },
   },
 ];

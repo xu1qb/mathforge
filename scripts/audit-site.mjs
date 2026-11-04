@@ -83,7 +83,9 @@ const PROBE = [
 fs.mkdirSync(SHOT_DIR, { recursive: true });
 const out = [];
 // 参数化路由（/course/:subject）在静态审计里没有实际内容，跳过
-const AUDIT_ROUTES = ROUTES.filter((r) => !r.includes(':'));
+// 参数化路由换成具体实例，保证课程页也在体检范围内
+const CONCRETE_ROUTES = ['/course/linear-algebra', '/course/linear-algebra/det-matrix'];
+const AUDIT_ROUTES = [...ROUTES.filter((r) => !r.includes(':')), ...CONCRETE_ROUTES];
 
 for (const width of WIDTHS) {
   await send('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 600 });

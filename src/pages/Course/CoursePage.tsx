@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import PageShell from '@/components/PageShell';
+import RichMath from '@/components/RichMath';
 import { getCourse } from '@/data/courses';
 import { EXPLAINER_TOPICS } from '@/data/explainers';
 import { cn } from '@/lib/utils';
@@ -206,7 +207,9 @@ export default function CoursePage() {
                                   <span className="mt-0.5 shrink-0 font-mono text-muted-foreground">
                                     {i + 1}.
                                   </span>
-                                  <span className="flex-1 text-foreground">{ex.question}</span>
+                                  <span className="flex-1 text-foreground">
+                                    <RichMath text={ex.question} />
+                                  </span>
                                   <span
                                     className={cn(
                                       'shrink-0 text-[10px]',
@@ -224,19 +227,19 @@ export default function CoursePage() {
                                   {ex.hint && (
                                     <div>
                                       <span className="font-medium text-foreground">思路：</span>
-                                      {ex.hint}
+                                      <RichMath text={ex.hint} />
                                     </div>
                                   )}
                                   <ol className="space-y-1">
                                     {ex.steps.map((s, k) => (
                                       <li key={k}>
-                                        {k + 1}. {s}
+                                        {k + 1}. <RichMath text={s} />
                                       </li>
                                     ))}
                                   </ol>
                                   <div className="text-foreground">
                                     <span className="font-medium">答案：</span>
-                                    {ex.answer}
+                                    <RichMath text={ex.answer} />
                                   </div>
                                 </div>
                               </details>
@@ -280,9 +283,11 @@ export default function CoursePage() {
               <Card key={a.title} className="border-border/60">
                 <CardContent className="p-4">
                   <div className="text-sm font-medium text-foreground">{a.title}</div>
-                  <div className="mt-0.5 text-xs text-muted-foreground">{a.scene}</div>
+                  <div className="mt-0.5 text-xs text-muted-foreground">
+                    <RichMath text={a.scene} />
+                  </div>
                   <div className="mt-2 rounded-md bg-muted/40 p-2 text-xs text-muted-foreground">
-                    {a.example}
+                    <RichMath text={a.example} />
                   </div>
                 </CardContent>
               </Card>
@@ -303,7 +308,9 @@ export default function CoursePage() {
                   <Badge variant="secondary" className="mt-0.5 shrink-0 text-xs">
                     {c.subject}
                   </Badge>
-                  <p className="text-xs leading-relaxed text-muted-foreground">{c.relation}</p>
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    <RichMath text={c.relation} />
+                  </p>
                 </CardContent>
               </Card>
             ))}
