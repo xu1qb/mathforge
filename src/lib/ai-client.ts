@@ -50,27 +50,59 @@ export interface AiHealth {
   provider: string;
 }
 
-// 桌面端由 Electron 注入后端地址；网页端走 Vite 代理
+import { Capacitor, CapacitorHttp } from '@capacitor/core';
+
+export const API_BASE_KEY = 'mf_api_base';
+
+export function isNativeApp(): boolean {
+  return typeof window !== 'undefined' && Capacitor.isNativePlatform();
+}
+
+/** 桌面端由 Electron 注入；安卓端由用户填局域网地址；网页端走 Vite 代理 */
 function resolveBase(): string {
   if (typeof window === 'undefined') return '/api';
+  const saved = localStorage.getItem(API_BASE_KEY);
+  if (saved) return saved.replace(/\/$/, '');
   const fromQuery = new URLSearchParams(window.location.search).get('api');
   if (fromQuery) return fromQuery.replace(/\/$/, '');
   const desktop = (window as unknown as { mfDesktop?: { apiBase?: string } }).mfDesktop;
   if (desktop?.apiBase) return desktop.apiBase.replace(/\/$/, '');
+  if (isNativeApp()) return 'http://10.0.2.2:8787/api';
   return '/api';
 }
 
-const BASE = resolveBase();
+export function setApiBase(url: string): void {
+  localStorage.setItem(API_BASE_KEY, url.replace(/\/$/, ''));
+}
+
+export function getApiBase(): string {
+  return resolveBase();
+}
 
 async function request<T>(path: string, init?: RequestInit, timeoutMs = 120000): Promise<T> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetch(BASE + path, {
-      ...init,
-      signal: controller.signal,
-      headers: { 'Content-Type': 'application/json', ...(init?.headers ?? {}) },
-    });
+    const url = resolveBase() + path;
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...((init?.headers as Record<string, string> | undefined) ?? {}),
+    };
+
+    // 安卓 WebView 里 fetch 会被 CORS 拦，改用原生 HTTP
+    if (isNativeApp()) {
+      const res = await CapacitorHttp.request({
+        url,
+        method: (init?.method ?? 'GET') as string,
+        headers,
+        data: init?.body ? JSON.parse(String(init.body)) : undefined,
+      });
+      const data = (res.data ?? {}) as T & { error?: string };
+      if (res.status >= 400) throw new Error(data.error ?? '请求失败（' + res.status + '）');
+      return data;
+    }
+
+    const res = await fetch(url, { ...init, signal: controller.signal, headers });
     const data = (await res.json().catch(() => ({}))) as T & { error?: string };
     if (!res.ok) throw new Error(data.error ?? '请求失败（' + res.status + '）');
     return data;

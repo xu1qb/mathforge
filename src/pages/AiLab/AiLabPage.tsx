@@ -10,7 +10,15 @@ import RichTextRenderer from '@/components/RichTextRenderer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { fetchAiHealth, fetchAiQuestions, type AiQuestion, type AiHealth } from '@/lib/ai-client';
+import {
+  fetchAiHealth,
+  fetchAiQuestions,
+  getApiBase,
+  isNativeApp,
+  setApiBase,
+  type AiQuestion,
+  type AiHealth,
+} from '@/lib/ai-client';
 import { PRACTICE_TOPICS } from '@/data/practice-topics';
 import { toast } from 'sonner';
 
@@ -25,6 +33,57 @@ interface DesktopConfigShape {
   model: string;
   baseUrl: string;
   agentMode: boolean;
+}
+
+function MobileServerConfig({ onSaved }: { onSaved: () => void }) {
+  const [url, setUrl] = useState(getApiBase());
+  const [busy, setBusy] = useState(false);
+
+  const save = async () => {
+    setBusy(true);
+    try {
+      setApiBase(url.trim());
+      const h = await fetchAiHealth();
+      toast(h.mode === 'live' ? '已连接（在线模型）' : '已连接（mock 模式）');
+      onSaved();
+    } catch {
+      toast.error('连不上这个地址，检查手机和电脑是否在同一 Wi-Fi');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Card className="border-border/60">
+      <CardHeader className="pb-2">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Cpu className="size-4 text-primary" />
+          移动端后端地址
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        <p className="text-xs text-muted-foreground">
+          手机跑不了 Node 后端，需要连到电脑上跑的 <code>npm run server</code>（同一 Wi-Fi）。
+          电脑 IP 可在「系统设置 → 网络」查看。
+        </p>
+        <div className="flex gap-2">
+          <input
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="http://192.168.1.10:8787/api"
+            className="flex-1 rounded-md border border-border bg-background px-2 py-1.5 text-sm"
+          />
+          <Button size="sm" onClick={() => void save()} disabled={busy} className="gap-1.5">
+            {busy ? <Loader2 className="size-3.5 animate-spin" /> : <Save className="size-3.5" />}
+            保存并测试
+          </Button>
+        </div>
+        <p className="text-[11px] text-muted-foreground">
+          只影响 AI 功能；练习、课程、题库等离线功能不需要后端。
+        </p>
+      </CardContent>
+    </Card>
+  );
 }
 
 function DesktopConfig({ onSaved }: { onSaved: () => void }) {
@@ -188,6 +247,7 @@ export default function AiLabPage() {
     >
       <div className="space-y-5">
         {desktop && <DesktopConfig onSaved={() => fetchAiHealth().then(setHealth).catch(() => setHealth(null))} />}
+        {isNativeApp() && <MobileServerConfig onSaved={() => fetchAiHealth().then(setHealth).catch(() => setHealth(null))} />}
 
         {/* 服务状态 */}
         <Card className="border-border/60">

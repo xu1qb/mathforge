@@ -19,6 +19,12 @@ build/
 .cache/
 server-dist/
 
+# 安卓构建产物
+android-native/build-*/
+android-native/assets/public/
+android-native/mathforge-debug.apk
+android/app/build/
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
