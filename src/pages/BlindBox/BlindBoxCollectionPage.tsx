@@ -104,9 +104,10 @@ export default function BlindBoxCollectionPage() {
             <Sparkles className="size-4" />
             盲盒图鉴
           </div>
-          <h1 className="page-title">
+          <h1 className="page-title">盲盒图鉴</h1>
+          <p className="text-sm text-muted-foreground">
             已收集 {openedCount} / {totalCount}
-          </h1>
+          </p>
           <div className="w-full max-w-xs mx-auto">
             <div className="h-2 bg-muted rounded-full overflow-hidden">
               <motion.div

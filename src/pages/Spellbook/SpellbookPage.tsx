@@ -150,9 +150,10 @@ export default function SpellbookPage() {
             <Sparkles className="size-4" />
             公式咒语图鉴
           </div>
-          <h1 className="page-title">
+          <h1 className="page-title">公式咒语</h1>
+          <p className="text-sm text-muted-foreground">
             已点亮 {totalProgress.mastered} / {totalProgress.total} 张
-          </h1>
+          </p>
           <div className="w-full max-w-sm mx-auto">
             <div className="h-2 bg-muted rounded-full overflow-hidden">
               <motion.div

@@ -1,4 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
+import PageShell from '@/components/PageShell';
 import { Camera, Upload, Mic, Square, Sparkles, Loader2, Image as ImageIcon, RefreshCw } from 'lucide-react';
 import { capabilityClient, logger } from '@/lib/lark-mock';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -308,15 +309,12 @@ export default function AIQuizPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-4 md:px-6 py-8 md:py-10">
-        <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2">
-            <Sparkles className="size-7 text-primary" />
-            你出题，AI 来做
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            文字描述、拍照或语音说出想要的题型，AI 现场出题并给出完整解答。
-          </p>
-        </div>
+        <PageShell
+          title="你出题，AI 来做"
+          description="文字描述、拍照或语音说出想要的题型，AI 现场出题并给出完整解答。"
+          eyebrow="成长与趣味"
+          width="reading"
+        />
 
         <Card className="mb-6">
           <CardHeader>

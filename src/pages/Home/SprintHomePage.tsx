@@ -21,6 +21,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { COMPETITION_TOPICS } from '@/data/competition';
+import { BRANCH_CATEGORIES } from '@/data/branches';
 import { MUST_MEMO_ITEMS, KNOWLEDGE_CARDS } from '@/data/competition-knowledge';
 import { computeDashboardData } from '@/data/competition-dashboard';
 import { useWrongBook } from '@/hooks/use-learning';
@@ -171,6 +172,21 @@ export default function SprintHomePage() {
   return (
     <div className="min-h-full page-fade-in">
       <div className="px-4 md:px-6 lg:px-8 py-6 md:py-8 max-w-7xl mx-auto space-y-6">
+        {/* 页头：定位语 + 分支入口 */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <div className="min-w-0">
+            <h1 className="text-xl font-semibold text-foreground">数学计算工作台</h1>
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              11 个大类 · 66 个分支，从基础计算到竞赛冲刺
+            </p>
+          </div>
+          <div className="ml-auto flex items-center gap-2">
+            <Button variant="outline" size="sm" className="gap-1.5" onClick={() => navigate('/branches')}>
+              <BookOpen className="size-4" /> 分支总览
+            </Button>
+          </div>
+        </div>
+
         {/* 顶部：倒计时 + 今日一句 */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -218,6 +234,20 @@ export default function SprintHomePage() {
           </Card>
         </motion.div>
 
+        {/* 学科分支入口条 */}
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+          {BRANCH_CATEGORIES.filter((c) => c.id !== 'competition').map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => navigate('/branches')}
+              className="rounded-lg border border-border bg-card px-3 py-2 text-left transition-colors hover:border-primary/40 hover:bg-accent"
+            >
+              <div className="truncate text-sm font-medium text-foreground">{cat.zh}</div>
+              <div className="text-xs text-muted-foreground">{cat.branches.length} 个分支</div>
+            </button>
+          ))}
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* 左列：知识大陆 + 今日任务 + 薄弱模块 */}
           <div className="lg:col-span-2 space-y-6">
@@ -249,7 +279,7 @@ export default function SprintHomePage() {
                     </Badge>
                   </div>
                   <CardDescription className="text-xs mt-1">
-                    共 {todayTasks.length} 项 · 已完成 {completedDays.size > 0 ? 1 : 0}/? 天打卡
+                    今日共 {todayTasks.length} 项，逐项完成即可
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
@@ -293,109 +323,10 @@ export default function SprintHomePage() {
               </Card>
             </motion.div>
 
-            {/* 薄弱模块速览 */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <Card>
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-base font-semibold flex items-center gap-2">
-                      <Flame className="size-4 text-rose-500" />
-                      薄弱模块 Top3
-                    </CardTitle>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => navigate('/competition?tab=dashboard')}
-                    >
-                      查看全部 <ArrowRight className="size-3 ml-1" />
-                    </Button>
-                  </div>
-                  <CardDescription className="text-xs mt-1">
-                    综合正确率与卡片掌握度，优先攻克
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {dashboardData ? (
-                    <WeaknessTop3
-                      topicDistribution={dashboardData.topicDistribution}
-                      masteryMap={masteryMap}
-                      onGoTopic={() => navigate('/competition?tab=practice')}
-                    />
-                  ) : (
-                    <div className="text-sm text-muted-foreground text-center py-6">
-                      暂无学习数据
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </motion.div>
           </div>
 
           {/* 右列：数学家人格 + 速查入口 + 数据速览 */}
           <div className="space-y-6">
-            {/* 数学家人格测试 */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <Card
-                className="bg-rose-50/60 dark:bg-rose-950/20 border-rose-200/60 dark:border-rose-700/40 cursor-pointer hover:shadow-md transition-all group overflow-hidden"
-                onClick={() => navigate('/mathematician-quiz')}
-              >
-                <CardContent className="pt-5">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="size-9 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
-                      <Sparkles className="size-4.5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-bold text-rose-800 dark:text-rose-300">
-                        你是哪种数学家？
-                      </div>
-                      <div className="text-xs text-rose-600/70 dark:text-rose-400/70">
-                        10 题测出数学人格
-                      </div>
-                    </div>
-                  </div>
-                  {(() => {
-                    const history = loadHistory();
-                    const lastRecord = history[0];
-                    const retakeDays = daysUntilRetake();
-                    if (lastRecord && retakeDays > 0) {
-                      const typeNames: Record<string, string> = {
-                        gauss: '高斯', euler: '欧拉', ramanujan: '拉马努金', archimedes: '阿基米德',
-                      };
-                      return (
-                        <div className="flex items-center justify-between mt-2">
-                          <div className="text-sm">
-                            <span className="font-bold text-rose-700 dark:text-rose-400">
-                              {typeNames[lastRecord.result.primary]}型
-                            </span>
-                            <span className="text-xs text-rose-500/60 dark:text-rose-400/60 ml-2">
-                              {retakeDays} 天后可重测
-                            </span>
-                          </div>
-                          <ArrowRight className="size-4 text-rose-500 group-hover:translate-x-0.5 transition-transform" />
-                        </div>
-                      );
-                    }
-                    return (
-                      <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-rose-600 dark:text-rose-400 font-medium">
-                          立即测试
-                        </span>
-                        <ArrowRight className="size-4 text-rose-500 group-hover:translate-x-0.5 transition-transform" />
-                      </div>
-                    );
-                  })()}
-                </CardContent>
-              </Card>
-            </motion.div>
-
             {/* 速查入口 */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -487,6 +418,105 @@ export default function SprintHomePage() {
                       还没有学习数据，开始做题吧
                     </div>
                   )}
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* 薄弱模块速览 */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Card>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base font-semibold flex items-center gap-2">
+                      <Flame className="size-4 text-rose-500" />
+                      薄弱模块 Top3
+                    </CardTitle>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => navigate('/competition?tab=dashboard')}
+                    >
+                      查看全部 <ArrowRight className="size-3 ml-1" />
+                    </Button>
+                  </div>
+                  <CardDescription className="text-xs mt-1">
+                    综合正确率与卡片掌握度，优先攻克
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {dashboardData ? (
+                    <WeaknessTop3
+                      topicDistribution={dashboardData.topicDistribution}
+                      masteryMap={masteryMap}
+                      onGoTopic={() => navigate('/competition?tab=practice')}
+                    />
+                  ) : (
+                    <div className="text-sm text-muted-foreground text-center py-6">
+                      暂无学习数据
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+            {/* 数学家人格测试 */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Card
+                className="bg-rose-50/60 dark:bg-rose-950/20 border-rose-200/60 dark:border-rose-700/40 cursor-pointer hover:shadow-md transition-all group overflow-hidden"
+                onClick={() => navigate('/mathematician-quiz')}
+              >
+                <CardContent className="pt-5">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="size-9 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                      <Sparkles className="size-4.5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-bold text-rose-800 dark:text-rose-300">
+                        你是哪种数学家？
+                      </div>
+                      <div className="text-xs text-rose-600/70 dark:text-rose-400/70">
+                        10 题测出数学人格
+                      </div>
+                    </div>
+                  </div>
+                  {(() => {
+                    const history = loadHistory();
+                    const lastRecord = history[0];
+                    const retakeDays = daysUntilRetake();
+                    if (lastRecord && retakeDays > 0) {
+                      const typeNames: Record<string, string> = {
+                        gauss: '高斯', euler: '欧拉', ramanujan: '拉马努金', archimedes: '阿基米德',
+                      };
+                      return (
+                        <div className="flex items-center justify-between mt-2">
+                          <div className="text-sm">
+                            <span className="font-bold text-rose-700 dark:text-rose-400">
+                              {typeNames[lastRecord.result.primary]}型
+                            </span>
+                            <span className="text-xs text-rose-500/60 dark:text-rose-400/60 ml-2">
+                              {retakeDays} 天后可重测
+                            </span>
+                          </div>
+                          <ArrowRight className="size-4 text-rose-500 group-hover:translate-x-0.5 transition-transform" />
+                        </div>
+                      );
+                    }
+                    return (
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-xs text-rose-600 dark:text-rose-400 font-medium">
+                          立即测试
+                        </span>
+                        <ArrowRight className="size-4 text-rose-500 group-hover:translate-x-0.5 transition-transform" />
+                      </div>
+                    );
+                  })()}
                 </CardContent>
               </Card>
             </motion.div>

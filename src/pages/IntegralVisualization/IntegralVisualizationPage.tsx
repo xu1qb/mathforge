@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PageShell from '@/components/PageShell';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Square, Layers, Ruler } from 'lucide-react';
 import AreaSection from './sections/AreaSection';
@@ -10,15 +11,12 @@ export default function IntegralVisualizationPage() {
 
   return (
     <div className="space-y-6">
-      {/* 顶部标题 */}
-      <div className="flex items-center gap-4 flex-wrap">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">微积分可视化</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            直观理解积分几何意义：曲线面积、旋转体、弧长
-          </p>
-        </div>
-      </div>
+      <PageShell
+        title="微积分可视化"
+        description="直观理解积分几何意义：曲线面积、旋转体、弧长"
+        eyebrow="工具 · 可视化"
+        width="tool"
+      />
 
       {/* 模块切换 Tabs */}
       <Tabs value={tab} onValueChange={setTab} className="w-full">
