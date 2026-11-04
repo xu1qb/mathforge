@@ -2265,6 +2265,214 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
       result: '\\pi=\\left(\\frac{4}{7},\\ \\frac{3}{7}\\right)',
     },
   },
+  {
+    id: 'set-cardinality',
+    title: '集合论：用双射比大小',
+    tag: '集合论',
+    essence:
+      '比较两个无限集合的大小，不比元素个数，比能不能一一配对（双射）；配不上的一方更大。',
+    whenToUse: [
+      '判断一个集合是可数还是不可数',
+      '证明两个无限集合等势',
+      '理解「无限也有大小之分」',
+    ],
+    steps: [
+      {
+        title: '用双射定义等势',
+        body: '存在一一对应，就说两个集合等势。',
+        formula: '|A|=|B|\\iff \\exists f:A\\to B\\ \\text{bijective}',
+      },
+      {
+        title: '可数集合',
+        body: '能和自然数一一对应的集合叫可数集：整数、有理数、代数数都可数。',
+      },
+      {
+        title: '对角线法',
+        body: '把区间里的数排成无穷表，再构造一个每行都对不上的数，就证明它不可数。',
+      },
+      {
+        title: '幂集更大',
+        body: '一个集合的幂集严格大于它本身，这是「没有最大无限」的来源。',
+        formula: '|\\mathcal{P}(A)|=2^{|A|}>|A|',
+      },
+    ],
+    example: {
+      problem: '证明 (0,1) 里的实数不能排成一个序列。',
+      walkthrough: [
+        '假设能排成 a1, a2, a3, …，每个都写成小数。',
+        '构造新数 b：第 k 位取 ak 第 k 位的相反数字（例如加 1 后取模 10）。',
+        'b 与每个 ak 至少有一位不同，所以 b 不在列表里。',
+        '与「已经全排完」矛盾，故 (0,1) 不可数。',
+      ],
+      result: '|\\mathbb{R}|>|\\mathbb{N}|',
+    },
+  },
+  {
+    id: 'graph-euler',
+    title: '图论：欧拉公式与最短路',
+    tag: '图论',
+    essence:
+      '连通平面图满足 V − E + F = 2；求最短路径用 Dijkstra，每步都从当前最近的未访问点扩张。',
+    whenToUse: [
+      '平面图计数面数或验证结构',
+      '求带权图的最短路径',
+      '判断一个图能否一笔画（欧拉回路）',
+    ],
+    steps: [
+      {
+        title: '欧拉公式',
+        body: '对连通平面图，顶点数减边数加面数恒等于 2。',
+        formula: 'V-E+F=2',
+      },
+      {
+        title: '一笔画判定',
+        body: '所有顶点度数为偶数则有欧拉回路；恰有两个奇度点则有欧拉路径。',
+      },
+      {
+        title: 'Dijkstra',
+        body: '每次取出距离最小的未访问点，用它松弛邻居，直到目标点确定。',
+      },
+      {
+        title: '带权最短路',
+        body: '松弛公式：新的距离等于当前距离加上边权，取更小者。',
+        formula: 'd(v)\\leftarrow\\min(d(v),\\ d(u)+w(u,v))',
+      },
+    ],
+    example: {
+      problem: '用欧拉公式验证正四面体。',
+      walkthrough: [
+        '正四面体有 4 个顶点、6 条棱、4 个面。',
+        '代入 V − E + F = 4 − 6 + 4 = 2。',
+        '等式成立，说明它确实是连通平面图（可画在平面上）。',
+      ],
+      result: 'V-E+F=2',
+    },
+  },
+  {
+    id: 'information-entropy',
+    title: '信息论：熵就是不确定性',
+    tag: '信息论',
+    essence:
+      '熵衡量一个随机变量的平均不确定性；分布越均匀，熵越大，公平硬币的熵正好是 1 bit。',
+    whenToUse: [
+      '计算随机变量的信息量',
+      '比较两种分布的混乱程度',
+      '理解编码长度的下界',
+    ],
+    steps: [
+      {
+        title: '熵的定义',
+        body: '按概率加权取对数的负数，单位是 bit。',
+        formula: 'H(X)=-\\sum_{x}p(x)\\log_{2}p(x)',
+      },
+      {
+        title: '均匀分布熵最大',
+        body: 'n 个等可能结果时熵为 log2 n，任何其它分布都更小。',
+      },
+      {
+        title: '条件熵与互信息',
+        body: '知道 Y 之后 X 剩下的不确定性是 H(X|Y)，减少的部分就是互信息。',
+        formula: 'I(X;Y)=H(X)-H(X\\mid Y)',
+      },
+      {
+        title: '编码下界',
+        body: '无损编码的平均码长不可能低于熵。',
+      },
+    ],
+    example: {
+      problem: '一枚硬币正面概率 0.9，求它的熵。',
+      walkthrough: [
+        'H = −0.9·log2 0.9 − 0.1·log2 0.1。',
+        'log2 0.9 ≈ −0.152，log2 0.1 ≈ −3.322。',
+        'H ≈ 0.9×0.152 + 0.1×3.322 ≈ 0.469 bit。',
+        '比公平硬币的 1 bit 小，因为结果更容易猜。',
+      ],
+      result: 'H\\approx 0.469\\ \\text{bit}',
+    },
+  },
+  {
+    id: 'game-nash',
+    title: '博弈论：纳什均衡怎么找',
+    tag: '博弈论',
+    essence:
+      '纳什均衡是一组策略组合，任何一方单独改变策略都不会让自己更好——找它的办法是「给定对方策略，看各自的最优反应」。',
+    whenToUse: [
+      '分析双方策略互相影响的情形',
+      '判断合作能否维持',
+      '解释囚徒困境这类反直觉结果',
+    ],
+    steps: [
+      {
+        title: '写出收益矩阵',
+        body: '列出每种策略组合下双方的收益。',
+      },
+      {
+        title: '逐个求最优反应',
+        body: '固定对方的选择，圈出自己收益最大的那一格。',
+      },
+      {
+        title: '找双方都满意的格子',
+        body: '双方最优反应重合的组合就是纳什均衡。',
+      },
+      {
+        title: '判别是否困境',
+        body: '若存在让双方都更好、但在均衡下没人愿意先动，就是囚徒困境。',
+      },
+    ],
+    example: {
+      problem: '囚徒困境：双方都坦白是纳什均衡吗？',
+      walkthrough: [
+        '对方坦白时，我坦白比抵赖判得轻，所以坦白是最优反应。',
+        '对方抵赖时，我坦白同样更好。',
+        '无论对方怎么选，坦白都更优，因此（坦白，坦白）是均衡。',
+        '但它比（抵赖，抵赖）更差，这就是困境。',
+      ],
+      result: '(\\text{Defect},\\ \\text{Defect})',
+    },
+  },
+  {
+    id: 'crypto-rsa',
+    title: '密码学：RSA 三步',
+    tag: '密码学',
+    essence:
+      'RSA 的安全性来自「大整数分解很难」：公钥加密、私钥解密，靠的是模逆元与欧拉定理。',
+    whenToUse: [
+      '理解公钥加密的基本流程',
+      '计算小规模 RSA 的加解密',
+      '解释为什么密钥要足够长',
+    ],
+    steps: [
+      {
+        title: '生成密钥',
+        body: '选两个大素数 p、q，令 n = pq，欧拉函数 φ(n) = (p−1)(q−1)。',
+        formula: 'n=pq,\\quad \\varphi(n)=(p-1)(q-1)',
+      },
+      {
+        title: '选公钥指数',
+        body: '取 e 满足 1 < e < φ(n) 且与 φ(n) 互素。',
+      },
+      {
+        title: '算私钥',
+        body: '求 d 使 e·d ≡ 1 (mod φ(n))，这就是 e 的模逆元。',
+        formula: 'ed\\equiv 1\\pmod{\\varphi(n)}',
+      },
+      {
+        title: '加解密',
+        body: '加密 c = m^e mod n，解密 m = c^d mod n，由欧拉定理保证还原。',
+        formula: 'c\\equiv m^{e}\\pmod n,\\qquad m\\equiv c^{d}\\pmod n',
+      },
+    ],
+    example: {
+      problem: '取 p = 61、q = 53、e = 17，加密 m = 65。',
+      walkthrough: [
+        'n = 61×53 = 3233，φ(n) = 60×52 = 3120。',
+        '求 d：17d ≡ 1 (mod 3120)，得 d = 2753。',
+        '加密：c = 65^17 mod 3233 = 2790。',
+        '解密：2790^2753 mod 3233 = 65，还原成功。',
+      ],
+      result: 'c=2790',
+    },
+  },
 ];
 
 
@@ -2277,6 +2485,7 @@ export interface ExplainerGroup {
 
 export function groupExplainersByTag(): ExplainerGroup[] {
   const groups: ExplainerGroup[] = [];
+
   for (const topic of EXPLAINER_TOPICS) {
     const hit = groups.find((g) => g.tag === topic.tag);
     if (hit) hit.items.push(topic);

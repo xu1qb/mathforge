@@ -306,6 +306,32 @@ _pi = sp.Matrix([[sp.Rational(4, 7), sp.Rational(3, 7)]])
 chk('平稳分布 (4/7, 3/7) 满足 pi P = pi',
     (_pi * _P).applyfunc(sp.nsimplify) == _pi)
 
+# ---- 2026-11 补空分支：集合论 ----
+chk('幂集大小：|P(A)| = 2^|A|',
+    len([s for r in range(0, 4) for s in [set(c) for c in __import__('itertools').combinations(range(3), r)]]) == 2 ** 3)
+
+# ---- 补空分支：图论（正四面体欧拉公式） ----
+_V, _E, _F = 4, 6, 4
+chk('正四面体 V-E+F=2', _V - _E + _F == 2)
+
+# ---- 补空分支：信息论（不均匀硬币熵） ----
+_h = -(sp.Rational(9, 10) * sp.log(sp.Rational(9, 10), 2) + sp.Rational(1, 10) * sp.log(sp.Rational(1, 10), 2))
+chk('H(0.9,0.1) = 0.469 bit', abs(float(_h) - 0.469) < 1e-3)
+
+# ---- 补空分支：博弈论（囚徒困境中坦白严格优于抵赖） ----
+_payoff = {'T': {'T': -5, 'S': 0}, 'S': {'T': -10, 'S': -1}}
+chk('坦白是严格占优策略',
+    all(_payoff['T'][o] > _payoff['S'][o] for o in ('T', 'S')))
+
+# ---- 补空分支：密码学（RSA 往返） ----
+_p, _q, _e = 61, 53, 17
+_n = _p * _q
+_phi = (_p - 1) * (_q - 1)
+_d = pow(_e, -1, _phi)
+_m = 65
+chk('RSA: p=61,q=53,e=17 加解密可还原',
+    pow(pow(_m, _e, _n), _d, _n) == _m)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:
