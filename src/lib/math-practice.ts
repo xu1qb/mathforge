@@ -18,6 +18,21 @@ import {
   genOdeV2,
   genTrigSpecialV2,
   genSequenceRecurrenceV2,
+  genAlgebraQuadV2,
+  genAlgebraFactorV2,
+  genNumberTheoryV2,
+  genInequalityAmgmV2,
+  genExpPowerV2,
+  genLogEquationV2,
+  genVectorOpV2,
+  genMatrixOpV2,
+  genComplexV2,
+  genGeometryV2,
+  genCombinatoricsV2,
+  genCoordinateV2,
+  genConicV2,
+  genSolidV2,
+  genProbabilityV2,
 } from './practice-v2';
 import { gcd } from 'mathjs';
 
@@ -1595,27 +1610,27 @@ export function generateHintsFromSteps(steps: string[]): string[] {
 /** 生成练习题 */
 export function generatePracticeQuestion(topicKey: string, difficulty: Difficulty = 'basic'): PracticeQuestion {
   switch (topicKey) {
-    case 'algebra-quad': return genQuadEq(difficulty);
-    case 'algebra-factor': return genFactor(difficulty);
+    case 'algebra-quad': return genAlgebraQuadV2(difficulty);
+    case 'algebra-factor': return genAlgebraFactorV2(difficulty);
     case 'trig-special': return genTrigSpecialV2(difficulty);
     case 'derivative-basic': return genDerivativeV2(difficulty);
     case 'integral-basic': return genIntegralV2(difficulty);
     case 'limit-basic': return genLimitV2(difficulty);
-    case 'nt-gcd': return genNumberTheory(difficulty);
-    case 'inequality-amgm': return genAMGM(difficulty);
-    case 'exp-power': return genExpPower(difficulty);
-    case 'log-equation': return genLogEquation(difficulty);
-    case 'vector-op': return genVectorOp(difficulty);
-    case 'matrix-op': return genMatrixOp(difficulty);
-    case 'complex-equation': return genComplexEquation(difficulty);
-    case 'geometry-basic': return genGeometryBasic(difficulty);
-    case 'combinatorics-basic': return genCombinatoricsBasic(difficulty);
+    case 'nt-gcd': return genNumberTheoryV2(difficulty);
+    case 'inequality-amgm': return genInequalityAmgmV2(difficulty);
+    case 'exp-power': return genExpPowerV2(difficulty);
+    case 'log-equation': return genLogEquationV2(difficulty);
+    case 'vector-op': return genVectorOpV2(difficulty);
+    case 'matrix-op': return genMatrixOpV2(difficulty);
+    case 'complex-equation': return genComplexV2(difficulty);
+    case 'geometry-basic': return genGeometryV2(difficulty);
+    case 'combinatorics-basic': return genCombinatoricsV2(difficulty);
     case 'trig-identity': return genTrigIdentityV2(difficulty);
     case 'sequence-limit': return genSequenceLimitV2(difficulty);
-    case 'coordinate-geometry': return genCoordinateGeometry(difficulty);
-    case 'conic-sections': return genConicSections(difficulty);
-    case 'solid-geometry': return genSolidGeometry(difficulty);
-    case 'probability-classical': return genProbabilityClassical(difficulty);
+    case 'coordinate-geometry': return genCoordinateV2(difficulty);
+    case 'conic-sections': return genConicV2(difficulty);
+    case 'solid-geometry': return genSolidV2(difficulty);
+    case 'probability-classical': return genProbabilityV2(difficulty);
     case 'random-variable': return genRandomVariableV2(difficulty);
     case 'ode-solving': return genOdeV2(difficulty);
     case 'series-convergence': return genSeriesV2(difficulty);

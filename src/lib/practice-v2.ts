@@ -177,7 +177,7 @@ export function genHyperbolicV2(diff: Difficulty): PracticeQuestion {
   const kind = pickOne(kinds);
 
   if (kind === 'sinhLn' || kind === 'coshLn') {
-    const k = rnd(2, 12);
+    const k = rnd(2, 30);
     const p = kind === 'sinhLn' ? k * k - 1 : k * k + 1;
     const q = 2 * k;
     const fn = kind === 'sinhLn' ? 'sinh' : 'cosh';
@@ -210,8 +210,8 @@ export function genHyperbolicV2(diff: Difficulty): PracticeQuestion {
   }
 
   if (kind === 'deriv') {
-    const a = rnd(1, 12);
-    const b = rnd(1, 12);
+    const a = rnd(1, 25);
+    const b = rnd(1, 25);
     return mk({
       topic: 'hyperbolic-func', diff,
       question: '求导：d/dx [' + a + 'sinh(' + a + 'x) + ' + b + 'cosh(' + b + 'x)]',
@@ -262,7 +262,7 @@ export function genSeriesV2(diff: Difficulty): PracticeQuestion {
   const kind = pickOne(kinds);
 
   if (kind === 'geoSum') {
-    let q = rnd(3, 30);
+    let q = rnd(3, 60);
     let p = rnd(1, q - 1);
     while (gcd(p, q) !== 1) { q = rnd(3, 30); p = rnd(1, q - 1); }
     const sum = frac(q, q - p);
@@ -280,7 +280,7 @@ export function genSeriesV2(diff: Difficulty): PracticeQuestion {
   }
 
   if (kind === 'pSeries') {
-    const p = pickOne([1, 2, 3, 4, 5, 6]);
+    const p = rnd(1, 9);
     const converge = p > 1;
     return mk({
       topic: 'series-convergence', diff,
@@ -314,7 +314,7 @@ export function genSeriesV2(diff: Difficulty): PracticeQuestion {
   }
 
   if (kind === 'alternating') {
-    const p = pickOne([1, 2, 3, 4, 5]);
+    const p = rnd(1, 9);
     return mk({
       topic: 'series-convergence', diff,
       question: '判断交错级数 Σ(−1)^n/n^' + p + ' 的敛散性（填「收敛」或「发散」）',
@@ -534,8 +534,8 @@ export function genSequenceLimitV2(diff: Difficulty): PracticeQuestion {
   const kind = pickOne(kinds);
 
   if (kind === 'degRatio') {
-    const a = rnd(2, 40);
-    const b = rnd(2, 40);
+    const a = rnd(2, 80);
+    const b = rnd(2, 80);
     return mk({
       topic: 'sequence-limit', diff,
       question: '求极限：lim(n→∞) (' + a + 'n² + ' + rnd(1, 9) + 'n)/(' + b + 'n² + ' + rnd(1, 9) + ')',
@@ -549,7 +549,7 @@ export function genSequenceLimitV2(diff: Difficulty): PracticeQuestion {
   }
 
   if (kind === 'simple') {
-    const k = rnd(1, 15);
+    const k = rnd(1, 40);
     return mk({
       topic: 'sequence-limit', diff,
       question: '求极限：lim(n→∞) (n + ' + k + ')/(n² + 1)',
@@ -590,10 +590,10 @@ export function genSequenceLimitV2(diff: Difficulty): PracticeQuestion {
     const a = rnd(2, 9);
     return mk({
       topic: 'sequence-limit', diff,
-      question: '求极限：lim(n→∞) n^(1/n)',
-      latex: '@lim_{n @to @infty} @sqrt[n]{n}',
-      answer: '1',
-      steps: ['取对数：ln(n)/n → 0', '所以 n^(1/n) → e⁰ = 1'],
+      question: '求极限：lim(n→∞) (' + a + 'n²)/(3^n)',
+      latex: '@lim_{n @to @infty} @dfrac{' + a + 'n^{2}}{3^{n}}',
+      answer: '0',
+      steps: ['指数增长远快于多项式增长', '所以极限为 0'],
     });
   }
 
@@ -1169,7 +1169,7 @@ export function genTrigSpecialV2(diff: Difficulty): PracticeQuestion {
     return mk({
       topic: 'trig-special', diff,
       question: '已知 α 在第 ' + q + ' 象限，且 α 的参考角为 ' + base + '°，求 ' + fn + 'α',
-      latex: '@' + fn + '@alpha，@alpha @@in ' + ['I', 'II', 'III', 'IV'][q - 1] + '@text{ 象限，参考角 }' + base + '^{@circ}',
+      latex: '@' + fn + '@alpha，@alpha @in ' + ['I', 'II', 'III', 'IV'][q - 1] + '@text{ 象限，参考角 }' + base + '^{@circ}',
       answer: val,
       steps: [
         '先求参考角的函数值：' + fn + base + '° = ' + specialAbs(fn, base),
@@ -1285,6 +1285,624 @@ export function genSequenceRecurrenceV2(diff: Difficulty): PracticeQuestion {
       '括号内 = ' + ((n * (n - 1)) / 2),
       'a_' + n + ' = ' + a1 + ' + ' + ((n * (n - 1)) / 2) + ' = ' + an,
     ],
+  });
+}
+
+
+
+// ===== 一元二次方程 =====
+export function genAlgebraQuadV2(diff: Difficulty): PracticeQuestion {
+  const r1 = rnd(-9, 9);
+  const r2 = rnd(-9, 9);
+  const a = rnd(1, 4);
+  const b = -a * (r1 + r2);
+  const c = a * r1 * r2;
+  const kind = diff === 'basic' ? pickOne(['sum', 'product']) : diff === 'advanced' ? pickOne(['sum', 'product', 'larger']) : pickOne(['larger', 'sum', 'product']);
+  const sb = b >= 0 ? '+ ' + b : '− ' + Math.abs(b);
+  const sc = c >= 0 ? '+ ' + c : '− ' + Math.abs(c);
+  const ans = kind === 'sum' ? r1 + r2 : kind === 'product' ? r1 * r2 : Math.max(r1, r2);
+  return mk({
+    topic: 'algebra-quad', diff,
+    question: '已知方程 ' + a + 'x² ' + sb + 'x ' + sc + ' = 0 的两根为整数，求' + (kind === 'sum' ? '两根之和' : kind === 'product' ? '两根之积' : '较大的根'),
+    latex: a + 'x^{2} ' + sb + 'x ' + sc + ' = 0，求' + (kind === 'sum' ? 'x_1 + x_2' : kind === 'product' ? 'x_1 x_2' : '@max(x_1, x_2)'),
+    answer: String(ans),
+    steps: [
+      '因式分解：' + a + '(x − ' + r1 + ')(x − ' + r2 + ') = 0',
+      '两根为 ' + r1 + ' 与 ' + r2,
+      '所求为 ' + ans,
+    ],
+  });
+}
+
+// ===== 因式分解 =====
+export function genAlgebraFactorV2(diff: Difficulty): PracticeQuestion {
+  const r1 = rnd(-12, 12);
+  const r2 = rnd(-12, 12);
+  const a = diff === 'basic' ? 1 : rnd(1, 5);
+  const b = -a * (r1 + r2);
+  const c = a * r1 * r2;
+  const sb = b >= 0 ? '+ ' + b : '− ' + Math.abs(b);
+  const sc = c >= 0 ? '+ ' + c : '− ' + Math.abs(c);
+  const askRoot = pickOne([true, false]);
+  return mk({
+    topic: 'algebra-factor', diff,
+    question: '分解因式：' + a + 'x² ' + sb + 'x ' + sc + '，求' + (askRoot ? '较大根' : '常数项与首项系数之积'),
+    latex: a + 'x^{2} ' + sb + 'x ' + sc,
+    answer: String(askRoot ? Math.max(r1, r2) : a * c),
+    steps: [
+      '找两个数，积为 a·c = ' + a * c + '，和为 −b = ' + -b,
+      '这两个数是 ' + a * r1 + ' 与 ' + a * r2 + '（按分解式）',
+      '分解为 ' + a + '(x − ' + r1 + ')(x − ' + r2 + ')',
+    ],
+  });
+}
+
+// ===== 数论基础 =====
+export function genNumberTheoryV2(diff: Difficulty): PracticeQuestion {
+  const kind = diff === 'basic' ? pickOne(['gcd', 'mod']) : diff === 'advanced' ? pickOne(['gcd', 'lcm', 'mod']) : pickOne(['lcm', 'mod', 'prime']);
+  if (kind === 'prime') {
+    const n = rnd(10, 97);
+    const isPrime = (x: number) => { if (x < 2) return false; for (let i = 2; i * i <= x; i++) if (x % i === 0) return false; return true; };
+    const p = isPrime(n);
+    return mk({
+      topic: 'nt-gcd', diff,
+      question: '判断 ' + n + ' 是否为质数（填「是」或「不是」）',
+      latex: 'n = ' + n + '，' + n + ' @text{ 是质数吗？}',
+      answer: p ? '是' : '不是',
+      steps: ['只需检验不超过 √' + n + ' ≈ ' + Math.sqrt(n).toFixed(1) + ' 的质因子', p ? '没有质因子，所以是质数' : '存在质因子，所以不是质数'],
+      type: 'expression',
+    });
+  }
+  const a = rnd(12, 480);
+  const b = rnd(12, 480);
+  const gcdAB = gcd(a, b);
+  if (kind === 'gcd') {
+    return mk({
+      topic: 'nt-gcd', diff,
+      question: '求 gcd(' + a + ', ' + b + ')',
+      latex: '@gcd(' + a + ', ' + b + ')',
+      answer: String(gcdAB),
+      steps: ['辗转相除：' + a + ' = q·' + b + ' + r 逐步化简', '最大公因数为 ' + gcdAB],
+    });
+  }
+  if (kind === 'lcm') {
+    return mk({
+      topic: 'nt-gcd', diff,
+      question: '求 lcm(' + a + ', ' + b + ')',
+      latex: '@mathrm{lcm}(' + a + ', ' + b + ')',
+      answer: String((a * b) / gcdAB),
+      steps: ['lcm(a,b) = ab / gcd(a,b)', 'gcd = ' + gcdAB, 'lcm = ' + (a * b) / gcdAB],
+    });
+  }
+  const m = rnd(3, 13);
+  return mk({
+    topic: 'nt-gcd', diff,
+    question: '求 ' + a + ' 除以 ' + m + ' 的余数',
+    latex: a + ' @bmod ' + m,
+    answer: String(a % m),
+    steps: [a + ' = ' + Math.floor(a / m) + ' × ' + m + ' + ' + (a % m), '余数为 ' + (a % m)],
+  });
+}
+
+// ===== 均值不等式 =====
+export function genInequalityAmgmV2(diff: Difficulty): PracticeQuestion {
+  const kind = diff === 'basic' ? pickOne(['xPlusK', 'sumProduct']) : diff === 'advanced' ? pickOne(['xPlusK', 'sumProduct', 'reciprocal']) : pickOne(['reciprocal', 'sumProduct', 'xPlusK']);
+  if (kind === 'xPlusK') {
+    const t = rnd(1, 30);
+    const k = t * t;
+    return mk({
+      topic: 'inequality-amgm', diff,
+      question: 'x > 0，求 x + ' + k + '/x 的最小值',
+      latex: 'x > 0，求 x + @dfrac{' + k + '}{x} 的最小值',
+      answer: String(2 * t),
+      steps: ['均值不等式：x + k/x ≥ 2√k', 'k = ' + k + '，2√' + k + ' = ' + 2 * t, '当 x = ' + t + ' 时取到最小值 ' + 2 * t],
+    });
+  }
+  if (kind === 'sumProduct') {
+    const s = 2 * rnd(2, 60);
+    return mk({
+      topic: 'inequality-amgm', diff,
+      question: 'a, b > 0 且 a + b = ' + s + '，求 ab 的最大值',
+      latex: 'a + b = ' + s + '，求 ab 的最大值',
+      answer: String((s * s) / 4),
+      steps: ['ab ≤ ((a+b)/2)²', '= (' + s + '/2)² = ' + (s * s) / 4, 'a = b = ' + s / 2 + ' 时取到'],
+    });
+  }
+  const s = 4 * rnd(1, 25);
+  return mk({
+    topic: 'inequality-amgm', diff,
+    question: 'x, y > 0 且 x + y = ' + s + '，求 1/x + 1/y 的最小值',
+    latex: 'x + y = ' + s + '，求 @dfrac{1}{x} + @dfrac{1}{y} 的最小值',
+    answer: String(4 / s),
+    steps: ['1/x + 1/y = (x+y)/(xy) = ' + s + '/(xy)', 'xy ≤ ' + (s * s) / 4, '所以最小值为 4/' + s + ' = ' + 4 / s],
+  });
+}
+
+// ===== 指数与幂 =====
+export function genExpPowerV2(diff: Difficulty): PracticeQuestion {
+  const kind = diff === 'basic' ? pickOne(['solve', 'multiply']) : diff === 'advanced' ? pickOne(['solve', 'multiply', 'power']) : pickOne(['power', 'solve', 'multiply']);
+  const a = pickOne([2, 3, 4, 5]);
+  if (kind === 'solve') {
+    const x = rnd(1, 8);
+    const val = Math.pow(a, x);
+    return mk({
+      topic: 'exp-power', diff,
+      question: '解方程 ' + a + '^x = ' + val + '，求 x',
+      latex: a + '^{x} = ' + val,
+      answer: String(x),
+      steps: [val + ' = ' + a + '^' + x, '所以 x = ' + x],
+    });
+  }
+  if (kind === 'multiply') {
+    const m = rnd(1, 9);
+    const n = rnd(1, 9);
+    return mk({
+      topic: 'exp-power', diff,
+      question: '化简 ' + a + '^' + m + ' × ' + a + '^' + n + ' = ' + a + '^k，求 k',
+      latex: a + '^{' + m + '} @cdot ' + a + '^{' + n + '} = ' + a + '^{k}',
+      answer: String(m + n),
+      steps: ['同底数相乘，指数相加', 'k = ' + m + ' + ' + n + ' = ' + (m + n)],
+    });
+  }
+  const m = rnd(1, 6);
+  const n = rnd(1, 6);
+  return mk({
+    topic: 'exp-power', diff,
+    question: '化简 (' + a + '^' + m + ')^' + n + ' = ' + a + '^k，求 k',
+    latex: '@left(' + a + '^{' + m + '}@right)^{' + n + '} = ' + a + '^{k}',
+    answer: String(m * n),
+    steps: ['幂的乘方，指数相乘', 'k = ' + m + ' × ' + n + ' = ' + m * n],
+  });
+}
+
+// ===== 对数方程 =====
+export function genLogEquationV2(diff: Difficulty): PracticeQuestion {
+  const kind = diff === 'basic' ? pickOne(['solve', 'evaluate']) : diff === 'advanced' ? pickOne(['solve', 'evaluate', 'product']) : pickOne(['product', 'solve', 'evaluate']);
+  const a = pickOne([2, 3, 4, 5]);
+  if (kind === 'solve') {
+    const b = rnd(1, 7);
+    const x = Math.pow(a, b);
+    return mk({
+      topic: 'log-equation', diff,
+      question: '解方程 log_' + a + ' x = ' + b,
+      latex: '@log_{' + a + '} x = ' + b,
+      answer: String(x),
+      steps: ['对数定义：x = ' + a + '^' + b, 'x = ' + x],
+    });
+  }
+  if (kind === 'evaluate') {
+    const b = rnd(1, 8);
+    return mk({
+      topic: 'log-equation', diff,
+      question: '求 log_' + a + '(' + Math.pow(a, b) + ')',
+      latex: '@log_{' + a + '} ' + Math.pow(a, b),
+      answer: String(b),
+      steps: [Math.pow(a, b) + ' = ' + a + '^' + b, '所以对数值为 ' + b],
+    });
+  }
+  const px = rnd(1, 5);
+  const py = rnd(1, 5);
+  const x = Math.pow(a, px);
+  const y = Math.pow(a, py);
+  return mk({
+    topic: 'log-equation', diff,
+    question: '已知 log_' + a + ' x = ' + px + '，log_' + a + ' y = ' + py + '，求 xy',
+    latex: '@log_{' + a + '} x = ' + px + '，@log_{' + a + '} y = ' + py,
+    answer: String(x * y),
+    steps: ['x = ' + a + '^' + px + ' = ' + x + '，y = ' + a + '^' + py + ' = ' + y, 'xy = ' + x * y],
+  });
+}
+
+
+
+// ===== 向量运算 =====
+export function genVectorOpV2(diff: Difficulty): PracticeQuestion {
+  const kind = diff === 'basic' ? pickOne(['dot', 'magnitude']) : diff === 'advanced' ? pickOne(['dot', 'magnitude', 'cross', 'perp']) : pickOne(['cross', 'perp', 'dot']);
+  if (kind === 'dot') {
+    const a = rnd(-9, 9), b = rnd(-9, 9), c = rnd(-9, 9), d = rnd(-9, 9);
+    return mk({
+      topic: 'vector-op', diff,
+      question: '求向量 (' + a + ', ' + b + ') 与 (' + c + ', ' + d + ') 的数量积',
+      latex: '@vec{u} = (' + a + ', ' + b + ')，@vec{v} = (' + c + ', ' + d + ')，求 @vec{u} @cdot @vec{v}',
+      answer: String(a * c + b * d),
+      steps: ['数量积：对应分量相乘再相加', a + '×' + c + ' + ' + b + '×' + d + ' = ' + (a * c + b * d)],
+    });
+  }
+  if (kind === 'magnitude') {
+    const m = rnd(2, 9), n = rnd(1, m - 1);
+    const p = m * m - n * n, q = 2 * m * n;
+    return mk({
+      topic: 'vector-op', diff,
+      question: '求向量 (' + p + ', ' + q + ') 的模',
+      latex: '@left@|(' + p + ', ' + q + ')@right@|',
+      answer: String(m * m + n * n),
+      steps: ['模 = √(p² + q²)', p + '² + ' + q + '² = ' + (p * p + q * q), '= (' + (m * m + n * n) + ')²，模为 ' + (m * m + n * n)],
+    });
+  }
+  if (kind === 'cross') {
+    const a = rnd(1, 9), b = rnd(1, 9), c = rnd(1, 9), d = rnd(1, 9);
+    return mk({
+      topic: 'vector-op', diff,
+      question: '求向量 (' + a + ', ' + b + ') 与 (' + c + ', ' + d + ') 的叉积的模',
+      latex: '@left@|(' + a + ', ' + b + ') @times (' + c + ', ' + d + ')@right@|',
+      answer: String(Math.abs(a * d - b * c)),
+      steps: ['二维叉积的模 = |ad − bc|', '= |' + a + '×' + d + ' − ' + b + '×' + c + '| = ' + Math.abs(a * d - b * c)],
+    });
+  }
+  const a = rnd(-6, 6) || 1, b = rnd(-6, 6) || 1;
+  return mk({
+    topic: 'vector-op', diff,
+    question: '判断向量 (' + a + ', ' + b + ') 与 (' + b + ', ' + -a + ') 是否垂直（填「是」或「否」）',
+    latex: '@vec{u} = (' + a + ', ' + b + ')，@vec{v} = (' + b + ', ' + -a + ')',
+    answer: '是',
+    steps: ['数量积 = ' + a + '×' + b + ' + ' + b + '×(' + -a + ') = 0', '数量积为零，所以垂直'],
+    type: 'expression',
+  });
+}
+
+// ===== 矩阵运算 =====
+export function genMatrixOpV2(diff: Difficulty): PracticeQuestion {
+  const a = rnd(-9, 9), b = rnd(-9, 9), c = rnd(-9, 9), d = rnd(-9, 9);
+  const kind = diff === 'basic' ? pickOne(['det', 'trace']) : diff === 'advanced' ? pickOne(['det', 'trace', 'add', 'scalar']) : pickOne(['mul', 'scalar', 'det']);
+  const mat = '@begin{pmatrix} ' + a + ' & ' + b + ' @@ ' + c + ' & ' + d + ' @end{pmatrix}';
+  if (kind === 'det') {
+    return mk({
+      topic: 'matrix-op', diff,
+      question: '求行列式 |A|，A = [[' + a + ', ' + b + '], [' + c + ', ' + d + ']]',
+      latex: 'A = ' + mat + '，求 @det A',
+      answer: String(a * d - b * c),
+      steps: ['二阶行列式：ad − bc', '= ' + a + '×' + d + ' − ' + b + '×' + c + ' = ' + (a * d - b * c)],
+    });
+  }
+  if (kind === 'trace') {
+    return mk({
+      topic: 'matrix-op', diff,
+      question: '求矩阵 A 的迹，A = [[' + a + ', ' + b + '], [' + c + ', ' + d + ']]',
+      latex: 'A = ' + mat + '，求 @mathrm{tr}(A)',
+      answer: String(a + d),
+      steps: ['迹 = 主对角线元素之和', a + ' + ' + d + ' = ' + (a + d)],
+    });
+  }
+  if (kind === 'add') {
+    const e = rnd(-9, 9), f = rnd(-9, 9);
+    return mk({
+      topic: 'matrix-op', diff,
+      question: '求 A + B 的第 1 行第 2 列元素，A = [[' + a + ', ' + b + '], [' + c + ', ' + d + ']]，B 的第 1 行第 2 列为 ' + f,
+      latex: 'A = ' + mat + '，B_{12} = ' + f + '，求 (A+B)_{12}',
+      answer: String(b + f),
+      steps: ['矩阵加法逐元素相加', b + ' + ' + f + ' = ' + (b + f)],
+    });
+  }
+  if (kind === 'scalar') {
+    const k = rnd(2, 9);
+    return mk({
+      topic: 'matrix-op', diff,
+      question: '求 ' + k + 'A 的第 2 行第 1 列元素，A = [[' + a + ', ' + b + '], [' + c + ', ' + d + ']]',
+      latex: k + 'A，A = ' + mat + '，求第 2 行第 1 列',
+      answer: String(k * c),
+      steps: ['数乘矩阵：每个元素乘 ' + k, k + ' × ' + c + ' = ' + k * c],
+    });
+  }
+  const e = rnd(-5, 5), f = rnd(-5, 5);
+  return mk({
+    topic: 'matrix-op', diff,
+    question: '求 AB 的第 1 行第 1 列元素，A 第 1 行 = (' + a + ', ' + b + ')，B 第 1 列 = (' + e + ', ' + f + ')',
+    latex: '(AB)_{11} = (' + a + ', ' + b + ') @cdot (' + e + ', ' + f + ')^{T}',
+    answer: String(a * e + b * f),
+    steps: ['矩阵乘法的元素 = 左行 · 右列', a + '×' + e + ' + ' + b + '×' + f + ' = ' + (a * e + b * f)],
+  });
+}
+
+// ===== 复数 =====
+export function genComplexV2(diff: Difficulty): PracticeQuestion {
+  const kind = diff === 'basic' ? pickOne(['modulus', 'conj']) : diff === 'advanced' ? pickOne(['modulus', 'conj', 'add']) : pickOne(['multiply', 'add', 'modulus']);
+  const m = rnd(2, 9), n = rnd(1, m - 1);
+  const a = m * m - n * n, b = 2 * m * n;
+  if (kind === 'modulus') {
+    return mk({
+      topic: 'complex-equation', diff,
+      question: '求 |' + a + ' + ' + b + 'i|',
+      latex: '@left@| ' + a + ' + ' + b + 'i @right@|',
+      answer: String(m * m + n * n),
+      steps: ['|a + bi| = √(a² + b²)', a + '² + ' + b + '² = ' + (a * a + b * b) + ' = ' + (m * m + n * n) + '²'],
+    });
+  }
+  if (kind === 'conj') {
+    return mk({
+      topic: 'complex-equation', diff,
+      question: '求 z · z̄，其中 z = ' + a + ' + ' + b + 'i',
+      latex: 'z = ' + a + ' + ' + b + 'i，求 z @overline{z}',
+      answer: String(a * a + b * b),
+      steps: ['z·z̄ = |z|² = a² + b²', '= ' + (a * a + b * b)],
+    });
+  }
+  if (kind === 'add') {
+    const c = rnd(-9, 9), d = rnd(-9, 9);
+    return mk({
+      topic: 'complex-equation', diff,
+      question: '求 z + w 的实部，z = ' + a + ' + ' + b + 'i，w = ' + c + ' + ' + d + 'i',
+      latex: 'z = ' + a + ' + ' + b + 'i，w = ' + c + ' + ' + d + 'i，求 @Re(z + w)',
+      answer: String(a + c),
+      steps: ['复数相加：实部加实部', a + ' + ' + c + ' = ' + (a + c)],
+    });
+  }
+  const c = rnd(-9, 9), d = rnd(-9, 9);
+  return mk({
+    topic: 'complex-equation', diff,
+    question: '求 z·w 的虚部，z = ' + a + ' + ' + b + 'i，w = ' + c + ' + ' + d + 'i',
+    latex: 'z = ' + a + ' + ' + b + 'i，w = ' + c + ' + ' + d + 'i，求 @Im(zw)',
+    answer: String(a * d + b * c),
+    steps: ['(a+bi)(c+di) = (ac − bd) + (ad + bc)i', '虚部 = ad + bc = ' + a + '×' + d + ' + ' + b + '×' + c + ' = ' + (a * d + b * c)],
+  });
+}
+
+
+
+// ===== 平面几何 =====
+export function genGeometryV2(diff: Difficulty): PracticeQuestion {
+  const kind = diff === 'basic' ? pickOne(['area', 'hypotenuse']) : diff === 'advanced' ? pickOne(['area', 'hypotenuse', 'diagonal']) : pickOne(['diagonal', 'hypotenuse', 'area']);
+  if (kind === 'area') {
+    const b = rnd(2, 30);
+    const h = rnd(2, 30);
+    return mk({
+      topic: 'geometry-basic', diff,
+      question: '三角形底边 ' + b + '，高 ' + h + '，求面积',
+      latex: 'S = @dfrac{1}{2} @cdot ' + b + ' @cdot ' + h,
+      answer: String((b * h) / 2),
+      steps: ['三角形面积 = 底 × 高 ÷ 2', '= ' + b + ' × ' + h + ' ÷ 2 = ' + (b * h) / 2],
+    });
+  }
+  if (kind === 'hypotenuse') {
+    const m = rnd(2, 12), n = rnd(1, m - 1);
+    const p = m * m - n * n, q = 2 * m * n, r = m * m + n * n;
+    return mk({
+      topic: 'geometry-basic', diff,
+      question: '直角三角形两直角边为 ' + p + ' 与 ' + q + '，求斜边',
+      latex: 'a = ' + p + '，b = ' + q + '，c = ?',
+      answer: String(r),
+      steps: ['勾股定理：c² = a² + b²', p + '² + ' + q + '² = ' + (p * p + q * q) + ' = ' + r + '²', 'c = ' + r],
+    });
+  }
+  const w = rnd(3, 25);
+  const h = rnd(3, 25);
+  return mk({
+    topic: 'geometry-basic', diff,
+    question: '矩形长 ' + w + '、宽 ' + h + '，求对角线长度（结果保留 2 位小数）',
+    latex: '@sqrt{' + w + '^{2} + ' + h + '^{2}}',
+    answer: String(Number(Math.hypot(w, h).toFixed(2))),
+    steps: ['对角线 = √(w² + h²)', '= √' + (w * w + h * h), '≈ ' + Math.hypot(w, h).toFixed(2)],
+  });
+}
+
+// ===== 组合计数 =====
+export function genCombinatoricsV2(diff: Difficulty): PracticeQuestion {
+  const kind = diff === 'basic' ? pickOne(['comb', 'perm']) : diff === 'advanced' ? pickOne(['comb', 'perm', 'factorial']) : pickOne(['perm', 'factorial', 'comb']);
+  const fact = (n: number): number => (n <= 1 ? 1 : n * fact(n - 1));
+  if (kind === 'comb') {
+    const n = rnd(4, 18);
+    const k = rnd(1, n - 1);
+    return mk({
+      topic: 'combinatorics-basic', diff,
+      question: '求 C(' + n + ', ' + k + ')',
+      latex: 'C_{' + n + '}^{' + k + '}',
+      answer: String(fact(n) / (fact(k) * fact(n - k))),
+      steps: ['C(n,k) = n!/(k!(n−k)!)', '= ' + fact(n) + '/(' + fact(k) + '×' + fact(n - k) + ')', '= ' + fact(n) / (fact(k) * fact(n - k))],
+    });
+  }
+  if (kind === 'perm') {
+    const n = rnd(4, 10);
+    const k = rnd(1, n);
+    return mk({
+      topic: 'combinatorics-basic', diff,
+      question: '求 P(' + n + ', ' + k + ')',
+      latex: 'P_{' + n + '}^{' + k + '}',
+      answer: String(fact(n) / fact(n - k)),
+      steps: ['P(n,k) = n!/(n−k)!', '= ' + fact(n) + '/' + fact(n - k) + ' = ' + fact(n) / fact(n - k)],
+    });
+  }
+  const n = rnd(3, 10);
+  return mk({
+    topic: 'combinatorics-basic', diff,
+    question: '求 ' + n + '!',
+    latex: n + '!',
+    answer: String(fact(n)),
+    steps: [n + '! = ' + Array.from({ length: n }, (_, i) => n - i).join(' × '), '= ' + fact(n)],
+  });
+}
+
+// ===== 坐标几何 =====
+export function genCoordinateV2(diff: Difficulty): PracticeQuestion {
+  const kind = diff === 'basic' ? pickOne(['distance', 'midpoint']) : diff === 'advanced' ? pickOne(['distance', 'midpoint', 'slope']) : pickOne(['slope', 'line', 'distance']);
+  const m = rnd(2, 10), n = rnd(1, m - 1);
+  const dx = m * m - n * n, dy = 2 * m * n;
+  if (kind === 'distance') {
+    return mk({
+      topic: 'coordinate-geometry', diff,
+      question: '求点 (' + dx + ', ' + dy + ') 到原点的距离',
+      latex: '@sqrt{(' + dx + ')^{2} + (' + dy + ')^{2}}',
+      answer: String(m * m + n * n),
+      steps: ['距离 = √(x² + y²)', dx + '² + ' + dy + '² = ' + (m * m + n * n) + '²', '距离为 ' + (m * m + n * n)],
+    });
+  }
+  if (kind === 'midpoint') {
+    const x1 = rnd(-20, 20), x2 = rnd(-20, 20);
+    const y1 = rnd(-20, 20), y2 = rnd(-20, 20);
+    const evenX = (x1 + x2) % 2 === 0;
+    return mk({
+      topic: 'coordinate-geometry', diff,
+      question: '求 (' + x1 + ', ' + y1 + ') 与 (' + x2 + ', ' + y2 + ') 中点' + (evenX ? '的横坐标' : '横坐标的两倍'),
+      latex: '@left(' + x1 + ', ' + y1 + '@right)，@left(' + x2 + ', ' + y2 + '@right)',
+      answer: String(evenX ? (x1 + x2) / 2 : x1 + x2),
+      steps: ['中点横坐标 = (x₁ + x₂)/2', '= (' + x1 + ' + ' + x2 + ')/2', evenX ? '= ' + (x1 + x2) / 2 : '两倍为 ' + (x1 + x2)],
+    });
+  }
+  if (kind === 'slope') {
+    const k = rnd(-5, 5) || 1;
+    const x1 = rnd(-6, 6);
+    const y1 = rnd(-12, 12);
+    const x2 = x1 + rnd(1, 6);
+    const y2 = y1 + k * (x2 - x1);
+    return mk({
+      topic: 'coordinate-geometry', diff,
+      question: '求过 (' + x1 + ', ' + y1 + ') 与 (' + x2 + ', ' + y2 + ') 的直线斜率',
+      latex: 'k = @dfrac{' + y2 + ' - ' + y1 + '}{' + x2 + ' - ' + x1 + '}',
+      answer: String(k),
+      steps: ['斜率 k = (y₂ − y₁)/(x₂ − x₁)', '= ' + (y2 - y1) + '/' + (x2 - x1), '= ' + k],
+    });
+  }
+  const k = rnd(-4, 4) || 1;
+  const b = rnd(-10, 10);
+  const x = rnd(1, 6);
+  return mk({
+    topic: 'coordinate-geometry', diff,
+    question: '直线 y = ' + k + 'x + ' + b + ' 在 x = ' + x + ' 处的函数值',
+    latex: 'y = ' + k + 'x + ' + b + '，x = ' + x,
+    answer: String(k * x + b),
+    steps: ['代入 x = ' + x, k + '×' + x + ' + ' + b + ' = ' + (k * x + b)],
+  });
+}
+
+
+
+// ===== 圆锥曲线 =====
+export function genConicV2(diff: Difficulty): PracticeQuestion {
+  const kind = diff === 'basic' ? pickOne(['ellipseC', 'parabola']) : diff === 'advanced' ? pickOne(['ellipseC', 'parabola', 'eccentricity']) : pickOne(['eccentricity', 'hyperbolaC', 'parabola']);
+  if (kind === 'ellipseC' || kind === 'eccentricity') {
+    const m = rnd(2, 11);
+    const n = rnd(1, m - 1);
+    const a = m * m + n * n;
+    const b = m * m - n * n;
+    const c = 2 * m * n;
+    if (kind === 'eccentricity') {
+      return mk({
+        topic: 'conic-sections', diff,
+        question: '椭圆 x²/' + (a * a) + ' + y²/' + (b * b) + ' = 1 的离心率',
+        latex: '@dfrac{x^{2}}{' + a * a + '} + @dfrac{y^{2}}{' + b * b + '} = 1，求 e',
+        answer: frac(c, a),
+        steps: ['c² = a² − b²', 'c = ' + c, 'e = c/a = ' + frac(c, a)],
+      });
+    }
+    return mk({
+      topic: 'conic-sections', diff,
+      question: '椭圆 x²/' + (a * a) + ' + y²/' + (b * b) + ' = 1 的半焦距 c',
+      latex: '@dfrac{x^{2}}{' + a * a + '} + @dfrac{y^{2}}{' + b * b + '} = 1，求 c',
+      answer: String(c),
+      steps: ['c² = a² − b² = ' + (a * a - b * b), 'c = ' + c],
+    });
+  }
+  if (kind === 'hyperbolaC') {
+    const m = rnd(2, 11);
+    const n = rnd(1, m - 1);
+    const a = m * m - n * n;
+    const b = 2 * m * n;
+    return mk({
+      topic: 'conic-sections', diff,
+      question: '双曲线 x²/' + (a * a) + ' − y²/' + (b * b) + ' = 1 的半焦距 c',
+      latex: '@dfrac{x^{2}}{' + a * a + '} - @dfrac{y^{2}}{' + b * b + '} = 1，求 c',
+      answer: String(m * m + n * n),
+      steps: ['c² = a² + b² = ' + (a * a + b * b), 'c = ' + (m * m + n * n)],
+    });
+  }
+  const p = 2 * rnd(1, 12);
+  return mk({
+    topic: 'conic-sections', diff,
+    question: '抛物线 y² = ' + p + 'x 的焦点到准线的距离',
+    latex: 'y^{2} = ' + p + 'x',
+    answer: String(p),
+    steps: ['标准形式 y² = 2px，焦点 (p/2, 0)，准线 x = −p/2', '距离 = p = ' + p],
+  });
+}
+
+// ===== 立体几何 =====
+export function genSolidV2(diff: Difficulty): PracticeQuestion {
+  const kind = diff === 'basic' ? pickOne(['cube', 'cuboid']) : diff === 'advanced' ? pickOne(['cube', 'cuboid', 'cylinder', 'cone']) : pickOne(['cone', 'cylinder', 'sphere', 'cuboid']);
+  if (kind === 'cube') {
+    const a = rnd(2, 30);
+    return mk({
+      topic: 'solid-geometry', diff,
+      question: '正方体棱长 ' + a + '，求体积',
+      latex: 'V = a^{3}，a = ' + a,
+      answer: String(a * a * a),
+      steps: ['正方体体积 = a³', '= ' + a + '³ = ' + a * a * a],
+    });
+  }
+  if (kind === 'cuboid') {
+    const a = rnd(2, 20), b = rnd(2, 20), c = rnd(2, 20);
+    return mk({
+      topic: 'solid-geometry', diff,
+      question: '长方体长宽高为 ' + a + '、' + b + '、' + c + '，求体积',
+      latex: 'a = ' + a + '，b = ' + b + '，c = ' + c + '，求 V',
+      answer: String(a * b * c),
+      steps: ['体积 = 长 × 宽 × 高', '= ' + a + '×' + b + '×' + c + ' = ' + a * b * c],
+    });
+  }
+  if (kind === 'cylinder') {
+    const r = rnd(1, 15), h = rnd(1, 20);
+    return mk({
+      topic: 'solid-geometry', diff,
+      question: '圆柱底面半径 ' + r + '、高 ' + h + '，体积写成 kπ，求 k',
+      latex: 'V = @pi r^{2} h，r = ' + r + '，h = ' + h,
+      answer: String(r * r * h),
+      steps: ['圆柱体积 = πr²h', 'k = r²h = ' + r * r * h],
+    });
+  }
+  if (kind === 'cone') {
+    const r = rnd(3, 15);
+    const h = rnd(3, 20);
+    return mk({
+      topic: 'solid-geometry', diff,
+      question: '圆锥底面半径 ' + r + '、高 ' + h + '，体积写成 kπ，求 k（结果保留 2 位小数）',
+      latex: 'V = @dfrac{1}{3}@pi r^{2} h，r = ' + r + '，h = ' + h,
+      answer: String(Number(((r * r * h) / 3).toFixed(2))),
+      steps: ['圆锥体积 = (1/3)πr²h', 'k = ' + r + '²×' + h + '/3 = ' + ((r * r * h) / 3).toFixed(2)],
+    });
+  }
+  const r = rnd(3, 15);
+  return mk({
+    topic: 'solid-geometry', diff,
+    question: '球半径 ' + r + '，体积写成 kπ，求 k（结果保留 2 位小数）',
+    latex: 'V = @dfrac{4}{3}@pi r^{3}，r = ' + r,
+    answer: String(Number(((4 * r * r * r) / 3).toFixed(2))),
+    steps: ['球体积 = (4/3)πr³', 'k = 4×' + r + '³/3 = ' + ((4 * r * r * r) / 3).toFixed(2)],
+  });
+}
+
+// ===== 古典概率 =====
+export function genProbabilityV2(diff: Difficulty): PracticeQuestion {
+  const kind = diff === 'basic' ? pickOne(['dice', 'balls']) : diff === 'advanced' ? pickOne(['dice', 'balls', 'coin']) : pickOne(['coin', 'dice', 'balls']);
+  if (kind === 'dice') {
+    const s = rnd(2, 12);
+    const count = s <= 7 ? s - 1 : 13 - s;
+    return mk({
+      topic: 'probability-classical', diff,
+      question: '掷两枚均匀骰子，点数和为 ' + s + ' 的概率（用分数表示）',
+      latex: 'P(X + Y = ' + s + ')',
+      answer: frac(count, 36),
+      steps: ['总情况 36 种', '和为 ' + s + ' 的情况有 ' + count + ' 种', '概率 = ' + frac(count, 36)],
+      type: 'expression',
+    });
+  }
+  if (kind === 'coin') {
+    const n = rnd(2, 10);
+    const k = rnd(1, n - 1);
+    const c = (() => { let r = 1; for (let i = 1; i <= k; i++) r = (r * (n - k + i)) / i; return r; })();
+    return mk({
+      topic: 'probability-classical', diff,
+      question: '抛 ' + n + ' 枚均匀硬币，恰有 ' + k + ' 枚正面的概率（用分数表示）',
+      latex: 'P = @dfrac{C_{' + n + '}^{' + k + '}}{2^{' + n + '}}',
+      answer: frac(c, Math.pow(2, n)),
+      steps: ['总情况 2^' + n + ' = ' + Math.pow(2, n), '有利情况 C(' + n + ',' + k + ') = ' + c, '概率 = ' + frac(c, Math.pow(2, n))],
+      type: 'expression',
+    });
+  }
+  const r = rnd(1, 30), w = rnd(1, 30);
+  return mk({
+    topic: 'probability-classical', diff,
+    question: '袋中有 ' + r + ' 个红球、' + w + ' 个白球，任取一个为红球的概率（用分数表示）',
+    latex: 'P = @dfrac{' + r + '}{' + r + ' + ' + w + '}',
+    answer: frac(r, r + w),
+    steps: ['总球数 ' + (r + w), '红球 ' + r + ' 个', '概率 = ' + frac(r, r + w)],
+    type: 'expression',
   });
 }
 
