@@ -204,7 +204,29 @@ AI 出题 → 校验（按档位）→ 入库 pending → 人工审核 → appro
 
 服务端测试强制 `CACHE_DIR=/tmp/mf-test-cache`，不会污染真实题库。
 
-## 十三、当前边界
+## 十三、打包成桌面 App
+
+`npm run app:build` 会做三件事：
+
+1. `vite build` 出前端；
+2. `scripts/build-server.mjs` 用 esbuild 把后端打成单文件 `server-dist/index.mjs`（含 katex，附带 verify.py）；
+3. `electron-builder --mac` 打包，`server-dist` 通过 `extraResources` 进 app。
+
+运行时（`electron/main.cjs`）：
+
+- 主进程用 `ELECTRON_RUN_AS_NODE` 启动内置后端，端口固定 `127.0.0.1:8799`；
+- 等 `/api/health` 就绪后创建窗口，通过 `?api=` 把地址注入前端；
+- 模型密钥存在系统应用数据目录（`config.json`），**不写进代码仓库**；
+- 退出时自动杀掉后端进程。
+
+桌面端专属配置入口：AI 出题页顶部的「桌面端模型配置」卡片，填 Key → 保存 → 后端自动重启。
+
+```bash
+npm run app:dev     # 开发调试（Vite 5176 + Electron）
+npm run app:build   # 产出 release/ 下的 .app
+```
+
+## 十四、当前边界
 
 - 只实现了「生成题目」；「生成讲解内容」的接口在 `server/prompts.ts` 里已有模板，尚未接页面
 - 已审核题目还没有进入练习页的抽题池（下一步接）

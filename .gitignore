@@ -17,6 +17,7 @@ build/
 
 # 后端缓存与临时产物
 .cache/
+server-dist/
 
 # Logs
 npm-debug.log*

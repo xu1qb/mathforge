@@ -16,6 +16,101 @@ import { toast } from 'sonner';
 
 const STORAGE_KEY = 'mathforge_ai_questions';
 
+const desktop = (typeof window !== 'undefined'
+  ? (window as unknown as { mfDesktop?: { getConfig: () => Promise<DesktopConfigShape>; setConfig: (c: unknown) => Promise<{ ok: boolean; hasKey: boolean }> } }).mfDesktop
+  : undefined);
+
+interface DesktopConfigShape {
+  hasKey: boolean;
+  model: string;
+  baseUrl: string;
+  agentMode: boolean;
+}
+
+function DesktopConfig({ onSaved }: { onSaved: () => void }) {
+  const [cfg, setCfg] = useState<DesktopConfigShape | null>(null);
+  const [apiKey, setApiKey] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    desktop?.getConfig().then(setCfg).catch(() => setCfg(null));
+  }, []);
+
+  const save = async () => {
+    if (!desktop) return;
+    setSaving(true);
+    try {
+      const res = await desktop.setConfig({
+        apiKey: apiKey.trim() || undefined,
+        model: cfg?.model,
+        baseUrl: cfg?.baseUrl,
+        agentMode: cfg?.agentMode,
+      });
+      toast(res.ok ? '已保存，后端已重启' : '已保存，但后端启动超时');
+      setApiKey('');
+      setCfg(await desktop.getConfig());
+      onSaved();
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Card className="border-border/60">
+      <CardHeader className="pb-2">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Cpu className="size-4 text-primary" />
+          桌面端模型配置
+          {cfg?.hasKey ? (
+            <Badge variant="default" className="text-[10px]">已配置</Badge>
+          ) : (
+            <Badge variant="secondary" className="text-[10px]">未配置（mock 模式）</Badge>
+          )}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        <div className="grid gap-2 md:grid-cols-3">
+          <label className="space-y-1 text-xs">
+            <span className="text-muted-foreground">API Key</span>
+            <input
+              type="password"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              placeholder={cfg?.hasKey ? '已保存，留空则不修改' : 'sk-...'}
+              className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm"
+            />
+          </label>
+          <label className="space-y-1 text-xs">
+            <span className="text-muted-foreground">模型</span>
+            <input
+              value={cfg?.model ?? ''}
+              onChange={(e) => setCfg((c) => (c ? { ...c, model: e.target.value } : c))}
+              className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm"
+            />
+          </label>
+          <label className="space-y-1 text-xs">
+            <span className="text-muted-foreground">接口地址</span>
+            <input
+              value={cfg?.baseUrl ?? ''}
+              onChange={(e) => setCfg((c) => (c ? { ...c, baseUrl: e.target.value } : c))}
+              className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm"
+            />
+          </label>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button size="sm" onClick={() => void save()} disabled={saving} className="gap-1.5">
+            {saving ? <Loader2 className="size-3.5 animate-spin" /> : <Save className="size-3.5" />}
+            保存并重启后端
+          </Button>
+          <span className="text-[11px] text-muted-foreground">
+            密钥保存在系统应用数据目录，不进代码仓库
+          </span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 const DIFFICULTIES = [
   { key: 'basic', label: '基础' },
   { key: 'advanced', label: '进阶' },
@@ -88,6 +183,8 @@ export default function AiLabPage() {
       back
     >
       <div className="space-y-5">
+        {desktop && <DesktopConfig onSaved={() => fetchAiHealth().then(setHealth).catch(() => setHealth(null))} />}
+
         {/* 服务状态 */}
         <Card className="border-border/60">
           <CardContent className="flex flex-wrap items-center gap-3 p-3">

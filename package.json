@@ -16,8 +16,9 @@
     "typecheck": "tsc -p tsconfig.app.json --noEmit",
     "check": "bash scripts/check-all.sh",
     "lint": "eslint src --quiet",
-    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
-    "electron:build": "npm run build && electron-builder --mac"
+    "app:dev": "npm run build:server && concurrently \"vite --port 5176\" \"wait-on http://localhost:5176 && electron .\"",
+    "app:build": "vite build && npm run build:server && electron-builder --mac",
+    "build:server": "node scripts/build-server.mjs"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.9.0",
@@ -106,6 +107,12 @@
     "files": [
       "dist/**/*",
       "electron/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "server-dist",
+        "to": "server-dist"
+      }
     ],
     "mac": {
       "category": "public.app-category.education",

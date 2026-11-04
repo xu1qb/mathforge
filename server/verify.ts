@@ -14,6 +14,13 @@ function pythonPath(): string {
   return existsSync(guess) ? guess : '';
 }
 
+/** 开发时在 server/verify.py，打包后在 server-dist/verify.py（与入口同目录） */
+function verifyScriptPath(): string {
+  const bundled = new URL('./verify.py', import.meta.url).pathname;
+  if (existsSync(bundled)) return bundled;
+  return resolve(process.cwd(), 'server', 'verify.py');
+}
+
 export function verifyAvailable(): boolean {
   const p = pythonPath();
   return p ? existsSync(p) : true;
@@ -30,7 +37,7 @@ export function answersEquivalent(a: string, b: string): Promise<{ equal: boolea
   if (pp) env.PYTHONPATH = pp;
 
   return new Promise((resolvePromise) => {
-    const child = spawn('python3', [resolve(process.cwd(), 'server', 'verify.py')], { env });
+    const child = spawn('python3', [verifyScriptPath()], { env });
     let out = '';
     let err = '';
     const timer = setTimeout(() => {

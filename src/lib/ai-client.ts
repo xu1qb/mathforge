@@ -50,7 +50,17 @@ export interface AiHealth {
   provider: string;
 }
 
-const BASE = '/api';
+// 桌面端由 Electron 注入后端地址；网页端走 Vite 代理
+function resolveBase(): string {
+  if (typeof window === 'undefined') return '/api';
+  const fromQuery = new URLSearchParams(window.location.search).get('api');
+  if (fromQuery) return fromQuery.replace(/\/$/, '');
+  const desktop = (window as unknown as { mfDesktop?: { apiBase?: string } }).mfDesktop;
+  if (desktop?.apiBase) return desktop.apiBase.replace(/\/$/, '');
+  return '/api';
+}
+
+const BASE = resolveBase();
 
 async function request<T>(path: string, init?: RequestInit, timeoutMs = 120000): Promise<T> {
   const controller = new AbortController();

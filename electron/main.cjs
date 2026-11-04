@@ -1,10 +1,86 @@
-const { app, BrowserWindow } = require('electron');
+// MathForge 桌面端主进程：启动内置后端，加载前端，管理模型配置
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
+const fs = require('fs');
+const { spawn } = require('child_process');
 
 const isDev = !app.isPackaged;
+const API_PORT = 8799;
+const API_BASE = 'http://127.0.0.1:' + API_PORT + '/api';
+
+let serverProcess = null;
+let mainWindow = null;
+
+function configPath() {
+  return path.join(app.getPath('userData'), 'config.json');
+}
+
+function readConfig() {
+  try {
+    return JSON.parse(fs.readFileSync(configPath(), 'utf8'));
+  } catch {
+    return {};
+  }
+}
+
+function writeConfig(cfg) {
+  fs.mkdirSync(path.dirname(configPath()), { recursive: true });
+  fs.writeFileSync(configPath(), JSON.stringify(cfg, null, 2), 'utf8');
+}
+
+/** 启动内置后端（打包后在 resources/server-dist，开发时在仓库内） */
+function startServer() {
+  const script = isDev
+    ? path.join(__dirname, '..', 'server-dist', 'index.mjs')
+    : path.join(process.resourcesPath, 'server-dist', 'index.mjs');
+  if (!fs.existsSync(script)) {
+    console.error('[mathforge] 找不到后端入口：', script);
+    return;
+  }
+  const cfg = readConfig();
+  serverProcess = spawn(process.execPath, [script], {
+    env: {
+      ...process.env,
+      ELECTRON_RUN_AS_NODE: '1',
+      PORT: String(API_PORT),
+      HOST: '127.0.0.1',
+      CACHE_DIR: path.join(app.getPath('userData'), 'ai-cache'),
+      LLM_API_KEY: cfg.apiKey || '',
+      LLM_MODEL: cfg.model || 'deepseek-chat',
+      LLM_BASE_URL: cfg.baseUrl || 'https://api.deepseek.com/v1',
+      AGENT_MODE: cfg.agentMode ? '1' : '0',
+      DUAL_SOLVE: '1',
+    },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  serverProcess.stdout.on('data', (d) => console.log('[api]', String(d).trim()));
+  serverProcess.stderr.on('data', (d) => console.error('[api]', String(d).trim()));
+  serverProcess.on('exit', (code) => console.log('[api] exited', code));
+}
+
+function stopServer() {
+  if (serverProcess) {
+    serverProcess.kill();
+    serverProcess = null;
+  }
+}
+
+async function waitForApi(timeoutMs = 15000) {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    try {
+      const res = await fetch(API_BASE + '/health');
+      if (res.ok) return true;
+    } catch {
+      // 还没起来
+    }
+    await new Promise((r) => setTimeout(r, 300));
+  }
+  return false;
+}
 
 function createWindow() {
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
     minWidth: 1024,
@@ -15,30 +91,58 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      preload: path.join(__dirname, 'preload.cjs'),
+      additionalArguments: ['--mf-api=' + API_BASE],
     },
   });
 
   if (isDev) {
-    win.loadURL('http://localhost:5176');
-    win.webContents.openDevTools();
+    mainWindow.loadURL('http://localhost:5176/?api=' + encodeURIComponent(API_BASE));
+    mainWindow.webContents.openDevTools();
   } else {
-    // 打包后 main.cjs 在 electron/ 子目录，dist 在根目录，需要往上一层
-    win.loadFile(path.join(__dirname, '..', 'dist', 'index.html'));
+    mainWindow.loadFile(path.join(__dirname, '..', 'dist', 'index.html'), {
+      query: { api: API_BASE },
+    });
   }
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: 'deny' };
+  });
 }
 
-app.whenReady().then(() => {
+ipcMain.handle('mf:get-config', () => {
+  const cfg = readConfig();
+  return {
+    hasKey: Boolean(cfg.apiKey),
+    model: cfg.model || 'deepseek-chat',
+    baseUrl: cfg.baseUrl || 'https://api.deepseek.com/v1',
+    agentMode: Boolean(cfg.agentMode),
+  };
+});
+
+ipcMain.handle('mf:set-config', async (_e, next) => {
+  const cfg = { ...readConfig(), ...next };
+  writeConfig(cfg);
+  stopServer();
+  startServer();
+  const ok = await waitForApi();
+  return { ok, hasKey: Boolean(cfg.apiKey) };
+});
+
+app.whenReady().then(async () => {
+  startServer();
+  await waitForApi();
   createWindow();
 
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  stopServer();
+  if (process.platform !== 'darwin') app.quit();
 });
+
+app.on('before-quit', stopServer);
