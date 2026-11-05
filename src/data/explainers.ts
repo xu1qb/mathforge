@@ -948,10 +948,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       'y′ + P(x)y = Q(x) 有一套固定解法，背下公式最快；记不住就用积分因子现场推，两分钟能推完。',
+    definition:
+      '一阶线性微分方程形如导数加系数乘函数等于右端项。解法是先求齐次通解，再用常数变易法求特解，两者相加得通解。',
     whenToUse: [
       '方程对 y 和 y′ 都是一次的',
       'Q(x) 是任意函数，不能分离变量',
       '带初值的一阶线性问题',
+    ],
+    theorems: [
+      {
+        name: '通解公式',
+        statement: '一阶线性方程的通解由齐次解与一个特解相加，可用积分因子统一写出。',
+        formula: 'y=e^{-\\int P}\\left(\\int Qe^{\\int P}dx+C\\right)',
+      },
+      {
+        name: '解的存在唯一性',
+        statement: '系数与右端项在区间上连续时，给定初值的解存在且唯一。',
+      },
     ],
     steps: [
       {
@@ -974,6 +987,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '代初值',
         body: '先写通解，再把 y(x₀)=y₀ 代进去定常数 C。',
       },
+      {
+        title: '先判别类型',
+        body: '确认是一阶线性再套公式，可分离或齐次的优先用更简单的方法。',
+      },
+    ],
+    pitfalls: [
+      '漏写常数 C：通解必须含任意常数。',
+      '积分因子符号错：指数上要带负号，符号错结果全反。',
+      '初值代错：代入原方程与初值条件都要验。',
     ],
     example: {
       problem: '求 y′ + y = e^x 的通解。',
@@ -984,7 +1006,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '除以 e^x：y = e^x/2 + Ce^{−x}。',
       ],
       result: 'y=\\frac{1}{2}e^{x}+Ce^{-x}',
-    },
+    },    moreExamples: [
+      {
+        problem: '解导数加二倍函数等于零，初值为一。',
+        walkthrough: [
+          '这是齐次方程。',
+          '通解为指数乘常数。',
+          '代入初值定常数为一。',
+        ],
+        result: 'y=e^{-2x}',
+      },
+    ],
+
   },
   {
     id: 'double-integral-order',
@@ -1042,11 +1075,25 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '一个平面由「一点 + 法向量」唯一确定，五种写法只是把法向量换不同的包装；点到平面的距离本质上是一段投影长度。',
+    definition:
+      '平面由一点与一个法向量确定，点法式方程是法向量与动点减定点之内积为零。',
     whenToUse: [
       '求过三点的平面方程',
       '判断两平面平行还是垂直',
       '求点到平面的距离',
       '空间直线与平面的位置关系',
+    ],
+    theorems: [
+      {
+        name: '点法式',
+        statement: '已知平面上一点与法向量，可写出平面方程。',
+        formula: 'A(x-x_{0})+B(y-y_{0})+C(z-z_{0})=0',
+      },
+      {
+        name: '点到平面距离',
+        statement: '点到平面的距离等于代入方程取绝对值再除以法向量长度。',
+        formula: 'd=\\frac{|Ax_{0}+By_{0}+Cz_{0}+D|}{\\sqrt{A^{2}+B^{2}+C^{2}}}',
+      },
     ],
     steps: [
       {
@@ -1085,6 +1132,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         formula: '\\vec{n}_{1}\\parallel\\vec{n}_{2},\\qquad \\vec{n}_{1}\\cdot\\vec{n}_{2}=0',
       },
     ],
+    pitfalls: [
+      '法向量取成方向向量：平面法向量垂直于平面内任意向量。',
+      '距离公式漏除模长：分母是法向量长度。',
+      '一般式系数按比例缩放：写成最简整数更规范。',
+    ],
     example: {
       problem:
         '求过 A(1,0,0)、B(0,1,0)、C(0,0,1) 三点的平面方程，并求原点到该平面的距离。',
@@ -1095,7 +1147,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '原点到平面距离为 1/√3 = √3/3。',
       ],
       result: 'x+y+z=1,\\qquad d=\\frac{\\sqrt{3}}{3}',
-    },
+    },    moreExamples: [
+      {
+        problem: '求原点到平面 x 加二 y 减二 z 等于一的距离。',
+        walkthrough: [
+          '法向量长度为三。',
+          '代入原点得常数项负一。',
+          '取绝对值除以三。',
+        ],
+        result: '\\frac{1}{3}',
+      },
+    ],
+
   },
   {
     id: 'sequence-limit',
@@ -1181,10 +1244,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '换元必须同时换上下限；遇到 f(x) 与 f(a+b−x) 配对的结构，用区间再现把两式相加，被积函数立刻变简单。',
+    definition:
+      '定积分换元与不定积分同理，但上下限要随之变换；换元后直接在新变量下计算，不必换回原变量。区间再现指利用对称区间把困难积分转化。',
     whenToUse: [
       '被积函数含 √(a²−x²)、1/(a²+x²) 这类结构',
       '积分区间关于原点对称',
       '式子形如 x·f(sin x) 而 f 本身好处理',
+    ],
+    theorems: [
+      {
+        name: '定积分换元',
+        statement: '换元后积分限换成新变量的取值，被积式与微分同步替换，值保持不变。',
+        formula: '\\int_{a}^{b}f(g(x))g^{\\prime}(x)dx=\\int_{g(a)}^{g(b)}f(u)\\,du',
+      },
+      {
+        name: '对称区间性质',
+        statement: '对称区间上奇函数的积分为零，偶函数等于两倍的正半区间积分。',
+        formula: '\\int_{-a}^{a}f=\\begin{cases}2\\int_{0}^{a}f,&f\\text{ even}\\\\0,&f\\text{ odd}\\end{cases}',
+      },
     ],
     steps: [
       {
@@ -1211,6 +1288,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '两式相加后 x 项被消掉，算出 2I 再除以 2。',
       },
     ],
+    pitfalls: [
+      '换元后限没换：最常见错误，结果会整体偏移。',
+      '奇偶判断错：要先确认区间关于原点对称。',
+      '上下限颠倒忘补负号：交换限要变号。',
+    ],
     example: {
       problem: '求 I = ∫₀^π x sin x /(1 + cos²x) dx。',
       walkthrough: [
@@ -1220,7 +1302,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '所以 I = π²/4。',
       ],
       result: '\\int_{0}^{\\pi}\\frac{x\\sin x}{1+\\cos^{2}x}\\,dx=\\frac{\\pi^{2}}{4}',
-    },
+    },    moreExamples: [
+      {
+        problem: '计算对称区间上 x 立方的定积分，区间为负一到一。',
+        walkthrough: [
+          '区间关于原点对称。',
+          '被积函数是奇函数。',
+          '积分为零。',
+        ],
+        result: '0',
+      },
+    ],
+
   },
   {
     id: 'eigen-diagonalization',
@@ -1374,10 +1467,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '求和先看能不能裂成 telescoping，部分和会只剩首尾几项；裂不动就走幂级数，在收敛区间内逐项求导或积分把系数化掉。',
+    definition:
+      '级数求和指求部分和数列的极限。常用手法是裂项相消、等比公式、幂级数逐项积分或求导。',
     whenToUse: [
       '求 Σ 1/(n(n+1)) 这类分式级数',
       '求含 x 的幂级数和函数',
       '已知 Σxⁿ 想推出带 n 系数的和',
+    ],
+    theorems: [
+      {
+        name: '等比级数',
+        statement: '公比绝对值小于一时级数收敛，和为第一项除以一减公比。',
+        formula: '\\sum_{n=0}^{\\infty}q^{n}=\\frac{1}{1-q}',
+      },
+      {
+        name: '裂项相消',
+        statement: '通项拆成相邻两项之差时，部分和只剩首尾少数项。',
+      },
     ],
     steps: [
       {
@@ -1404,6 +1510,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '收敛区间端点上的敛散性要单独用数项级数判别法确认，再写进答案。',
       },
     ],
+    pitfalls: [
+      '公比判断错：公比绝对值不小于一时不能套求和公式。',
+      '裂项后没对齐下标：首尾项容易漏。',
+      '幂级数求和忘收敛域：求和只在收敛区间内成立。',
+    ],
     example: {
       problem: '求幂级数 Σₙ≥₁ n xⁿ⁻¹ 的和函数（|x| < 1），并求 Σ n/2ⁿ⁻¹。',
       walkthrough: [
@@ -1412,7 +1523,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '代入 x = 1/2 得 Σ n/2ⁿ⁻¹ = 1/(1/2)² = 4。',
       ],
       result: '\\sum_{n=1}^{\\infty}nx^{n-1}=\\frac{1}{(1-x)^{2}}',
-    },
+    },    moreExamples: [
+      {
+        problem: '求二分之一的 n 次方从一到无穷的和。',
+        walkthrough: [
+          '这是等比级数。',
+          '首项与公比都是二分之一。',
+          '代入求和公式。',
+        ],
+        result: '1',
+      },
+    ],
+
   },
   {
     id: 'multivar-differentiability',
@@ -1631,10 +1753,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '把 y″ + py′ + qy = 0 换成特征方程 r² + pr + q = 0，三种根型对应三种通解；非齐次再按右端形式设特解。',
+    definition:
+      '二阶常系数线性方程由特征方程决定解的形状：两个不同实根、重根、共轭复根三种情形对应三类通解。',
     whenToUse: [
       '解二阶常系数齐次方程',
       '求非齐次方程的通解',
       '带初值的定解问题',
+    ],
+    theorems: [
+      {
+        name: '特征根情形',
+        statement: '两个不同实根给两个指数解，重根要给一项乘自变量的指数解，复根给正弦余弦。',
+        formula: 'r^{2}+pr+q=0',
+      },
+      {
+        name: '非齐次特解',
+        statement: '非齐次方程的通解等于齐次通解加一个特解，特解形式按右端项类型设定。',
+      },
     ],
     steps: [
       {
@@ -1662,6 +1797,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '右端是 e^{λx} 乘多项式时，特解也设成这个形状；λ 是 k 重特征根就再乘 x^k。',
       },
     ],
+    pitfalls: [
+      '重根漏乘自变量：重根时第二个解要乘 x。',
+      '复根符号错：实部取负号，虚部只取虚数部分。',
+      '非齐次特解形式猜错：右端是多项式时特解也要设同次多项式。',
+    ],
     example: {
       problem: '解方程 y″ − 3y′ + 2y = 0。',
       walkthrough: [
@@ -1671,7 +1811,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '代回验证：y′ = C₁eˣ + 2C₂e²ˣ，y″ = C₁eˣ + 4C₂e²ˣ，组合后恒为 0。',
       ],
       result: 'y=C_{1}e^{x}+C_{2}e^{2x}',
-    },
+    },    moreExamples: [
+      {
+        problem: '求二阶导减函数等于零的通解。',
+        walkthrough: [
+          '特征方程为平方减一等于零。',
+          '特征根为正负一。',
+          '通解为两个指数解的组合。',
+        ],
+        result: 'y=C_{1}e^{x}+C_{2}e^{-x}',
+      },
+    ],
+
   },
   {
     id: 'line-plane-angle',
@@ -1680,10 +1831,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '直线靠一个点加方向向量，平面靠一个点加法向量；所有夹角、距离问题都是在这两个向量之间做点积和叉积。',
+    definition:
+      '空间直线与平面的夹角由直线的方向向量与平面法向量决定：夹角的正弦等于方向向量与法向量夹角的余弦绝对值。',
     whenToUse: [
       '求直线与平面的夹角',
       '求两直线或两平面的夹角',
       '求点到直线的距离',
+    ],
+    theorems: [
+      {
+        name: '线面角',
+        statement: '直线与平面夹角的正弦等于方向向量与法向量内积的绝对值除以模长乘积。',
+        formula: '\\sin\\theta=\\frac{|\\vec s\\cdot\\vec n|}{|\\vec s||\\vec n|}',
+      },
+      {
+        name: '线线角',
+        statement: '两条直线的夹角由两个方向向量的内积给出，取锐角。',
+      },
     ],
     steps: [
       {
@@ -1710,6 +1874,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '线面平行看方向向量与法向量是否垂直；线面垂直看它们是否平行。',
       },
     ],
+    pitfalls: [
+      '把线面角当线线角：线面角用正弦而不是余弦。',
+      '忘记取绝对值：夹角取锐角。',
+      '法向量与方向向量混用：平面用做法向量。',
+    ],
     example: {
       problem: '求直线 (x−1)/1 = y/2 = z/1 与平面 x+y+z=1 的夹角。',
       walkthrough: [
@@ -1719,7 +1888,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         'sin θ = 4/(√6·√3) = 4/√18 = 2√2/3。',
       ],
       result: '\\sin\\theta=\\frac{2\\sqrt{2}}{3}',
-    },
+    },    moreExamples: [
+      {
+        problem: '求方向向量为一、零、零的直线与法向量为零、一、零的平面的夹角。',
+        walkthrough: [
+          '两个向量内积为零。',
+          '正弦为零。',
+          '夹角为零，直线平行于平面。',
+        ],
+        result: '0',
+      },
+    ],
+
   },
   {
     id: 'classic-inequalities',
@@ -1778,10 +1958,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '面积、体积、弧长都是「写微元再累加」：先想清楚一片微元是什么形状，再定上下限积分。',
+    definition:
+      '定积分用来算面积、体积等几何量。方法是把区域切成微元，写出微元的表达式，再沿区间累加。',
     whenToUse: [
       '求曲边梯形的面积',
       '求旋转体的体积',
       '求平面曲线的弧长',
+    ],
+    theorems: [
+      {
+        name: '面积公式',
+        statement: '两曲线之间的面积等于上函数减下函数在区间上的积分。',
+        formula: 'S=\\int_{a}^{b}(f-g)\\,dx',
+      },
+      {
+        name: '旋转体体积',
+        statement: '绕 x 轴旋转的体积等于截面圆面积沿区间的积分。',
+        formula: 'V=\\pi\\int_{a}^{b}y^{2}\\,dx',
+      },
     ],
     steps: [
       {
@@ -1809,6 +2003,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '区域形状决定用哪种公式，定限永远从图上读，不要凭记忆写。',
       },
     ],
+    pitfalls: [
+      '上下函数写反：被积式变成负的，面积要取绝对值。',
+      '交点没求：积分区间应由两曲线交点确定。',
+      '旋转轴看错：绕 y 轴时公式换成对 x 的积分形式。',
+    ],
     example: {
       problem: '求 y = x² 在 [0,1] 上绕 x 轴旋转所得旋转体的体积。',
       walkthrough: [
@@ -1817,7 +2016,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '原函数是 x⁵/5，代入上下限得 π/5。',
       ],
       result: 'V=\\frac{\\pi}{5}',
-    },
+    },    moreExamples: [
+      {
+        problem: '求直线与抛物线在零到一之间围成的面积。',
+        walkthrough: [
+          '区间内直线在抛物线上方。',
+          '被积式是两者之差。',
+          '积分得六分之一。',
+        ],
+        result: '\\frac{1}{6}',
+      },
+    ],
+
   },
   {
     id: 'lagrange-cauchy',
@@ -1872,10 +2082,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '缺 y 的令 y′ = p(x)，缺 x 的令 y′ = p(y)；欧拉方程用 x = eᵗ 换成常系数，本质都是「换元降阶」。',
+    definition:
+      '可降阶方程指通过换元把高阶降为一阶：缺因变量的令导数为新变量，缺自变量的把导数看成未知函数。',
     whenToUse: [
       '方程里不显含 y 或不显含 x',
       '形如 x²y″ + pxy′ + qy = 0 的欧拉方程',
       '高阶但可以逐步降阶的方程',
+    ],
+    theorems: [
+      {
+        name: '缺因变量',
+        statement: '方程不含未知函数时，令一阶导数为新变量，阶数降低一阶。',
+        formula: 'y^{\\prime\\prime}=f(x,y^{\\prime})\\;\\Rightarrow\\;p=y^{\\prime}',
+      },
+      {
+        name: '欧拉方程',
+        statement: '变系数方程可通过自变量代换化为常系数。',
+      },
     ],
     steps: [
       {
@@ -1902,6 +2125,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '降阶解出的是 p = y′，还要再积分一次才得到 y。',
       },
     ],
+    pitfalls: [
+      '换元后变量没统一：新变量与旧变量混用。',
+      '降阶后忘记回代：求出新变量要积回原函数。',
+      '欧拉方程代换漏因子：自变量代换会带来额外系数。',
+    ],
     example: {
       problem: '解欧拉方程 x²y″ − 2xy′ + 2y = 0（x > 0）。',
       walkthrough: [
@@ -1911,7 +2139,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '代回验证：两个解分别满足原方程。',
       ],
       result: 'y=C_{1}x+C_{2}x^{2}',
-    },
+    },    moreExamples: [
+      {
+        problem: '解二阶导等于六倍自变量的方程。',
+        walkthrough: [
+          '右端只依赖自变量。',
+          '连续积分两次。',
+          '每次积分补一个常数。',
+        ],
+        result: 'y=x^{3}+C_{1}x+C_{2}',
+      },
+    ],
+
   },
   {
     id: 'vector-algebra',
@@ -1920,10 +2159,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '数量积算夹角和投影，向量积算面积和法向量，混合积算体积和共面——空间几何题的第一步几乎都是在这三个里选一个。',
+    definition:
+      '向量有三种乘积：数量积给出数，向量积给出向量，混合积给出体积。它们的几何意义决定了各自用途。',
     whenToUse: [
       '求两向量夹角或一个向量在另一个上的投影',
       '求平面的法向量、三角形的面积',
       '判断三个向量是否共面、求平行六面体体积',
+    ],
+    theorems: [
+      {
+        name: '数量积与夹角',
+        statement: '数量积等于模长乘积乘夹角余弦，可用于判断垂直。',
+        formula: '\\vec a\\cdot\\vec b=|\\vec a||\\vec b|\\cos\\theta',
+      },
+      {
+        name: '向量积的几何意义',
+        statement: '向量积的模等于两向量张成的平行四边形面积，方向垂直于两者。',
+        formula: '|\\vec a\\times\\vec b|=|\\vec a||\\vec b|\\sin\\theta',
+      },
     ],
     steps: [
       {
@@ -1950,6 +2203,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '求平面方程先叉积出法向量；求点到平面距离用向量在法向量上的投影。',
       },
     ],
+    pitfalls: [
+      '把数量积当向量：数量积结果是数。',
+      '混淆面积与体积：混合积才给体积。',
+      '方向判错：向量积方向要按右手法则。',
+    ],
     example: {
       problem: '设 a=(1,0,0)，b=(0,1,0)，c=(0,0,1)，求 a×b 与混合积 [a b c]。',
       walkthrough: [
@@ -1959,7 +2217,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '若把 c 换成 (1,1,0)，混合积变成 0，说明三向量共面。',
       ],
       result: '\\left[\\vec{a}\\,\\vec{b}\\,\\vec{c}\\right]=1',
-    },
+    },    moreExamples: [
+      {
+        problem: '判断向量一、二、二与二、负一、零是否垂直。',
+        walkthrough: [
+          '算数量积。',
+          '结果为零。',
+          '因此垂直。',
+        ],
+        result: '0',
+      },
+    ],
+
   },
   {
     id: 'implicit-diff',
@@ -2512,10 +2781,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '估界不用算出原函数：用被积函数的最值、单调性或柯西–施瓦茨，把积分夹在两个数之间即可。',
+    definition:
+      '定积分不等式通过放缩被积函数来估计积分值，是证明题与近似计算的常用手段。',
     whenToUse: [
       '题目要求「估计积分的值」或「证明不等式」',
       '被积函数没有初等原函数',
       '积分区间与函数单调性已知',
+    ],
+    theorems: [
+      {
+        name: '保号性',
+        statement: '被积函数非负则积分非负；被积函数在两函数之间则积分也在对应区间内。',
+        formula: 'f\\le g\\;\\Rightarrow\\;\\int f\\le\\int g',
+      },
+      {
+        name: '积分中值定理',
+        statement: '连续函数在区间上的积分等于某点函数值乘区间长度。',
+        formula: '\\int_{a}^{b}f=f(\\xi)(b-a)',
+      },
     ],
     steps: [
       {
@@ -2537,6 +2820,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '检查取等条件',
         body: '柯西取等要求 f 与 g 成比例；写证明时要说明等号能否取到。',
       },
+      {
+        title: '估算代替硬算',
+        body: '证明题里常常只需给上下界，不必算精确值。',
+      },
+    ],
+    pitfalls: [
+      '放缩方向反：要证明上界就放大被积函数，别缩。',
+      '忽略单调性：放缩时用了函数在区间的最大值或最小值要说明。',
+      '等式条件忘写：中值定理要说明函数连续。',
     ],
     example: {
       problem: '估计 ∫₀¹ xⁿ dx（n 为正整数）的值。',
@@ -2547,7 +2839,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         'n 越大积分越小，符合直觉。',
       ],
       result: '\\int_{0}^{1}x^{n}\\,dx=\\frac{1}{n+1}',
-    },
+    },    moreExamples: [
+      {
+        problem: '估计正弦函数在零到二分之圆周率上的积分范围。',
+        walkthrough: [
+          '正弦在该区间上介于零与一之间。',
+          '积分介于零与区间长度之间。',
+          '实际值为一。',
+        ],
+        result: '1',
+      },
+    ],
+
   },
   {
     id: 'trig-identity',
@@ -5683,10 +5986,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '定积分应用都是同一套微元法：取一小段，写出它的长度、体积或功，再沿区间累加。关键是把「一小段」写对。',
+    definition:
+      '定积分的应用统一用微元法：取一小段写出长度、体积或功的微分，再积分累加。',
     whenToUse: [
       '求曲线弧长、旋转体体积与侧面积',
       '求变力做功、液体压力、质心',
       '题目给出「已知截面面积」求体积',
+    ],
+    theorems: [
+      {
+        name: '弧长公式',
+        statement: '曲线弧长等于根号下一加导数平方沿区间的积分。',
+        formula: 's=\\int_{a}^{b}\\sqrt{1+y^{\\prime 2}}\\,dx',
+      },
+      {
+        name: '侧面积公式',
+        statement: '旋转体侧面积等于周长乘弧长微元的积分。',
+        formula: 'S=2\\pi\\int_{a}^{b}y\\,ds',
+      },
     ],
     steps: [
       {
@@ -5707,6 +6024,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '累加成定积分',
         body: '把所有微元累加就是定积分。物理量也一样：功等于力乘位移微元的积分。',
       },
+      {
+        title: '先写微元再积分',
+        body: '微元写对了积分只是机械步骤。',
+      },
+    ],
+    pitfalls: [
+      '微元写错阶：写成常数乘 dx 会丢掉曲率带来的修正。',
+      '积分限没对应区间：换元后要同步换限。',
+      '物理量单位混：功与压力的量纲不同不能相加。',
     ],
     example: {
       problem: '求上半单位圆绕 x 轴旋转所得立体的体积。',
@@ -5717,7 +6043,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '结果为三分之四倍圆周率。',
       ],
       result: '体积为三分之四倍圆周率。',
-    },
+    },    moreExamples: [
+      {
+        problem: '求上半单位圆绕 x 轴旋转的体积。',
+        walkthrough: [
+          '被积函数为一减 x 平方。',
+          '积分区间负一到一。',
+          '积得三分之四。',
+          '乘圆周率得体积。',
+        ],
+        result: '\\frac{4\\pi}{3}',
+      },
+    ],
+
   },
   {
     id: 'surface-integral-gauss',
@@ -5812,10 +6150,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '换元就是把复合函数的内层整体换成一个新变量，让积分变成基本公式的样子。关键在内层导数是否已经出现在被积式里。',
+    definition:
+      '若被积式含复合函数且内层导数也在，可令内层为新变量，把积分化为基本公式；定积分换元时上下限要同步换。',
     whenToUse: [
       '被积式里有复合函数，且内层导数（差一个常数倍）也在',
       '根号内是一次式或二次式，想用三角换元',
       '定积分换元后要同步换积分限',
+    ],
+    theorems: [
+      {
+        name: '第一类换元',
+        statement: '内层导数出现时，整体替换为新变量，积分变为新变量的积分。',
+        formula: '\\int f(g(x))g^{\\prime}(x)\\,dx=\\int f(u)\\,du',
+      },
+      {
+        name: '三角换元',
+        statement: '根号下为平方差用正弦换元，平方和用正切换元，可去掉根号。',
+        formula: '\\sqrt{a^{2}-x^{2}}\\;\\Rightarrow\\;x=a\\sin t',
+      },
     ],
     steps: [
       {
@@ -5836,6 +6188,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '定积分同步换限',
         body: '定积分换元时上下限也要换成新变量的值，换完直接算，不必换回原变量。',
       },
+      {
+        title: '先化简再换元',
+        body: '能拆成有理式或先配方再换元，往往比硬换更省力。',
+      },
+    ],
+    pitfalls: [
+      '忘记换回原变量：不定积分的结果必须用原自变量表示。',
+      '定积分忘换限：用新变量算却代入旧上下限，结果必错。',
+      '换元后没乘导数：漏掉雅可比式的常数因子。',
     ],
     example: {
       problem: '计算被积式为二倍 x 乘余弦 x 平方的积分。',
@@ -5846,7 +6207,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '换回原变量得到正弦 x 平方加常数。',
       ],
       result: '结果为正弦 x 平方加常数。',
-    },
+    },    moreExamples: [
+      {
+        problem: '计算二倍 x 乘余弦 x 平方的积分。',
+        walkthrough: [
+          '令 u 为 x 平方。',
+          '微分 du 等于二倍 x dx。',
+          '被积式正好是余弦乘 du。',
+          '积得正弦，换回原变量。',
+        ],
+        result: '\\sin(x^{2})+C',
+      },
+    ],
+
   },
   {
     id: 'separable-ode',
@@ -5855,10 +6228,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '一阶方程的两条基本路线：能分离的把两个变量分到两边再积分；齐次的用比值换元变成可分离。',
+    definition:
+      '可分离变量方程指导数能写成两个单变量函数之积。把含因变量的项移到一边、含自变量的移到另一边，两边积分即可。',
     whenToUse: [
       '方程能写成导数等于两个单变量函数之积',
       '右端只依赖 y 与 x 的比值（齐次方程）',
       '带初值条件求特解',
+    ],
+    theorems: [
+      {
+        name: '分离变量法',
+        statement: '变量分离后两边各自积分，得到隐式通解。',
+        formula: '\\frac{dy}{g(y)}=f(x)\\,dx',
+      },
+      {
+        name: '齐次方程换元',
+        statement: '右端只依赖比值时，令比值为新变量可化为可分离。',
+        formula: 'u=\\frac{y}{x}\\;\\Rightarrow\\;y=ux',
+      },
     ],
     steps: [
       {
@@ -5879,6 +6266,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '检查漏解',
         body: '分离变量时除以过的因子可能为零，那些常数解要单独检查是否被通解包含。',
       },
+      {
+        title: '先化成标准形',
+        body: '把导数写成微分之形式再分离，能看清哪些因子不能为零。',
+      },
+    ],
+    pitfalls: [
+      '除以零因子漏解：除以的因子为零时可能有常数解。',
+      '积分常数位置错：常数加在任意一边都可以，但要写。',
+      '初值代入前没化简：隐式解要先化成显式再代。',
     ],
     example: {
       problem: '解导数等于二倍 x 乘 y，且 x 为零时 y 等于一。',
@@ -5889,7 +6285,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '代入初值定常数为一。',
       ],
       result: '特解为 e 的 x 平方次方。',
-    },
+    },    moreExamples: [
+      {
+        problem: '解导数等于二倍自变量乘函数，初值为一。',
+        walkthrough: [
+          '分离变量后两边积分。',
+          '得到对数形式。',
+          '取指数得通解。',
+          '代入初值定常数。',
+        ],
+        result: 'y=e^{x^{2}}',
+      },
+    ],
+
   },
   {
     id: 'rational-integral',
@@ -5898,10 +6306,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '有理函数积分只有一条路：假分式先做除法化成多项式加真分式，真分式再按分母因式拆成部分分式，最后逐项积分。',
+    definition:
+      '有理函数积分指两个多项式之比的积分。方法是假分式先做除法降次，真分式按分母因式拆成部分分式，再逐项积分。',
     whenToUse: [
       '被积式是多项式之比',
       '分母能因式分解成一次与二次因子',
       '三角有理式用万能代换后也归到这里',
+    ],
+    theorems: [
+      {
+        name: '部分分式分解',
+        statement: '分母分解成一次与不可约二次因子后，真分式可拆成这些因子的幂的线性组合。',
+        formula: '\\frac{P(x)}{(x-a)(x-b)}=\\frac{A}{x-a}+\\frac{B}{x-b}',
+      },
+      {
+        name: '二次因子配方',
+        statement: '不可约二次因子配方后化为反正切形式，分子缺项时先补成导数形式。',
+        formula: '\\int\\frac{dx}{x^{2}+a^{2}}=\\frac{1}{a}\\arctan\\frac{x}{a}+C',
+      },
     ],
     steps: [
       {
@@ -5922,6 +6344,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '一次因子积出对数，不可约二次因子配方后积出反正切。',
         formula: '\\int\\frac{dx}{x^{2}+a^{2}}=\\frac{1}{a}\\arctan\\frac{x}{a}+C',
       },
+      {
+        title: '最后合并对数',
+        body: '多个对数项可以用对数运算法则合并，答案更简洁。',
+      },
+    ],
+    pitfalls: [
+      '没先化真分式：分子次数不低于分母时必须先做除法。',
+      '重因子写成单项：重根要按幂次写成多项。',
+      '二次因子配错：配方后系数漏乘，反正切前要补系数。',
     ],
     example: {
       problem: '计算分母为 x 平方减一、分子为一的积分。',
@@ -5932,7 +6363,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '合并成半对数绝对值之比。',
       ],
       result: '结果为二分之一乘对数绝对值之比加常数。',
-    },
+    },    moreExamples: [
+      {
+        problem: '计算分母为 x 方减一、分子为一的积分。',
+        walkthrough: [
+          '分母分解为两个一次因子。',
+          '拆成两个简单分式，系数一正一负。',
+          '分别积分得两个对数。',
+          '合并为半对数绝对值之比。',
+        ],
+        result: '\\frac{1}{2}\\ln\\left|\\frac{x-1}{x+1}\\right|+C',
+      },
+    ],
+
   },
   {
     id: 'multivar-chain',
@@ -5941,10 +6384,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '多元链式法则就是把依赖关系画成一棵树：对每条从目标到变量的路径，把偏导相乘，再把所有路径相加。',
+    definition:
+      '多元复合函数求导用链式法则：沿依赖路径把偏导相乘，再把所有路径相加。',
     whenToUse: [
       '中间变量由多个自变量决定',
       '求隐函数的偏导（把方程看成恒等式两边求导）',
       '求全导数（中间变量又依赖同一个自变量）',
+    ],
+    theorems: [
+      {
+        name: '链式法则',
+        statement: '每个中间变量贡献一条路径，路径上的偏导相乘，结果相加。',
+        formula: '\\frac{\\partial z}{\\partial t}=\\sum_{i}\\frac{\\partial z}{\\partial u_i}\\frac{\\partial u_i}{\\partial t}',
+      },
+      {
+        name: '隐函数求导',
+        statement: '方程确定隐函数时，两边求偏导再解出未知偏导。',
+        formula: 'F(x,y)=0\\;\\Rightarrow\\;y^{\\prime}=-\\frac{F_x}{F_y}',
+      },
     ],
     steps: [
       {
@@ -5964,6 +6421,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '代入具体点',
         body: '最后把中间变量用自变量的值代回去，得到纯自变量的表达式。',
       },
+      {
+        title: '画依赖树',
+        body: '把变量依赖关系画成树，每条路径相乘再相加，不会漏项。',
+      },
+    ],
+    pitfalls: [
+      '漏路径：多个中间变量时少算一条就错。',
+      '偏导与全导混：中间变量只依赖一个自变量时才是全导。',
+      '代错点：最后要把中间变量用具体值代回。',
     ],
     example: {
       problem: '目标函数是 x 平方乘 y，其中 x 等于 t、y 等于 t 平方，求对 t 的导数。',
@@ -5974,7 +6440,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '直接代入也得到同样的四倍 t 立方。',
       ],
       result: '导数为四倍 t 立方。',
-    },
+    },    moreExamples: [
+      {
+        problem: '已知目标为 x 平方乘 y，x 等于 t、y 等于 t 平方，求对 t 的导数。',
+        walkthrough: [
+          '两条路径分别算偏导乘积。',
+          '相加后代入。',
+          '结果为四倍 t 立方。',
+        ],
+        result: '4t^{3}',
+      },
+    ],
+
   },
   {
     id: 'multivar-extrema',
@@ -6110,10 +6587,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '反常积分就是把边界换成参数再取极限。极限存在叫收敛，不存在叫发散。判别敛散常用比较法与 p 积分基准。',
+    definition:
+      '反常积分把无穷区间或无界点用极限处理：换成参数算定积分再取极限，极限存在称收敛。',
     whenToUse: [
       '积分区间一端或两端无穷',
       '被积函数在端点无界（如根号在分母）',
       '判断级数敛散时用积分判别法',
+    ],
+    theorems: [
+      {
+        name: '无穷区间',
+        statement: '无穷区间的积分定义为上限趋于无穷时的极限。',
+        formula: '\\int_{a}^{\\infty}f\\,dx=\\lim_{t\\to\\infty}\\int_{a}^{t}f\\,dx',
+      },
+      {
+        name: 'p 积分判据',
+        statement: '根号型在零点无界时，指数小于一收敛，否则发散。',
+        formula: '\\int_{0}^{1}x^{-p}dx\\text{ converges iff }p<1',
+      },
     ],
     steps: [
       {
@@ -6134,6 +6625,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '比较判别',
         body: '和已知收敛的积分比大小，小的收敛则大的也收敛；极限比较法更适合处理同阶情形。',
       },
+      {
+        title: '与 p 积分比较',
+        body: '复杂被积式找到同阶的 p 积分作比较，判敛最快。',
+      },
+    ],
+    pitfalls: [
+      '把发散当有限：极限不存在时不能写数值。',
+      '奇点漏判：区间内可能有多个无界点，要逐个拆开。',
+      '直接代端点：无界点不能直接代入，必须先取极限。',
     ],
     example: {
       problem: '判断根号倒数在零到一上的积分是否收敛，并求值。',
@@ -6144,7 +6644,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '结果为 2。',
       ],
       result: '收敛，值为 2。',
-    },
+    },    moreExamples: [
+      {
+        problem: '判断根号倒数在零到一上的积分是否收敛。',
+        walkthrough: [
+          '被积函数在零处无界。',
+          '指数为二分之一，小于一。',
+          '原函数为二倍根号，代入后极限存在。',
+          '值为二。',
+        ],
+        result: '2',
+      },
+    ],
+
   },
   {
     id: 'power-series-expansion',
