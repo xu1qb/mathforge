@@ -138,7 +138,8 @@ chk('贝祖定理：两条二次曲线交点数为 2×2=4', 2 * 2 == 4)
 chk('贝祖定理：直线与三次曲线交点数 1×3=3', 1 * 3 == 3)
 chk('齐次坐标 [1:2:3] 与 [2:4:6] 表示同一点',
     sp.Rational(1, 2) == sp.Rational(2, 4) == sp.Rational(3, 6))
-chk('映射度：z^n 的度为 n（绕圈次数）', all(n == n for n in range(1, 6)))
+chk('映射度：z^n 的度为 n（方程 z^n=1 恰有 n 个根）',
+    all(len(sp.solve(sp.Symbol('z')**k - 1, sp.Symbol('z'))) == k for k in range(1, 6)))
 chk('横截交余维数相加：三维中两曲线和为 2 < 3 不横截', 1 + 1 < 3)
 chk('球面欧拉示性数为 2（V-E+F）', 4 - 6 + 4 == 2)
 
