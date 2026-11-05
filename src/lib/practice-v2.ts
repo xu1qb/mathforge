@@ -1386,13 +1386,20 @@ export function genAlgebraQuadV2(diff: Difficulty): PracticeQuestion {
   const b = -a * (r1 + r2);
   const c = a * r1 * r2;
   const kind = diff === 'basic' ? pickOne(['sum', 'product']) : diff === 'advanced' ? pickOne(['sum', 'product', 'larger']) : pickOne(['larger', 'sum', 'product']);
-  const sb = b >= 0 ? '+ ' + b : '− ' + Math.abs(b);
-  const sc = c >= 0 ? '+ ' + c : '− ' + Math.abs(c);
+  // 系数为 0 的项省略，系数为 1 时不写 1（避免出现 "1x² + 0x + 0"）
+  const term = (coef: number, variable: string): string => {
+    if (coef === 0) return '';
+    const sign = coef > 0 ? ' + ' : ' − ';
+    const abs = Math.abs(coef);
+    const coefStr = abs === 1 && variable ? '' : String(abs);
+    return sign + coefStr + variable;
+  };
+  const expr = (a === 1 ? '' : String(a)) + 'x²' + term(b, 'x') + term(c, '');
   const ans = kind === 'sum' ? r1 + r2 : kind === 'product' ? r1 * r2 : Math.max(r1, r2);
   return mk({
     topic: 'algebra-quad', diff,
-    question: '已知方程 ' + a + 'x² ' + sb + 'x ' + sc + ' = 0 的两根为整数，求' + (kind === 'sum' ? '两根之和' : kind === 'product' ? '两根之积' : '较大的根'),
-    latex: a + 'x^{2} ' + sb + 'x ' + sc + ' = 0，求' + (kind === 'sum' ? 'x_1 + x_2' : kind === 'product' ? 'x_1 x_2' : '@max(x_1, x_2)'),
+    question: '已知方程 ' + expr + ' = 0 的两根为整数，求' + (kind === 'sum' ? '两根之和' : kind === 'product' ? '两根之积' : '较大的根'),
+    latex: expr + ' = 0，求' + (kind === 'sum' ? 'x_1 + x_2' : kind === 'product' ? 'x_1 x_2' : '@max(x_1, x_2)'),
     answer: String(ans),
     verify: { kind: 'roots', coeffs: [a, b, c], which: kind === 'sum' ? 'sum' : kind === 'product' ? 'product' : 'max', claim: String(ans) },
     steps: [
@@ -1410,13 +1417,20 @@ export function genAlgebraFactorV2(diff: Difficulty): PracticeQuestion {
   const a = diff === 'basic' ? 1 : rnd(1, 5);
   const b = -a * (r1 + r2);
   const c = a * r1 * r2;
-  const sb = b >= 0 ? '+ ' + b : '− ' + Math.abs(b);
-  const sc = c >= 0 ? '+ ' + c : '− ' + Math.abs(c);
+  // 系数为 0 的项省略，系数为 1 时不写 1（避免出现 "1x² + 0x + 0"）
+  const term = (coef: number, variable: string): string => {
+    if (coef === 0) return '';
+    const sign = coef > 0 ? ' + ' : ' − ';
+    const abs = Math.abs(coef);
+    const coefStr = abs === 1 && variable ? '' : String(abs);
+    return sign + coefStr + variable;
+  };
+  const expr = (a === 1 ? '' : String(a)) + 'x²' + term(b, 'x') + term(c, '');
   const askRoot = pickOne([true, false]);
   return mk({
     topic: 'algebra-factor', diff,
-    question: '分解因式：' + a + 'x² ' + sb + 'x ' + sc + '，求' + (askRoot ? '较大根' : '常数项与首项系数之积'),
-    latex: a + 'x^{2} ' + sb + 'x ' + sc,
+    question: '分解因式：' + expr + '，求' + (askRoot ? '较大根' : '常数项与首项系数之积'),
+    latex: expr,
     answer: String(askRoot ? Math.max(r1, r2) : a * c),
     verify: askRoot
       ? { kind: 'roots', coeffs: [a, b, c], which: 'max', claim: String(Math.max(r1, r2)) }
