@@ -39,6 +39,9 @@ import { MACHINE_LEARNING_THEORY_COURSE } from './ml-theory';
 import { MECHANICS_COURSE } from './mechanics';
 import { OPERATIONS_RESEARCH_COURSE } from './operations-research';
 import { MATHEMATICAL_BIOLOGY_COURSE } from './mathematical-biology';
+import { CONTROL_THEORY_COURSE } from './control-theory-course';
+import { FINANCIAL_MATH_COURSE } from './financial-math-course';
+import { GAME_THEORY_COURSE } from './game-theory-course';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -80,6 +83,9 @@ export const COURSES: Course[] = [
   MECHANICS_COURSE,
   OPERATIONS_RESEARCH_COURSE,
   MATHEMATICAL_BIOLOGY_COURSE,
+  CONTROL_THEORY_COURSE,
+  FINANCIAL_MATH_COURSE,
+  GAME_THEORY_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {

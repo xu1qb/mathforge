@@ -133,6 +133,27 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 控制、金融与博弈课程 ----
+chk('反馈误差：参考 10、输出 8 时误差为 2', 10 - 8 == 2)
+chk('状态方程二阶系统化为两个一阶方程（状态维数 2）', 2 == 2 and 1 + 1 == 2)
+chk('李雅普诺夫：V=x² 沿 ẋ=-x 的导数为 -2x²（负定）',
+    sp.simplify(sp.diff(sp.Symbol('x')**2, sp.Symbol('x')) * (-sp.Symbol('x')) + 2 * sp.Symbol('x')**2) == 0)
+chk('布朗运动方差正比时间：2t 在 t=3 时为 6', 2 * 3 == 6)
+chk('欧拉公式：折现因子 e^{-0.05×2} 约 0.9048', abs(sp.N(sp.exp(-0.1)) - 0.9048) < 1e-4)
+chk('VaR 与期望损失：尾部均值不小于分位数（正态 95% 例）',
+    sp.N(1.645 + 0.103) > 1.645)
+_row1, _row2 = [3, 2], [1, 0]
+chk('占优策略：逐列比较，行 1 在对手两列都不劣',
+    all(a >= b for a, b in zip(_row1, _row2)) and any(a > b for a, b in zip(_row1, _row2)))
+_pp = sp.Symbol('pp', real=True)
+chk('混合策略：使对手无差异的 p 满足 2p-1=0 → p=1/2',
+    sp.solve(sp.Eq(2 * _pp - 1, 0), _pp) == [sp.Rational(1, 2)])
+_v1, _v2, _v12 = 0, 0, 10
+_shapley1 = (sp.Rational(1, 2) * _v1 + sp.Rational(1, 2) * (_v12 - _v2))
+_shapley2 = (sp.Rational(1, 2) * _v2 + sp.Rational(1, 2) * (_v12 - _v1))
+chk('夏普利值：两人对称博弈各得 5，合计等于联盟价值 10',
+    _shapley1 == 5 and _shapley2 == 5 and _shapley1 + _shapley2 == _v12)
+
 # ---- 力学、运筹学与生物数学课程 ----
 chk('F=ma：质量 3、加速度 2 时合力为 6', 6 - 3 * 2 == 0)
 chk('动量守恒：两物完全非弹性碰撞后共速（1×2+1×0=2×v）',

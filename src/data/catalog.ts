@@ -113,8 +113,8 @@ export const DISCIPLINE: Discipline = {
         { id: 'mathematical-statistics', name: '数理统计', courseId: 'probability' },
         { id: 'stochastic-process', name: '随机过程', courseId: 'probability' },
         { id: 'information-theory', name: '信息论', courseId: 'computation', note: '在计算与算法中' },
-        { id: 'game-theory', name: '博弈论', courseId: 'applied-math' },
-        { id: 'financial-math', name: '金融数学', courseId: 'applied-math' },
+        { id: 'game-theory', name: '博弈论', courseId: 'game-theory-course' },
+        { id: 'financial-math', name: '金融数学', courseId: 'financial-math-course' },
       ],
     },
     {
@@ -141,7 +141,7 @@ export const DISCIPLINE: Discipline = {
         { id: 'mathematical-physics', name: '数学物理', courseId: 'mathematical-physics' },
         { id: 'mathematical-biology', name: '生物数学', courseId: 'mathematical-biology' },
         { id: 'operations-research', name: '运筹学', courseId: 'operations-research' },
-        { id: 'control-theory', name: '控制论', courseId: 'applied-math' },
+        { id: 'control-theory', name: '控制论', courseId: 'control-theory-course' },
       ],
     },
     {
