@@ -20,6 +20,8 @@ import { MEASURE_THEORY_COURSE } from './measure-theory-course';
 import { FUNCTIONAL_ANALYSIS_COURSE } from './functional-analysis';
 import { HARMONIC_ANALYSIS_COURSE } from './harmonic-analysis';
 import { DIFFERENTIAL_GEOMETRY_COURSE } from './differential-geometry';
+import { ALGEBRAIC_GEOMETRY_COURSE } from './algebraic-geometry';
+import { DIFFERENTIAL_TOPOLOGY_COURSE } from './differential-topology';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -42,6 +44,8 @@ export const COURSES: Course[] = [
   FUNCTIONAL_ANALYSIS_COURSE,
   HARMONIC_ANALYSIS_COURSE,
   DIFFERENTIAL_GEOMETRY_COURSE,
+  ALGEBRAIC_GEOMETRY_COURSE,
+  DIFFERENTIAL_TOPOLOGY_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {

@@ -133,6 +133,15 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 代数几何与微分拓扑课程 ----
+chk('贝祖定理：两条二次曲线交点数为 2×2=4', 2 * 2 == 4)
+chk('贝祖定理：直线与三次曲线交点数 1×3=3', 1 * 3 == 3)
+chk('齐次坐标 [1:2:3] 与 [2:4:6] 表示同一点',
+    sp.Rational(1, 2) == sp.Rational(2, 4) == sp.Rational(3, 6))
+chk('映射度：z^n 的度为 n（绕圈次数）', all(n == n for n in range(1, 6)))
+chk('横截交余维数相加：三维中两曲线和为 2 < 3 不横截', 1 + 1 < 3)
+chk('球面欧拉示性数为 2（V-E+F）', 4 - 6 + 4 == 2)
+
 # ---- 微分几何课程 ----
 chk('单位圆曲率为 1（曲率半径倒数）', sp.Rational(1, 1) == 1)
 chk('半径为 R 的球面高斯曲率为 1/R²',

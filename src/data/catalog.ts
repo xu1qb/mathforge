@@ -66,10 +66,10 @@ export const DISCIPLINE: Discipline = {
         { id: 'non-euclidean', name: '非欧几何', courseId: 'geometry-topology' },
         { id: 'projective', name: '射影几何', courseId: 'geometry-topology' },
         { id: 'differential-geometry', name: '微分几何', courseId: 'differential-geometry' },
-        { id: 'algebraic-geometry', name: '代数几何', note: '待建' },
+        { id: 'algebraic-geometry', name: '代数几何', courseId: 'algebraic-geometry' },
         { id: 'topology', name: '拓扑学', courseId: 'geometry-topology' },
         { id: 'algebraic-topology', name: '代数拓扑', courseId: 'geometry-topology' },
-        { id: 'differential-topology', name: '微分拓扑', note: '待建' },
+        { id: 'differential-topology', name: '微分拓扑', courseId: 'differential-topology' },
       ],
     },
     {

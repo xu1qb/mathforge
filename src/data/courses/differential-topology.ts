@@ -1,0 +1,96 @@
+import type { Course } from './types';
+
+export const DIFFERENTIAL_TOPOLOGY_COURSE: Course = {
+  id: 'differential-topology',
+  title: '微分拓扑',
+  tagline: '光滑流形、映射度与配边',
+  textbook: { name: 'Topology from the Differentiable Viewpoint（Milnor） + 微分拓扑讲义', edition: '第 2 版（Milnor） / 第 1 版' },
+  prerequisites: ['微分几何'],
+  hours: 32,
+  intro: {
+    what: '微分拓扑用光滑工具研究拓扑：切空间、映射度、横截性与配边，核心是把几何问题化为可数的代数不变量。',
+    objects: ['光滑流形', '切空间', '映射度', '横截性', '配边'],
+    history: ['1930 年代：惠特尼嵌入定理', '1950 年代：米尔诺发现异种球面', '1960 年代：配边理论与 h-配边定理'],
+  },
+  chapters: [
+    {
+      id: 'dt-manifolds',
+      title: '光滑流形与切空间',
+      textbookRef: 'Milnor 第 1 章 / 讲义 第 1 章',
+      summary: '局部像欧氏空间',
+      goals: ['判断流形', '算切空间', '写微分'],
+      lessonIds: ['smooth-manifolds'],
+      practiceTopics: ['vector-op'],
+      exercises: [
+        {
+          id: 'dt1-1',
+          level: '进阶',
+          question: '球面的切空间维数是多少？',
+          answer: '2',
+          hint: '流形维数等于切空间维数。',
+          steps: ['球面是二维流形。', '切空间为 2 维。'],
+        },
+      ],
+    },
+    {
+      id: 'dt-degree',
+      title: '映射度',
+      textbookRef: 'Milnor 第 2 章 / 讲义 第 2 章',
+      summary: '数覆盖次数',
+      goals: ['会算度', '理解正则值', '知道拓扑不变性'],
+      lessonIds: ['degree-theory'],
+      practiceTopics: ['function-property'],
+      exercises: [
+        {
+          id: 'dt2-1',
+          level: '进阶',
+          question: '圆到圆映射 $z^{n}$ 的度是多少？',
+          answer: '$n$',
+          hint: '绕 n 圈。',
+          steps: ['每个正则点 n 个原像。', '度为 n。'],
+        },
+      ],
+    },
+    {
+      id: 'dt-transversality',
+      title: '横截性',
+      textbookRef: 'Milnor 第 3 章 / 讲义 第 3 章',
+      summary: '交得足够好',
+      goals: ['判断横截', '算横截交维数', '会用一般位置'],
+      lessonIds: ['transversality'],
+      practiceTopics: ['vector-op'],
+      exercises: [
+        {
+          id: 'dt3-1',
+          level: '竞赛',
+          question: '三维空间中两条一般位置的曲线是否横截相交？',
+          answer: '一般不横截',
+          hint: '切空间维数之和小于 3。',
+          steps: ['两条曲线切空间各 1 维。', '和为 2，小于 3。'],
+        },
+      ],
+    },
+    {
+      id: 'dt-cobordism',
+      title: '配边',
+      textbookRef: 'Milnor 第 4 章 / 讲义 第 4 章',
+      summary: '流形的等价关系',
+      goals: ['理解配边', '会找配边', '知道不变量'],
+      lessonIds: ['cobordism'],
+      practiceTopics: ['vector-op'],
+      exercises: [
+        {
+          id: 'dt4-1',
+          level: '竞赛',
+          question: '两个圆周是否配边？',
+          answer: '配边',
+          hint: '圆柱的边界。',
+          steps: ['圆柱是带边流形。', '边界为两个圆。'],
+        },
+      ],
+    },
+  ],
+  applications: [{ title: '流形分类', scene: '拓扑', example: '配边群给出流形的粗分类。' }, { title: '物理', scene: '理论', example: '拓扑量子场论基于配边。' }],
+  crossings: [{ subject: '微分几何', relation: '微分拓扑用光滑结构研究拓扑。', courseId: 'differential-geometry' }, { subject: '几何与拓扑', relation: '基本群与同调是拓扑不变量。', courseId: 'geometry-topology' }],
+  toolPath: '/diff-geo',
+};

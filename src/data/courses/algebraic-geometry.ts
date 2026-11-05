@@ -1,0 +1,96 @@
+import type { Course } from './types';
+
+export const ALGEBRAIC_GEOMETRY_COURSE: Course = {
+  id: 'algebraic-geometry',
+  title: '代数几何',
+  tagline: '簇、理想与贝祖定理：用代数研究几何',
+  textbook: { name: 'Algebraic Geometry（Hartshorne） + 代数几何（李克正）', edition: '第 1 版（Hartshorne） / 第 1 版' },
+  prerequisites: ['线性代数', '代数与数论'],
+  hours: 44,
+  intro: {
+    what: '代数几何研究多项式方程组的零点集。它用交换代数把几何对象翻译成理想，再用代数工具解决几何问题。',
+    objects: ['仿射簇', '射影簇', '贝祖定理', '扎里斯基拓扑'],
+    history: ['17 世纪：笛卡尔用坐标研究曲线', '19 世纪：射影几何与代数曲线理论', '20 世纪初：希尔伯特零点定理', '20 世纪中叶：概形理论问世'],
+  },
+  chapters: [
+    {
+      id: 'ag-affine',
+      title: '仿射簇与理想',
+      textbookRef: 'Hartshorne 第 1 章 / 李克正 第 1 章',
+      summary: '几何与代数的词典',
+      goals: ['理解零点定理', '回译理想运算', '判断不可约'],
+      lessonIds: ['affine-varieties'],
+      practiceTopics: ['algebra-factor'],
+      exercises: [
+        {
+          id: 'ag1-1',
+          level: '进阶',
+          question: '平面上的抛物线是代数簇吗？',
+          answer: '是',
+          hint: '一个多项式方程。',
+          steps: ['方程给出零点集。', '因此是代数簇。'],
+        },
+      ],
+    },
+    {
+      id: 'ag-projective',
+      title: '射影簇',
+      textbookRef: 'Hartshorne 第 2 章 / 李克正 第 2 章',
+      summary: '补齐无穷远点',
+      goals: ['用齐次坐标', '理解射影闭包', '会去齐次化'],
+      lessonIds: ['projective-varieties'],
+      practiceTopics: ['coordinate-geometry'],
+      exercises: [
+        {
+          id: 'ag2-1',
+          level: '进阶',
+          question: '两条平行线在射影平面中相交吗？',
+          answer: '相交于无穷远点',
+          hint: '射影空间补齐无穷远。',
+          steps: ['平行线方向相同。', '交于无穷远点。'],
+        },
+      ],
+    },
+    {
+      id: 'ag-bezout',
+      title: '贝祖定理',
+      textbookRef: 'Hartshorne 第 1 章 / 李克正 第 3 章',
+      summary: '交点数等于次数之积',
+      goals: ['会数交点', '理解重数', '知道射影前提'],
+      lessonIds: ['bezout-theorem'],
+      practiceTopics: ['conic-sections'],
+      exercises: [
+        {
+          id: 'ag3-1',
+          level: '基础',
+          question: '两条二次曲线最多有几个交点？',
+          answer: '4',
+          hint: '次数相乘。',
+          steps: ['次数都是 2。', '2×2=4。'],
+        },
+      ],
+    },
+    {
+      id: 'ag-zariski',
+      title: '扎里斯基拓扑',
+      textbookRef: 'Hartshorne 第 1 章 / 李克正 第 4 章',
+      summary: '用代数定义开集',
+      goals: ['认识扎里斯基闭集', '理解不可约', '知道拓扑粗糙性'],
+      lessonIds: ['zariski-topology'],
+      practiceTopics: ['function-property'],
+      exercises: [
+        {
+          id: 'ag4-1',
+          level: '进阶',
+          question: '扎里斯基拓扑的闭集是什么？',
+          answer: '全体代数簇',
+          hint: '定义如此。',
+          steps: ['闭集定义为代数簇。', '开集是补集。'],
+        },
+      ],
+    },
+  ],
+  applications: [{ title: '编码理论', scene: '通信', example: '代数曲线上的码用于纠错。' }, { title: '计算机视觉', scene: '工程', example: '多视图几何用射影几何描述。' }],
+  crossings: [{ subject: '代数与数论', relation: '簇的坐标环就是交换代数对象。', courseId: 'algebra-number' }, { subject: '几何与拓扑', relation: '复代数簇是复流形。', courseId: 'geometry-topology' }],
+  toolPath: '/diff-geo',
+};
