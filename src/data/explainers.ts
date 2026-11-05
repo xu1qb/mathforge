@@ -4823,6 +4823,69 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
 ];
 
 
+/** 标签 → 学科大类：讲解页按大类分组，避免 40 个标签把列表冲散 */
+export const TAG_BUCKET: Record<string, string> = {
+  极限: '高等数学',
+  中值定理: '高等数学',
+  导数应用: '高等数学',
+  积分: '高等数学',
+  级数: '高等数学',
+  多元: '高等数学',
+  重积分: '高等数学',
+  曲线与曲面积分: '高等数学',
+  微分方程: '高等数学',
+  空间几何: '高等数学',
+  数列: '高等数学',
+  不等式: '高等数学',
+  线代: '线性代数',
+  概率: '概率统计',
+  拓扑: '现代数学',
+  集合论: '现代数学',
+  图论: '现代数学',
+  信息论: '现代数学',
+  博弈论: '现代数学',
+  密码学: '现代数学',
+  测度论: '现代数学',
+  伽罗瓦: '现代数学',
+  运筹学: '现代数学',
+  非欧几何: '现代数学',
+  可计算性: '现代数学',
+  环论: '现代数学',
+  抽象代数: '现代数学',
+  射影几何: '现代数学',
+  代数拓扑: '现代数学',
+  计算复杂性: '现代数学',
+  控制论: '现代数学',
+  范畴论: '现代数学',
+  解析数论: '现代数学',
+  表示论: '现代数学',
+  金融数学: '现代数学',
+  力学: '数学与物理',
+  生物数学: '数学与物理',
+  三角学: '竞赛与专项',
+  欧氏几何: '竞赛与专项',
+  代数: '竞赛与专项',
+};
+
+/** 讲解所属的学科大类 */
+export function explainerBucket(tag: string): string {
+  return TAG_BUCKET[tag] ?? '其他专题';
+}
+
+/** 按学科大类分组（讲解页用这个，比按 tag 分组稳定） */
+export function groupExplainersByBucket(): ExplainerGroup[] {
+  const order = ['高等数学', '线性代数', '概率统计', '竞赛与专项', '现代数学', '数学与物理', '其他专题'];
+  const map = new Map<string, ExplainerTopic[]>();
+  for (const topic of EXPLAINER_TOPICS) {
+    const bucket = explainerBucket(topic.tag);
+    if (!map.has(bucket)) map.set(bucket, []);
+    map.get(bucket)!.push(topic);
+  }
+  return order
+    .filter((b) => map.has(b))
+    .map((b) => ({ tag: b, items: map.get(b)! }));
+}
+
 /** 按 tag 分组，顺序按标签首次出现的顺序 */
 export interface ExplainerGroup {
   tag: string;

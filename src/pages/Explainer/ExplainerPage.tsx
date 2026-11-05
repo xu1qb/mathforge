@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import MathRenderer from '@/components/MathRenderer';
 import PageShell from '@/components/PageShell';
 import ExplainersCheatsheet from '@/components/print/ExplainersCheatsheet';
-import { EXPLAINER_TOPICS, groupExplainersByTag, type ExplainerTopic } from '@/data/explainers';
+import { EXPLAINER_TOPICS, groupExplainersByBucket, type ExplainerTopic } from '@/data/explainers';
 import { PRACTICE_TOPICS } from '@/data/practice-topics';
 import { practiceLinksFor } from '@/data/topic-practice-links';
 import { cn } from '@/lib/utils';
@@ -49,11 +49,15 @@ export default function ExplainerPage() {
   const [openTags, setOpenTags] = useState<Record<string, boolean>>({});
   const [levelFilter, setLevelFilter] = useState<'全部' | '基础' | '进阶' | '竞赛'>('全部');
 
-  const groups = useMemo(() => groupExplainersByTag(), []);
+  const groups = useMemo(() => groupExplainersByBucket(), []);
   const visibleGroups = useMemo(() => {
     const q = query.trim();
     let result = groups;
-    if (tagFilter) result = result.filter((g) => g.tag === tagFilter);
+    if (tagFilter) {
+      result = result
+        .map((g) => ({ tag: g.tag, items: g.items.filter((t) => t.tag === tagFilter) }))
+        .filter((g) => g.items.length > 0);
+    }
     if (levelFilter !== '全部') {
       result = result
         .map((g) => ({ tag: g.tag, items: g.items.filter((t) => t.level === levelFilter) }))
