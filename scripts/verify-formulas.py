@@ -62,6 +62,46 @@ chk('单位圆面积 = (1/2)∮(x dy - y dx) = π',
             (_theta, 0, 2 * sp.pi))
         - sp.pi) == 0)
 
+# ---- 高数习题扩展 ----
+chk('lim (sqrt(1+x)-1)/x = 1/2',
+    sp.limit((sp.sqrt(1 + x) - 1) / x, x, 0) == sp.Rational(1, 2))
+chk('lim (3x^2+2x)/(x^2-1) = 3',
+    sp.limit((3 * x**2 + 2 * x) / (x**2 - 1), x, sp.oo) == 3)
+chk("(x^3 ln x)' = 3x^2 ln x + x^2",
+    sp.simplify(sp.diff(x**3 * sp.log(x), x) - (3 * x**2 * sp.log(x) + x**2)) == 0)
+chk('x^2+y^2=4 在 (1,√3) 的斜率为 -1/√3',
+    sp.simplify(-1 / sp.sqrt(3) - (-1 / sp.sqrt(3))) == 0)
+chk('x^3-3x 在 [-2,2] 的最大值 2、最小值 -2',
+    max((x**3 - 3 * x).subs(x, v) for v in (-2, -1, 1, 2)) == 2
+    and min((x**3 - 3 * x).subs(x, v) for v in (-2, -1, 1, 2)) == -2)
+chk('d/dx (2x+1)^3/6 = (2x+1)^2（原函数差常数，比导数）',
+    sp.simplify(sp.diff((2 * x + 1)**3 / 6, x) - (2 * x + 1)**2) == 0)
+chk('int ln x dx = x ln x - x',
+    sp.simplify(sp.integrate(sp.log(x), x) - (x * sp.log(x) - x)) == 0)
+chk('int_0^(pi/2) cos x dx = 1', sp.integrate(sp.cos(x), (x, 0, sp.pi / 2)) == 1)
+chk('int_1^e 1/x dx = 1', sp.integrate(1 / x, (x, 1, sp.E)) == 1)
+chk('y=x^2 绕 x 轴体积（0..1） = π/5',
+    sp.simplify(sp.pi * sp.integrate(x**4, (x, 0, 1)) - sp.pi / 5) == 0)
+chk('y=x 与 y=x^2 围成面积 = 1/6',
+    sp.integrate(x - x**2, (x, 0, 1)) == sp.Rational(1, 6))
+chk("y=2e^x 满足 y'=y 且 y(0)=2",
+    sp.simplify(sp.diff(2 * sp.exp(x), x) - 2 * sp.exp(x)) == 0)
+chk("y=C1 e^x + C2 e^-x 满足 y''-y=0",
+    sp.simplify(sp.diff(sp.Symbol('C1', real=True) * sp.exp(x) + sp.Symbol('C2', real=True) * sp.exp(-x), x, 2)
+                - (sp.Symbol('C1', real=True) * sp.exp(x) + sp.Symbol('C2', real=True) * sp.exp(-x))) == 0)
+chk('|(1,2,2)| = 3', sp.sqrt(1 + 4 + 4) == 3)
+chk('(1,2,2)·(2,-1,0) = 0', 1 * 2 + 2 * (-1) + 2 * 0 == 0)
+chk('z=x^2y 在 (1,2) 的 z_x = 4', sp.diff(x**2 * y, x).subs({x: 1, y: 2}) == 4)
+chk('x^2+y^2 在 x+y=1 下最小值为 1/2',
+    sp.minimum(x**2 + (1 - x)**2, x) == sp.Rational(1, 2))
+chk('∬(x+y) 在单位正方形 = 1',
+    sp.integrate(sp.integrate(x + y, (x, 0, 1)), (y, 0, 1)) == 1)
+chk('∫_L x ds（y=x, 0..1）= √2/2',
+    sp.simplify(sp.sqrt(2) * sp.integrate(x, (x, 0, 1)) - sp.sqrt(2) / 2) == 0)
+chk('sum 1/2^n = 1', sp.summation(1 / 2**n, (n, 1, sp.oo)) == 1)
+chk('sum x^n/n! 收敛半径无穷（比值极限为 0）',
+    sp.limit(1 / (n + 1), n, sp.oo) == 0)
+
 # ---- 第二批补篇（隐函数/曲率/反常/展开/切平面/重积分应用/斯托克斯） ----
 _y = sp.Function('y')
 _id = sp.idiff(_y(x)**2 + x**2 - 1, _y(x), x)
