@@ -1746,10 +1746,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '先比 r(A) 与 r(A|b) 定有没有解，再用 n − r(A) 定自由变量个数；非齐次通解 = 一个特解 + 齐次的基础解系。',
+    definition:
+      '线性方程组的解集由系数矩阵的秩与增广矩阵的秩决定：秩不等无解，秩等于未知数个数有唯一解，秩更小则有无穷多解。',
     whenToUse: [
       '讨论含参数方程组何时有解',
       '求方程组通解',
       '判断解唯一还是无穷多',
+    ],
+    theorems: [
+      {
+        name: '有解判据',
+        statement: '方程组有解当且仅当系数矩阵与增广矩阵的秩相等。',
+        formula: 'r(A)=r(A|b)',
+      },
+      {
+        name: '解的结构',
+        statement: '非齐次方程的通解等于一个特解加上对应齐次方程的通解。',
+      },
     ],
     steps: [
       {
@@ -1776,6 +1789,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         formula: 'x=\\eta+c_{1}\\xi_{1}+\\cdots+c_{k}\\xi_{k}',
       },
     ],
+    pitfalls: [
+      '只算系数矩阵秩：要同时比较增广矩阵。',
+      '无穷解时忘记参数：基础解系要写全。',
+      '特解与通解混淆：通解必须带任意常数。',
+    ],
     example: {
       problem: '解方程组 x₁+x₂+x₃=1，x₁+2x₂+3x₃=2。',
       walkthrough: [
@@ -1786,7 +1804,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
       ],
       result:
         'x=\\begin{pmatrix}0\\\\1\\\\0\\end{pmatrix}+t\\begin{pmatrix}1\\\\-2\\\\1\\end{pmatrix}',
-    },
+    },    moreExamples: [
+      {
+        problem: '判断两行相同但右端不同的方程组有解吗。',
+        walkthrough: [
+          '系数矩阵秩为一。',
+          '增广矩阵秩为二。',
+          '两者不等，无解。',
+        ],
+        result: '\\text{none}',
+      },
+    ],
+
   },
   {
     id: 'power-series-domain',
@@ -2592,10 +2621,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '一组向量线性相关，等价于存在不全为零的系数让它们的线性组合为零，也等价于以它们为列的矩阵秩小于向量个数。',
+    definition:
+      '一组向量线性相关，指存在不全为零的系数使它们的线性组合为零；否则线性无关。判断时把它们按列排成矩阵看秩。',
     whenToUse: [
       '判断向量组线性相关还是无关',
       '求极大线性无关组与秩',
       '判断矩阵是否可逆（列向量是否无关）',
+    ],
+    theorems: [
+      {
+        name: '秩判据',
+        statement: '向量组线性无关当且仅当矩阵的秩等于向量个数。',
+        formula: 'r(\\alpha_1,\\dots,\\alpha_m)=m',
+      },
+      {
+        name: '个数与维数',
+        statement: 'n 维空间中任意多于 n 个向量必线性相关。',
+      },
     ],
     steps: [
       {
@@ -2621,6 +2663,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '令行列式为零解出参数，再逐一代回判断，别只写一个临界值。',
       },
     ],
+    pitfalls: [
+      '只看个数：少于等于 n 个也可能相关。',
+      '含零向量直接判无关：含零向量必相关。',
+      '行列式条件用错：只对方阵适用。',
+    ],
     example: {
       problem: '判断 α₁=(1,2)、α₂=(2,4) 是否线性相关。',
       walkthrough: [
@@ -2629,7 +2676,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '行列式为零，所以线性相关，秩为 1。',
       ],
       result: '\\begin{vmatrix}1&2\\\\2&4\\end{vmatrix}=0',
-    },
+    },    moreExamples: [
+      {
+        problem: '判断三个二维向量一、零、零、一、一、一是否线性相关。',
+        walkthrough: [
+          '三个向量在二维空间中。',
+          '个数超过维数。',
+          '必线性相关。',
+        ],
+        result: '\\text{dependent}',
+      },
+    ],
+
   },
   {
     id: 'fourier-series',
@@ -4515,10 +4573,22 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '基是「数量最少、能张成整个空间」的一组向量；维数是基的个数，与选哪组基无关。',
+    definition:
+      '向量空间的基是线性无关且能张成整个空间的一组向量，基所含向量个数叫维数，与基的选择无关。',
     whenToUse: [
       '判断一组向量能否构成基',
       '求向量空间的维数',
       '求向量在给定基下的坐标',
+    ],
+    theorems: [
+      {
+        name: '基与坐标',
+        statement: '同一向量在不同基下的坐标不同，但坐标变换由过渡矩阵给出。',
+      },
+      {
+        name: '维数不变',
+        statement: '有限维空间的所有基含相同个数的向量。',
+      },
     ],
     steps: [
       {
@@ -4539,6 +4609,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '同一个空间的任意两组基，向量个数相同。',
         formula: '\\dim\\mathbb{R}^{n}=n',
       },
+      {
+        title: '基不唯一',
+        body: '同一空间有无穷多组基，但维数固定。',
+      },
+    ],
+    pitfalls: [
+      '只张成不无关：那不是基。',
+      '只无关不张成：也不够。',
+      '维数与向量个数混淆：基的个数才等于维数。',
     ],
     example: {
       problem: '判断 (1,1)、(1,−1) 是否为 R² 的基。',
@@ -4549,7 +4628,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '任意向量 (a,b) 的坐标是 ((a+b)/2, (a−b)/2)。',
       ],
       result: '\\dim=2',
-    },
+    },    moreExamples: [
+      {
+        problem: '标准基一、零与零、一是否构成二维空间的基。',
+        walkthrough: [
+          '两者线性无关。',
+          '能表示任意二维向量。',
+          '因此是基。',
+        ],
+        result: '2',
+      },
+    ],
+
   },
   {
     id: 'eigen-basics',
@@ -4758,10 +4848,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '当系数行列式不为零时，每个未知数都等于「用常数列替换该列后的行列式」除以系数行列式。',
+    definition:
+      '克拉默法则用行列式解方程：每个未知数等于把系数矩阵对应列换成常数项后的行列式，除以原行列式。只适用于方程个数等于未知数且行列式非零。',
     whenToUse: [
       '未知数少、系数简单的方程组',
       '需要写出解的显式表达式',
       '判断齐次方程组是否只有零解',
+    ],
+    theorems: [
+      {
+        name: '克拉默法则',
+        statement: '系数行列式非零时解唯一，每个未知数由替换列的行列式之比给出。',
+        formula: 'x_i=\\frac{D_i}{D}',
+      },
+      {
+        name: '适用条件',
+        statement: '行列式为零时法则失效，需要退回消元法判断解的情况。',
+      },
     ],
     steps: [
       {
@@ -4781,6 +4884,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '和消元法比',
         body: '克拉默法则形式漂亮但要算 $n+1$ 个行列式，未知数多时用高斯消元更快。',
       },
+      {
+        title: '只差一个行列式',
+        body: '分母是同一个系数行列式，分子逐列替换。',
+      },
+    ],
+    pitfalls: [
+      '行列式为零仍用：此时解不存在或不唯一。',
+      '替换列错位：第 i 个未知数换的是第 i 列。',
+      '方程数不等于未知数：法则不适用。',
     ],
     example: {
       problem: '用克拉默法则解 $x+y=3$，$x-y=1$。',
@@ -4791,7 +4903,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '与消元法结果一致。',
       ],
       result: 'x=2,\\ y=1',
-    },
+    },    moreExamples: [
+      {
+        problem: '用克拉默法则解二 x 等于四、三 y 等于九。',
+        walkthrough: [
+          '系数行列式为六。',
+          '分别替换两列求两个行列式。',
+          '相除得解。',
+        ],
+        result: 'x=2,\\,y=3',
+      },
+    ],
+
   },
   {
     id: 'gram-schmidt',
@@ -4800,10 +4923,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '用逐次减去投影的办法，把一组线性无关向量变成正交组，张成的空间不变，再单位化就得到标准正交基。',
+    definition:
+      '施密特正交化把线性无关组变成正交组：每个新向量减去它在已有正交向量上的投影，再单位化就得到标准正交基。',
     whenToUse: [
       '求标准正交基',
       '构造正交矩阵',
       '推导 QR 分解',
+    ],
+    theorems: [
+      {
+        name: '正交化递推',
+        statement: '每个新向量减去在已有正交向量方向上的投影，得到与它们都正交的向量。',
+        formula: 'v_k=u_k-\\sum_{i<k}\\frac{(u_k,v_i)}{(v_i,v_i)}v_i',
+      },
+      {
+        name: '标准正交基',
+        statement: '正交化后再除以模长，得到标准正交基，张成空间不变。',
+      },
     ],
     steps: [
       {
@@ -4824,6 +4960,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '性质',
         body: '新向量组与原向量组张成同一个空间，且两两正交。',
       },
+      {
+        title: '先正交再单位化',
+        body: '两步分开做，最后统一除以模长。',
+      },
+    ],
+    pitfalls: [
+      '投影系数漏分母：要除以已有向量的内积。',
+      '忘记单位化：标准正交基要求模长为一。',
+      '顺序依赖出错：前面向量的投影要全部减掉。',
     ],
     example: {
       problem: '把 $\\alpha_{1}=(1,1)$、$\\alpha_{2}=(1,0)$ 正交化。',
@@ -4834,7 +4979,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '两个向量内积 $1\\cdot\\frac{1}{2}+1\\cdot(-\\frac{1}{2})=0$，正交。',
       ],
       result: '\\beta_{2}=\\left(\\tfrac{1}{2},-\\tfrac{1}{2}\\right)',
-    },
+    },    moreExamples: [
+      {
+        problem: '把一、一与一、零正交化。',
+        walkthrough: [
+          '保留第一个向量。',
+          '第二个减去在第一个上的投影。',
+        ],
+        result: '\\left(\\frac{1}{2},-\\frac{1}{2}\\right)',
+      },
+    ],
+
   },
   {
     id: 'jordan-form',
@@ -5007,10 +5162,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '矩阵的秩加上零空间的维数，等于未知数的个数：能确定的信息和自由变量的自由度刚好互补。',
+    definition:
+      '秩加零度等于定义域维数。秩是像的维数，零度是核的维数。这条公式把线性映射的信息压缩与丢失联系起来。',
     whenToUse: [
       '求齐次方程组基础解系的个数',
       '判断解空间的维数',
       '分析线性映射的「损失」',
+    ],
+    theorems: [
+      {
+        name: '秩零度定理',
+        statement: '线性映射的像维数加核维数等于定义域维数。',
+        formula: '\\dim V=\\operatorname{rank}T+\\dim\\ker T',
+      },
+      {
+        name: '单射与满射',
+        statement: '核为零等价于单射；像维数等于目标维数等价于满射。',
+      },
     ],
     steps: [
       {
@@ -5032,6 +5200,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '用途',
         body: '基础解系的个数就是 $n-r$，直接给出自由变量个数。',
       },
+      {
+        title: '秩与零度互补',
+        body: '知道一个就能算另一个，别重复求解。',
+      },
+    ],
+    pitfalls: [
+      '把秩当零度：两者互补不是相等。',
+      '忽略有限维前提：无限维情形公式不同。',
+      '核算错：解齐次方程要写全基础解系。',
     ],
     example: {
       problem: '方程组 $x+y+z=0$ 的基础解系有几个向量？',
@@ -5042,7 +5219,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '所以基础解系有 $2$ 个向量，例如 $(1,-1,0)$ 与 $(1,0,-1)$。',
       ],
       result: '\\dim N(A)=n-r=2',
-    },
+    },    moreExamples: [
+      {
+        problem: '三维空间到三维空间的映射核维数为一，像维数是多少。',
+        walkthrough: [
+          '秩加零度等于三。',
+          '零度为一。',
+          '像维数为二。',
+        ],
+        result: '2',
+      },
+    ],
+
   },
   {
     id: 'homogeneous-basis',
@@ -5051,10 +5239,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '化行最简形后，自由变量逐个取 $1$、其余取 $0$，就得到基础解系；通解是所有解的线性组合。',
+    definition:
+      '齐次线性方程组的解集是一个子空间，其基础解系就是这组解空间的一组基，向量个数等于未知数个数减系数矩阵的秩。',
     whenToUse: [
       '求齐次方程组的通解',
       '判断解空间维数',
       '求特征向量（本质就是齐次方程组）',
+    ],
+    theorems: [
+      {
+        name: '基础解系',
+        statement: '齐次方程的基础解系含 n 减 r 个线性无关的解向量。',
+        formula: '\\dim\\ker A=n-r(A)',
+      },
+      {
+        name: '通解形式',
+        statement: '齐次方程的通解是基础解系的任意线性组合。',
+      },
     ],
     steps: [
       {
@@ -5074,6 +5275,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '通解是基础解系的任意线性组合。',
         formula: 'x=c_{1}\\xi_{1}+\\cdots+c_{n-r}\\xi_{n-r}',
       },
+      {
+        title: '自由变量给参数',
+        body: '自由变量取单位向量代入，得到基础解系。',
+      },
+    ],
+    pitfalls: [
+      '自由变量选取不当：要选能解出主元的自由变量。',
+      '基础解系不独立：取出的向量必须线性无关。',
+      '个数算错：等于未知数减秩。',
     ],
     example: {
       problem: '求 $x_{1}+x_{2}+x_{3}=0$ 的基础解系。',
@@ -5084,7 +5294,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '基础解系就是这两个向量，通解是它们的线性组合。',
       ],
       result: '\\xi_{1}=(-1,1,0),\\ \\xi_{2}=(-1,0,1)',
-    },
+    },    moreExamples: [
+      {
+        problem: '两行成比例的三元齐次方程组，基础解系含几个向量。',
+        walkthrough: [
+          '系数矩阵秩为一。',
+          '未知数为三。',
+          '基础解系含两个向量。',
+        ],
+        result: '2',
+      },
+    ],
+
   },
   {
     id: 'subspace-test',
@@ -5093,10 +5314,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '子空间要满足：含零向量、对加法封闭、对数乘封闭；三条都过才是子空间。',
+    definition:
+      '子空间要求对加法与数乘封闭且含零向量。判断时逐条验证，缺一不可。',
     whenToUse: [
       '判断一个集合是不是子空间',
       '验证解空间、列空间的性质',
       '找出不满足封闭性的反例',
+    ],
+    theorems: [
+      {
+        name: '子空间判据',
+        statement: '非空子集对加法与数乘封闭即为子空间。',
+        formula: 'u,v\\in W\\;\\Rightarrow\\;u+v,\\lambda u\\in W',
+      },
+      {
+        name: '解空间是子空间',
+        statement: '齐次线性方程组的解集构成子空间。',
+      },
     ],
     steps: [
       {
@@ -5117,6 +5351,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '常见反例',
         body: '$\\{(x,y)\\mid x+y=1\\}$ 不含零向量，不是子空间；$\\{x\\mid x_{1}x_{2}=0\\}$ 对加法不封闭。',
       },
+      {
+        title: '先查零向量',
+        body: '不含零向量的集合直接排除。',
+      },
+    ],
+    pitfalls: [
+      '漏验零向量：不含零的集合不是子空间。',
+      '只验加法：数乘也要验。',
+      '非齐次解集当子空间：不过原点，不是。',
     ],
     example: {
       problem: '判断 $V=\\{(x,y,z)\\mid x+y+z=0\\}$ 是否为 $\\mathbb{R}^{3}$ 的子空间。',
@@ -5127,7 +5370,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '三条都满足，所以是子空间（其实是一个平面）。',
       ],
       result: '\\dim V=2',
-    },
+    },    moreExamples: [
+      {
+        problem: '判断平面 x 加 y 等于一上的点集是否为子空间。',
+        walkthrough: [
+          '原点不满足方程。',
+          '因此不含零向量。',
+          '不是子空间。',
+        ],
+        result: '\\text{no}',
+      },
+    ],
+
   },
   {
     id: 'transition-matrix',
