@@ -3657,10 +3657,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '随机过程是一族随机变量；入门只要抓住两条：离散状态看马尔可夫链的转移矩阵，计数事件看泊松过程。',
+    definition:
+      '随机过程是一族随机变量，按时间索引。马尔可夫性指未来只依赖现在、与过去无关；泊松过程计数事件发生次数。',
     whenToUse: [
       '求马尔可夫链的平稳分布',
       '计算泊松过程在时间段内的事件数',
       '判断过程是否具有无记忆性',
+    ],
+    theorems: [
+      {
+        name: '马尔可夫性',
+        statement: '给定现在的状态，未来与过去条件独立。',
+        formula: 'P(X_{n+1}\\mid X_n,\\dots,X_0)=P(X_{n+1}\\mid X_n)',
+      },
+      {
+        name: '泊松过程',
+        statement: '强度为 λ 的泊松过程，时间 t 内事件数期望为 λt。',
+        formula: 'E N(t)=\\lambda t',
+      },
     ],
     steps: [
       {
@@ -3689,6 +3703,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '相邻两次到达的间隔服从参数 λ 的指数分布，期望是 1/λ。',
       },
     ],
+    pitfalls: [
+      '把马尔可夫性当独立：未来仍依赖现在。',
+      '泊松强度与概率混：强度是单位时间期望次数。',
+      '忽略平稳性假设：泊松过程要求增量独立平稳。',
+    ],
     example: {
       problem: '两状态马尔可夫链，转移矩阵 P = [[0.7,0.3],[0.4,0.6]]，求平稳分布。',
       walkthrough: [
@@ -3698,7 +3717,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '代回验证两边相等。',
       ],
       result: '\\pi=\\left(\\frac{4}{7},\\ \\frac{3}{7}\\right)',
-    },
+    },    moreExamples: [
+      {
+        problem: '强度为二的泊松过程，时间二内的期望事件数。',
+        walkthrough: [
+          '期望等于强度乘时间。',
+          '二乘二。',
+        ],
+        result: '4',
+      },
+    ],
+
   },
   {
     id: 'set-cardinality',
@@ -7093,10 +7122,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '大数定律说平均值会稳定到期望；中心极限定理更进一步，说明偏离期望的波动近似正态，且幅度是根号 n 分之一。',
+    definition:
+      '大数定律说样本均值依概率收敛到期望；中心极限定理进一步说明标准化后的均值趋向标准正态，误差阶是根号 n 分之一。',
     whenToUse: [
       '用频率估计概率，想知道要多少次才够准',
       '把二项分布近似成正态分布做计算',
       '估计样本均值的误差范围',
+    ],
+    theorems: [
+      {
+        name: '切比雪夫不等式',
+        statement: '偏离期望超过 k 倍标准差的概率不超过 k 平方分之一。',
+        formula: 'P(|X-\\mu|\\ge k\\sigma)\\le\\frac{1}{k^{2}}',
+      },
+      {
+        name: '中心极限定理',
+        statement: '独立同分布样本的标准化均值趋于标准正态分布。',
+        formula: '\\frac{\\bar X-\\mu}{\\sigma/\\sqrt{n}}\\Rightarrow N(0,1)',
+      },
     ],
     steps: [
       {
@@ -7118,6 +7161,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '据此做近似计算',
         body: '二项分布当 n 大时用正态近似：均值 np，标准差是根号下 np 乘 1 减 p。',
       },
+      {
+        title: '先算期望方差',
+        body: '均值方差是总体方差除以样本量。',
+      },
+    ],
+    pitfalls: [
+      '把依概率收敛当必然：大数定律说的是概率意义。',
+      '样本量估算忽略根号：误差按根号 n 缩小。',
+      '方差无限仍套用：需要有限方差的正态近似。',
     ],
     example: {
       problem: '抛 100 次均匀硬币，用正态近似估计正面次数落在 45 到 55 之间的概率。',
@@ -7128,7 +7180,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '因此所求概率约为 0.68，比精确计算略粗略但足够直觉。',
       ],
       result: '约为 0.68。',
-    },
+    },    moreExamples: [
+      {
+        problem: '抛一百次均匀硬币，正面次数的标准差。',
+        walkthrough: [
+          '这是二项分布。',
+          '标准差等于根号下 n p 一减 p。',
+        ],
+        result: '5',
+      },
+    ],
+
   },
   {
     id: 'parameter-estimation',
@@ -7137,10 +7199,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '点估计给一个数，区间估计给一个范围和一个置信度。评价点估计看有没有系统性偏差（无偏）与波动大小（有效性）。',
+    definition:
+      '点估计给一个数，区间估计给范围与置信度。评价点估计看无偏性与有效性；置信区间由分位数与标准误构造。',
     whenToUse: [
       '从样本推断总体均值、比例、方差',
       '报告结果时要说清误差范围',
       '比较两种估计方法哪个更好',
+    ],
+    theorems: [
+      {
+        name: '置信区间',
+        statement: '总体标准差已知时，均值置信区间由正态分位数与标准误构造。',
+        formula: '\\bar X\\pm z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}',
+      },
+      {
+        name: '无偏性',
+        statement: '估计量的期望等于真参数时称无偏。',
+        formula: 'E\\hat\\theta=\\theta',
+      },
     ],
     steps: [
       {
@@ -7161,6 +7237,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '读懂置信度',
         body: '置信度说的是重复抽样时区间覆盖真值的比例，不是“真值落在这次区间里的概率”。这是最常被误读的一句。',
       },
+      {
+        title: '先看无偏再比方差',
+        body: '两个无偏估计中方差小的更有效。',
+      },
+    ],
+    pitfalls: [
+      '置信度理解为概率：它是重复抽样的覆盖比例。',
+      '标准差与标准误混：标准误要除以根号 n。',
+      '忘了无偏性检验：估计量要先看无偏。',
     ],
     example: {
       problem: '样本量 100、样本均值 50、总体标准差 10，求总体均值的百分之九十五置信区间。',
@@ -7171,7 +7256,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '于是区间约为 48.04 到 51.96。',
       ],
       result: '百分之九十五置信区间约为 (48.04, 51.96)。',
-    },
+    },    moreExamples: [
+      {
+        problem: '样本量一百、总体标准差十，求百分之九十五置信区间半长。',
+        walkthrough: [
+          '标准误为十除以十等于一。',
+          '分位数约一点九六。',
+          '半长约为一点九六。',
+        ],
+        result: '1.96',
+      },
+    ],
+
   },
   {
     id: 'continuity-theorems',
@@ -7186,6 +7282,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
       '证明方程在某个区间内有根',
       '证明存在某点使函数取到指定值',
       '求最值时说明最大值确实存在',
+    ],
+    theorems: [
+      {
+        name: '零点定理',
+        statement: '闭区间连续且两端异号，则区间内至少存在一点使函数值为零。',
+        formula: 'f(a)f(b)<0\\;\\Rightarrow\\;\\exists\\xi\\in(a,b),\\;f(\\xi)=0',
+      },
+      {
+        name: '最值定理',
+        statement: '闭区间上的连续函数必取到最大值与最小值。',
+      },
     ],
     steps: [
       {
@@ -8715,10 +8822,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '统计推断靠三个由正态样本造出来的分布：方差比对应卡方，均值除以样本标准差对应 t，两个方差之比对应 F。',
+    definition:
+      '抽样分布由正态样本构造：卡方是标准正态平方和，t 是标准正态除以卡方比自由度再开根，F 是两个卡方比自由度之比。',
     whenToUse: [
       '求样本均值的分布',
       '区间估计与假设检验要查分位数',
       '比较两组数据的方差',
+    ],
+    theorems: [
+      {
+        name: 't 分布构造',
+        statement: '总体方差未知时，样本均值标准化后服从自由度为 n 减一的 t 分布。',
+        formula: 't=\\frac{\\bar X-\\mu}{S/\\sqrt{n}}\\sim t(n-1)',
+      },
+      {
+        name: '卡方数字特征',
+        statement: '卡方分布期望等于自由度，方差是两倍自由度。',
+        formula: 'E\\chi^{2}=n,\\quad D\\chi^{2}=2n',
+      },
     ],
     steps: [
       {
@@ -8739,6 +8860,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '查表与近似',
         body: '样本量大时 t 接近正态，可以用正态分位数近似，这是工程里常用的简化。',
       },
+      {
+        title: '方差未知用 t',
+        body: '总体方差未知时改查 t 表。',
+      },
+    ],
+    pitfalls: [
+      '方差未知仍用正态：应改用 t 分布。',
+      '自由度算错：t 分布是 n 减一。',
+      '样本量大时仍查 t 表：可用正态近似。',
     ],
     example: {
       problem: '样本量 10、总体方差未知时，样本均值标准化后服从什么分布？',
@@ -8749,7 +8879,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '因此服从自由度为九的 t 分布。',
       ],
       result: '自由度为 9 的 t 分布。',
-    },
+    },    moreExamples: [
+      {
+        problem: '卡方分布自由度五的期望与方差。',
+        walkthrough: [
+          '期望等于自由度。',
+          '方差是两倍自由度。',
+        ],
+        result: 'E=5,\\,D=10',
+      },
+    ],
+
   },
   {
     id: 'hypothesis-testing',
@@ -8758,10 +8898,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '假设检验先假定原假设成立，再看样本结果有多不可能。p 值就是这个不可能程度的量化；小于显著性水平就拒绝原假设。',
+    definition:
+      '假设检验先假定原假设成立，计算样本结果的极端程度即 p 值，小于显著性水平就拒绝原假设；两类错误分别是被控的第一类与与样本量有关的第二类。',
     whenToUse: [
       '判断均值、比例、方差是否等于某值',
       '比较两组数据是否有显著差异',
       '读懂论文或报告里的 p 值',
+    ],
+    theorems: [
+      {
+        name: 'p 值判据',
+        statement: 'p 值小于显著性水平时拒绝原假设。',
+        formula: 'p<\\alpha\\;\\Rightarrow\\;\\text{reject }H_0',
+      },
+      {
+        name: '两类错误',
+        statement: '第一类错误概率被显著性水平控制，第二类错误随样本量增大而减小。',
+      },
     ],
     steps: [
       {
@@ -8781,6 +8934,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '理解两类错误',
         body: '第一类错误是原假设为真却拒绝，概率被显著性水平控制；第二类错误是原假设为假却没拒绝，与样本量有关。',
       },
+      {
+        title: '先写清两个假设',
+        body: '原假设取无差异，备择假设是研究者想证明的。',
+      },
+    ],
+    pitfalls: [
+      'p 值当原假设为真的概率：这是常见误读。',
+      '统计显著当实际重要：显著性不等于效应大。',
+      '多重比较不校正：会抬高假阳性率。',
     ],
     example: {
       problem: '显著性水平取百分之五，计算得到 p 值 0.03，如何判断？',
@@ -8790,7 +8952,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '因此拒绝原假设。',
       ],
       result: '拒绝原假设，认为差异显著。',
-    },
+    },    moreExamples: [
+      {
+        problem: '显著性水平零点零五、p 值为零点零三时的结论。',
+        walkthrough: [
+          '比较 p 值与显著性水平。',
+          '零点零三小于零点零五。',
+          '拒绝原假设。',
+        ],
+        result: '\\text{reject }H_0',
+      },
+    ],
+
   },
   {
     id: 'classical-probability',
@@ -9012,7 +9185,21 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '统计量是样本的函数。样本方差除以 n-1 而不是 n，是为了让它无偏——这背后是「用样本均值代替总体均值」损失了一个自由度。',
+    definition:
+      '统计量是样本的函数且不含未知参数。样本均值无偏，样本方差除以 n 减一才无偏，因为用样本均值代替总体均值损失一个自由度。',
     whenToUse: ['理解样本均值与样本方差', '判断统计量是否无偏', '计算标准误'],
+    theorems: [
+      {
+        name: '样本均值性质',
+        statement: '均值的期望等于总体均值，方差是总体方差除以样本量。',
+        formula: 'D\\bar X=\\frac{\\sigma^{2}}{n}',
+      },
+      {
+        name: '无偏样本方差',
+        statement: '除以 n 减一的样本方差是总体方差的无偏估计。',
+        formula: 'S^{2}=\\frac{1}{n-1}\\sum(X_i-\\bar X)^{2}',
+      },
+    ],
     steps: [
       {
         title: '区分样本与总体',
@@ -9032,6 +9219,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '自由度解释',
         body: 'n 个偏差受「和为零」约束，独立变化只有 n-1 个。',
       },
+      {
+        title: '除 n 减一',
+        body: '样本方差要除自由度，才无偏。',
+      },
+    ],
+    pitfalls: [
+      '除以 n 当无偏：会系统性低估。',
+      '把统计量当参数：统计量只依赖样本。',
+      '自由度解释错：n 个偏差受和为零约束。',
     ],
     example: {
       problem: '样本量 10，总体方差 4，求样本均值的方差。',
@@ -9041,7 +9237,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '结果为 0.4。',
       ],
       result: '方差为 0.4。',
-    },
+    },    moreExamples: [
+      {
+        problem: '样本量为十、总体方差为四，求样本均值的方差。',
+        walkthrough: [
+          '均值方差等于总体方差除以样本量。',
+          '四除以十。',
+        ],
+        result: '0.4',
+      },
+    ],
+
   },
   {
     id: 'maximum-likelihood',
@@ -9050,7 +9256,21 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '最大似然的思想是：既然观测到了这组数据，就选让这组数据出现概率最大的参数。做法是写似然函数、取对数、求导置零。',
+    definition:
+      '最大似然估计选让观测数据出现概率最大的参数：写似然函数、取对数、对参数求导置零，解出估计量。',
     whenToUse: ['求未知参数的估计量', '题目出现「样本来自某分布」', '与矩估计对比'],
+    theorems: [
+      {
+        name: '似然函数',
+        statement: '独立样本的似然是各样本密度的乘积。',
+        formula: 'L(\\theta)=\\prod f(x_i;\\theta)',
+      },
+      {
+        name: '对数似然',
+        statement: '取对数不改变极值点，把乘积化为求和便于求导。',
+        formula: '\\ell(\\theta)=\\sum\\ln f(x_i;\\theta)',
+      },
+    ],
     steps: [
       {
         title: '写似然函数',
@@ -9069,6 +9289,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '检查边界',
         body: '参数空间有界时，最大值可能在边界，不能只解方程。',
       },
+      {
+        title: '取对数再求导',
+        body: '乘积取对数化加，极值点不变。',
+      },
+    ],
+    pitfalls: [
+      '忘记取对数：直接对乘积求导很麻烦。',
+      '忽略参数范围：极值可能在边界。',
+      '把估计量当参数：估计量是随机变量。',
     ],
     example: {
       problem: '样本来自指数分布，参数为 λ，求 λ 的最大似然估计。',
@@ -9078,7 +9307,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '解出估计量等于样本均值的倒数。',
       ],
       result: '估计量为样本均值的倒数。',
-    },
+    },    moreExamples: [
+      {
+        problem: '指数分布参数的最大似然估计。',
+        walkthrough: [
+          '似然为参数的 n 次方乘指数项。',
+          '取对数后求导置零。',
+          '解出估计量为样本均值的倒数。',
+        ],
+        result: '\\hat\\lambda=\\frac{1}{\\bar X}',
+      },
+    ],
+
   },
 ];
 
