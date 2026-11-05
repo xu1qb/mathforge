@@ -133,6 +133,19 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 数理逻辑课程 ----
+def _imp(p, q):
+    return (not p) or q
+
+chk('蕴含等价于「非前件或后件」',
+    all(_imp(p, q) == ((not p) or q) for p in (True, False) for q in (True, False)))
+chk('蕴含只在「真蕴含假」时为假',
+    not _imp(True, False) and _imp(True, True) and _imp(False, True) and _imp(False, False))
+chk('量词否定：非全称等价于存在否定',
+    not all(x > 10 for x in range(5)) == any(not (x > 10) for x in range(5)))
+chk('自然数上「任意 x 存在 y 使 x<y」成立',
+    all(any(y > x for y in range(0, x + 2)) for x in range(50)))
+
 # ---- 集合论课程 ----
 chk('两元素集合的幂集有 4 个元素', 2 ** 2 == 4)
 chk('笛卡尔积大小等于两边之积', 2 * 3 == 6)

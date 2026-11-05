@@ -37,7 +37,7 @@ export const DISCIPLINE: Discipline = {
       summary: '数学的语言层：集合、逻辑与公理',
       courses: [
         { id: 'set-theory', name: '集合论', courseId: 'set-theory' },
-        { id: 'mathematical-logic', name: '数理逻辑', note: '待建' },
+        { id: 'mathematical-logic', name: '数理逻辑', courseId: 'mathematical-logic' },
         { id: 'axiomatic-set', name: '公理化集合论', courseId: 'logic-foundations' },
         { id: 'modern-survey', name: '现代数学导论', courseId: 'modern-math', note: '总览课' },
       ],
@@ -96,7 +96,7 @@ export const DISCIPLINE: Discipline = {
       courses: [
         { id: 'combinatorics', name: '组合数学', note: '待建' },
         { id: 'graph-theory', name: '图论', courseId: 'combinatorics-discrete' },
-        { id: 'logic', name: '数理逻辑', note: '待建' },
+        { id: 'logic', name: '数理逻辑', courseId: 'mathematical-logic' },
         { id: 'set-theory-2', name: '集合论', courseId: 'combinatorics-discrete' },
         { id: 'category-theory', name: '范畴论', courseId: 'modern-math', note: '在现代数学导论中' },
         { id: 'lattice', name: '格论', note: '待建' },
