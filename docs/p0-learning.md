@@ -45,7 +45,7 @@
 ## 三、验证
 
 ```
-npm run check          # 八道关全绿
+npm run check          # 九道关全绿
 AUDIT_ROUTES=/wrong-book,/progress node scripts/audit-site.mjs
 → checks=8 routes=2 widths=375/1440，无溢出/无控制台报错/无裸 LaTeX
 ```

@@ -8,17 +8,22 @@
 npm run check
 ```
 
-依次跑 7 项，**任何一项失败都不能提交**。git pre-commit 钩子也会执行同一套。
+依次跑 9 项，**任何一项失败都不能提交**。git pre-commit 钩子也会执行同一套。
 
 | # | 检查 | 脚本 | 现在覆盖 | 管什么 |
 |---|---|---|---|---|
 | 1 | 类型检查 | `tsc --noEmit` | 全量 | 类型安全 |
 | 2 | 代码规范 | `eslint src --quiet` | 全量 | 风格与常见错误 |
 | 3 | 生产构建 | `vite build` → 临时目录 | 全量 | 能否打包 |
-| 4 | 公式正确性 | `scripts/verify-formulas.py` | 112 条断言 | **算得对** |
-| 5 | 公式渲染 | `scripts/check-formulas.mjs` | 352 条公式 | **显示得出来** |
-| 6 | 文本规范 | `scripts/check-text.mjs` | 29,656 个字符串 | **写得规范** |
+| 4 | 公式正确性 | `scripts/verify-formulas.py` | 166 条断言 | **算得对** |
+| 5 | 公式渲染 | `scripts/check-formulas.mjs` | 649 条公式 | **显示得出来** |
+| 6 | 文本规范 | `scripts/check-text.mjs` | 30,445 个字符串 | **写得规范** |
 | 7 | 交叉引用与死链 | `scripts/check-refs.mjs` | 路由 + 互引 | **连得上** |
+| 8 | 服务端链路 | `server/test.ts` | 18 项（强制 mock） | **后端不崩** |
+| 9 | UI 快照 | `scripts/ui-snapshots.mjs` | 5 页 × 2 宽度 | **没白屏/没溢出** |
+
+第 9 关会自己拉起 dev server 和无头 Chrome，约 30–40 秒。
+没有 Chrome 或设了 `SKIP_UI_SNAP=1` 时会跳过（不算失败）。
 
 单独跑某一项：
 
@@ -29,6 +34,7 @@ node scripts/check-formulas.mjs
 node scripts/check-text.mjs
 node scripts/check-refs.mjs
 PYTHONPATH=../.tooling/py python3 scripts/verify-formulas.py
+npm run ui:snap
 ```
 
 ## 每道关具体查什么

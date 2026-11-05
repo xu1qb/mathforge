@@ -176,8 +176,10 @@ const main = async () => {
 
   console.log('截图目录:', outDir);
   console.log('页面:', report.shots.length, '张（' + WIDTHS.join(' / ') + '）');
+  const comparable = report.shots.filter((s) => s.changed !== null);
   if (!baselineExisted || UPDATE) console.log('基线已更新（下次运行开始比对）');
   else if (changed.length) console.log('与基线不同:', changed.map((s) => s.route + '@' + s.width).join(', '));
+  else if (comparable.length === 0) console.log('本次全部是动态页，跳过哈希比对');
   else console.log('与基线一致');
 
   if (problems.length) {
