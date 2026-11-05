@@ -3462,10 +3462,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '和差角、倍角、辅助角三组公式串起来就能覆盖九成题；看到 a sin x + b cos x 的第一反应应该是辅助角。',
+    definition:
+      '三角恒等式是把同角或相关角的三角函数联系起来的等式，最基础的是平方和等于一与商数关系。',
     whenToUse: [
       '化简三角表达式',
       '求 a sin x + b cos x 的最值',
       '证明三角恒等式',
+    ],
+    theorems: [
+      { name: '平方和恒等式', statement: '同角正弦平方加余弦平方等于一。', formula: '\\sin^{2}x+\\cos^{2}x=1' },
+      { name: '和角公式', statement: '正弦与余弦的和角可展开为两项之和。', formula: '\\sin(a+b)=\\sin a\\cos b+\\cos a\\sin b' },
     ],
     steps: [
       {
@@ -3496,6 +3502,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '见平方先降幂，见乘积化和差，见 a sin + b cos 直接辅助角——别硬套。',
       },
     ],
+    pitfalls: ['忽略象限：开方或反三角要给符号。', '角度与弧度混用：公式默认弧度。', '恒等式方向搞反：化简与证明目标不同。'],
     example: {
       problem: '化简 sin x + √3 cos x。',
       walkthrough: [
@@ -3505,7 +3512,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '由此可知最大值 2、最小值 −2。',
       ],
       result: '\\sin x+\\sqrt{3}\\cos x=2\\sin\\left(x+\\frac{\\pi}{3}\\right)',
-    },
+    },    moreExamples: [{ problem: '用和角公式求 75 度的正弦。', walkthrough: ['拆成 45 度加 30 度。', '套和角公式。'], result: '四项之和' }],
+
   },
   {
     id: 'euclidean-geometry',
@@ -3514,10 +3522,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '平面几何题先找相似（角相等或边成比例），圆里的题则靠相交弦、切割线、弦切角三组定理把线段关系变成乘积。',
+    definition:
+      '欧氏几何是建立在五条公设上的几何体系，其中平行公设决定了平面几何的基本性质。',
     whenToUse: [
       '证明线段成比例或乘积相等',
       '圆内两条弦相交求长度',
       '求切线与割线的关系',
+    ],
+    theorems: [
+      { name: '勾股定理', statement: '直角三角形斜边平方等于两直角边平方之和。', formula: 'a^{2}+b^{2}=c^{2}' },
+      { name: '内角和', statement: '平面三角形内角和为 180 度。', },
     ],
     steps: [
       {
@@ -3544,6 +3558,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '点在圆内或圆外都可以用「点到两交点距离之积」表示，符号不同而已。',
       },
     ],
+    pitfalls: ['循环论证：用结论证明前提。', '辅助线无依据：要说明可作性。', '相似比例对应错边：先找对应角。'],
     example: {
       problem: '圆内两弦 AB、CD 交于 P，PA = 2，PB = 6，PC = 3，求 PD。',
       walkthrough: [
@@ -3552,7 +3567,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '解得 PD = 4。',
       ],
       result: 'PA\\cdot PB=PC\\cdot PD=12',
-    },
+    },    moreExamples: [{ problem: '证明等腰三角形两底角相等。', walkthrough: ['作底边中线。', '用全等三角形。'], result: '底角相等' }],
+
   },
   {
     id: 'group-theory',
@@ -3561,10 +3577,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '群是「集合 + 运算 + 四条公理」；入门题几乎都在算元素的阶、找子群，然后用拉格朗日定理卡住可能的大小。',
+    definition:
+      '群是集合配上一个满足封闭、结合、单位元与逆元四条的二元运算。群的阶是元素个数。',
     whenToUse: [
       '判断一个集合配运算是否构成群',
       '求元素的阶、找子群',
       '用拉格朗日定理排除不可能的子群大小',
+    ],
+    theorems: [
+      { name: '拉格朗日定理', statement: '有限群中子群的阶整除群的阶。', formula: '|H|\\mid|G|' },
+      { name: '第一同构定理', statement: '商群同构于同态的像。', formula: 'G/\\ker\\varphi\\cong\\operatorname{Im}\\varphi' },
     ],
     steps: [
       {
@@ -3591,6 +3613,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '由一个元素生成的群，元素个数等于生成元的阶。',
       },
     ],
+    pitfalls: ['不验封闭：运算可能跑出集合。', '把交换律当必需：非交换群大量存在。', '混淆元素阶与群阶：前者是元素回到单位元的最小次数。'],
     example: {
       problem: '在加法群 Z₆ 中，求元素 2 的阶。',
       walkthrough: [
@@ -3600,7 +3623,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '由拉格朗日定理，3 必须整除 6，成立。',
       ],
       result: '\\mathrm{ord}(2)=3',
-    },
+    },    moreExamples: [{ problem: '模六加法群有哪些子群阶？', walkthrough: ['群阶为六。', '子群阶只可能是 1、2、3、6。'], result: '1、2、3、6' }],
+
   },
   {
     id: 'topology-intro',
@@ -3744,10 +3768,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '比较两个无限集合的大小，不比元素个数，比能不能一一配对（双射）；配不上的一方更大。',
+    definition:
+      '两个集合等势指存在双射。基数衡量集合大小，有限集的基数就是元素个数。',
     whenToUse: [
       '判断一个集合是可数还是不可数',
       '证明两个无限集合等势',
       '理解「无限也有大小之分」',
+    ],
+    theorems: [
+      { name: '康托尔定理', statement: '幂集的基数严格大于原集合。', formula: '|P(A)|>|A|' },
+      { name: '可数并', statement: '可数个可数集的并仍可数。', },
     ],
     steps: [
       {
@@ -3768,7 +3798,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '一个集合的幂集严格大于它本身，这是「没有最大无限」的来源。',
         formula: '|\\mathcal{P}(A)|=2^{|A|}>|A|',
       },
+      {
+        title: '构造显式双射',
+        body: '等势证明最可靠的方式是写出双射公式并验证双向单射。',
+      },
     ],
+    pitfalls: ['把包含当基数更小：无限集可与真子集等势。', '无限基数当普通数做算术。', '忽略选择公理：某些等势证明依赖它。'],
     example: {
       problem: '证明 (0,1) 里的实数不能排成一个序列。',
       walkthrough: [
@@ -3778,7 +3813,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '与「已经全排完」矛盾，故 (0,1) 不可数。',
       ],
       result: '|\\mathbb{R}|>|\\mathbb{N}|',
-    },
+    },    moreExamples: [{ problem: '自然数与整数是否等势？', walkthrough: ['把整数按零、正负交替排列。', '构造双射。'], result: '等势' }],
+
   },
   {
     id: 'graph-euler',
@@ -3787,10 +3823,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '连通平面图满足 V − E + F = 2；求最短路径用 Dijkstra，每步都从当前最近的未访问点扩张。',
+    definition:
+      '图由顶点与边组成。欧拉迹经过每条边恰好一次，欧拉回路是闭合的欧拉迹。',
     whenToUse: [
       '平面图计数面数或验证结构',
       '求带权图的最短路径',
       '判断一个图能否一笔画（欧拉回路）',
+    ],
+    theorems: [
+      { name: '欧拉公式', statement: '连通平面图的顶点减边加面等于二。', formula: 'V-E+F=2' },
+      { name: '欧拉回路判据', statement: '连通图有欧拉回路当且仅当所有顶点度为偶数。', },
     ],
     steps: [
       {
@@ -3811,7 +3853,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '松弛公式：新的距离等于当前距离加上边权，取更小者。',
         formula: 'd(v)\\leftarrow\\min(d(v),\\ d(u)+w(u,v))',
       },
+      {
+        title: '数奇度顶点',
+        body: '欧拉问题先数度为奇数的顶点：零个有回路，两个有迹，多于两个无解。',
+      },
     ],
+    pitfalls: ['忽略连通性：不连通谈欧拉回路无意义。', '把有欧拉迹当有回路：两个奇度点对应迹而非回路。', '欧拉公式用在非平面图：前提是平面。'],
     example: {
       problem: '用欧拉公式验证正四面体。',
       walkthrough: [
@@ -3820,7 +3867,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '等式成立，说明它确实是连通平面图（可画在平面上）。',
       ],
       result: 'V-E+F=2',
-    },
+    },    moreExamples: [{ problem: '立方体图满足欧拉公式吗？', walkthrough: ['顶点八、棱十二、面六。', '八减十二加六等于二。'], result: '满足' }],
+
   },
   {
     id: 'information-entropy',
@@ -3884,10 +3932,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '纳什均衡是一组策略组合，任何一方单独改变策略都不会让自己更好——找它的办法是「给定对方策略，看各自的最优反应」。',
+    definition:
+      '纳什均衡是一组策略组合，任何一方单独改变策略都不会使自己的收益更高。',
     whenToUse: [
       '分析双方策略互相影响的情形',
       '判断合作能否维持',
       '解释囚徒困境这类反直觉结果',
+    ],
+    theorems: [
+      { name: '纳什存在定理', statement: '有限博弈的混合策略意义下总存在纳什均衡。', },
+      { name: '占优策略', statement: '严格占优策略必出现在任何均衡中。', },
     ],
     steps: [
       {
@@ -3906,7 +3960,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '判别是否困境',
         body: '若存在让双方都更好、但在均衡下没人愿意先动，就是囚徒困境。',
       },
+      {
+        title: '用划线法',
+        body: '在收益矩阵中逐列划出每个参与者的最优反应，交叉处即纯策略均衡。',
+      },
     ],
+    pitfalls: ['把占优策略当均衡：占优更强。', '只看纯策略：有些博弈只有混合均衡。', '收益矩阵方向写反：行列表头要对应。'],
     example: {
       problem: '囚徒困境：双方都坦白是纳什均衡吗？',
       walkthrough: [
@@ -3916,7 +3975,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '但它比（抵赖，抵赖）更差，这就是困境。',
       ],
       result: '(\\text{Defect},\\ \\text{Defect})',
-    },
+    },    moreExamples: [{ problem: '囚徒困境的纳什均衡是什么？', walkthrough: ['双方都有占优策略。', '都选择背叛。'], result: '双方背叛' }],
+
   },
   {
     id: 'crypto-rsa',
@@ -3925,10 +3985,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       'RSA 的安全性来自「大整数分解很难」：公钥加密、私钥解密，靠的是模逆元与欧拉定理。',
+    definition:
+      'RSA 用两个大素数乘积作为模数，公钥是模数与指数，私钥是指数的模逆。安全性依赖大整数分解困难。',
     whenToUse: [
       '理解公钥加密的基本流程',
       '计算小规模 RSA 的加解密',
       '解释为什么密钥要足够长',
+    ],
+    theorems: [
+      { name: '欧拉定理', statement: '与模数互素的数的 φ 次幂模模数等于一。', formula: 'a^{\\varphi(n)}\\equiv 1' },
+      { name: '解密正确性', statement: '加密再解密还原明文，因指数互为模逆。', },
     ],
     steps: [
       {
@@ -3950,7 +4016,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '加密 c = m^e mod n，解密 m = c^d mod n，由欧拉定理保证还原。',
         formula: 'c\\equiv m^{e}\\pmod n,\\qquad m\\equiv c^{d}\\pmod n',
       },
+      {
+        title: '验证逆元',
+        body: '算完私钥代回验证 ed 模 φ 等于一，是最快的自检。',
+      },
     ],
+    pitfalls: ['素数太小：可被分解。', '公钥指数与 φ 不互素：逆元不存在。', '不做填充：确定性加密不安全。'],
     example: {
       problem: '取 p = 61、q = 53、e = 17，加密 m = 65。',
       walkthrough: [
@@ -3960,7 +4031,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '解密：2790^2753 mod 3233 = 65，还原成功。',
       ],
       result: 'c=2790',
-    },
+    },    moreExamples: [{ problem: 'p=3、q=11、e=3 时私钥是多少？', walkthrough: ['模数为 20。', '求 3 的逆元。'], result: '7' }],
+
   },
   {
     id: 'measure-theory',
@@ -4024,10 +4096,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '方程能用根式解，当且仅当它的伽罗瓦群是可解群；一般五次方程的群是 S5，不可解，所以没有根式公式。',
+    definition:
+      '伽罗瓦理论用域扩张的自同构群研究方程可解性。伽罗瓦扩张的中间域与子群一一对应。',
     whenToUse: [
       '判断一个方程能否根式求解',
       '理解群与域扩张的对应',
       '解释「五次以上无求根公式」',
+    ],
+    theorems: [
+      { name: '伽罗瓦对应', statement: '伽罗瓦扩张的中间域与伽罗瓦群的子群反序对应。', },
+      { name: '可解性判据', statement: '方程可根式求解当且仅当伽罗瓦群可解。', },
     ],
     steps: [
       {
@@ -4054,6 +4132,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: 'x^5 − x − 1 的分裂域伽罗瓦群是 S5，因此无根式解。',
       },
     ],
+    pitfalls: ['把任意扩张当伽罗瓦：需要正规且可分。', '群阶与扩张次数混淆：伽罗瓦扩张中二者相等。', '把可解群当交换群：可解更宽。'],
     example: {
       problem: '为什么 x^5 − x − 1 不能用根式求解？',
       walkthrough: [
@@ -4063,7 +4142,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '由伽罗瓦对应，方程无根式解。',
       ],
       result: '\\mathrm{Gal}(x^{5}-x-1)\\cong S_{5}',
-    },
+    },    moreExamples: [{ problem: '一般五次方程为什么无根式解？', walkthrough: ['伽罗瓦群是对称群。', '对称群不可解。'], result: '不可根式求解' }],
+
   },
   {
     id: 'linear-programming',
