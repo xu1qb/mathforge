@@ -49,6 +49,9 @@ import { ALGEBRAIC_TOPOLOGY_COURSE } from './algebraic-topology-course';
 import { GROUP_THEORY_COURSE } from './group-theory-course';
 import { RING_THEORY_COURSE } from './ring-theory-course';
 import { REPRESENTATION_THEORY_COURSE } from './representation-theory-course';
+import { GALOIS_COURSE } from './galois-theory-course';
+import { ANALYTIC_NUMBER_THEORY_COURSE } from './analytic-number-theory-course';
+import { GRAPH_THEORY_COURSE } from './graph-theory-course';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -100,6 +103,9 @@ export const COURSES: Course[] = [
   GROUP_THEORY_COURSE,
   RING_THEORY_COURSE,
   REPRESENTATION_THEORY_COURSE,
+  GALOIS_COURSE,
+  ANALYTIC_NUMBER_THEORY_COURSE,
+  GRAPH_THEORY_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {

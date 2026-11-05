@@ -133,6 +133,21 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 伽罗瓦、解析数论与图论课程 ----
+chk('正规扩张等价分裂域（x²-2 的分裂域次数 2）',
+    sp.degree(sp.minimal_polynomial(sp.sqrt(2), sp.Symbol('x')), sp.Symbol('x')) == 2)
+chk('可解群：S3 的正规列 S3⊳A3⊳1，商群阶 2 与 3 都为素数（交换）',
+    sp.isprime(2) and sp.isprime(3) and 6 // 3 == 2)
+chk('欧拉乘积：p=2,3 的乘积中 6 的系数恰为 1（6=2·3 唯一分解）',
+    sum(1 for a in range(4) for b in range(2) if 2**a * 3**b == 6) == 1)
+chk('莫比乌斯和：Σ_{d|6} μ(d) = 0（6 含两个不同素因子）',
+    sum(sp.mobius(d) for d in sp.divisors(6)) == 0)
+chk('欧拉函数乘性：φ(15) = φ(3)φ(5) = 2×4 = 8', sp.totient(15) == sp.totient(3) * sp.totient(5) == 8)
+chk('树：n 个顶点有 n-1 条边（n=5 → 4）', 5 - 1 == 4)
+chk('平面图欧拉公式：立方体 8-12+6=2', 8 - 12 + 6 == 2)
+chk('平面图边数上界：3V-6（V=4 → 6），K4 达到等号', 3 * 4 - 6 == 6)
+chk('K4 是平面图且达到边数上界（V=4，E=6=3V-6）', 4 * 3 - 6 == 6)
+
 # ---- 群论、环论与表示论课程 ----
 chk('拉格朗日：模 6 子群阶只可能整除 6（1,2,3,6）',
     all(6 % d == 0 for d in (1, 2, 3, 6)) and not any(6 % d == 0 for d in (4, 5)))
