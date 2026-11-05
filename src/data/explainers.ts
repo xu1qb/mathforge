@@ -86,10 +86,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '找两个上下界 g、h，让 g≤f≤h，且 g 和 h 的极限相等，那么 f 被"挤"到同一个极限。',
+    definition:
+      '若在去心邻域内始终有 g(x) ≤ f(x) ≤ h(x)，且 g 与 h 的极限都等于 A，则 f 的极限也存在且等于 A。夹逼的关键是两边都能算出来。',
     whenToUse: [
       'n 项和/积的极限，每项有波动',
       '含 sin、cos 等有界振荡量',
       '直接算太繁，但能放缩到好算的形式',
+    ],
+    theorems: [
+      {
+        name: '夹逼定理',
+        statement: '两端函数的极限相同，被夹在中间的函数的极限也等于这个值。',
+        formula: 'g\\le f\\le h,\\quad\\lim g=\\lim h=A\\;\\Rightarrow\\;\\lim f=A',
+      },
+      {
+        name: '常用放缩',
+        statement: '和式型极限常把分母统一放大或缩小，构造出两个相同的边界。',
+      },
     ],
     steps: [
       {
@@ -110,6 +123,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '若两端极限相同 L，则 lim aₙ=L。',
         formula: 'g(n)\\le a_n\\le h(n),\\ \\lim g=\\lim h=L\\ \\Rightarrow\\ \\lim a_n=L',
       },
+      {
+        title: '单调有界也能夹',
+        body: '无法直接放缩时，可以先用单调有界准则证明极限存在，再求值。',
+      },
+    ],
+    pitfalls: [
+      '两端极限不相等：只证明有界不能推出极限存在。',
+      '不等式只在部分点成立：要求整个去心邻域内成立。',
+      '忘记验证前提：g、h 的极限必须存在且相等。',
     ],
     example: {
       problem: '求 lim(n→∞) (sin n)/n。',
@@ -120,7 +142,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '夹逼：中间项极限也是 0。',
       ],
       result: '\\displaystyle\\lim_{n\\to\\infty}\\frac{\\sin n}{n}=0',
-    },
+    },    moreExamples: [
+      {
+        problem: '求 n 项和从根号下 n 方加一加到根号下 n 方加 n 的极限。',
+        walkthrough: [
+          '每一项都介于最小与最大之间。',
+          '把 n 项分别用最小项与最大项替代，得到上下界。',
+          '上下界都趋于一。',
+          '由夹逼定理，原极限为一。',
+        ],
+        result: '1',
+      },
+    ],
+
   },
   {
     id: 'lhopital',
@@ -204,10 +238,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '展到"抵消后余项刚好比需要的高阶"为止——多一项浪费，少一项消不掉。',
+    definition:
+      '用函数在某点的各阶导数构造多项式，使它与原函数在该点直到 n 阶导数都相同，余项刻画误差。这就是泰勒公式。',
     whenToUse: [
       '求极限中含多个小量相加',
       '要判断无穷小的阶',
       '洛必达用不动的式子',
+    ],
+    theorems: [
+      {
+        name: '带皮亚诺余项的泰勒公式',
+        statement: '函数在一点 n 阶可导时，可以用 n 次多项式逼近，余项是比 x 减该点 n 次方高阶的无穷小。',
+        formula: 'f(x)=\\sum\\frac{f^{(k)}(x_0)}{k!}(x-x_0)^{k}+o((x-x_0)^{n})',
+      },
+      {
+        name: '带拉格朗日余项',
+        statement: '余项可写成某中间点处第 n 加一阶导数乘以幂次除以阶乘，用于估计误差。',
+      },
     ],
     steps: [
       {
@@ -227,6 +274,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '代入求极限',
         body: '只保留最低非零次，比值即得极限。',
       },
+      {
+        title: '用余项估误差',
+        body: '近似计算时把余项放大成常数乘幂次，即可给出误差上界。',
+      },
+    ],
+    pitfalls: [
+      '阶数选不够：展开到抵消项之后的第一个非零项才够。',
+      '展开点选错：要在极限点展开，不是原点。',
+      '余项阶数写错：写成比实际低一阶的无穷小，结论会失效。',
     ],
     example: {
       problem: '求 lim(x→0) (sin x − x)/x³。',
@@ -236,7 +292,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '除以 x³：−1/6 + o(1)。',
       ],
       result: '\\displaystyle\\lim_{x\\to 0}\\frac{\\sin x-x}{x^3}=-\\frac{1}{6}',
-    },
+    },    moreExamples: [
+      {
+        problem: '把指数函数展开到三阶，并求 x 趋于零时它与一加 x 加二分之 x 平方之差的阶。',
+        walkthrough: [
+          '指数展开到三阶得三阶多项式加四阶余项。',
+          '与二次多项式相减，主项是三次项。',
+          '因此差是三阶无穷小。',
+        ],
+        result: '\\frac{x^{3}}{6}',
+      },
+    ],
+
   },
   {
     id: 'equivalent',
@@ -1037,10 +1104,22 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '递推数列给不出通项时，先证「有界 + 单调」把极限的存在性坐实，再对递推式两边取极限解出值。',
+    definition:
+      '对任意给定的正数，总存在一项之后所有项与常数之差的绝对值都小于它，就称数列收敛于该常数。这是极限的严格定义。',
     whenToUse: [
       '给出 aₙ₊₁ = f(aₙ)，求不出通项',
       '题目要求「证明极限存在」',
       '能用单调有界准则或夹逼的数列',
+    ],
+    theorems: [
+      {
+        name: '单调有界准则',
+        statement: '单调递增且有上界（或单调递减且有下界）的数列一定收敛。',
+      },
+      {
+        name: '递推数列求极限',
+        statement: '先证数列有界且单调，确认极限存在，再在递推式两边取极限解方程。',
+      },
     ],
     steps: [
       {
@@ -1066,6 +1145,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '对递推式两边取极限得到关于 A 的方程，解出后舍去落在界外的根。',
       },
     ],
+    pitfalls: [
+      '只证有界不证单调：有界数列不一定收敛。',
+      '先取极限后证存在：顺序反了，极限可能不存在。',
+      '解出的根不筛选：方程可能有两个根，要用单调性排除。',
+    ],
     example: {
       problem: 'a₁ = 1，aₙ₊₁ = √(2 + aₙ)，证明极限存在并求值。',
       walkthrough: [
@@ -1075,7 +1159,20 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '单调有界，极限存在；回代解得极限为 2。',
       ],
       result: '\\lim_{n\\to\\infty}a_{n}=2',
-    },
+    },    moreExamples: [
+      {
+        problem: '数列首项为一，后一项等于根号下二加前一项，求极限。',
+        walkthrough: [
+          '先证数列递增且有上界二。',
+          '由单调有界准则，极限存在。',
+          '在递推式两边取极限得方程。',
+          '解方程并舍去负根。',
+          '极限为二。',
+        ],
+        result: '2',
+      },
+    ],
+
   },
   {
     id: 'definite-integral-substitution',
@@ -1456,10 +1553,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '先求收敛半径拿到开区间，再把两个端点代回去当数项级数单独判——半径只给一半答案，端点才是丢分点。',
+    definition:
+      '幂级数在某个区间内绝对收敛、在外发散，这个区间的半长叫收敛半径。端点要单独代入判断，不能直接由半径决定。',
     whenToUse: [
       '求幂级数的收敛半径与收敛域',
       '判断端点是否收敛',
       '求导或积分后重新确定收敛域',
+    ],
+    theorems: [
+      {
+        name: '比值法求半径',
+        statement: '相邻系数之比的极限的倒数就是收敛半径。',
+        formula: 'R=\\lim\\left|\\frac{a_{n}}{a_{n+1}}\\right|',
+      },
+      {
+        name: '逐项运算',
+        statement: '在收敛区间内，幂级数可以逐项求导与逐项积分，收敛半径不变。',
+      },
     ],
     steps: [
       {
@@ -1485,6 +1595,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '把开区间和端点的结论合并，注意方括号与圆括号的区别。',
       },
     ],
+    pitfalls: [
+      '端点不判：半径端点可能收敛也可能发散，必须代入原级数。',
+      '半径与区间混淆：半径是长度的一半，不是区间端点。',
+      '条件收敛当绝对收敛：端点处要说明收敛类型。',
+    ],
     example: {
       problem: '求幂级数 Σ xⁿ/n 的收敛域。',
       walkthrough: [
@@ -1495,7 +1610,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '合并得收敛域 [−1, 1)。',
       ],
       result: '[-1,\\,1)',
-    },
+    },    moreExamples: [
+      {
+        problem: '求 x 的 n 次方除以 n 的幂级数收敛域。',
+        walkthrough: [
+          '比值法得收敛半径一。',
+          '端点一：调和级数发散。',
+          '端点负一：交错调和级数收敛。',
+          '收敛域为左闭右开。',
+        ],
+        result: '[-1,\\,1)',
+      },
+    ],
+
   },
   {
     id: 'second-order-ode',
@@ -2112,10 +2239,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '底数趋于 1、指数趋于无穷时，直接算会得出「1」，必须取对数或改写成 (1+u)^{1/u} 的形式，答案通常是 e 的某个幂。',
+    definition:
+      '当底数趋于一、指数趋于无穷时，幂的极限是不确定的，称为一的无穷次型。标准做法是取对数，把幂变成乘积，再处理零乘无穷。',
     whenToUse: [
       '代入后底数 → 1、指数 → ∞',
       '式子形如 (1+f(x))^{g(x)}',
       'n 次方根、连乘的极限',
+    ],
+    theorems: [
+      {
+        name: '重要极限',
+        statement: '调和底数的一的无穷次型收敛到自然常数。',
+        formula: '\\lim\\left(1+\\frac{1}{n}\\right)^{n}=e',
+      },
+      {
+        name: '通式',
+        statement: '当底趋于一、指数趋于无穷时，可以直接用指数乘底减一的极限做指数。',
+        formula: '\\lim f^{g}=e^{\\lim g(f-1)}',
+      },
     ],
     steps: [
       {
@@ -2138,6 +2279,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '最后别忘了把 ln L 变回 L。',
         formula: 'L=e^{\\lim v(u-1)}',
       },
+      {
+        title: '底与指数分别看',
+        body: '先确认底趋于一、指数趋于无穷，两个条件缺一不可。',
+      },
+    ],
+    pitfalls: [
+      '直接代成一：一加无穷小再取无穷次方并不等于一。',
+      '底不趋于一时套用：底为其他常数时结论不同。',
+      '取对数后忘了还原：对数结果是指数，别把答案写成对数值。',
     ],
     example: {
       problem: '求 lim (1 + 1/n)ⁿ。',
@@ -2148,7 +2298,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '所以 L = e。',
       ],
       result: '\\lim_{n\\to\\infty}\\left(1+\\frac{1}{n}\\right)^{n}=e',
-    },
+    },    moreExamples: [
+      {
+        problem: '求一加 n 分之二的 n 次方的三倍极限。',
+        walkthrough: [
+          '先看一加 n 分之二的 n 次方，它趋于自然常数的平方。',
+          '指数再乘三，就是自然常数的六次方。',
+        ],
+        result: 'e^{6}',
+      },
+    ],
+
   },
   {
     id: 'radical-difference',
@@ -2157,10 +2317,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '遇到 √A − √B 直接代会得到 0/0 或 ∞−∞，先乘共轭把根号差变成商，往往一步就能约掉因子。',
+    definition:
+      '根式差指两个根号之差的极限。常用手法是有理化：把差乘上共轭式，化成比值，再判断主导项。',
     whenToUse: [
       '式子含 √(a+x) − √a',
       '∞ − ∞ 型且出现根号',
       '分母也是根式差',
+    ],
+    theorems: [
+      {
+        name: '有理化恒等式',
+        statement: '两根号之差等于被开方数之差除以两根号之和。',
+        formula: '\\sqrt{A}-\\sqrt{B}=\\frac{A-B}{\\sqrt{A}+\\sqrt{B}}',
+      },
+      {
+        name: '大数近似',
+        statement: '当 x 很大时，根号下 x 方加 a 减去 x 约等于二 x 分之 a。',
+        formula: '\\sqrt{x^{2}+a}-x\\sim\\frac{a}{2x}',
+      },
     ],
     steps: [
       {
@@ -2180,6 +2354,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '留意单侧极限',
         body: '平方根要求被开方式非负，定义域可能只允许单侧趋近。',
       },
+      {
+        title: '共轭式乘几次',
+        body: '两个根号乘一次共轭即可，三个根号要分组两次。',
+      },
+    ],
+    pitfalls: [
+      '有理化后忘记化简：分子里能约掉的项没约，结果偏大。',
+      '分母趋于无穷时符号判错：极限为零要说明是正的零。',
+      '三个根号相加时仍用一次有理化：需要分组处理。',
     ],
     example: {
       problem: '求 lim (√(1+x) − 1)/x。',
@@ -2190,7 +2373,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '代入 x = 0 得 1/2。',
       ],
       result: '\\lim_{x\\to 0}\\frac{\\sqrt{1+x}-1}{x}=\\frac{1}{2}',
-    },
+    },    moreExamples: [
+      {
+        problem: '求根号下 n 方加 n 再减 n 的极限。',
+        walkthrough: [
+          '有理化得 n 除以两根号之和。',
+          '分子分母同除以 n。',
+          '分母趋于二。',
+          '结果为二分之一。',
+        ],
+        result: '\\frac{1}{2}',
+      },
+    ],
+
   },
   {
     id: 'infinitesimal-order',
@@ -2199,10 +2394,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '两个无穷小之比的极限决定它们的阶：趋于 0 是高阶，趋于无穷是低阶，趋于非零常数是同阶，等于 1 才是等价。',
+    definition:
+      '两个无穷小之比的极限为零、非零常数或无穷时，分别称前者高阶、同阶、低阶；比值为一时称等价。这给出了比较无穷小快慢的统一标准。',
     whenToUse: [
       '题目问「是几阶无穷小」',
       '需要在多个无穷小之间排序',
       '泰勒展开后判断主导项',
+    ],
+    theorems: [
+      {
+        name: '阶的定义',
+        statement: '若两个无穷小之比的 k 次幂极限为非零常数，则称前者是后者的 k 阶无穷小。',
+        formula: '\\lim\\frac{\\alpha}{\\beta^{k}}=c\\ne 0',
+      },
+      {
+        name: '泰勒与阶',
+        statement: '函数在零点的展开式中第一个非零项的次数，就是它作为无穷小的阶。',
+      },
     ],
     steps: [
       {
@@ -2223,6 +2431,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '用泰勒确认',
         body: '展开到第一个非零项，那一项的幂次就是阶，系数给出等价关系。',
       },
+      {
+        title: '与泰勒对照',
+        body: '展开式的第一非零项阶数就是无穷小阶数，两者互为检验。',
+      },
+    ],
+    pitfalls: [
+      '只看首项：系数与符号被忽略后阶数判错。',
+      '混淆同阶与等价：同阶只要求比值是非零常数。',
+      '忽略变量趋于哪个点：阶是相对于某个极限过程说的。',
     ],
     example: {
       problem: '判断 1 − cos x 是 x 的几阶无穷小。',
@@ -2233,7 +2450,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '由于系数是 1/2，写成 1 − cos x ~ x²/2。',
       ],
       result: '1-\\cos x\\sim\\frac{x^{2}}{2}',
-    },
+    },    moreExamples: [
+      {
+        problem: '判断一减余弦在零点附近是几阶无穷小。',
+        walkthrough: [
+          '把余弦展开到二阶。',
+          '一减余弦约等于二分之 x 平方。',
+          '因此它是二阶无穷小。',
+        ],
+        result: '\\frac{x^{2}}{2}',
+      },
+    ],
+
   },
   {
     id: 'double-integral-symmetry',
@@ -5146,6 +5374,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '闭区间上的连续函数有三条保命结论：必取到最大最小值、能取遍中间值、端点异号必有零点。做题时先确认「闭区间 + 连续」这两个前提。',
+    definition:
+      '函数在一点连续，指该点极限存在且等于函数值。在闭区间上连续的函数，具有三条重要性质：有界、取到最值、取遍中间值。',
     whenToUse: [
       '证明方程在某个区间内有根',
       '证明存在某点使函数取到指定值',
@@ -5169,6 +5399,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '最值定理给保证',
         body: '闭区间连续函数必有最大值与最小值，这保证了后续求最值时不会出现「上确界取不到」的尴尬。',
       },
+      {
+        title: '配合单调证唯一',
+        body: '零点定理只保证存在，再加单调性才能说明唯一。',
+      },
+    ],
+    pitfalls: [
+      '在开区间上用：端点未定义时结论不保证。',
+      '函数不连续时套用：跳跃间断处可能取不到中间值。',
+      '两端同号就断定无根：偶数个根时两端同号仍可能有根。',
     ],
     example: {
       problem: '证明方程三次多项式减一次多项式再减一在区间一到二之间至少有一个根。',
@@ -5178,7 +5417,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '由零点定理，区间内至少存在一点使函数值为零。',
       ],
       result: '该方程在区间一到二之间有根。',
-    },
+    },    moreExamples: [
+      {
+        problem: '证明三次多项式减一次多项式再减一在一到二之间有根。',
+        walkthrough: [
+          '函数在闭区间上连续。',
+          '代入左端点为负、右端点为正。',
+          '两端异号，由零点定理有根。',
+          '再证导数恒正，说明根唯一。',
+        ],
+        result: '\\exists\\xi\\in(1,2)',
+      },
+    ],
+
   },
   {
     id: 'derivative-rules',
