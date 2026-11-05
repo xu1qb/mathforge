@@ -22,6 +22,10 @@ server-dist/
 # 临时探针脚本
 scripts/_probe_stats.mjs
 
+# Python 缓存
+__pycache__/
+*.pyc
+
 # UI 快照产物
 artifacts/
 
