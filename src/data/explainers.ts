@@ -807,10 +807,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '结果是若干原因之一造成的时候，先按原因分组算全概率，再用贝叶斯把分母换成它，反推到底是哪个原因。',
+    definition:
+      '全概率公式把复杂事件按原因分解求和；贝叶斯公式反过来，由结果推断原因的概率，需要先验概率。',
     whenToUse: [
       '题目分两步：先选来源，再做试验',
       '已知结果，反推原因的概率',
       '次品率、检测、抽签类问题',
+    ],
+    theorems: [
+      {
+        name: '全概率公式',
+        statement: '按一组互斥完备的原因分解事件概率。',
+        formula: 'P(B)=\\sum P(A_i)P(B\\mid A_i)',
+      },
+      {
+        name: '贝叶斯公式',
+        statement: '后验概率正比于先验概率乘似然。',
+        formula: 'P(A_i\\mid B)=\\frac{P(A_i)P(B\\mid A_i)}{P(B)}',
+      },
     ],
     steps: [
       {
@@ -832,6 +846,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '检查分母',
         body: '分母必须等于全概率，漏项或重复计算都会让答案偏离。',
       },
+      {
+        title: '先算全概率',
+        body: '贝叶斯公式的分母就是全概率，先算它。',
+      },
+    ],
+    pitfalls: [
+      '先验与后验混：贝叶斯里的分母是全概率。',
+      '原因不互斥：分解必须互斥且完备。',
+      '条件方向写反：是结果推原因，不是原因推结果。',
     ],
     example: {
       problem: '两台机器产量占 60% 与 40%，次品率分别 1% 与 2%。任取一件是次品，它来自第一台的概率？',
@@ -841,7 +864,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '相除得 3/7。',
       ],
       result: 'P(B_{1}\\mid A)=\\frac{3}{7}',
-    },
+    },    moreExamples: [
+      {
+        problem: '两个盒子取球，已知取到白球，求来自第一个盒子的概率。',
+        walkthrough: [
+          '先算取到白球的全概率。',
+          '再算第一个盒子贡献的部分。',
+          '相除得后验概率。',
+        ],
+        result: '\\frac{P(A_1)P(B\\mid A_1)}{P(B)}',
+      },
+    ],
+
   },
   {
     id: 'distribution',
@@ -850,10 +884,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '数成功次数用二项，稀有事件计数用泊松，不放回用超几何，等时间用指数；先定类型，再套期望方差。',
+    definition:
+      '随机变量的分布由分布函数刻画。离散型用分布律，连续型用密度函数；常见分布按「数次数」还是「等时间」来选。',
     whenToUse: [
       '写分布律或概率密度',
       '求期望与方差',
       '判断题目该用哪个分布',
+    ],
+    theorems: [
+      {
+        name: '分布函数性质',
+        statement: '分布函数单调不减、右连续，两端极限为零与一。',
+        formula: 'F(x)=P(X\\le x)',
+      },
+      {
+        name: '密度与分布',
+        statement: '连续型的密度是分布函数的导数，分布函数是密度的积分。',
+      },
     ],
     steps: [
       {
@@ -880,6 +927,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         formula: 'Z=\\frac{X-\\mu}{\\sigma}\\sim N(0,1)',
       },
     ],
+    pitfalls: [
+      '离散连续混用：离散用求和，连续用积分。',
+      '密度值当概率：连续型单点概率为零。',
+      '参数意义记错：泊松是单位时间次数，指数是等待时间。',
+    ],
     example: {
       problem: '100 件产品中有 5 件次品，不放回取 3 件，X 为其中的次品数，求分布律。',
       walkthrough: [
@@ -888,7 +940,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '再除以总取法 C(100,3)。',
       ],
       result: 'P(X=k)=\\frac{\\binom{5}{k}\\binom{95}{3-k}}{\\binom{100}{3}}',
-    },
+    },    moreExamples: [
+      {
+        problem: '四次独立试验、每次成功率一半，求恰好两次成功的概率。',
+        walkthrough: [
+          '这是二项分布。',
+          '组合数乘两个概率因子。',
+        ],
+        result: '\\frac{3}{8}',
+      },
+    ],
+
   },
   {
     id: 'taylor-table',
@@ -1616,10 +1678,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '求 Y = g(X) 的分布，先写 F_Y(y) = P(g(X) ≤ y)，把事件翻译成 X 的区间，最后求导得密度——不要一上来就套公式。',
+    definition:
+      '随机变量的函数仍是随机变量。求它的分布用分布函数法或密度变换公式，注意变换要单调可逆。',
     whenToUse: [
       '已知 X 的密度，求 Y = g(X) 的密度',
       'g 不单调，例如 Y = X²',
       '二维随机变量求和、取最大值的分布',
+    ],
+    theorems: [
+      {
+        name: '分布函数法',
+        statement: '先写新变量的分布函数，再对自变量求导得密度。',
+        formula: 'F_Y(y)=P(g(X)\\le y)',
+      },
+      {
+        name: '密度变换',
+        statement: '单调可逆变换下，新密度等于旧密度代入反函数乘以反函数导数的绝对值。',
+        formula: 'f_Y(y)=f_X(g^{-1}(y))\\left|\\frac{d}{dy}g^{-1}(y)\\right|',
+      },
     ],
     steps: [
       {
@@ -1645,6 +1721,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '密度在 g 的取值范围之外恒为 0，漏写等于答案不完整。',
       },
     ],
+    pitfalls: [
+      '忘记绝对值：导数可能为负。',
+      '非单调变换硬套：要分段处理。',
+      '取值范围没定：新变量的支撑要写清。',
+    ],
     example: {
       problem: 'X 服从 (0,1) 上的均匀分布，Y = X²，求 Y 的密度。',
       walkthrough: [
@@ -1654,7 +1735,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '支撑集：0 < y < 1，其余为 0。',
       ],
       result: 'f_{Y}(y)=\\frac{1}{2\\sqrt{y}},\\quad 0<y<1',
-    },
+    },    moreExamples: [
+      {
+        problem: '均匀分布取平方后的密度，自变量为正。',
+        walkthrough: [
+          '分布函数法写出小于等于 y 的概率。',
+          '求导。',
+          '密度为二根号 y 分之一。',
+        ],
+        result: '\\frac{1}{2\\sqrt{y}}',
+      },
+    ],
+
   },
   {
     id: 'inequality-proof',
@@ -8547,10 +8639,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '联合分布描述两个变量一起取值；把它们分别求和或积分就得到边缘分布。联合密度能写成两个单变量密度之积，才是独立。',
+    definition:
+      '联合分布描述两个变量一起取值；把另一个变量求和或积分得到边缘分布。联合等于边缘之积才是独立。',
     whenToUse: [
       '题目给出联合分布律或联合密度',
       '求边缘分布、条件分布',
       '判断两个随机变量是否独立、求协方差',
+    ],
+    theorems: [
+      {
+        name: '边缘分布',
+        statement: '连续型把另一变量积分掉即得边缘密度。',
+        formula: 'f_X(x)=\\int f(x,y)\\,dy',
+      },
+      {
+        name: '独立判据',
+        statement: '联合密度等于两个边缘密度之积时独立。',
+      },
     ],
     steps: [
       {
@@ -8571,6 +8676,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '算协方差',
         body: '协方差等于乘积的期望减期望之积；为零只说明不线性相关，不保证独立。',
       },
+      {
+        title: '先求边缘',
+        body: '独立性与协方差都要先求边缘分布。',
+      },
+    ],
+    pitfalls: [
+      '矩形区域外谈独立：区域形状限制独立性。',
+      '相关系数为零当独立：只说明不线性相关。',
+      '积分限写错：要按联合密度的支撑写。',
     ],
     example: {
       problem: '已知联合密度在单位正方形上为常数，判断两个变量是否独立。',
@@ -8581,7 +8695,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '因此两个变量独立。',
       ],
       result: '两个变量独立。',
-    },
+    },    moreExamples: [
+      {
+        problem: '单位正方形上联合密度为一，判断两个变量是否独立。',
+        walkthrough: [
+          '边缘密度都为一。',
+          '乘积等于联合密度。',
+          '因此独立。',
+        ],
+        result: '\\text{independent}',
+      },
+    ],
+
   },
   {
     id: 'sampling-distribution',
@@ -8674,7 +8799,21 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '古典概型要求样本点有限且等可能，概率就是有利结果数除以总结果数。难的不是公式，是把「结果」数对。',
+    definition:
+      '古典概型要求样本空间有限且每个样本点等可能，此时事件的概率等于有利样本点数除以总样本点数。',
     whenToUse: ['有限个等可能结果', '组合计数是主要工具', '几何概型则把计数换成面积比'],
+    theorems: [
+      {
+        name: '古典概率',
+        statement: '有利结果数除以总结果数。',
+        formula: 'P(A)=\\frac{|A|}{|\\Omega|}',
+      },
+      {
+        name: '加法公式',
+        statement: '互斥事件概率相加，一般情形要减去交集。',
+        formula: 'P(A\\cup B)=P(A)+P(B)-P(AB)',
+      },
+    ],
     steps: [
       {
         title: '先定样本空间',
@@ -8692,6 +8831,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '几何概型换面积',
         body: '结果连续时，概率等于有利区域的测度除以总区域的测度。',
       },
+      {
+        title: '先数分母',
+        body: '总结果数决定分母，再数有利结果。',
+      },
+    ],
+    pitfalls: [
+      '结果不等可能就用：各样本点必须等可能。',
+      '有序无序混算：分子分母计数方式要一致。',
+      '忘记扣重复：并事件要减去交集。',
     ],
     example: {
       problem: '袋中有 3 红 2 白，任取 2 个，求恰好 1 红 1 白的概率。',
@@ -8701,7 +8849,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '概率为 6/10，即 3/5。',
       ],
       result: '概率为 3/5。',
-    },
+    },    moreExamples: [
+      {
+        problem: '袋中三红两白，任取两个，求恰好一红一白的概率。',
+        walkthrough: [
+          '总取法为五选二。',
+          '有利情形为三选一乘二选一。',
+          '相比得五分之三。',
+        ],
+        result: '\\frac{3}{5}',
+      },
+    ],
+
   },
   {
     id: 'normal-distribution',
@@ -8710,7 +8869,21 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '正态分布由均值与标准差完全确定。任何正态都可以通过标准化变成标准正态，于是查一张表就能算所有概率。',
+    definition:
+      '正态分布由均值与标准差确定，密度关于均值对称。任何正态变量减均值再除以标准差都变成标准正态。',
     whenToUse: ['题目给出正态分布求概率', '反过来由概率求分位数', '近似计算二项分布'],
+    theorems: [
+      {
+        name: '标准化',
+        statement: '减均值除以标准差后服从标准正态分布。',
+        formula: 'Z=\\frac{X-\\mu}{\\sigma}',
+      },
+      {
+        name: '对称性',
+        statement: '标准正态分布关于零对称，负值概率可由正值概率补出。',
+        formula: '\\Phi(-z)=1-\\Phi(z)',
+      },
+    ],
     steps: [
       {
         title: '记住两个参数',
@@ -8730,6 +8903,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '三分之一定则',
         body: '一倍标准差内约 68%，两倍约 95%，三倍约 99.7%，用于快速估算。',
       },
+      {
+        title: '先标准化',
+        body: '任何正态先转标准正态再查表。',
+      },
+    ],
+    pitfalls: [
+      '忘记标准化：直接查表必须先转标准正态。',
+      '对称性用错：负值要用一减。',
+      '标准差与方差混：公式里是标准差。',
     ],
     example: {
       problem: '已知成绩服从均值 70、标准差 10 的正态分布，求 80 分以上的比例。',
@@ -8739,7 +8921,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '因此大于 1 的概率约 0.159。',
       ],
       result: '约 15.9%。',
-    },
+    },    moreExamples: [
+      {
+        problem: '均值七十、标准差十的成绩，八十分以上的比例。',
+        walkthrough: [
+          '标准化得一点零。',
+          '查表得小于一的概率约零点八四。',
+          '补集约零点一六。',
+        ],
+        result: '0.159',
+      },
+    ],
+
   },
   {
     id: 'covariance-correlation',
@@ -8748,7 +8941,21 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '协方差衡量两个变量同向变动的程度，但带量纲；除以两个标准差得到相关系数，范围限定在负一到一。',
+    definition:
+      '协方差衡量两个变量同向变动的程度，带量纲；除以两个标准差得到相关系数，范围在负一到一之间。',
     whenToUse: ['判断两个变量是否线性相关', '计算组合方差', '回归分析的基础'],
+    theorems: [
+      {
+        name: '协方差公式',
+        statement: '协方差等于乘积期望减期望之积。',
+        formula: 'Cov(X,Y)=E(XY)-E(X)E(Y)',
+      },
+      {
+        name: '组合方差',
+        statement: '和的方差等于方差之和加两倍协方差。',
+        formula: 'D(X+Y)=D(X)+D(Y)+2Cov(X,Y)',
+      },
+    ],
     steps: [
       {
         title: '先算协方差',
@@ -8768,6 +8975,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '组合方差公式',
         body: '和的方差等于方差之和加两倍协方差，这是风险分散的数学来源。',
       },
+      {
+        title: '协方差看同向',
+        body: '正协方差表示同向变动，负表示反向。',
+      },
+    ],
+    pitfalls: [
+      '相关系数为零当独立：只排除线性关系。',
+      '忘记除以标准差：协方差与相关系数不同。',
+      '独立与不相关混淆：独立一定不相关，反之不然。',
     ],
     example: {
       problem: '两个变量独立且方差都为 1，求它们和的方差。',
@@ -8777,7 +8993,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '结果为 2。',
       ],
       result: '方差为 2。',
-    },
+    },    moreExamples: [
+      {
+        problem: '两个独立变量方差都为一，求和的方差。',
+        walkthrough: [
+          '独立则协方差为零。',
+          '方差相加得二。',
+        ],
+        result: '2',
+      },
+    ],
+
   },
   {
     id: 'statistics-basics',
