@@ -24,6 +24,8 @@ import { ALGEBRAIC_GEOMETRY_COURSE } from './algebraic-geometry';
 import { DIFFERENTIAL_TOPOLOGY_COURSE } from './differential-topology';
 import { FIELD_THEORY_COURSE } from './field-theory';
 import { ALGEBRAIC_NUMBER_COURSE } from './algebraic-number-theory';
+import { COMBINATORICS_COURSE } from './combinatorics';
+import { LATTICE_THEORY_COURSE } from './lattice-theory';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -50,6 +52,8 @@ export const COURSES: Course[] = [
   DIFFERENTIAL_TOPOLOGY_COURSE,
   FIELD_THEORY_COURSE,
   ALGEBRAIC_NUMBER_COURSE,
+  COMBINATORICS_COURSE,
+  LATTICE_THEORY_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {

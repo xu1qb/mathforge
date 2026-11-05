@@ -133,6 +133,18 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 组合与格论课程 ----
+chk('组合数 C(5,2)=10', sp.binomial(5, 2) == 10)
+chk('排列数 P(5,3)=5·4·3=60', 5 * 4 * 3 == 60)
+chk('AAB 的不同排列数为 3!/2!=3', sp.factorial(3) // sp.factorial(2) == 3)
+chk('容斥：|A∪B| = |A|+|B|-|A∩B|（1..10 中被 2 或 3 整除）',
+    len([n for n in range(1, 11) if n % 2 == 0 or n % 3 == 0]) == 5 + 3 - 1)
+chk('几何级数 1/(1-x) 的展开系数全为 1（前 6 项）',
+    sp.Poly(sp.series(1 / (1 - sp.Symbol('x')), sp.Symbol('x'), 0, 6).removeO(), sp.Symbol('x')).all_coeffs()
+    == [1] * 6)
+chk('抽屉原理：5 个整数必有两个差为 4 的倍数',
+    len(set(n % 4 for n in range(5))) <= 4)
+
 # ---- 域论与代数数论课程 ----
 chk('有理数添根号二的扩张次数为 2（极小多项式次数）',
     sp.degree(sp.minimal_polynomial(sp.sqrt(2), sp.Symbol('x')), sp.Symbol('x')) == 2)
