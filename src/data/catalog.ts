@@ -49,7 +49,7 @@ export const DISCIPLINE: Discipline = {
       summary: '连续、变化、极限——描述运动',
       courses: [
         { id: 'calculus', name: '微积分', courseId: 'calculus' },
-        { id: 'real-analysis', name: '实分析', note: '待建' },
+        { id: 'real-analysis', name: '实分析', courseId: 'real-analysis' },
         { id: 'complex-analysis', name: '复分析', note: '待建' },
         { id: 'functional-analysis', name: '泛函分析', note: '待建' },
         { id: 'harmonic-analysis', name: '调和分析', note: '待建' },

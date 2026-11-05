@@ -1,0 +1,110 @@
+import type { Course } from './types';
+
+export const REAL_ANALYSIS_COURSE: Course = {
+  id: 'real-analysis',
+  title: '实分析',
+  tagline: '测度、可测函数与收敛定理：重建积分',
+  textbook: {
+    name: '实变函数论（周民强） + Real and Complex Analysis（Rudin）',
+    edition: '第 3 版（周民强） / 第 3 版（Rudin）',
+  },
+  prerequisites: ['分析学导论'],
+  hours: 48,
+  intro: {
+    what: '实分析用测度重建积分：σ 代数规定可测集，可测函数保证能积分，勒贝格积分与收敛定理让极限与积分可以交换。',
+    objects: ['σ 代数与测度', '可测函数', '勒贝格积分', '收敛定理', '零测集'],
+    history: [
+      '1902：勒贝格在论文中提出新积分',
+      '20 世纪初：博雷尔与勒贝格建立测度论',
+      '1930 年代：收敛定理成为标准工具',
+      '20 世纪中叶：实分析成为分析学的基础课',
+    ],
+  },
+  chapters: [
+    {
+      id: 'ra-measure',
+      title: '测度与 σ 代数',
+      textbookRef: '周民强 第 1–2 章 / Rudin 第 1 章',
+      summary: '先规定哪些集合可测，再给它们指定大小',
+      goals: ['判断 σ 代数', '理解可列可加', '认识博雷尔集'],
+      lessonIds: ['sigma-algebra'],
+      practiceTopics: ['limit-basic'],
+      exercises: [
+        {
+          id: 'ra1-1',
+          level: '进阶',
+          question: '可数集的勒贝格测度是多少？',
+          answer: '$0$',
+          hint: '单点测度为零，可列可加。',
+          steps: ['单点测度为零。', '可列个零相加仍为零。'],
+        },
+      ],
+    },
+    {
+      id: 'ra-measurable',
+      title: '可测函数',
+      textbookRef: '周民强 第 3 章 / Rudin 第 1 章',
+      summary: '每个水平集可测的函数',
+      goals: ['用水平集判可测', '理解简单函数逼近', '知道可测性保持'],
+      lessonIds: ['measurable-functions'],
+      practiceTopics: ['function-property'],
+      exercises: [
+        {
+          id: 'ra2-1',
+          level: '进阶',
+          question: '狄利克雷函数（有理数取 1、无理数取 0）是否可测？',
+          answer: '可测',
+          hint: '有理数集可测。',
+          steps: ['有理数集可测。', '水平集原像可测。'],
+        },
+      ],
+    },
+    {
+      id: 'ra-integral',
+      title: '勒贝格积分',
+      textbookRef: '周民强 第 4 章 / Rudin 第 1–2 章',
+      summary: '简单函数 → 非负可测 → 一般可测',
+      goals: ['理解积分构造', '判断可积性', '与黎曼积分对照'],
+      lessonIds: ['lebesgue-integral-theory'],
+      practiceTopics: ['integral-basic'],
+      exercises: [
+        {
+          id: 'ra3-1',
+          level: '进阶',
+          question: '有理数取 1、无理数取 0 的函数在 $[0,1]$ 上的勒贝格积分？',
+          answer: '$0$',
+          hint: '有理数集零测。',
+          steps: ['非零部分在零测集上。', '积分为零。'],
+        },
+      ],
+    },
+    {
+      id: 'ra-convergence',
+      title: '收敛定理',
+      textbookRef: '周民强 第 5 章 / Rudin 第 1 章',
+      summary: '交换极限与积分的三条定理',
+      goals: ['掌握单调收敛', '会用控制收敛', '知道法图引理'],
+      lessonIds: ['convergence-theorems'],
+      practiceTopics: ['limit-basic'],
+      exercises: [
+        {
+          id: 'ra4-1',
+          level: '竞赛',
+          question: '尖峰函数列（区间长度 $1/n$、高度 $n$）的积分极限与极限积分是否相等？',
+          answer: '不相等',
+          hint: '每项积分为 1，极限函数几乎处处为 0。',
+          steps: ['每项积分为 1。', '极限积分为 0。', '因此不相等。'],
+        },
+      ],
+    },
+  ],
+  applications: [
+    { title: '概率论', scene: '统计', example: '概率是测度，期望是勒贝格积分。' },
+    { title: '傅里叶分析', scene: '信号', example: '可积函数空间是傅里叶变换的舞台。' },
+  ],
+  crossings: [
+    { subject: '分析学导论', relation: '实分析把微积分中的积分严格化。', courseId: 'analysis' },
+    { subject: '概率统计', relation: '概率空间就是测度空间。', courseId: 'probability' },
+  ],
+  toolPath: '/calculus',
+};

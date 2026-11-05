@@ -133,6 +133,13 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 实分析课程 ----
+chk('可数集的勒贝格测度为零（可列个零之和）', sp.summation(sp.Integer(0), (n, 1, sp.oo)) == 0)
+chk('尖峰函数列的积分极限为 1（每项 n×(1/n)）',
+    all(n * sp.Rational(1, n) == 1 for n in range(1, 50)))
+chk('尖峰函数列的支撑测度趋于零（1/n → 0）',
+    sp.limit(sp.Rational(1, 1) / n, n, sp.oo) == 0)
+
 # ---- 公理化集合论课程 ----
 chk('幂集严格大于原集合（有限情形）', all(2 ** n > n for n in range(0, 30)))
 chk('有限序数的后继仍是序数（0..9 逐一验证）',
