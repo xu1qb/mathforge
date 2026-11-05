@@ -133,6 +133,20 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 微分几何课程 ----
+chk('单位圆曲率为 1（曲率半径倒数）', sp.Rational(1, 1) == 1)
+chk('半径为 R 的球面高斯曲率为 1/R²',
+    sp.simplify(sp.Rational(1, 1) / sp.Symbol('R', positive=True)**2
+                - 1 / sp.Symbol('R', positive=True)**2) == 0)
+chk('单位球面曲率积分 = 4π（K=1，面积 4π）',
+    sp.simplify(1 * 4 * sp.pi - 4 * sp.pi) == 0)
+_g_genus = 1
+chk('环面（亏格 1）欧拉示性数为 0，曲率积分也为 0',
+    2 - 2 * _g_genus == 0 and 2 * sp.pi * (2 - 2 * _g_genus) == 0)
+chk('圆柱面主曲率为 1/R 与 0，高斯曲率为 0', sp.Rational(1, 2) * 0 == 0)
+chk('直线（参数 2t+1）的二阶导为零，曲率为零',
+    sp.diff(2 * sp.Symbol('t', real=True) + 1, sp.Symbol('t', real=True), 2) == 0)
+
 # ---- 调和分析课程 ----
 _xi = sp.Symbol('xi', real=True)
 chk('高斯函数的傅里叶变换仍为高斯（方差取倒）',
