@@ -624,10 +624,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '秩等于阶梯形的非零行数，也等于极大线性无关组中向量的个数；它同时决定方程组解的自由度和向量组的线性相关性。',
+    definition:
+      '矩阵的秩是行向量组的极大线性无关组的大小，也等于化成梯形后非零行的个数。它衡量矩阵携带的有效信息量。',
     whenToUse: [
       '含参数矩阵讨论秩',
       '判断向量组是否线性相关',
       '判断线性方程组解的结构',
+    ],
+    theorems: [
+      {
+        name: '初等变换不改变秩',
+        statement: '行初等变换保持秩不变，因此可用高斯消元求秩。',
+      },
+      {
+        name: '秩与解',
+        statement: '线性方程组有解当且仅当系数矩阵与增广矩阵的秩相等。',
+        formula: 'r(A)=r(A|b)',
+      },
     ],
     steps: [
       {
@@ -648,6 +661,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '解的判定',
         body: 'r(A) 与 r(A|b) 相等才有解：等于 n 唯一，小于 n 无穷多；不等则无解。',
       },
+      {
+        title: '化到阶梯形',
+        body: '初等行变换化成阶梯形，非零行数就是秩。',
+      },
+    ],
+    pitfalls: [
+      '把秩当行列式：非方阵也有秩。',
+      '忘记化到最简：非零行个数要看清。',
+      '增减行算错：初等变换不改变秩。',
     ],
     example: {
       problem: '矩阵 A 的三行为 (1,2,3)、(2,4,6)、(1,1,1)，求 r(A)。',
@@ -657,7 +679,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '还剩两个非零行。',
       ],
       result: 'r(A)=2',
-    },
+    },    moreExamples: [
+      {
+        problem: '求一、二、二、四 的秩。',
+        walkthrough: [
+          '两行成比例。',
+          '只有一行独立。',
+        ],
+        result: '1',
+      },
+    ],
+
   },
   {
     id: 'positive-definite',
@@ -4256,10 +4288,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '行列式是一个「把方阵映成数」的函数；考试里九成靠三条性质化简，剩下才是硬展开。',
+    definition:
+      '行列式是对方阵定义的一个数，几何上是该矩阵对应线性变换对体积的伸缩倍数。二阶行列式等于主对角乘积减副对角乘积。',
     whenToUse: [
       '判断矩阵是否可逆（det ≠ 0）',
       '求特征多项式',
       '计算面积、体积的伸缩因子',
+    ],
+    theorems: [
+      {
+        name: '行列式与可逆',
+        statement: '方阵可逆当且仅当行列式不为零。',
+        formula: '\\det A\\ne 0\\;\\Leftrightarrow\\;A\\text{ invertible}',
+      },
+      {
+        name: '转置不变',
+        statement: '行列式对转置不变，因此行与列的性质完全对称。',
+      },
     ],
     steps: [
       {
@@ -4281,6 +4326,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '记住特殊结构',
         body: '范德蒙德、分块对角、上下三角都有现成公式。',
       },
+      {
+        title: '先看矩阵大小',
+        body: '二阶用公式，三阶以上先化简再展开。',
+      },
+    ],
+    pitfalls: [
+      '二阶公式记反：是主对角乘积减副对角乘积。',
+      '把行列式与矩阵混：行列式是数，矩阵是表。',
+      '为零就判不可逆：正确，但要注意是方阵。',
     ],
     example: {
       problem: '计算 A = [[1,2,3],[0,4,5],[0,0,6]] 的行列式。',
@@ -4291,7 +4345,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '若换成一般矩阵，先用倍加化三角再乘。',
       ],
       result: '|A|=24',
-    },
+    },    moreExamples: [
+      {
+        problem: '计算二、一、三、四 的行列式。',
+        walkthrough: [
+          '主对角乘积为八。',
+          '副对角乘积为三。',
+          '相减得五。',
+        ],
+        result: '5',
+      },
+    ],
+
   },
   {
     id: 'matrix-algebra',
@@ -4300,10 +4365,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '矩阵乘法对应「先做一个线性变换再做另一个」，顺序不同结果就不同；求逆的本质是解线性方程组。',
+    definition:
+      '矩阵的加法按元素进行，乘法是行乘列求和。乘法不满足交换律，但满足结合律与分配律。',
     whenToUse: [
       '做矩阵乘法与转置',
       '判断矩阵是否可逆并求逆',
       '解矩阵方程 AX = B',
+    ],
+    theorems: [
+      {
+        name: '乘法不可交换',
+        statement: '一般情形下两个矩阵乘积与顺序有关，交换后结果不同。',
+        formula: 'AB\\ne BA\\;\\text{(generally)}',
+      },
+      {
+        name: '转置与逆的顺序',
+        statement: '乘积的转置与逆都要交换顺序。',
+        formula: '(AB)^{T}=B^{T}A^{T}',
+      },
     ],
     steps: [
       {
@@ -4325,6 +4404,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '主对角互换、副对角变号，再除以行列式。',
         formula: 'A^{-1}=\\frac{1}{ad-bc}\\begin{pmatrix}d&-b\\\\-c&a\\end{pmatrix}',
       },
+      {
+        title: '先看维度',
+        body: '相乘前确认左列数等于右行数，否则无意义。',
+      },
+    ],
+    pitfalls: [
+      '维度不匹配就相乘：左列数要等于右行数。',
+      '把乘法当逐元素乘：矩阵乘法是行乘列。',
+      '默认可交换：顺序换了结果就变。',
     ],
     example: {
       problem: '求 A = [[1,2],[3,4]] 的逆。',
@@ -4335,7 +4423,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '验证 A·A⁻¹ = I。',
       ],
       result: 'A^{-1}=\\begin{pmatrix}-2&1\\\\1.5&-0.5\\end{pmatrix}',
-    },
+    },    moreExamples: [
+      {
+        problem: '计算一、二、三、四 乘单位矩阵。',
+        walkthrough: [
+          '单位矩阵乘任何矩阵不变。',
+          '结果仍为原矩阵。',
+        ],
+        result: '\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}',
+      },
+    ],
+
   },
   {
     id: 'gauss-elimination',
@@ -4344,10 +4442,22 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '初等行变换把方程组化成阶梯形，比较系数矩阵与增广矩阵的秩，就能判断是有唯一解、无穷多解还是无解。',
+    definition:
+      '高斯消元用行初等变换把增广矩阵化成阶梯形，再回代求解。它是解线性方程组的通用方法。',
     whenToUse: [
       '解线性方程组',
       '判断方程组解的情况',
       '求基础解系',
+    ],
+    theorems: [
+      {
+        name: '阶梯形判解',
+        statement: '化为阶梯形后，出现零等于非零的行则无解；非零行数小于未知数个数则无穷多解。',
+      },
+      {
+        name: '唯一解条件',
+        statement: '非零行数等于未知数个数时解唯一。',
+      },
     ],
     steps: [
       {
@@ -4367,6 +4477,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '写通解',
         body: '自由变量取参数，其余变量用它表示。',
       },
+      {
+        title: '主元选非零',
+        body: '主元为零先交换行，否则消元失效。',
+      },
+    ],
+    pitfalls: [
+      '消元时乘的系数漏乘右端：增广矩阵要一起变。',
+      '主元为零不换行：应交换行选非零主元。',
+      '回代顺序错：从最下面一行往上代。',
     ],
     example: {
       problem: '解方程组 x + y = 3，2x + 2y = 6。',
@@ -4377,7 +4496,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '通解：x = 3 − t，y = t。',
       ],
       result: '\\text{infinitely many solutions}',
-    },
+    },    moreExamples: [
+      {
+        problem: '解 x 加 y 等于三、x 减 y 等于一。',
+        walkthrough: [
+          '两式相加得二 x 等于四。',
+          '回代求 y。',
+        ],
+        result: 'x=2,\\,y=1',
+      },
+    ],
+
   },
   {
     id: 'vector-space-basis',
@@ -4551,10 +4680,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '矩阵的特殊结构能省掉大半计算：对角阵幂次只看对角元，三角阵行列式只乘对角元，对称阵一定能正交对角化。',
+    definition:
+      '特殊矩阵包括对角、三角、对称、正交与幂等矩阵，它们各有简化性质，识别出来能省大量计算。',
     whenToUse: [
       '快速算特殊矩阵的幂与行列式',
       '判断矩阵是否正交、是否可正交对角化',
       '用分块结构简化大矩阵运算',
+    ],
+    theorems: [
+      {
+        name: '对称矩阵',
+        statement: '转置等于自身的矩阵为对称矩阵，其特征值全为实数且可正交对角化。',
+        formula: 'A^{T}=A',
+      },
+      {
+        name: '正交矩阵',
+        statement: '转置等于逆的矩阵为正交矩阵，行列式为正负一。',
+        formula: 'A^{T}A=I',
+      },
     ],
     steps: [
       {
@@ -4582,6 +4725,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '分块对角阵的行列式是各块行列式之积，求逆也逐块求。',
       },
     ],
+    pitfalls: [
+      '对称与反对称混：转置等于负自身是反对称。',
+      '正交矩阵行列式记为恒为一：也可能为负一。',
+      '只凭外观判断：要按定义验证。',
+    ],
     example: {
       problem: '验证旋转矩阵 $Q=\\begin{pmatrix}\\cos\\theta&-\\sin\\theta\\\\\\sin\\theta&\\cos\\theta\\end{pmatrix}$ 是正交矩阵。',
       walkthrough: [
@@ -4591,7 +4739,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '行列式 $=\\cos^{2}\\theta+\\sin^{2}\\theta=1$，符合正交阵行列式为 $\\pm1$ 的结论。',
       ],
       result: 'Q^{T}Q=I',
-    },
+    },    moreExamples: [
+      {
+        problem: '判断对角元素为二、三的对角矩阵是否对称。',
+        walkthrough: [
+          '转置后仍为自身。',
+          '因此对称。',
+        ],
+        result: 'A^{T}=A',
+      },
+    ],
+
   },
   {
     id: 'cramers-rule',
@@ -4772,10 +4930,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '伴随矩阵由各元素的代数余子式拼成，核心恒等式 $AA^{*}=|A|I$ 把行列式和逆矩阵直接连起来。',
+    definition:
+      '逆矩阵满足乘积为单位矩阵。二阶矩阵的逆是主对调、副变号再除以行列式；一般情形用伴随矩阵除以行列式。',
     whenToUse: [
       '用公式法求逆矩阵',
       '求 $|A^{*}|$ 或 $A^{-1}$ 的行列式',
       '证明与伴随矩阵有关的恒等式',
+    ],
+    theorems: [
+      {
+        name: '逆与伴随',
+        statement: '可逆矩阵的逆等于伴随矩阵除以行列式。',
+        formula: 'A^{-1}=\\frac{1}{\\det A}A^{*}',
+      },
+      {
+        name: '二阶逆矩阵',
+        statement: '二阶矩阵主对角互换、副对角变号，再除以行列式。',
+      },
     ],
     steps: [
       {
@@ -4798,6 +4969,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '把恒等式两边除以 $|A|$ 就得到逆矩阵。',
         formula: 'A^{-1}=\\frac{1}{|A|}A^{*}',
       },
+      {
+        title: '先算行列式',
+        body: '行列式为零则不可逆，后面都不必做。',
+      },
+    ],
+    pitfalls: [
+      '行列式为零仍求逆：不可逆。',
+      '伴随矩阵位置放反：主对调、副变号。',
+      '忘记除行列式：只写了伴随矩阵。',
     ],
     example: {
       problem: '已知 $A$ 是三阶矩阵且 $|A|=2$，求 $|A^{*}|$。',
@@ -4807,7 +4987,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '所以 $|A^{*}|=4$，正好等于 $|A|^{n-1}$。',
       ],
       result: '|A^{*}|=|A|^{n-1}=4',
-    },
+    },    moreExamples: [
+      {
+        problem: '求一、二、三、五 的逆矩阵。',
+        walkthrough: [
+          '行列式为负一。',
+          '主对调、副变号。',
+          '除以行列式。',
+        ],
+        result: '\\begin{pmatrix}-5&2\\\\3&-1\\end{pmatrix}',
+      },
+    ],
+
   },
   {
     id: 'rank-nullity',
@@ -5162,10 +5353,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '行列式可以按任一行（列）展开成代数余子式的加权和；零多的行展开最省力，范德蒙德行列式则有现成公式。',
+    definition:
+      '行列式可按任一行或列展开：每个元素乘它的代数余子式再求和。选零多的行或列能大幅减少计算。',
     whenToUse: [
       '行列式中某行零特别多时',
       '证明行列式恒等式',
       '识别范德蒙德结构并直接写结果',
+    ],
+    theorems: [
+      {
+        name: '按行展开',
+        statement: '行列式等于某行各元素与其代数余子式乘积之和。',
+        formula: '\\det A=\\sum_{j}a_{ij}(-1)^{i+j}M_{ij}',
+      },
+      {
+        name: '上三角行列式',
+        statement: '上三角行列式等于对角元之积。',
+      },
     ],
     steps: [
       {
@@ -5186,6 +5390,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '推论',
         body: '$x_{1},\\dots,x_{n}$ 互不相同时范德蒙德行列式不为零。',
       },
+      {
+        title: '挑零多的行',
+        body: '按含零最多的行或列展开，计算量最小。',
+      },
+    ],
+    pitfalls: [
+      '符号因子漏写：余子式前面要乘负一的幂。',
+      '展开行与余子式不匹配：去掉的是该元素所在行列。',
+      '不先用性质化简：直接展开计算量大且易错。',
     ],
     example: {
       problem: '计算 $\\begin{vmatrix}1&1&1\\\\x_{1}&x_{2}&x_{3}\\\\x_{1}^{2}&x_{2}^{2}&x_{3}^{2}\\end{vmatrix}$ 当 $x_{1}=1,x_{2}=2,x_{3}=3$。',
@@ -5195,7 +5408,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '代入得 $(2-1)(3-1)(3-2)=1\\times2\\times1=2$。',
       ],
       result: 'V_{3}=2',
-    },
+    },    moreExamples: [
+      {
+        problem: '计算对角元为二、三、四的上三角行列式。',
+        walkthrough: [
+          '上三角行列式等于对角元之积。',
+          '二乘三乘四。',
+        ],
+        result: '24',
+      },
+    ],
+
   },
   {
     id: 'elementary-matrix',
@@ -5204,10 +5427,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '对单位矩阵做一次初等变换就得到初等矩阵；左乘它等于对目标矩阵做同样的行变换，这就是高斯消元的代数本质。',
+    definition:
+      '初等矩阵是对单位矩阵做一次初等变换得到的矩阵。左乘初等矩阵等于做一次行变换，右乘等于做列变换。',
     whenToUse: [
       '把行变换写成矩阵乘法',
       '求逆矩阵（初等变换法）',
       '理解初等矩阵都可逆且逆同类',
+    ],
+    theorems: [
+      {
+        name: '初等矩阵与变换',
+        statement: '左乘初等矩阵对应一次行变换，可逆矩阵可写成初等矩阵的乘积。',
+        formula: 'EA\\;\\text{= row operation}',
+      },
+      {
+        name: '求逆的简便方法',
+        statement: '把矩阵与单位矩阵并排做行变换，化成单位矩阵时右侧就是逆矩阵。',
+      },
     ],
     steps: [
       {
@@ -5228,6 +5464,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '对 $(A\\mid I)$ 做行变换化成 $(I\\mid A^{-1})$，就得到逆矩阵。',
         formula: '(A\\mid I)\\to(I\\mid A^{-1})',
       },
+      {
+        title: '左行右列',
+        body: '左乘做行变换、右乘做列变换，别用反。',
+      },
+    ],
+    pitfalls: [
+      '左右乘搞混：左乘行变换、右乘列变换。',
+      '变换次数记错：每次对应一个初等矩阵。',
+      '非方阵谈初等矩阵逆：初等矩阵都可逆。',
     ],
     example: {
       problem: '用初等变换求 $A=\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}$ 的逆。',
@@ -5238,7 +5483,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '读出 $A^{-1}=\\begin{pmatrix}-2&1\\\\1.5&-0.5\\end{pmatrix}$。',
       ],
       result: 'A^{-1}=\\begin{pmatrix}-2&1\\\\1.5&-0.5\\end{pmatrix}',
-    },
+    },    moreExamples: [
+      {
+        problem: '交换两行的初等矩阵行列式是多少？',
+        walkthrough: [
+          '交换两行使行列式变号。',
+          '原单位矩阵行列式为一。',
+        ],
+        result: '-1',
+      },
+    ],
+
   },
   {
     id: 'linear-space',
