@@ -24,7 +24,7 @@ export const CALCULUS_COURSE: Course = {
       textbookRef: '第 1 章',
       summary: '极限是整门课的地基：后面所有定义都靠它写出来',
       goals: ['能用夹逼与等价无穷小化简极限', '判断何时可以用洛必达', '处理 1 的无穷次型与根式差'],
-      lessonIds: ['squeeze', 'lhopital', 'equivalent', 'one-to-infinity', 'radical-difference', 'infinitesimal-order', 'sequence-limit'],
+      lessonIds: ['continuity-theorems', 'squeeze', 'lhopital', 'equivalent', 'one-to-infinity', 'radical-difference', 'infinitesimal-order', 'sequence-limit'],
       practiceTopics: ['limit-basic', 'sequence-limit'],
       exercises: [
         {
@@ -46,12 +46,31 @@ export const CALCULUS_COURSE: Course = {
       ],
     },
     {
+      id: 'cal-derivative',
+      title: '导数与微分',
+      textbookRef: '第 2 章',
+      summary: '四把工具拼出所有初等函数的导数',
+      goals: ['熟记基本求导公式', '掌握链式法则与隐函数求导', '理解微分与近似'],
+      lessonIds: ['derivative-rules', 'derivative-sign'],
+      practiceTopics: ['derivative-basic'],
+      exercises: [
+        {
+          id: 'cal1-3',
+          level: '基础',
+          question: '求 $y=\\sin(x^{2})$ 的导数。',
+          answer: '$2x\\cos(x^{2})$',
+          hint: '外层正弦，内层平方，用链式法则。',
+          steps: ['外层求导得 $\\cos(x^{2})$。', '乘内层导数 $2x$。', '结果为 $2x\\cos(x^{2})$。'],
+        },
+      ],
+    },
+    {
       id: 'cal-mvt',
       title: '中值定理与导数应用',
       textbookRef: '第 3 章',
       summary: '把「存在一点」的结论，变成构造辅助函数的固定动作',
       goals: ['会用罗尔定理构造辅助函数', '掌握拉格朗日与柯西中值定理', '用导数符号判断单调与极值'],
-      lessonIds: ['rolle', 'mvt-construct', 'lagrange-cauchy', 'derivative-sign', 'inequality-proof', 'classic-inequalities'],
+      lessonIds: ['rolle', 'mvt-construct', 'lagrange-cauchy', 'inequality-proof', 'classic-inequalities'],
       practiceTopics: ['derivative-basic', 'function-property', 'inequality-solve'],
       exercises: [
         {
@@ -70,7 +89,7 @@ export const CALCULUS_COURSE: Course = {
       textbookRef: '第 4–5 章',
       summary: '积分是求导的逆运算，定积分再把它变成可算的面积',
       goals: ['熟练掌握换元与分部积分', '理解定积分定义与几何意义', '会用放缩估计积分'],
-      lessonIds: ['riemann', 'definite-integral-substitution', 'byparts', 'integral-applications', 'integral-estimate'],
+      lessonIds: ['newton-leibniz', 'riemann', 'definite-integral-substitution', 'byparts', 'integral-applications', 'integral-estimate'],
       practiceTopics: ['integral-basic'],
       exercises: [
         {
@@ -154,7 +173,7 @@ export const CALCULUS_COURSE: Course = {
       textbookRef: '第 10–11 章',
       summary: '先看区域形状，再决定用直角、极、柱还是球坐标',
       goals: ['会换序与用对称性', '掌握三重积分的坐标选择', '区分两类曲线积分'],
-      lessonIds: ['double-integral-order', 'double-integral-symmetry', 'triple-integral', 'line-integral'],
+      lessonIds: ['double-integral-order', 'double-integral-symmetry', 'triple-integral', 'line-integral', 'green-formula'],
       practiceTopics: ['integral-basic', 'conic-sections'],
       exercises: [
         {

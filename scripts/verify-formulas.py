@@ -46,6 +46,22 @@ chk('指数分布 Exp(2) 的方差为 1/4',
 chk('指数分布 Exp(2) 的均值为 1/2',
     sp.simplify(sp.integrate(_v * 2 * sp.exp(-2 * _v), (_v, 0, sp.oo)) - sp.Rational(1, 2)) == 0)
 
+# ---- 高数新增讲解 ----
+chk('f=x^3-x-1 在 (1,2) 有零点（端点异号）',
+    (x**3 - x - 1).subs(x, 1) < 0 < (x**3 - x - 1).subs(x, 2))
+chk("(sin(x^2))' = 2x cos(x^2)",
+    sp.simplify(sp.diff(sp.sin(x**2), x) - 2 * x * sp.cos(x**2)) == 0)
+chk('int_0^pi sin x dx = 2', sp.integrate(sp.sin(x), (x, 0, sp.pi)) == 2)
+chk('int_1^oo 1/x^2 dx = 1', sp.integrate(1 / x**2, (x, 1, sp.oo)) == 1)
+_theta = sp.symbols('theta', real=True)
+chk('单位圆面积 = (1/2)∮(x dy - y dx) = π',
+    sp.simplify(
+        sp.Rational(1, 2) * sp.integrate(
+            sp.cos(_theta) * sp.diff(sp.sin(_theta), _theta)
+            - sp.sin(_theta) * sp.diff(sp.cos(_theta), _theta),
+            (_theta, 0, 2 * sp.pi))
+        - sp.pi) == 0)
+
 # ---- 高数课程例题 ----
 chk('lim sin3x/x = 3', sp.limit(sp.sin(3 * x) / x, x, 0) == 3)
 chk('lim (1+1/n)^n = e', sp.limit((1 + 1 / n)**n, n, sp.oo) == sp.E)
