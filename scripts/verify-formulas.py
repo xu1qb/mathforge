@@ -41,6 +41,13 @@ chk('x^3-3x 的导数在 -2、0、2 处依次为正负正',
 chk('x^3-3x 的二阶导在 ±1 处依次为负正',
     [sp.sign(sp.diff(x**3 - 3*x, x, 2).subs(x, v)) for v in (-1, 1)] == [-1, 1])
 
+# ---- 递推数列 ----
+_seq = {1: 1}
+for _i in range(1, 7):
+    _seq[_i + 1] = 2 * _seq[_i] + 3
+chk('递推 a1=1、a(n+1)=2a(n)+3 的通项为 2^(n+1)-3',
+    all(_seq[k] == 2 ** (k + 1) - 3 for k in range(1, 8)))
+
 # ---- 级数与定积分 ----
 chk('sum n/2^n = 2', sp.summation(n / 2**n, (n, 1, sp.oo)) == 2)
 chk('int_0^1 sqrt(x) dx = 2/3', sp.integrate(sp.sqrt(x), (x, 0, 1)) == sp.Rational(2, 3))
