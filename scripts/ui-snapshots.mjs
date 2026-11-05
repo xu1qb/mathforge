@@ -108,6 +108,11 @@ const main = async () => {
   await send('Page.enable');
   await send('Runtime.enable');
 
+  // 预热：首次访问要等 Vite 编译，避免把「还在编译」误判成空白页
+  await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+  await send('Page.navigate', { url: BASE + '/?warm=1#' });
+  await sleep(Math.max(WAIT, 2500));
+
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
   const outDir = path.join(OUT_ROOT, stamp);
   fs.mkdirSync(outDir, { recursive: true });
@@ -127,11 +132,23 @@ const main = async () => {
       await send('Page.navigate', { url: BASE + '/?t=' + Date.now() + '#' + route });
       await sleep(WAIT);
 
-      const probe = await send('Runtime.evaluate', {
-        expression: 'JSON.stringify({ text: document.body.innerText.length, sw: document.documentElement.scrollWidth, vw: window.innerWidth })',
-        returnByValue: true,
-      });
-      const info = JSON.parse(probe.result?.result?.value ?? '{}');
+      const readInfo = async () =>
+        JSON.parse(
+          (
+            await send('Runtime.evaluate', {
+              expression:
+                'JSON.stringify({ text: document.body.innerText.length, sw: document.documentElement.scrollWidth, vw: window.innerWidth })',
+              returnByValue: true,
+            })
+          ).result?.result?.value ?? '{}',
+        );
+
+      let info = await readInfo();
+      // 空白页重试一次：慢编译或异步渲染都可能让首帧偏空
+      if ((info.text ?? 0) < 30) {
+        await sleep(2500);
+        info = await readInfo();
+      }
       const shot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true });
       const buf = Buffer.from(shot.result.data, 'base64');
       const key = route.replace(/\//g, '_') + '@' + width;

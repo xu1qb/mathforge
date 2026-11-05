@@ -31,6 +31,16 @@ chk('lim(e^x - 1 - x)/x^2 = 1/2',
     sp.limit((sp.exp(x) - 1 - x) / x**2, x, 0) == sp.Rational(1, 2))
 chk('lim(sin n)/n = 0', sp.limit(sp.sin(n) / n, n, sp.oo) == 0)
 
+# ---- 导数应用：单调与极值 ----
+chk('x^3-3x 的驻点为 ±1',
+    sorted(sp.solve(sp.diff(x**3 - 3*x, x), x)) == [-1, 1])
+chk('x^3-3x 在 x=-1 处取极大值 2', (x**3 - 3*x).subs(x, -1) == 2)
+chk('x^3-3x 在 x=1 处取极小值 -2', (x**3 - 3*x).subs(x, 1) == -2)
+chk('x^3-3x 的导数在 -2、0、2 处依次为正负正',
+    [sp.sign(sp.diff(x**3 - 3*x, x).subs(x, v)) for v in (-2, 0, 2)] == [1, -1, 1])
+chk('x^3-3x 的二阶导在 ±1 处依次为负正',
+    [sp.sign(sp.diff(x**3 - 3*x, x, 2).subs(x, v)) for v in (-1, 1)] == [-1, 1])
+
 # ---- 级数与定积分 ----
 chk('sum n/2^n = 2', sp.summation(n / 2**n, (n, 1, sp.oo)) == 2)
 chk('int_0^1 sqrt(x) dx = 2/3', sp.integrate(sp.sqrt(x), (x, 0, 1)) == sp.Rational(2, 3))

@@ -13,6 +13,7 @@ const args = new Map(
 
 const BASE = process.env.MF_API || 'http://127.0.0.1:8787/api';
 const target = Number(args.get('target') ?? 5);
+const difficulty = (args.get('difficulty') ?? 'basic');
 const DEFAULT_TOPICS = [
   '一元二次方程', '因式分解', '极限计算', '函数求导',
   '不定积分', '平面几何', '古典概型', '矩阵运算',
@@ -38,7 +39,7 @@ const main = async () => {
 
   for (const [i, topic] of topics.entries()) {
     const before = await fetch(BASE + '/ai/pool/status?topic=' + encodeURIComponent(topic)).then((r) => r.json());
-    console.log('[' + (i + 1) + '/' + topics.length + '] ' + topic + '（已有 ' + before.total + ' 题）');
+    console.log('[' + (i + 1) + '/' + topics.length + '] ' + topic + ' ' + difficulty + '（已有 ' + before.total + ' 题）');
     if (before.total >= target) {
       console.log('  已达标，跳过');
       continue;
@@ -46,7 +47,7 @@ const main = async () => {
     const res = await fetch(BASE + '/ai/pool/fill', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic, difficulty: 'basic', target }),
+      body: JSON.stringify({ topic, difficulty, target }),
     }).then((r) => r.json());
     if (!res.job) {
       console.log('  启动失败，跳过');
