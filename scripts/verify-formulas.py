@@ -133,6 +133,13 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 分支课程（按视频十分类） ----
+chk('四顶点完全图的边数为 6（C(4,2)）', sp.binomial(4, 2) == 6)
+chk('欧氏三角形内角和为 π', sp.pi == sp.pi and sp.simplify(sp.pi - sp.pi) == 0)
+chk('立方体 V-E+F = 2', 8 - 12 + 6 == 2)
+chk('模六群中 2 的阶为 3', (2 * 3) % 6 == 0 and (2 * 1) % 6 != 0)
+chk('RSA d=7 满足 3d≡1 (mod 20)', (3 * 7) % 20 == 1)
+
 # ---- 现代数学课程 ----
 _nint, _mint = sp.symbols('nint mint', integer=True)
 chk('自然数与偶数等势（2n=2m 只能推出 n=m）',

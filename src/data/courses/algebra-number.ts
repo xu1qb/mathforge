@@ -1,0 +1,121 @@
+import type { Course } from './types';
+
+export const ALGEBRA_NUMBER_COURSE: Course = {
+  id: 'algebra-number',
+  title: '代数与数论',
+  tagline: '群环域到伽罗瓦：结构决定可解性',
+  textbook: { name: '代数与数论导论（自编）', edition: '第一版' },
+  prerequisites: ['线性代数'],
+  hours: 56,
+  intro: {
+    what: '代数研究运算结构，数论研究整数与素数的规律。两者在伽罗瓦理论与代数数论处交汇。',
+    objects: ['群与同态', '环与理想', '域与扩张', '伽罗瓦理论', '解析数论', '表示论'],
+    history: ['19 世纪：伽罗瓦用群论解决方程可解性', '19 世纪末：戴德金建立理想理论', '20 世纪：表示论成为研究群的主要工具'],
+  },
+  chapters: [
+    {
+      id: 'al-group',
+      title: '群论',
+      textbookRef: '第 1 章',
+      summary: '对称性的数学，核心是同态与商群',
+      goals: ['理解群同态的核与像', '知道第一同构定理'],
+      lessonIds: ['group-homomorphism'],
+      practiceTopics: ['matrix-op'],
+      exercises: [
+        {
+          id: 'al1-1',
+          level: '进阶',
+          question: '模六加法群中元素 2 的阶是多少？',
+          answer: '$3$',
+          hint: '反复相加看回到零。',
+          steps: ['2+2=4。', '4+2=6≡0。', '阶为 3。'],
+        },
+      ],
+    },
+    {
+      id: 'al-ring',
+      title: '环论',
+      textbookRef: '第 2 章',
+      summary: '加法与乘法并存的结构',
+      goals: ['理解理想与商环', '知道理想对应同态的核'],
+      lessonIds: ['ring-ideal'],
+      practiceTopics: ['matrix-op'],
+      exercises: [
+        {
+          id: 'al2-1',
+          level: '进阶',
+          question: '整数环中偶数集合是否构成理想？',
+          answer: '是',
+          hint: '理想要对加法与乘法封闭。',
+          steps: ['偶数加偶数仍是偶数。', '整数乘偶数仍是偶数。', '因此是理想。'],
+        },
+      ],
+    },
+    {
+      id: 'al-galois',
+      title: '伽罗瓦理论',
+      textbookRef: '第 3 章',
+      summary: '用群的可解性判断方程能否根式求解',
+      goals: ['理解域扩张与伽罗瓦群', '知道五次方程无根式解'],
+      lessonIds: ['galois-theory'],
+      practiceTopics: ['matrix-op'],
+      exercises: [
+        {
+          id: 'al3-1',
+          level: '竞赛',
+          question: '一般五次方程能否用根式求解？',
+          answer: '不能',
+          hint: '伽罗瓦群不可解。',
+          steps: ['一般五次方程的伽罗瓦群是对称群。', '对称群不可解。', '因此无根式解。'],
+        },
+      ],
+    },
+    {
+      id: 'al-rep',
+      title: '表示论',
+      textbookRef: '第 4 章',
+      summary: '把抽象群变成矩阵，用线性代数研究群',
+      goals: ['理解表示的矩阵形式', '知道特征标的作用'],
+      lessonIds: ['representation-theory'],
+      practiceTopics: ['matrix-op'],
+      exercises: [
+        {
+          id: 'al4-1',
+          level: '进阶',
+          question: '一维表示对应的矩阵是什么类型？',
+          answer: '数（1×1 矩阵）',
+          hint: '一维空间上的线性变换。',
+          steps: ['一维空间是数轴。', '线性变换就是乘一个数。'],
+        },
+      ],
+    },
+    {
+      id: 'al-number',
+      title: '解析数论',
+      textbookRef: '第 5 章',
+      summary: '用分析工具研究素数分布',
+      goals: ['知道素数定理', '理解 ζ 函数的作用'],
+      lessonIds: ['prime-theorem'],
+      practiceTopics: ['nt-gcd'],
+      exercises: [
+        {
+          id: 'al5-1',
+          level: '进阶',
+          question: '一百以内有多少个素数？',
+          answer: '$25$',
+          hint: '查表或筛法。',
+          steps: ['逐一筛去合数。', '共 25 个。'],
+        },
+      ],
+    },
+  ],
+  applications: [
+    { title: '密码学', scene: '信息安全', example: 'RSA 依赖数论中大整数分解的困难性。' },
+    { title: '纠错码', scene: '通信', example: '有限域上的线性码用于数据传输纠错。' },
+  ],
+  crossings: [
+    { subject: '线性代数', relation: '表示论把群作用写成矩阵，用特征值研究结构。', courseId: 'linear-algebra' },
+    { subject: '现代数学导论', relation: '范畴论提供统一语言描述群、环、模。', courseId: 'modern-math' },
+  ],
+  toolPath: '/number-theory',
+};
