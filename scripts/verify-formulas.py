@@ -122,6 +122,17 @@ chk('线代扩展2 la6-13', sp.Matrix([[1,1],[1,0]]).det() != 0)
 chk('线代扩展2 la6-14', 2 == 2)
 chk('线代扩展2 la6-15', sp.Matrix([[2,0],[0,1]]) == sp.diag(2,1))
 
+# ---- 概率补讲 ----
+chk('古典概型：C(3,1)C(2,1)/C(5,2) = 3/5',
+    sp.Rational(sp.binomial(3, 1) * sp.binomial(2, 1), sp.binomial(5, 2)) == sp.Rational(3, 5))
+chk('正态 80 分以上比例 ≈ 0.1587',
+    sp.simplify((1 - (1 + sp.erf(sp.Rational(1, 1) / sp.sqrt(2))) / 2) - sp.Rational(1587, 10000)) < sp.Rational(1, 1000))
+chk('独立且方差为 1 时 Var(X+Y)=2', 1 + 1 == 2)
+chk('样本量 10、总体方差 4 → 均值方差 0.4', sp.Rational(4, 10) == sp.Rational(2, 5))
+chk('指数分布 MLE λ=1/样本均值',
+    sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
+                - n / sp.Symbol('S', positive=True)) == 0)
+
 # ---- 概率统计课程 ----
 chk('P(A)=0.5, P(B|A)=0.4 → P(AB)=0.2',
     sp.Rational(1, 2) * sp.Rational(2, 5) == sp.Rational(1, 5))

@@ -28,7 +28,7 @@ export const PROBABILITY_COURSE: Course = {
         '会用条件概率与乘法公式',
         '会用全概率与贝叶斯公式',
       ],
-      lessonIds: ['bayes'],
+      lessonIds: ['classical-probability', 'bayes'],
       practiceTopics: ['probability-classical'],
       exercises: [
         {
@@ -51,7 +51,7 @@ export const PROBABILITY_COURSE: Course = {
         '记住常见分布（二项、泊松、均匀、指数、正态）',
         '会求随机变量函数的分布',
       ],
-      lessonIds: ['distribution', 'function-of-rv'],
+      lessonIds: ['distribution', 'normal-distribution', 'function-of-rv'],
       practiceTopics: ['random-variable'],
       exercises: [
         {
@@ -74,7 +74,7 @@ export const PROBABILITY_COURSE: Course = {
         '判断独立性',
         '会算协方差与相关系数',
       ],
-      lessonIds: ['joint-distribution'],
+      lessonIds: ['joint-distribution', 'covariance-correlation'],
       practiceTopics: ['random-variable'],
       exercises: [
         {
@@ -143,7 +143,7 @@ export const PROBABILITY_COURSE: Course = {
         '掌握三大抽样分布的构造',
         '会查分位数',
       ],
-      lessonIds: ['sampling-distribution'],
+      lessonIds: ['statistics-basics', 'sampling-distribution'],
       practiceTopics: ['random-variable'],
       exercises: [
         {
@@ -166,7 +166,7 @@ export const PROBABILITY_COURSE: Course = {
         '会构造置信区间',
         '正确理解置信度',
       ],
-      lessonIds: ['parameter-estimation'],
+      lessonIds: ['parameter-estimation', 'maximum-likelihood'],
       practiceTopics: ['random-variable'],
       exercises: [
         {

@@ -77,6 +77,7 @@ import {
   type Difficulty,
 } from '@/lib/math-practice';
 import { fetchQueue, fetchPool, fillPool, fetchPoolStatus, reviewQuestion, type AiQuestion, type FillJob } from '@/lib/ai-client';
+import { getCourseExercises } from '@/lib/course-exercises';
 import { toast } from 'sonner';
 import { scopedStorage } from '@/lib/lark-mock';
 import { useWrongBook, useLearningStats, usePracticeSettings, useQuestionFavorites, WRONG_REASON_LABELS } from '@/hooks/use-learning';
@@ -148,6 +149,8 @@ export default function PracticePage() {
   const [aiPool, setAiPool] = useState<AiQuestion[]>([]);
   const [aiCursor, setAiCursor] = useState(0);
   const [fillJob, setFillJob] = useState<FillJob | null>(null);
+  // 课程习题模式：直接刷三门课程的课后题
+  const [courseMode, setCourseMode] = useState(false);
   const [userAnswer, setUserAnswer] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -236,7 +239,11 @@ export default function PracticePage() {
   // 生成新题目
   const newQuestion = useCallback(() => {
     let q: PracticeQuestion;
-    if (aiEnabled && aiPool.length > 0) {
+    if (courseMode) {
+      const pool = getCourseExercises();
+      const item = pool[Math.floor(Math.random() * pool.length)];
+      q = { ...item };
+    } else if (aiEnabled && aiPool.length > 0) {
       const item = aiPool[aiCursor % aiPool.length];
       q = {
         id: item.id,
@@ -266,7 +273,7 @@ export default function PracticePage() {
     setTimeLeft(180);
     questionStartTimeRef.current = Date.now();
     recordQuestion(activeTopic);
-  }, [activeTopic, difficulty, recordQuestion, aiEnabled, aiPool, aiCursor]);
+  }, [activeTopic, difficulty, recordQuestion, aiEnabled, aiPool, aiCursor, courseMode]);
 
   // 拉取「当前知识点」审核通过的 AI 题
   // 后台补题：预生成 10 道，跑完自动刷新题库
@@ -988,6 +995,19 @@ export default function PracticePage() {
                   title="只使用已审核通过的 AI 生成题"
                 >
                   AI 题{aiEnabled ? '（开）' : ''}
+                </button>
+                <button
+                  onClick={() => {
+                    setCourseMode((v) => !v);
+                    setAiEnabled(false);
+                    newQuestion();
+                  }}
+                  className={`px-3 py-1.5 text-sm rounded-lg font-medium transition-all ${
+                    courseMode ? 'bg-sky-600 text-white' : 'text-muted-foreground hover:bg-accent'
+                  }`}
+                  title="使用三本教材的课后习题"
+                >
+                  课程题{courseMode ? '（开）' : ''}
                 </button>
                 <button
                   onClick={() => void handleFillPool()}
