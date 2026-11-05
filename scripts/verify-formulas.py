@@ -133,6 +133,20 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 复分析课程 ----
+z = sp.Symbol('z')
+chk('(1+i)^2 = 2i', sp.simplify((1 + sp.I) ** 2 - 2 * sp.I) == 0)
+chk('欧拉公式 e^(iπ)+1 = 0', sp.simplify(sp.exp(sp.I * sp.pi) + 1) == 0)
+_xx, _yy = sp.symbols('cx cy', real=True)
+_u = _xx**2 - _yy**2
+_v = 2 * _xx * _yy
+chk('z^2 的实虚部满足柯西-黎曼方程',
+    sp.simplify(sp.diff(_u, _xx) - sp.diff(_v, _yy)) == 0
+    and sp.simplify(sp.diff(_u, _yy) + sp.diff(_v, _xx)) == 0)
+chk('留数 Res(1/z, 0) = 1', sp.residue(1 / z, z, 0) == 1)
+chk('留数 Res(1/z^2, 0) = 0', sp.residue(1 / z**2, z, 0) == 0)
+chk('模的平方 (1+i)(1-i) = 2', sp.expand((1 + sp.I) * (1 - sp.I)) == 2)
+
 # ---- 实分析课程 ----
 chk('可数集的勒贝格测度为零（可列个零之和）', sp.summation(sp.Integer(0), (n, 1, sp.oo)) == 0)
 chk('尖峰函数列的积分极限为 1（每项 n×(1/n)）',
