@@ -7,6 +7,7 @@ import { generateQuestions } from './generate.ts';
 import { llmMode } from './llm.ts';
 import { validateQuestion } from './validate.ts';
 import { saveGenerated, listQueue, reviewQuestion, stats, type ReviewStatus } from './store.ts';
+import { poolStatus, listPool, startFill, getFillJob } from './pool.ts';
 import type { AiQuestionRequest } from './types.ts';
 
 const MAX_BODY = 1024 * 256;
@@ -82,6 +83,50 @@ const server = createServer(async (req, res) => {
       };
       applyRuntimeConfig(body);
       send(res, 200, { ok: true, mode: llmMode(), model: config.model });
+      return;
+    }
+
+    // ===== 预生成池 =====
+    if (url.pathname === '/api/ai/pool/status' && req.method === 'GET') {
+      const topic = url.searchParams.get('topic') ?? undefined;
+      send(res, 200, poolStatus(topic));
+      return;
+    }
+
+    if (url.pathname === '/api/ai/pool' && req.method === 'GET') {
+      const topic = url.searchParams.get('topic');
+      if (!topic) {
+        send(res, 400, { error: '缺少 topic' });
+        return;
+      }
+      const difficulty = url.searchParams.get('difficulty') ?? undefined;
+      const limit = Number(url.searchParams.get('limit') ?? 20);
+      const questions = listPool(topic, difficulty, Number.isFinite(limit) ? limit : 20);
+      send(res, 200, { questions, count: questions.length, mode: llmMode() });
+      return;
+    }
+
+    if (url.pathname === '/api/ai/pool/fill' && req.method === 'POST') {
+      const body = JSON.parse(await readBody(req)) as {
+        topic?: string; difficulty?: 'basic' | 'advanced' | 'competition'; target?: number;
+      };
+      if (!body.topic) {
+        send(res, 400, { error: '缺少 topic' });
+        return;
+      }
+      const job = startFill({ topic: body.topic, difficulty: body.difficulty, target: body.target });
+      send(res, 200, { job });
+      return;
+    }
+
+    if (url.pathname === '/api/ai/pool/job' && req.method === 'GET') {
+      const id = url.searchParams.get('id') ?? '';
+      const job = getFillJob(id);
+      if (!job) {
+        send(res, 404, { error: '任务不存在' });
+        return;
+      }
+      send(res, 200, { job });
       return;
     }
 

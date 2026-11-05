@@ -38,7 +38,15 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
   const req = normalize(input);
   const verifyMode: VerifyMode = (input.verifyMode ?? config.verifyMode) as VerifyMode;
   const useAgent = config.agentMode && llmMode() === 'live';
-  const key = cacheKey({ req, model: config.model, provider: config.provider, v: PROMPT_VERSION, agent: useAgent, verifyMode });
+  const key = cacheKey({
+    req,
+    seed: input.seed ?? '',
+    model: config.model,
+    provider: config.provider,
+    v: PROMPT_VERSION,
+    agent: useAgent,
+    verifyMode,
+  });
 
   const cached = readCache<AiQuestionBatch>(key);
   if (cached) {

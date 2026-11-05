@@ -204,7 +204,31 @@ AI 出题 → 校验（按档位）→ 入库 pending → 人工审核 → appro
 
 服务端测试强制 `CACHE_DIR=/tmp/mf-test-cache`，不会污染真实题库。
 
-## 十三、打包成桌面 App
+## 十三、预生成池（AI 题秒开）
+
+按需生成一题要 5–15 秒，用户等不起。预生成池把这道工序挪到后台：
+
+```bash
+npm run ai:fill -- --topic=极限计算 --count=10 --difficulty=basic
+```
+
+- 后台串行生成，**每次带不同 seed**（否则会命中同一份缓存，永远出同一道题）
+- 只收严格档验证通过的题，直接入库为 approved
+- 去重后池子没增长时算一次失败，**连续 3 次失败或到尝试上限就停**（防跑飞）
+- 练习页点「补题」也能触发，带进度 `补题中 3/10`
+
+接口：
+
+| 方法 | 路径 | 作用 |
+|---|---|---|
+| GET | `/api/ai/pool?topic=&difficulty=` | 秒开取题（不打模型） |
+| GET | `/api/ai/pool/status` | 池子统计 + 当前任务进度 |
+| POST | `/api/ai/pool/fill` | 启动后台补题 |
+| GET | `/api/ai/pool/job?id=` | 查任务 |
+
+练习页的「AI 题」开关现在优先读池子（秒开），池子空了才回落到审核通过的题库。
+
+## 十四、打包成桌面 App
 
 `npm run app:build` 会做三件事：
 
@@ -226,7 +250,7 @@ npm run app:dev     # 开发调试（Vite 5176 + Electron）
 npm run app:build   # 产出 release/ 下的 .app
 ```
 
-## 十四、当前边界
+## 十五、当前边界
 
 - 只实现了「生成题目」；「生成讲解内容」的接口在 `server/prompts.ts` 里已有模板，尚未接页面
 - 已审核题目还没有进入练习页的抽题池（下一步接）

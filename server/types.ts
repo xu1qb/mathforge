@@ -56,4 +56,6 @@ export interface AiQuestionRequest {
   style?: string;
   /** 可选：本次请求的校验档位，覆盖服务端默认 */
   verifyMode?: 'strict' | 'balanced' | 'off';
+  /** 可选：随机种子。预生成池每次都要不同，否则会命中同一份缓存 */
+  seed?: string;
 }

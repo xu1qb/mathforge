@@ -144,6 +144,50 @@ export function reviewQuestion(id: string, action: 'approve' | 'reject', note?: 
   return request('/ai/review', { method: 'POST', body: JSON.stringify({ id, action, note }) });
 }
 
+export interface PoolResponse {
+  questions: StoredQuestion[];
+  count: number;
+  mode: 'live' | 'mock';
+}
+
+export interface FillJob {
+  id: string;
+  topic: string;
+  difficulty: string;
+  target: number;
+  filled: number;
+  attempts: number;
+  failures: number;
+  running: boolean;
+  error?: string;
+}
+
+/** 预生成池：秒开，不打模型 */
+export function fetchPool(topic: string, difficulty?: string, limit = 20): Promise<PoolResponse> {
+  const params = new URLSearchParams({ topic });
+  if (difficulty) params.set('difficulty', difficulty);
+  params.set('limit', String(limit));
+  return request<PoolResponse>('/ai/pool?' + params.toString(), { method: 'GET' }, 8000);
+}
+
+/** 触发后台补题（需要在线模型） */
+export function fillPool(topic: string, difficulty: string, target = 10): Promise<{ job: FillJob }> {
+  return request<{ job: FillJob }>('/ai/pool/fill', {
+    method: 'POST',
+    body: JSON.stringify({ topic, difficulty, target }),
+  }, 10000);
+}
+
+export function fetchPoolStatus(topic?: string): Promise<{
+  total: number;
+  byTopic: Record<string, number>;
+  job: FillJob | null;
+  mode: 'live' | 'mock';
+}> {
+  const qs = topic ? '?topic=' + encodeURIComponent(topic) : '';
+  return request('/ai/pool/status' + qs, { method: 'GET' }, 8000);
+}
+
 export function fetchAiQuestions(req: {
   topic: string;
   difficulty: 'basic' | 'advanced' | 'competition';

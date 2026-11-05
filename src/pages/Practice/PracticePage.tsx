@@ -76,7 +76,7 @@ import {
   type PracticeQuestion,
   type Difficulty,
 } from '@/lib/math-practice';
-import { fetchQueue, type AiQuestion } from '@/lib/ai-client';
+import { fetchQueue, fetchPool, fillPool, fetchPoolStatus, type AiQuestion, type FillJob } from '@/lib/ai-client';
 import { toast } from 'sonner';
 import { scopedStorage } from '@/lib/lark-mock';
 import { useWrongBook, useLearningStats, usePracticeSettings, useQuestionFavorites, WRONG_REASON_LABELS } from '@/hooks/use-learning';
@@ -147,6 +147,7 @@ export default function PracticePage() {
   const [aiEnabled, setAiEnabled] = useState(false);
   const [aiPool, setAiPool] = useState<AiQuestion[]>([]);
   const [aiCursor, setAiCursor] = useState(0);
+  const [fillJob, setFillJob] = useState<FillJob | null>(null);
   const [userAnswer, setUserAnswer] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -256,25 +257,71 @@ export default function PracticePage() {
   }, [activeTopic, difficulty, recordQuestion, aiEnabled, aiPool, aiCursor]);
 
   // 拉取「当前知识点」审核通过的 AI 题
+  // 后台补题：预生成 10 道，跑完自动刷新题库
+  const handleFillPool = useCallback(async () => {
+    const label = PRACTICE_TOPICS.find((t) => t.key === activeTopic)?.label;
+    if (!label) return;
+    try {
+      const { job } = await fillPool(label, difficulty, 10);
+      if (job.error) {
+        toast.error(job.error);
+        return;
+      }
+      setFillJob(job);
+      toast('开始后台补题：' + label + '（严格档，验证通过才入库）');
+      // 轮询进度
+      for (let i = 0; i < 120; i++) {
+        await new Promise((r) => setTimeout(r, 1500));
+        const status = await fetchPoolStatus(label).catch(() => null);
+        const cur = status?.job;
+        if (cur) setFillJob(cur);
+        if (!cur?.running) {
+          if (cur?.filled) {
+            toast.success('补题完成：新增 ' + cur.filled + ' 道');
+            setAiEnabled(true);
+            setAiCursor(0);
+          } else if (cur?.error) {
+            toast.error(cur.error);
+          }
+          break;
+        }
+      }
+    } catch (e) {
+      toast.error('补题失败：' + String(e).slice(0, 60));
+    } finally {
+      setFillJob(null);
+    }
+  }, [activeTopic, difficulty]);
+
   const loadAiPool = useCallback(async () => {
     const label = PRACTICE_TOPICS.find((t) => t.key === activeTopic)?.label;
     if (!label) return;
     try {
-      const data = await fetchQueue('approved');
-      const mine = data.questions.filter((q) => q.topic === label);
+      // 优先用预生成池（本地已入库，秒开、不打模型）
+      const pool = await fetchPool(activeTopic, difficulty).catch(() => null);
+      let mine = (pool?.questions ?? []) as typeof aiPool;
+      let fromPool = mine.length > 0;
+
+      if (mine.length === 0) {
+        const data = await fetchQueue('approved');
+        mine = data.questions.filter((q) => q.topic === label);
+      }
+
       setAiPool(mine);
       setAiCursor(0);
       if (mine.length === 0) {
         setAiEnabled(false);
-        toast('这个知识点还没有审核通过的 AI 题');
+        toast('这个知识点还没有 AI 题，可以先用「补题」预生成', { description: '需要有在线模型配置' });
       } else {
         setAiEnabled(true);
-        toast('已切换到 AI 题库（' + mine.length + ' 题）');
+        toast(
+          fromPool ? '已切换到 AI 题库（' + mine.length + ' 题，秒开）' : '已切换到 AI 题库（' + mine.length + ' 题）',
+        );
       }
     } catch {
       toast('后端未启动，无法加载 AI 题库');
     }
-  }, [activeTopic]);
+  }, [activeTopic, difficulty]);
 
   // 切换知识点时生成新题
   useEffect(() => {
@@ -929,6 +976,14 @@ export default function PracticePage() {
                   title="只使用已审核通过的 AI 生成题"
                 >
                   AI 题{aiEnabled ? '（开）' : ''}
+                </button>
+                <button
+                  onClick={() => void handleFillPool()}
+                  disabled={Boolean(fillJob)}
+                  className="px-2.5 py-1.5 text-xs rounded-lg border border-border text-muted-foreground hover:bg-accent disabled:opacity-50"
+                  title="后台预生成 10 道该知识点的 AI 题（需在线模型）"
+                >
+                  {fillJob ? `补题中 ${fillJob.filled}/${fillJob.target}` : '补题'}
                 </button>
               </div>
 
