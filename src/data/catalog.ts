@@ -96,9 +96,9 @@ export const DISCIPLINE: Discipline = {
       courses: [
         { id: 'combinatorics', name: '组合数学', courseId: 'combinatorics' },
         { id: 'graph-theory', name: '图论', courseId: 'graph-theory-course' },
-        { id: 'logic', name: '数理逻辑', courseId: 'mathematical-logic' },
+        { id: 'logic', name: '数理逻辑', courseId: 'logic-and-reasoning-course' },
         { id: 'set-theory-2', name: '集合论', courseId: 'combinatorics-discrete' },
-        { id: 'category-theory', name: '范畴论', courseId: 'modern-math', note: '在现代数学导论中' },
+        { id: 'category-theory', name: '范畴论', courseId: 'category-theory' },
         { id: 'lattice', name: '格论', courseId: 'lattice-theory' },
         { id: 'coding', name: '编码理论', courseId: 'coding-theory' },
       ],
@@ -150,7 +150,7 @@ export const DISCIPLINE: Discipline = {
       en: 'Logic & Foundations',
       summary: '公理、证明与不可判定',
       courses: [
-        { id: 'axiomatic-set-theory', name: '公理化集合论', courseId: 'axiomatic-set-theory' },
+        { id: 'axiomatic-set-theory', name: '公理化集合论', courseId: 'set-theory-logic-course' },
         { id: 'model-theory', name: '模型论', courseId: 'model-theory' },
         { id: 'recursion-theory', name: '递归论', courseId: 'logic-foundations' },
         { id: 'proof-theory', name: '证明论', courseId: 'proof-theory' },

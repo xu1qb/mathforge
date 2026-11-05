@@ -59,6 +59,9 @@ import { CRYPTOGRAPHY_COURSE } from './cryptography-course';
 import { THEORY_OF_COMPUTATION_COURSE } from './theory-of-computation-course';
 import { INFORMATION_THEORY_COURSE } from './information-theory-course';
 import { DISCRETE_MATH_COURSE } from './discrete-math-course';
+import { LOGIC_AND_REASONING_COURSE } from './logic-and-reasoning-course';
+import { SET_THEORY_LOGIC_COURSE } from './set-theory-logic-course';
+import { CATEGORY_THEORY_COURSE } from './category-theory-course';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -120,6 +123,9 @@ export const COURSES: Course[] = [
   THEORY_OF_COMPUTATION_COURSE,
   INFORMATION_THEORY_COURSE,
   DISCRETE_MATH_COURSE,
+  LOGIC_AND_REASONING_COURSE,
+  SET_THEORY_LOGIC_COURSE,
+  CATEGORY_THEORY_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {

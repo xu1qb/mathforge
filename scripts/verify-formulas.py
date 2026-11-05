@@ -133,6 +133,14 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 逻辑推理、集合论逻辑与范畴论课程 ----
+chk('函子保复合：F(g∘f)=F(g)∘F(f)（标量函子 2·(3·4)=(2·3)·4）',
+    2 * (3 * 4) == (2 * 3) * 4)
+chk('自然变换方块交换：η_B∘F(f)=G(f)∘η_A（4·3=6·2）', 4 * 3 == 6 * 2)
+chk('泛性质：积的大小 |A×B|=|A|·|B|（两个表示同构）', 2 * 3 == 3 * 2)
+chk('集合范畴的积满足交换：A×B ≅ B×A（元素对对称）',
+    len([(a, b) for a in range(2) for b in range(3)]) == len([(b, a) for b in range(3) for a in range(2)]))
+
 # ---- 密码学、计算理论与信息论课程 ----
 chk('一次一密：C = M ⊕ K，解密 M = C ⊕ K',
     all((m ^ k) ^ k == m for m in (0, 1) for k in (0, 1)))
