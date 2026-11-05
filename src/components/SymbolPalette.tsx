@@ -1,4 +1,7 @@
-import { useState, useCallback } from 'react';
+// EXPORTS: SymbolPalette, MATH_SYMBOL_TOPIC_MAP
+// 数学键盘：按知识点推荐符号组，插入位置跟随光标
+
+import { useState, useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {
@@ -9,14 +12,18 @@ import {
   Hash,
   ChevronDown,
   ChevronUp,
+  Percent,
   Grid3x3,
+  Divide,
+  Braces,
+  Trash2,
+  CornerDownLeft,
 } from 'lucide-react';
 
-// 符号分组定义：label 是显示的符号，insert 是实际插入到输入框的文本
-// cursorOffset: 插入后光标相对插入位置的偏移（负数 = 向左移动，用于函数括号内）
-interface SymbolItem {
+export interface SymbolItem {
   label: string;
   insert: string;
+  /** 插入后光标相对末尾的偏移（-1 = 停在右括号前） */
   cursorOffset?: number;
   tooltip?: string;
 }
@@ -28,8 +35,39 @@ interface SymbolGroup {
   items: SymbolItem[];
 }
 
+const fn = (label: string, insert: string, tooltip?: string): SymbolItem => ({
+  label,
+  insert: insert + '()',
+  cursorOffset: -1,
+  tooltip: tooltip ?? label,
+});
+
+/** 知识点 → 优先展示的符号组 */
+export const MATH_SYMBOL_TOPIC_MAP: Record<string, string> = {
+  'limit-basic': 'calc',
+  'sequence-limit': 'calc',
+  'derivative-basic': 'calc',
+  'integral-basic': 'calc',
+  'series-convergence': 'calc',
+  'ode-solving': 'calc',
+  'fourier-basic': 'calc',
+  'trig-special': 'trig',
+  'trig-identity': 'trig',
+  'hyperbolic-func': 'trig',
+  'matrix-op': 'lin',
+  'vector-op': 'lin',
+  'complex-equation': 'lin',
+  'probability-classical': 'prob',
+  'random-variable': 'prob',
+  'algebra-quad': 'frac',
+  'algebra-factor': 'frac',
+  'inequality-solve': 'frac',
+  'log-equation': 'frac',
+  'exp-power': 'power',
+  'sequence-recurrence': 'calc',
+};
+
 const SYMBOL_GROUPS: SymbolGroup[] = [
-  // 基础运算
   {
     id: 'basic',
     name: '基础',
@@ -43,49 +81,154 @@ const SYMBOL_GROUPS: SymbolGroup[] = [
       { label: ')', insert: ')' },
       { label: '=', insert: '=' },
       { label: ',', insert: ',' },
-      { label: '%', insert: '%' },
-      { label: '°', insert: 'deg' },
-      { label: '!', insert: '!' },
       { label: '·', insert: '*' },
+      { label: '|', insert: '|' },
     ],
   },
-  // 常用符号
   {
-    id: 'common',
-    name: '常用',
-    icon: Sigma,
+    id: 'frac',
+    name: '分式根式',
+    icon: Divide,
     items: [
-      { label: '√', insert: 'sqrt(', cursorOffset: 0, tooltip: '平方根' },
-      { label: '∛', insert: 'cbrt(', cursorOffset: 0, tooltip: '立方根' },
-      { label: 'π', insert: 'pi', tooltip: '圆周率' },
-      { label: '∞', insert: 'Infinity', tooltip: '无穷大' },
-      { label: '≤', insert: '<=', tooltip: '小于等于' },
-      { label: '≥', insert: '>=', tooltip: '大于等于' },
-      { label: '≠', insert: '!=', tooltip: '不等于' },
-      { label: '±', insert: '±', tooltip: '正负号' },
-      { label: '≈', insert: '≈', tooltip: '约等于' },
-      { label: '→', insert: '→', tooltip: '箭头' },
-      { label: '∑', insert: 'sum(', cursorOffset: 0, tooltip: '求和' },
-      { label: '∫', insert: 'integral(', cursorOffset: 0, tooltip: '积分' },
+      { label: 'a/b', insert: '()/()', cursorOffset: -4, tooltip: '分式，光标停在分子' },
+      { label: '½', insert: '1/2' },
+      { label: '⅓', insert: '1/3' },
+      { label: '¼', insert: '1/4' },
+      { label: '⅔', insert: '2/3' },
+      { label: '¾', insert: '3/4' },
+      fn('√', 'sqrt', '平方根'),
+      fn('∛', 'cbrt', '立方根'),
+      { label: '√3/2', insert: 'sqrt(3)/2' },
+      { label: '√2/2', insert: 'sqrt(2)/2' },
+      { label: 'π', insert: 'pi' },
+      { label: '≤', insert: '<=' },
+      { label: '≥', insert: '>=' },
+      { label: '≠', insert: '!=' },
+      { label: '±', insert: '±' },
     ],
   },
-  // 上标
   {
-    id: 'superscript',
-    name: '上标',
+    id: 'power',
+    name: '幂与指数',
     icon: Hash,
     items: [
-      { label: 'x²', insert: '^2', tooltip: '平方' },
-      { label: 'x³', insert: '^3', tooltip: '立方' },
-      { label: 'x⁴', insert: '^4', tooltip: '4次方' },
-      { label: 'xⁿ', insert: '^', tooltip: 'n次方' },
-      { label: 'x⁻¹', insert: '^(-1)', tooltip: '倒数/负一次方' },
-      { label: '10ˣ', insert: '10^', tooltip: '10的x次方' },
-      { label: 'eˣ', insert: 'exp(', cursorOffset: 0, tooltip: 'e的x次方' },
-      { label: '√x', insert: '^(1/2)', tooltip: '平方根(指数形式)' },
+      { label: 'x²', insert: '^2' },
+      { label: 'x³', insert: '^3' },
+      { label: 'xⁿ', insert: '^' },
+      { label: 'x⁻¹', insert: '^(-1)' },
+      { label: 'eˣ', insert: 'e^' },
+      { label: '10ˣ', insert: '10^' },
+      { label: '2ˣ', insert: '2^' },
+      { label: 'x^½', insert: '^(1/2)' },
+      fn('ln', 'log', '自然对数'),
+      fn('lg', 'log10', '常用对数'),
+      { label: 'e', insert: 'e' },
+      { label: '∞', insert: 'Infinity' },
     ],
   },
-  // 希腊字母
+  {
+    id: 'trig',
+    name: '三角',
+    icon: FunctionSquare,
+    items: [
+      fn('sin', 'sin'),
+      fn('cos', 'cos'),
+      fn('tan', 'tan'),
+      fn('cot', 'cot'),
+      fn('sec', 'sec'),
+      fn('csc', 'csc'),
+      fn('asin', 'asin'),
+      fn('acos', 'acos'),
+      fn('atan', 'atan'),
+      { label: '°', insert: 'deg' },
+      { label: 'π', insert: 'pi' },
+      { label: 'π/6', insert: 'pi/6' },
+      { label: 'π/4', insert: 'pi/4' },
+      { label: 'π/3', insert: 'pi/3' },
+      { label: 'π/2', insert: 'pi/2' },
+      { label: '2π', insert: '2*pi' },
+    ],
+  },
+  {
+    id: 'calc',
+    name: '微积分',
+    icon: Sigma,
+    items: [
+      { label: 'lim', insert: 'lim(' },
+      { label: '→', insert: '->' },
+      { label: '∞', insert: 'Infinity' },
+      fn('√', 'sqrt'),
+      { label: 'd/dx', insert: 'd/dx ' },
+      { label: '∫', insert: 'integral(' },
+      { label: '∑', insert: 'sum(' },
+      { label: '∏', insert: 'product(' },
+      { label: 'eˣ', insert: 'e^' },
+      fn('ln', 'log'),
+      { label: 'dx', insert: 'dx' },
+      { label: 'x²', insert: '^2' },
+      { label: '≤', insert: '<=' },
+      { label: '≥', insert: '>=' },
+      { label: 'aₙ', insert: 'a_' },
+      { label: 'Sₙ', insert: 'S_' },
+    ],
+  },
+  {
+    id: 'lin',
+    name: '线代矩阵',
+    icon: Grid3x3,
+    items: [
+      { label: '[ ]', insert: '[]', cursorOffset: -1 },
+      { label: '[[ ]]', insert: '[[],[]]', cursorOffset: -5, tooltip: '2×2 矩阵' },
+      fn('det', 'det'),
+      fn('inv', 'inv'),
+      { label: 'ᵀ', insert: '^T' },
+      { label: '·', insert: '*' },
+      { label: '×', insert: 'x', tooltip: '叉乘（向量积）' },
+      fn('|v|', 'abs'),
+      { label: 'i', insert: 'i' },
+      fn('Re', 'Re'),
+      fn('Im', 'Im'),
+      fn('√', 'sqrt'),
+    ],
+  },
+  {
+    id: 'prob',
+    name: '概率统计',
+    icon: Percent,
+    items: [
+      fn('C(n,k)', 'combinations', '组合数'),
+      fn('A(n,k)', 'permutations', '排列数'),
+      { label: 'n!', insert: '!' },
+      { label: 'E(X)', insert: 'E(X)' },
+      { label: 'D(X)', insert: 'D(X)' },
+      { label: 'P(', insert: 'P(' },
+      { label: '|', insert: '|' },
+      { label: '≤', insert: '<=' },
+      { label: '≥', insert: '>=' },
+      { label: '/', insert: '/' },
+      { label: 'λ', insert: 'lambda' },
+      { label: 'σ', insert: 'sigma' },
+    ],
+  },
+  {
+    id: 'sets',
+    name: '集合逻辑',
+    icon: Braces,
+    items: [
+      { label: '∈', insert: ' in ' },
+      { label: '∉', insert: ' not in ' },
+      { label: '∪', insert: ' union ' },
+      { label: '∩', insert: ' intersect ' },
+      { label: '⊆', insert: ' subset ' },
+      { label: '∅', insert: '{}' },
+      { label: '{ }', insert: '{}', cursorOffset: -1 },
+      { label: '∀', insert: 'forall ' },
+      { label: '∃', insert: 'exists ' },
+      { label: '¬', insert: 'not ' },
+      { label: '∧', insert: ' and ' },
+      { label: '∨', insert: ' or ' },
+    ],
+  },
   {
     id: 'greek',
     name: '希腊',
@@ -102,76 +245,24 @@ const SYMBOL_GROUPS: SymbolGroup[] = [
       { label: 'σ', insert: 'sigma' },
       { label: 'τ', insert: 'tau' },
       { label: 'φ', insert: 'phi' },
-      { label: 'ψ', insert: 'psi' },
       { label: 'ω', insert: 'omega' },
-      { label: 'η', insert: 'eta' },
-      { label: 'ξ', insert: 'xi' },
-      { label: 'ζ', insert: 'zeta' },
-      { label: 'ρ', insert: 'rho' },
-      { label: 'κ', insert: 'kappa' },
-      { label: 'ν', insert: 'nu' },
-      { label: 'χ', insert: 'chi' },
-      { label: 'Δ', insert: 'Delta', tooltip: '大写Delta' },
-      { label: 'Σ', insert: 'Sigma', tooltip: '大写Sigma' },
-      { label: 'Ω', insert: 'Omega', tooltip: '大写Omega' },
-      { label: 'Φ', insert: 'Phi', tooltip: '大写Phi' },
-    ],
-  },
-  // 函数
-  {
-    id: 'functions',
-    name: '函数',
-    icon: FunctionSquare,
-    items: [
-      { label: 'sin', insert: 'sin(', cursorOffset: 0 },
-      { label: 'cos', insert: 'cos(', cursorOffset: 0 },
-      { label: 'tan', insert: 'tan(', cursorOffset: 0 },
-      { label: 'log', insert: 'log10(', cursorOffset: 0, tooltip: '常用对数' },
-      { label: 'ln', insert: 'log(', cursorOffset: 0, tooltip: '自然对数' },
-      { label: 'abs', insert: 'abs(', cursorOffset: 0, tooltip: '绝对值' },
-      { label: 'sqrt', insert: 'sqrt(', cursorOffset: 0, tooltip: '平方根' },
-      { label: 'nthroot', insert: 'nthRoot(', cursorOffset: 0, tooltip: 'n次方根' },
-      { label: 'floor', insert: 'floor(', cursorOffset: 0, tooltip: '向下取整' },
-      { label: 'ceil', insert: 'ceil(', cursorOffset: 0, tooltip: '向上取整' },
-      { label: 'round', insert: 'round(', cursorOffset: 0, tooltip: '四舍五入' },
-      { label: 'asin', insert: 'asin(', cursorOffset: 0, tooltip: '反正弦' },
-      { label: 'acos', insert: 'acos(', cursorOffset: 0, tooltip: '反余弦' },
-      { label: 'atan', insert: 'atan(', cursorOffset: 0, tooltip: '反正切' },
-      { label: 'sinh', insert: 'sinh(', cursorOffset: 0, tooltip: '双曲正弦' },
-      { label: 'cosh', insert: 'cosh(', cursorOffset: 0, tooltip: '双曲余弦' },
-    ],
-  },
-  // 常量与分数
-  {
-    id: 'const',
-    name: '常量',
-    icon: Grid3x3,
-    items: [
-      { label: 'e', insert: 'e', tooltip: '自然常数' },
-      { label: 'π', insert: 'pi', tooltip: '圆周率' },
-      { label: 'i', insert: 'i', tooltip: '虚数单位' },
-      { label: '∞', insert: 'Infinity', tooltip: '无穷大' },
-      { label: '½', insert: '1/2', tooltip: '二分之一' },
-      { label: '⅓', insert: '1/3', tooltip: '三分之一' },
-      { label: '¼', insert: '1/4', tooltip: '四分之一' },
-      { label: '⅔', insert: '2/3', tooltip: '三分之二' },
-      { label: '¾', insert: '3/4', tooltip: '四分之三' },
+      { label: 'Δ', insert: 'Delta' },
+      { label: 'Σ', insert: 'Sigma' },
+      { label: 'Ω', insert: 'Omega' },
+      { label: 'π', insert: 'pi' },
     ],
   },
 ];
 
 interface SymbolPaletteProps {
-  /** 输入框的 ref（必须是 HTMLInputElement 或 HTMLTextAreaElement） */
   inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>;
-  /** 当前输入框的值 */
   value: string;
-  /** 值变更回调 */
   onChange: (value: string) => void;
-  /** 面板默认展开状态（仅非 inline 模式） */
   defaultOpen?: boolean;
-  /** 内联模式：直接显示符号网格，不显示展开/收起按钮 */
   inline?: boolean;
   className?: string;
+  /** 当前知识点：用于把相关符号组排到前面 */
+  topicKey?: string;
 }
 
 export default function SymbolPalette({
@@ -181,18 +272,21 @@ export default function SymbolPalette({
   defaultOpen = false,
   inline = false,
   className,
+  topicKey,
 }: SymbolPaletteProps) {
+  const preferred = topicKey ? MATH_SYMBOL_TOPIC_MAP[topicKey] : undefined;
+  const groups = useMemo(() => {
+    if (!preferred) return SYMBOL_GROUPS;
+    const first = SYMBOL_GROUPS.find((g) => g.id === preferred);
+    if (!first) return SYMBOL_GROUPS;
+    return [first, ...SYMBOL_GROUPS.filter((g) => g.id !== preferred)];
+  }, [preferred]);
+
   const [isOpen, setIsOpen] = useState(inline || defaultOpen);
-  const [activeGroup, setActiveGroup] = useState('basic');
+  const [activeGroup, setActiveGroup] = useState(preferred ?? 'basic');
 
-  const togglePanel = useCallback(() => {
-    setIsOpen((v) => !v);
-  }, []);
+  const togglePanel = useCallback(() => setIsOpen((v) => !v), []);
 
-  /**
-   * 在光标位置插入文本
-   * 若 inputRef 不可用（如 input 未挂载），追加到末尾
-   */
   const insertAtCursor = useCallback(
     (text: string, cursorOffset: number = 0) => {
       const input = inputRef.current;
@@ -200,57 +294,57 @@ export default function SymbolPalette({
         onChange(value + text);
         return;
       }
-
-      // 确保 input 获得焦点
       input.focus();
-
       const start = input.selectionStart ?? value.length;
       const end = input.selectionEnd ?? value.length;
-
-      const before = value.substring(0, start);
-      const after = value.substring(end);
-      const newValue = before + text + after;
-
+      const newValue = value.substring(0, start) + text + value.substring(end);
       onChange(newValue);
-
-      // 设置新的光标位置
-      // cursorOffset: 0 表示光标在插入文本之后（默认）
-      // 负数表示向左移动（如函数括号内，光标放在括号里）
       requestAnimationFrame(() => {
-        if (inputRef.current) {
-          const pos = start + text.length + cursorOffset;
-          const clampedPos = Math.max(0, Math.min(newValue.length, pos));
-          inputRef.current.setSelectionRange(clampedPos, clampedPos);
-          inputRef.current.focus();
-        }
+        if (!inputRef.current) return;
+        const pos = Math.max(0, Math.min(newValue.length, start + text.length + cursorOffset));
+        inputRef.current.setSelectionRange(pos, pos);
+        inputRef.current.focus();
       });
     },
     [inputRef, value, onChange],
   );
 
-  const handleSymbolClick = useCallback(
-    (item: SymbolItem) => {
-      // cursorOffset 默认为 0（光标在插入文本之后）
-      // 如果是函数/带括号的，我们希望光标在括号内，所以 offset 为 -1
-      const offset =
-        item.cursorOffset !== undefined
-          ? item.cursorOffset
-          : item.insert.endsWith('(')
-            ? -1
-            : 0;
-      insertAtCursor(item.insert, offset);
+  const backspace = useCallback(() => {
+    const input = inputRef.current;
+    if (!input) {
+      onChange(value.slice(0, -1));
+      return;
+    }
+    const start = input.selectionStart ?? value.length;
+    const end = input.selectionEnd ?? value.length;
+    if (start !== end) {
+      const nv = value.substring(0, start) + value.substring(end);
+      onChange(nv);
+      requestAnimationFrame(() => inputRef.current?.setSelectionRange(start, start));
+      return;
+    }
+    if (start === 0) return;
+    const nv = value.substring(0, start - 1) + value.substring(start);
+    onChange(nv);
+    requestAnimationFrame(() => inputRef.current?.setSelectionRange(start - 1, start - 1));
+  }, [inputRef, value, onChange]);
+
+  const moveCursor = useCallback(
+    (delta: number) => {
+      const input = inputRef.current;
+      if (!input) return;
+      input.focus();
+      const pos = Math.max(0, Math.min(value.length, (input.selectionStart ?? 0) + delta));
+      input.setSelectionRange(pos, pos);
     },
-    [insertAtCursor],
+    [inputRef, value.length],
   );
 
-  const currentGroup = SYMBOL_GROUPS.find((g) => g.id === activeGroup) ?? SYMBOL_GROUPS[0];
-
-  // inline 模式始终展开，且不显示顶部展开按钮
+  const currentGroup = groups.find((g) => g.id === activeGroup) ?? groups[0];
   const panelVisible = inline || isOpen;
 
   return (
     <div className={cn('w-full', className)}>
-      {/* 展开/收起按钮（inline 模式隐藏） */}
       {!inline && (
         <Button
           type="button"
@@ -260,24 +354,20 @@ export default function SymbolPalette({
           className="w-full h-8 text-xs text-muted-foreground hover:text-foreground border border-dashed border-border/60 rounded-lg"
         >
           <Sigma className="size-3.5 mr-1.5" />
-          符号面板
-          {isOpen ? (
-            <ChevronUp className="size-3.5 ml-1.5" />
-          ) : (
-            <ChevronDown className="size-3.5 ml-1.5" />
-          )}
+          数学键盘
+          {isOpen ? <ChevronUp className="size-3.5 ml-1.5" /> : <ChevronDown className="size-3.5 ml-1.5" />}
         </Button>
       )}
 
-      {/* 面板主体 */}
       {panelVisible && (
-        <div className={cn(
-          inline ? '' : 'mt-2 border border-border/60 rounded-lg bg-card/50 backdrop-blur-sm',
-          'overflow-hidden'
-        )}>
-          {/* 分类 tab */}
+        <div
+          className={cn(
+            inline ? '' : 'mt-2 border border-border/60 rounded-lg bg-card/50 backdrop-blur-sm',
+            'overflow-hidden',
+          )}
+        >
           <div className="flex overflow-x-auto border-b border-border/60 bg-muted/30">
-            {SYMBOL_GROUPS.map((group) => {
+            {groups.map((group) => {
               const Icon = group.icon;
               const isActive = activeGroup === group.id;
               return (
@@ -286,32 +376,66 @@ export default function SymbolPalette({
                   type="button"
                   onClick={() => setActiveGroup(group.id)}
                   className={cn(
-                    'flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap transition-colors border-b-2 -mb-px',
+                    'flex items-center gap-1 px-2.5 py-2 text-xs whitespace-nowrap transition-colors border-b-2 -mb-px',
                     isActive
                       ? 'text-primary border-primary font-medium bg-background/60'
                       : 'text-muted-foreground border-transparent hover:text-foreground hover:bg-background/30',
                   )}
                 >
                   <Icon className="size-3.5 shrink-0" />
-                  <span className="hidden sm:inline">{group.name}</span>
+                  <span>{group.name}</span>
                 </button>
               );
             })}
           </div>
 
-          {/* 符号网格 */}
-          <div className="p-2 grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 gap-1.5 max-h-48 overflow-y-auto">
+          <div className="p-2 grid grid-cols-5 sm:grid-cols-8 gap-1.5 max-h-56 overflow-y-auto">
             {currentGroup.items.map((item, idx) => (
               <button
-                key={`${item.label}-${idx}`}
+                key={item.label + '-' + idx}
                 type="button"
-                onClick={() => handleSymbolClick(item)}
+                onClick={() =>
+                  insertAtCursor(item.insert, item.cursorOffset ?? (item.insert.endsWith('(') ? -1 : 0))
+                }
                 title={item.tooltip ?? item.label}
-                className="h-8 rounded-md text-sm font-mono bg-background hover:bg-primary/10 hover:text-primary border border-border/50 transition-all active:scale-95 flex items-center justify-center"
+                className="h-9 rounded-md text-sm font-mono bg-background hover:bg-primary/10 hover:text-primary border border-border/50 transition-all active:scale-95 flex items-center justify-center"
               >
                 {item.label}
               </button>
             ))}
+          </div>
+
+          <div className="flex items-center gap-1.5 border-t border-border/60 px-2 py-1.5">
+            <button
+              type="button"
+              onClick={() => moveCursor(-1)}
+              className="h-8 flex-1 rounded-md border border-border/50 text-xs text-muted-foreground hover:bg-muted/60"
+            >
+              ←
+            </button>
+            <button
+              type="button"
+              onClick={() => moveCursor(1)}
+              className="h-8 flex-1 rounded-md border border-border/50 text-xs text-muted-foreground hover:bg-muted/60"
+            >
+              →
+            </button>
+            <button
+              type="button"
+              onClick={backspace}
+              className="h-8 flex-[2] rounded-md border border-border/50 text-xs text-muted-foreground hover:bg-muted/60 flex items-center justify-center gap-1"
+            >
+              <CornerDownLeft className="size-3.5" />
+              退格
+            </button>
+            <button
+              type="button"
+              onClick={() => onChange('')}
+              className="h-8 flex-[2] rounded-md border border-border/50 text-xs text-destructive hover:bg-destructive/10 flex items-center justify-center gap-1"
+            >
+              <Trash2 className="size-3.5" />
+              清空
+            </button>
           </div>
         </div>
       )}

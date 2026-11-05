@@ -25,6 +25,8 @@ interface MathInputFieldProps {
   id?: string;
   /** 是否禁用 */
   disabled?: boolean;
+  /** 当前知识点：交给符号面板做推荐分组 */
+  topicKey?: string;
 }
 
 export default function MathInputField({
@@ -41,6 +43,7 @@ export default function MathInputField({
   paletteDefaultOpen = false,
   id,
   disabled = false,
+  topicKey,
 }: MathInputFieldProps) {
   const [showPreview, setShowPreview] = useState(defaultPreview);
   const [paletteOpen, setPaletteOpen] = useState(paletteDefaultOpen);
@@ -164,6 +167,7 @@ export default function MathInputField({
           value={value}
           onChange={onChange}
           inline
+          topicKey={topicKey}
           className="border border-border/60 rounded-lg bg-card/50 backdrop-blur-sm overflow-hidden p-0"
         />
       )}

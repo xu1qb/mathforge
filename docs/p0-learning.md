@@ -50,7 +50,22 @@ AUDIT_ROUTES=/wrong-book,/progress node scripts/audit-site.mjs
 → checks=8 routes=2 widths=375/1440，无溢出/无控制台报错/无裸 LaTeX
 ```
 
-## 四、还没做（等有预算再说）
+## 四、数学键盘（按题目推荐符号）
+
+`src/components/SymbolPalette.tsx` 从"通用符号面板"升级成"按内容的数学键盘"：
+
+- **9 个符号组**：基础 / 分式根式 / 幂与指数 / 三角 / 微积分 / 线代矩阵 / 概率统计 / 集合逻辑 / 希腊
+- **按知识点自动推荐**：`MATH_SYMBOL_TOPIC_MAP` 把 20 多个知识点映射到对应组，
+  进题时该组自动排到第一个并选中（积分题直接看到 ∫、∑；线代题看到矩阵括号、det）
+- **光标跟随插入**：`a/b` 插成 `()/()` 且光标停在分子，`sqrt()` 光标停在括号里
+- **控制键**：←、→ 移动光标，退格，清空
+- 输出的是判分器认识的纯文本记号（`sqrt(2)/2`、`pi`、`^2`、`<=`），不是 LaTeX
+
+![数学键盘](../docs/assets/math-keyboard.png)
+
+接入点：`MathInputField` 新增 `topicKey` 属性，`PracticePage` 传入 `activeTopic`。
+
+## 五、还没做（等有预算再说）
 
 | 项 | 为什么现在不做 |
 |---|---|

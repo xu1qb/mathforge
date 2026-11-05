@@ -1182,6 +1182,7 @@ export default function PracticePage() {
                           placeholder={currentTopic.answerPlaceholder}
                           disabled={isChecked}
                           showPalette
+                          topicKey={activeTopic}
                           defaultPreview
                         />
                         <div className="flex gap-3">
