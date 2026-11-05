@@ -901,10 +901,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '把约束乘上 λ 加进目标函数，条件极值就变成新函数的无条件驻点问题；λ 还顺便告诉你约束松一点能多赚多少。',
+    definition:
+      '条件极值在约束下求极值，拉格朗日乘数法把约束与目标合成一个函数，驻点满足梯度与约束梯度平行。',
     whenToUse: [
       '求条件极值，约束是等式',
       '约束有两三个，目标函数可导',
       '应用题里求「在预算内最大化」这类问题',
+    ],
+    theorems: [
+      {
+        name: '拉格朗日乘数法',
+        statement: '在约束曲面上取极值的点，目标梯度与约束梯度成比例。',
+        formula: '\\nabla f=\\lambda\\nabla g',
+      },
+      {
+        name: '多约束情形',
+        statement: '多个约束时引入多个乘数，梯度写成约束梯度的线性组合。',
+      },
     ],
     steps: [
       {
@@ -930,6 +943,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: 'λ 是最优值对约束右端的敏感度，约束放宽一个单位，最优值大约变化 λ。',
       },
     ],
+    pitfalls: [
+      '漏解边界：乘数法给内部驻点，边界要单独比较。',
+      '方程组解不全：非线性方程组可能有多组解。',
+      '乘数符号纠结：λ 可正可负，不必先定符号。',
+    ],
     example: {
       problem: '求 f = xy 在约束 x + y = 1 下的最大值。',
       walkthrough: [
@@ -939,7 +957,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '最大值为 1/4，此时 λ = −1/2。',
       ],
       result: '\\max f=\\frac{1}{4}',
-    },
+    },    moreExamples: [
+      {
+        problem: '求 x 加 y 在约束 x 平方加 y 平方等于一下的最大值。',
+        walkthrough: [
+          '梯度成比例得两个方程。',
+          '结合约束解出两组解。',
+          '比较得最大值。',
+        ],
+        result: '\\sqrt{2}',
+      },
+    ],
+
   },
   {
     id: 'linear-ode',
@@ -1026,10 +1055,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '二重积分难的不是积分，是定限：先画区域图，再决定先对谁积；圆域直接上极坐标。',
+    definition:
+      '二重积分可写成两种累次积分顺序。选择哪种，取决于区域用哪个变量描述更简单；换序时要把区域重新画清楚，上下限跟着变。',
     whenToUse: [
       '内层积不出原函数，比如 e 的 x 平方',
       '区域是圆、扇形、圆环',
       '被积函数含 x² + y²',
+    ],
+    theorems: [
+      {
+        name: '累次积分',
+        statement: '区域可写成先对一个变量积分、再对另一个变量积分的形式，值相同。',
+        formula: '\\iint_{D}f\\,d\\sigma=\\int_{a}^{b}dx\\int_{y_1(x)}^{y_2(x)}f\\,dy',
+      },
+      {
+        name: '极坐标变换',
+        statement: '圆或扇形区域用极坐标，面积元多一个径向因子。',
+        formula: 'd\\sigma=r\\,dr\\,d\\theta',
+      },
     ],
     steps: [
       {
@@ -1057,6 +1100,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '从原点出发画射线扫过整个区域，扫过的起止角就是 θ 的范围。',
       },
     ],
+    pitfalls: [
+      '换序不画图：上下限会写反或写成常数。',
+      '极坐标漏 r：面积元漏掉径向因子，结果全错。',
+      '内外层变量混：内层上限只能含外层变量。',
+    ],
     example: {
       problem: 'D 由 y = x、y = 1、x = 0 围成，求 e 的 y 平方在 D 上的二重积分。',
       walkthrough: [
@@ -1066,7 +1114,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '结果等于 (e − 1) / 2。',
       ],
       result: '\\frac{e-1}{2}',
-    },
+    },    moreExamples: [
+      {
+        problem: '把先对 y 后对 x 的积分改成先对 x 后对 y，区域为三角形。',
+        walkthrough: [
+          '画出三角形区域。',
+          '按 x 方向重新描述上下界。',
+          '写出新的累次积分。',
+        ],
+        result: '\\int dy\\int f\\,dx',
+      },
+    ],
+
   },
   {
     id: 'plane-equation',
@@ -2237,10 +2296,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '方程 F(x,y)=0 确定 y=y(x) 时，两边对 x 求导并把 y 当复合函数，再解出 y′；二元情形用 F 的偏导直接写。',
+    definition:
+      '方程确定隐函数时，两边同时对自变量求导，把未知导数当成整体解出，不必先解出显式函数。',
     whenToUse: [
       '方程没有解出 y，但要求 y′',
       '求曲面 z=z(x,y) 的偏导',
       '求隐函数的二阶导数',
+    ],
+    theorems: [
+      {
+        name: '隐函数求导',
+        statement: '二元方程确定的隐函数，其导数等于两个偏导之比的相反数。',
+        formula: 'y^{\\prime}=-\\frac{F_x}{F_y}',
+      },
+      {
+        name: '隐函数存在定理',
+        statement: '在一点偏导连续且对因变量的偏导不为零时，邻域内存在唯一的隐函数。',
+      },
     ],
     steps: [
       {
@@ -2267,6 +2339,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '把结果代回原方程应恒成立，尤其是含参数的题。',
       },
     ],
+    pitfalls: [
+      '忘记 y 是 x 的函数：对含 y 的项求导要乘 y 撇。',
+      '解出后没化简：结果常可约分。',
+      '偏导为零处硬用：要退回原始定义判断。',
+    ],
     example: {
       problem: 'x² + y² = 1 确定 y = y(x)，求 y′。',
       walkthrough: [
@@ -2275,7 +2352,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '等价写法：F = x² + y² − 1，F_x = 2x，F_y = 2y，故 y′ = −F_x/F_y = −x/y。',
       ],
       result: 'y\'=-\\frac{x}{y}',
-    },
+    },    moreExamples: [
+      {
+        problem: '求单位圆方程确定的隐函数导数。',
+        walkthrough: [
+          '两边对 x 求导。',
+          '解出导数。',
+          '结果为负 x 比 y。',
+        ],
+        result: '-\\frac{x}{y}',
+      },
+    ],
+
   },
   {
     id: 'directional-derivative',
@@ -2284,10 +2372,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '梯度是函数增长最快的方向，方向导数是梯度在该方向单位向量上的投影；两者用点积一串就完了。',
+    definition:
+      '方向导数衡量函数沿某个方向的瞬时变化率，等于梯度与该方向单位向量的内积，因此梯度方向是增长最快的方向。',
     whenToUse: [
       '求函数在某点沿某方向的变化率',
       '求函数增长最快的方向',
       '解释梯度与等值线的关系',
+    ],
+    theorems: [
+      {
+        name: '方向导数公式',
+        statement: '方向导数等于梯度与单位方向向量的内积。',
+        formula: '\\frac{\\partial f}{\\partial l}=\\nabla f\\cdot\\vec e',
+      },
+      {
+        name: '梯度方向',
+        statement: '梯度方向是函数增长最快的方向，其模等于最大方向导数。',
+      },
     ],
     steps: [
       {
@@ -2314,6 +2415,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '三元函数只是多一个分量，公式形式完全一样。',
       },
     ],
+    pitfalls: [
+      '方向没单位化：公式要求单位向量。',
+      '把梯度当方向导数：梯度是向量，方向导数是数。',
+      '在不可微点用：方向导数存在不代表可微。',
+    ],
     example: {
       problem: 'f(x,y) = x² + y²，求在点 (1,1) 沿方向 (1,1) 的方向导数。',
       walkthrough: [
@@ -2323,7 +2429,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '这等于 |∇f| = 2√2，说明该方向正好是梯度方向。',
       ],
       result: '\\frac{\\partial f}{\\partial l}=2\\sqrt{2}',
-    },
+    },    moreExamples: [
+      {
+        problem: '求函数 x 平方乘 y 在点一、二沿方向三、四的方向导数。',
+        walkthrough: [
+          '梯度在点处为四、一。',
+          '方向单位化为三五、四五。',
+          '内积得五分之十六。',
+        ],
+        result: '\\frac{16}{5}',
+      },
+    ],
+
   },
   {
     id: 'numeric-characteristics',
@@ -2739,10 +2856,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '区域关于坐标轴对称时，被积函数对相应变量是奇函数就直接得 0，是偶函数就翻倍——先看对称性能省掉大半计算。',
+    definition:
+      '若积分区域关于坐标轴对称，而被积函数关于对应变量是奇函数，则积分为零；偶函数则可化为两倍的一半区域积分。',
     whenToUse: [
       '积分区域是圆、椭圆、正方形等对称图形',
       '被积函数含 x 或 y 的奇次幂',
       '被积函数关于 x、y 可交换',
+    ],
+    theorems: [
+      {
+        name: '奇偶对称',
+        statement: '区域关于 y 轴对称时，被积函数对 x 为奇函数则积分为零。',
+        formula: '\\iint_{D}f\\,d\\sigma=0\\quad(f(-x,y)=-f(x,y))',
+      },
+      {
+        name: '轮换对称',
+        statement: '区域关于直线 y 等于 x 对称时，交换被积函数的两个变量积分值不变。',
+      },
     ],
     steps: [
       {
@@ -2762,6 +2892,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '区域关于 y = x 对称时，f(x,y) 与 f(y,x) 的积分相等，可用来配对化简。',
         formula: '\\iint_{D}f(x,y)\\,d\\sigma=\\iint_{D}f(y,x)\\,d\\sigma',
       },
+      {
+        title: '先验区域对称',
+        body: '对称性要区域与函数同时满足，缺一不可。',
+      },
+    ],
+    pitfalls: [
+      '区域不对称就用：对称性前提是区域也对称。',
+      '奇偶判错：要针对被积函数与对应变量。',
+      '忘记乘二：偶函数化半区域时漏掉两倍。',
     ],
     example: {
       problem: 'D 是单位圆，求 ∬_D x dσ。',
@@ -2772,7 +2911,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '换成极坐标算也一样：∫₀^{2π}cos θ dθ 本身为 0。',
       ],
       result: '\\iint_{D}x\\,d\\sigma=0',
-    },
+    },    moreExamples: [
+      {
+        problem: '求 x 乘 y 在关于原点对称的单位圆盘上的二重积分。',
+        walkthrough: [
+          '被积函数关于 x 是奇函数。',
+          '区域关于 y 轴对称。',
+          '积分为零。',
+        ],
+        result: '0',
+      },
+    ],
+
   },
   {
     id: 'integral-estimate',
@@ -5304,10 +5454,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '两类曲线积分的区别只在微小元：乘弧长 ds 的第一类与方向无关，乘坐标 dx、dy 的第二类换个方向就变号。做法都是先把曲线参数化。',
+    definition:
+      '第一类曲线积分对弧长积分，与方向无关；第二类对坐标积分，方向相反则变号。计算时都要先参数化曲线。',
     whenToUse: [
       '积分号后面跟 ds，是求质量、质心一类的第一类',
       '积分号后面跟 dx 与 dy 的组合，是求做功、环流一类的第二类',
       '能用格林公式把闭曲线积分换成二重积分时',
+    ],
+    theorems: [
+      {
+        name: '第一类化定积分',
+        statement: '参数化后代入被积函数并乘弧长微元。',
+        formula: '\\int_{L}f\\,ds=\\int_{\\alpha}^{\\beta}f(x(t),y(t))\\sqrt{x^{\\prime 2}+y^{\\prime 2}}\\,dt',
+      },
+      {
+        name: '第二类与方向',
+        statement: '第二类曲线积分换方向要变号，这是它与第一类的本质区别。',
+      },
     ],
     steps: [
       {
@@ -5328,6 +5491,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '参数化之后只剩一个变量，按普通定积分算。闭曲线且满足条件时，用格林公式换成二重积分往往更快。',
         formula: '\\oint_{L}P\\,dx+Q\\,dy=\\iint_{D}(Q_{x}-P_{y})\\,d\\sigma',
       },
+      {
+        title: '先参数化',
+        body: '两类曲线积分都先写出参数方程，再套各自的微元。',
+      },
+    ],
+    pitfalls: [
+      '两类混淆：第一类乘弧长，第二类乘坐标微分。',
+      '参数区间写反：第二类会差符号。',
+      '弧长微元漏项：根号里两个导数平方都要。',
     ],
     example: {
       problem: '计算沿单位圆逆时针方向的积分，被积式为 x 乘 dy 减去 y 乘 dx。',
@@ -5338,7 +5510,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '也可以用格林公式验证：被积函数对应区域的二重积分等于 2 倍面积，单位圆面积是 π。',
       ],
       result: '结果为 2π。',
-    },
+    },    moreExamples: [
+      {
+        problem: '求 x 沿直线 y 等于 x 从零到一的第一类曲线积分。',
+        walkthrough: [
+          '参数化后用 x 作参数。',
+          '弧长微元为根号二 dx。',
+          '积分得二分之根号二。',
+        ],
+        result: '\\frac{\\sqrt{2}}{2}',
+      },
+    ],
+
   },
   {
     id: 'triple-integral',
@@ -6064,10 +6247,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '第一类曲面积分乘面积元，与方向无关；第二类乘有向投影，换侧就变号。闭曲面上的第二类积分可以用高斯公式换成三重积分。',
+    definition:
+      '第一类曲面积分对面积积分；第二类对坐标投影，与曲面取侧有关。闭曲面上的第二类积分可用高斯公式化为三重积分。',
     whenToUse: [
       '求曲面质量、流量或通量',
       '闭曲面通量，直接算很麻烦',
       '想用散度统一处理三个坐标方向的积分',
+    ],
+    theorems: [
+      {
+        name: '高斯公式',
+        statement: '闭曲面外法向上的通量等于散度在围成区域上的三重积分。',
+        formula: '\\oiint_{S}\\vec F\\cdot d\\vec S=\\iiint_{\\Omega}\\nabla\\cdot\\vec F\\,dV',
+      },
+      {
+        name: '补面法',
+        statement: '曲面不闭合时，可补一块简单的面凑成闭曲面，用高斯算完再减去补面部分。',
+      },
     ],
     steps: [
       {
@@ -6087,6 +6283,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '补面凑闭合',
         body: '曲面不闭合时，先补一块简单的面凑成闭曲面，用高斯算完再减去补面的积分。',
       },
+      {
+        title: '先看是否闭合',
+        body: '闭合直接用高斯，不闭合先补面再减。',
+      },
+    ],
+    pitfalls: [
+      '方向取反：内法向要变号。',
+      '投影漏因子：第一类投影到坐标面要乘面积伸缩因子。',
+      '补面后忘记减：补上的那块要单独算并减去。',
     ],
     example: {
       problem: '求单位球面外法向上的通量，向量场取坐标为分量。',
@@ -6097,7 +6302,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '通量为四倍圆周率。',
       ],
       result: '通量为四倍圆周率。',
-    },
+    },    moreExamples: [
+      {
+        problem: '求单位球面外法向上坐标场的通量。',
+        walkthrough: [
+          '散度为常数三。',
+          '化为三重积分等于三乘球体积。',
+          '结果为四倍圆周率。',
+        ],
+        result: '4\\pi',
+      },
+    ],
+
   },
   {
     id: 'higher-derivative',
@@ -6795,10 +7011,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '沿空间闭曲线的环流，等于曲面上旋度的通量。它把「沿边界走一圈」换成「在曲面上积分」，是高维版的格林公式。',
+    definition:
+      '沿空间闭曲线的环流等于旋度在张成曲面上的通量，方向由右手法则确定。它是格林公式在空间中的推广。',
     whenToUse: [
       '空间闭曲线上的第二类曲线积分',
       '想用旋度判断场是否有势',
       '与高斯公式、格林公式一起构成三大公式',
+    ],
+    theorems: [
+      {
+        name: '斯托克斯公式',
+        statement: '曲线积分等于旋度通过曲面的通量，曲线方向与曲面法向满足右手法则。',
+        formula: '\\oint_{L}\\vec F\\cdot d\\vec r=\\iint_{S}(\\nabla\\times\\vec F)\\cdot\\vec n\\,dS',
+      },
+      {
+        name: '旋度与有势场',
+        statement: '旋度处处为零的单连通区域上，场为梯度场，环流为零。',
+      },
     ],
     steps: [
       {
@@ -6819,6 +7048,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '选简单的曲面',
         body: '边界确定后曲面可以任选，通常取平面片最省事。',
       },
+      {
+        title: '右手法则定方向',
+        body: '曲线方向与法向要对应，否则整体差一个负号。',
+      },
+    ],
+    pitfalls: [
+      '方向不匹配：曲线方向与法向不满足右手法则要变号。',
+      '旋度算错：三个分量分别求差，注意次序。',
+      '曲面选复杂：边界确定后应选最省事的平面片。',
     ],
     example: {
       problem: '在坐标平面上的单位圆上，求场 y、z、x 的环量。',
@@ -6829,7 +7067,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '曲面积分就是负的圆面积，即负圆周率。',
       ],
       result: '环量为负圆周率。',
-    },
+    },    moreExamples: [
+      {
+        problem: '求坐标平面单位圆上场为 y、z、x 的环量。',
+        walkthrough: [
+          '旋度为三个负一。',
+          '法向竖直向上。',
+          '内积为负一，曲面面积为圆周率。',
+        ],
+        result: '-\\pi',
+      },
+    ],
+
   },
   {
     id: 'joint-distribution',
