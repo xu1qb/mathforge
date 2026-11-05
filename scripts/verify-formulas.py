@@ -133,6 +133,22 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 概率论、数理统计与随机过程课程 ----
+chk('马尔可夫链平稳分布：πP=π（两状态例 P=[[0.9,0.1],[0.2,0.8]] → π=(2/3,1/3)）',
+    sp.simplify((sp.Rational(2, 3) * sp.Rational(9, 10) + sp.Rational(1, 3) * sp.Rational(2, 10)) - sp.Rational(2, 3)) == 0)
+chk('泊松过程：时间 t 内期望事件数 λt（λ=3、t=2 → 6）', 3 * 2 == 6)
+chk('泊松间隔服从指数分布（无记忆性：P(T>s+t|T>s)=P(T>t)）',
+    sp.simplify(sp.exp(-(sp.Symbol('s') + sp.Symbol('t'))) / sp.exp(-sp.Symbol('s')) - sp.exp(-sp.Symbol('t'))) == 0)
+chk('鞅：条件期望保持当前值（简单随机游走例 E[X_{n+1}|X_n]=X_n）',
+    sp.simplify((sp.Symbol('x') + sp.Rational(1, 2)) * sp.Rational(1, 2)
+                + (sp.Symbol('x') - sp.Rational(1, 2)) * sp.Rational(1, 2) - sp.Symbol('x')) == 0)
+chk('样本方差无偏：除以 n-1（n=5 时自由度 4）', 5 - 1 == 4)
+chk('置信区间半长：1.96×σ/√n（σ=10、n=100 → 1.96）',
+    sp.simplify(sp.Rational(196, 100) * 10 / sp.sqrt(100) - sp.Rational(196, 100)) == 0)
+_lam = sp.Symbol('lam', positive=True)
+chk('指数分布 MLE = 1/样本均值（n=4、Σx=8 → 0.5）',
+    sp.solve(sp.diff(4 * sp.log(_lam) - _lam * 8, _lam), _lam) == [sp.Rational(1, 2)])
+
 # ---- 伽罗瓦、解析数论与图论课程 ----
 chk('正规扩张等价分裂域（x²-2 的分裂域次数 2）',
     sp.degree(sp.minimal_polynomial(sp.sqrt(2), sp.Symbol('x')), sp.Symbol('x')) == 2)

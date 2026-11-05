@@ -109,9 +109,9 @@ export const DISCIPLINE: Discipline = {
       en: 'Probability & Statistics',
       summary: '不确定性、随机与推断',
       courses: [
-        { id: 'probability-theory', name: '概率论', courseId: 'probability' },
-        { id: 'mathematical-statistics', name: '数理统计', courseId: 'probability' },
-        { id: 'stochastic-process', name: '随机过程', courseId: 'probability' },
+        { id: 'probability-theory', name: '概率论', courseId: 'probability-theory-course' },
+        { id: 'mathematical-statistics', name: '数理统计', courseId: 'math-statistics-course' },
+        { id: 'stochastic-process', name: '随机过程', courseId: 'stochastic-process-course' },
         { id: 'information-theory', name: '信息论', courseId: 'computation', note: '在计算与算法中' },
         { id: 'game-theory', name: '博弈论', courseId: 'game-theory-course' },
         { id: 'financial-math', name: '金融数学', courseId: 'financial-math-course' },

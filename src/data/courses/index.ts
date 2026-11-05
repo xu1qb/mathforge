@@ -52,6 +52,9 @@ import { REPRESENTATION_THEORY_COURSE } from './representation-theory-course';
 import { GALOIS_COURSE } from './galois-theory-course';
 import { ANALYTIC_NUMBER_THEORY_COURSE } from './analytic-number-theory-course';
 import { GRAPH_THEORY_COURSE } from './graph-theory-course';
+import { PROBABILITY_THEORY_COURSE } from './probability-theory-course';
+import { MATH_STATISTICS_COURSE } from './math-statistics-course';
+import { STOCHASTIC_PROCESS_COURSE } from './stochastic-process-course';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -106,6 +109,9 @@ export const COURSES: Course[] = [
   GALOIS_COURSE,
   ANALYTIC_NUMBER_THEORY_COURSE,
   GRAPH_THEORY_COURSE,
+  PROBABILITY_THEORY_COURSE,
+  MATH_STATISTICS_COURSE,
+  STOCHASTIC_PROCESS_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {
