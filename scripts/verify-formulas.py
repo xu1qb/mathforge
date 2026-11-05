@@ -46,6 +46,23 @@ chk('指数分布 Exp(2) 的方差为 1/4',
 chk('指数分布 Exp(2) 的均值为 1/2',
     sp.simplify(sp.integrate(_v * 2 * sp.exp(-2 * _v), (_v, 0, sp.oo)) - sp.Rational(1, 2)) == 0)
 
+# ---- 高数课程例题 ----
+chk('lim sin3x/x = 3', sp.limit(sp.sin(3 * x) / x, x, 0) == 3)
+chk('lim (1+1/n)^n = e', sp.limit((1 + 1 / n)**n, n, sp.oo) == sp.E)
+chk('x^2-4x+3 在 [1,3] 上的罗尔点 xi=2',
+    sp.solve(sp.diff(x**2 - 4 * x + 3, x), x) == [2])
+chk('int_0^1 x^2 dx = 1/3', sp.integrate(x**2, (x, 0, 1)) == sp.Rational(1, 3))
+chk('int x e^x dx = (x-1)e^x',
+    sp.simplify(sp.integrate(x * sp.exp(x), x) - (x - 1) * sp.exp(x)) == 0)
+chk('sum 1/n^2 = pi^2/6', sp.summation(1 / n**2, (n, 1, sp.oo)) == sp.pi**2 / 6)
+_px, _py, _pz = sp.symbols('px py pz', real=True)
+chk('原点到平面 x+2y-2z=1 的距离为 1/3',
+    sp.Abs(-1) / sp.sqrt(1**2 + 2**2 + (-2)**2) == sp.Rational(1, 3))
+chk('f=x^2y 在 (1,2) 沿 (3,4) 的方向导数为 16/5',
+    sp.Rational(4 * 3 + 1 * 4, 5) == sp.Rational(16, 5))
+chk("y=e^(-2x) 满足 y'+2y=0 且 y(0)=1",
+    sp.simplify(sp.diff(sp.exp(-2 * x), x) + 2 * sp.exp(-2 * x)) == 0 and sp.exp(0) == 1)
+
 # ---- 曲线积分与三重积分 ----
 _t = sp.symbols('t', real=True)
 _rho, _phi, _theta = sp.symbols('rho varphi theta', positive=True)
