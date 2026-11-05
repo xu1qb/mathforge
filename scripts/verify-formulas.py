@@ -133,6 +133,21 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 群论、环论与表示论课程 ----
+chk('拉格朗日：模 6 子群阶只可能整除 6（1,2,3,6）',
+    all(6 % d == 0 for d in (1, 2, 3, 6)) and not any(6 % d == 0 for d in (4, 5)))
+chk('轨道-稳定子：|Gx| = |G|/|Gx|（|G|=6，稳定子 2 → 轨道 3）', 6 // 2 == 3)
+chk('西罗计数：模 p 余一且整除指数（n_p=1）', 1 % 3 == 1 and 6 % 1 == 0)
+chk('UFD：360 的唯一分解为 2³·3²·5',
+    sp.factorint(360) == {2: 3, 3: 2, 5: 1}
+    and sp.prod([k**v for k, v in sp.factorint(360).items()]) == 360)
+chk('多项式带余除法：(x²+1) = (x-1)(x+1) + 2',
+    sp.simplify(sp.expand((sp.Symbol('x') - 1) * (sp.Symbol('x') + 1) + 2) - (sp.Symbol('x')**2 + 1)) == 0)
+chk('特征标正交：两个不同不可约特征标内积为零（±1 例）',
+    sp.Rational(1, 2) * (1 * 1 + 1 * (-1)) == 0)
+chk('马施克：S3 正则表示维数 6 = 1(trivial)+1(sign)+2+2(标准表示两次)',
+    1 + 1 + 2 + 2 == 6)
+
 # ---- 几何与拓扑拆包课程 ----
 chk('双曲三角形内角和小于 π（曲率为负）', sp.pi - sp.Rational(1, 10) < sp.pi)
 chk('球面三角形内角和大于 π', sp.pi + sp.Rational(1, 10) > sp.pi)

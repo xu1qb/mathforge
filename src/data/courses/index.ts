@@ -46,6 +46,9 @@ import { NON_EUCLIDEAN_COURSE } from './non-euclidean';
 import { PROJECTIVE_GEOMETRY_COURSE } from './projective-geometry';
 import { TOPOLOGY_COURSE } from './topology-course';
 import { ALGEBRAIC_TOPOLOGY_COURSE } from './algebraic-topology-course';
+import { GROUP_THEORY_COURSE } from './group-theory-course';
+import { RING_THEORY_COURSE } from './ring-theory-course';
+import { REPRESENTATION_THEORY_COURSE } from './representation-theory-course';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -94,6 +97,9 @@ export const COURSES: Course[] = [
   PROJECTIVE_GEOMETRY_COURSE,
   TOPOLOGY_COURSE,
   ALGEBRAIC_TOPOLOGY_COURSE,
+  GROUP_THEORY_COURSE,
+  RING_THEORY_COURSE,
+  REPRESENTATION_THEORY_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {

@@ -79,13 +79,13 @@ export const DISCIPLINE: Discipline = {
       summary: '结构与整数的深层',
       courses: [
         { id: 'linear-algebra', name: '线性代数', courseId: 'linear-algebra' },
-        { id: 'group-theory', name: '群论', courseId: 'algebra-number' },
-        { id: 'ring-theory', name: '环论', courseId: 'algebra-number' },
+        { id: 'group-theory', name: '群论', courseId: 'group-theory-course' },
+        { id: 'ring-theory', name: '环论', courseId: 'ring-theory-course' },
         { id: 'field-theory', name: '域论', courseId: 'field-theory' },
         { id: 'galois-theory', name: '伽罗瓦理论', courseId: 'algebra-number' },
         { id: 'algebraic-number', name: '代数数论', courseId: 'algebraic-number-theory' },
         { id: 'analytic-number', name: '解析数论', courseId: 'algebra-number' },
-        { id: 'representation', name: '表示论', courseId: 'algebra-number' },
+        { id: 'representation', name: '表示论', courseId: 'representation-theory-course' },
       ],
     },
     {
