@@ -138,7 +138,7 @@ export const DISCIPLINE: Discipline = {
       courses: [
         { id: 'mechanics', name: '力学', courseId: 'applied-math' },
         { id: 'fluid-dynamics', name: '流体力学', courseId: 'fluid-dynamics' },
-        { id: 'mathematical-physics', name: '数学物理', note: '待建' },
+        { id: 'mathematical-physics', name: '数学物理', courseId: 'mathematical-physics' },
         { id: 'mathematical-biology', name: '生物数学', courseId: 'applied-math' },
         { id: 'operations-research', name: '运筹学', courseId: 'applied-math' },
         { id: 'control-theory', name: '控制论', courseId: 'applied-math' },
@@ -151,7 +151,7 @@ export const DISCIPLINE: Discipline = {
       summary: '公理、证明与不可判定',
       courses: [
         { id: 'axiomatic-set-theory', name: '公理化集合论', courseId: 'axiomatic-set-theory' },
-        { id: 'model-theory', name: '模型论', note: '待建' },
+        { id: 'model-theory', name: '模型论', courseId: 'model-theory' },
         { id: 'recursion-theory', name: '递归论', courseId: 'logic-foundations' },
         { id: 'proof-theory', name: '证明论', note: '待建' },
       ],

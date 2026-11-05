@@ -30,6 +30,8 @@ import { CODING_THEORY_COURSE } from './coding-theory';
 import { NUMERICAL_ANALYSIS_COURSE } from './numerical-analysis';
 import { COMPUTATIONAL_MATH_COURSE } from './computational-math';
 import { FLUID_DYNAMICS_COURSE } from './fluid-dynamics';
+import { MATHEMATICAL_PHYSICS_COURSE } from './mathematical-physics';
+import { MODEL_THEORY_COURSE } from './model-theory';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -62,6 +64,8 @@ export const COURSES: Course[] = [
   NUMERICAL_ANALYSIS_COURSE,
   COMPUTATIONAL_MATH_COURSE,
   FLUID_DYNAMICS_COURSE,
+  MATHEMATICAL_PHYSICS_COURSE,
+  MODEL_THEORY_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {

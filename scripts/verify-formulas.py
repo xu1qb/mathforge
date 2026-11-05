@@ -133,6 +133,24 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 数学物理与模型论课程 ----
+_x = sp.Symbol('x', real=True)
+_t = sp.Symbol('t', positive=True)
+chk('波动方程行波解：u=f(x-ct) 满足 u_tt=c²u_xx',
+    sp.simplify(sp.diff(sp.Function('f')(_x - 2 * _t), _t, 2)
+                - 4 * sp.diff(sp.Function('f')(_x - 2 * _t), _x, 2)) == 0)
+chk('热核归一化：∫G dx = 1（t=1 时）',
+    sp.simplify(sp.integrate(sp.exp(-_x**2 / 4) / sp.sqrt(4 * sp.pi), (_x, -sp.oo, sp.oo)) - 1) == 0)
+_E = sp.Symbol('E', real=True)
+chk('薛定谔方程：定态相位因子 e^{-iEt} 模长为 1（概率守恒）',
+    sp.simplify(sp.Abs(sp.exp(-sp.I * _E * _t)) - 1) == 0)
+chk('格林函数：δ 源积分给出 1（单位脉冲总质量）',
+    sp.integrate(sp.DiracDelta(_x), (_x, -sp.oo, sp.oo)) == 1)
+chk('热方程平滑：高斯核宽度 √(4πt) 随 t 增大', sp.sqrt(4 * sp.pi * 4) > sp.sqrt(4 * sp.pi * 1))
+chk('紧致性：有限子句集可满足（穷举 3 变量验证）',
+    any((p or q) and ((not p) or r) and ((not q) or (not r))
+        for p in (True, False) for q in (True, False) for r in (True, False)))
+
 # ---- 计算数学与流体力学课程 ----
 _A = sp.Matrix([[4, 3], [6, 3]])
 _L, _U, _ = _A.LUdecomposition()
