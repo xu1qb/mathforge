@@ -978,10 +978,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '结论里 f 与 f′ 的搭配方式，基本决定了辅助函数长什么样；记住几组对照，比现场硬猜快得多。',
+    definition:
+      '中值定理证明题的核心是构造辅助函数：把待证等式移项，使右边为零，再把左边认成某个函数的导数，然后用罗尔定理。',
     whenToUse: [
       '要证的等式同时含 f 与 f′',
       '结论形如 ξf′(ξ) 加 kf(ξ) 等于 0',
       '想过一遍常见构造，避免漏解',
+    ],
+    theorems: [
+      {
+        name: '常见辅助函数',
+        statement: '结论中含 f 与 f 撇的混合式时，乘上指数或多项式因子可凑成乘积的导数。',
+        formula: '(e^{x}f(x))^{\\prime}=e^{x}(f+f^{\\prime})',
+      },
+      {
+        name: '构造原则',
+        statement: '辅助函数要在两端取相同值，才能用罗尔定理。',
+      },
     ],
     steps: [
       {
@@ -1009,6 +1022,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '构造完先算 F(a) 与 F(b)，不相等就换一组因子重来。',
       },
     ],
+    pitfalls: [
+      '不移项就构造：右边不为零时容易认错导数形式。',
+      '两端值不等：罗尔定理用不了。',
+      '辅助函数选错：先试乘指数与乘多项式两类。',
+    ],
     example: {
       problem:
         'f 在 [0,1] 上连续、(0,1) 内可导，且 f(0)=f(1)=0，证存在 ξ 使 f′(ξ)+f(ξ)=0。',
@@ -1019,7 +1037,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '罗尔定理给出 F′(ξ)=0，即 f′(ξ)+f(ξ)=0。',
       ],
       result: "f'(\\xi)+f(\\xi)=0",
-    },
+    },    moreExamples: [
+      {
+        problem: '证明存在一点使函数等于二倍导数的等式成立，用什么辅助函数。',
+        walkthrough: [
+          '把结论移项成导数为零。',
+          '识别为指数乘函数的导数。',
+          '取该函数作辅助函数。',
+        ],
+        result: 'F(x)=e^{-2x}f(x)',
+      },
+    ],
+
   },
   {
     id: 'lagrange',
@@ -1634,10 +1663,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '证不等式只有三条主线：移项求导看单调、用中值定理把差值换成导数、或者直接求最值；选哪条看式子里有没有 f(b)−f(a)。',
+    definition:
+      '不等式证明有三条主线：作差构造函数用单调性、用中值定理把差值换成导数、用经典不等式（均值、柯西、琴生）放缩。',
     whenToUse: [
       '题目要求「证明 f(x) ≥ g(x)」',
       '式子里出现 f(b) − f(a) 或 b − a',
       '含积分、级数的不等式估计',
+    ],
+    theorems: [
+      {
+        name: '单调性法',
+        statement: '把不等式移项成函数大于零，证明函数单调且端点值为零。',
+      },
+      {
+        name: '琴生不等式',
+        statement: '凸函数的函数值不超过割线，给出平均值与函数值的不等关系。',
+        formula: 'f(\\sum\\lambda_i x_i)\\le\\sum\\lambda_i f(x_i)',
+      },
     ],
     steps: [
       {
@@ -1664,6 +1706,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '被积函数能被常数或其他函数界住时，直接对积分放缩；也可以用单调性比较。',
       },
     ],
+    pitfalls: [
+      '只验端点不验单调：区间内可能先减后增。',
+      '放缩方向反：证明上界要放大，下界要缩小。',
+      '等号条件忽略：要说明取等的情形。',
+    ],
     example: {
       problem: '证明对任意实数 a、b，都有 |sin a − sin b| ≤ |a − b|。',
       walkthrough: [
@@ -1673,7 +1720,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '而 |cos ξ| ≤ 1，所以不等式成立；a = b 时取等号显然成立。',
       ],
       result: '|\\sin a-\\sin b|\\le|a-b|',
-    },
+    },    moreExamples: [
+      {
+        problem: '证明自变量大于零时指数大于一加自变量。',
+        walkthrough: [
+          '构造函数为指数减一减自变量。',
+          '导数在零处为零且递增。',
+          '因此函数大于零。',
+        ],
+        result: 'e^{x}>1+x',
+      },
+    ],
+
   },
   {
     id: 'series-sum',
@@ -2152,10 +2210,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '均值管「和与积」，柯西管「平方和与内积」，琴生管「凸函数的平均」；竞赛里的不等式题九成是这三个的变形。',
+    definition:
+      '三个经典不等式：均值不等式、柯西不等式、琴生不等式。它们分别刻画算术与几何平均、内积与模、凸性与期望。',
     whenToUse: [
       '证明含 a+b 与 ab 的不等式',
       '证明平方和与乘积的不等式',
       '证明对称的多元不等式',
+    ],
+    theorems: [
+      {
+        name: '均值不等式',
+        statement: '非负数的算术平均不小于几何平均，等号当且仅当各数相等。',
+        formula: '\\frac{a+b}{2}\\ge\\sqrt{ab}',
+      },
+      {
+        name: '柯西不等式',
+        statement: '内积的平方不超过两个模平方之积。',
+        formula: '(\\sum a_ib_i)^{2}\\le(\\sum a_i^{2})(\\sum b_i^{2})',
+      },
     ],
     steps: [
       {
@@ -2184,6 +2256,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '竞赛题最常见的收尾方式：把差写成若干平方之和，非负性一目了然。',
       },
     ],
+    pitfalls: [
+      '忽略非负条件：均值不等式要求各数非负。',
+      '柯西取等条件写错：两组数成比例。',
+      '方向用反：不等号方向由大小关系决定。',
+    ],
     example: {
       problem: '证明对任意实数 a、b、c，都有 a²+b²+c² ≥ ab+bc+ca。',
       walkthrough: [
@@ -2193,7 +2270,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '所以原不等式成立，且 a=b=c 时取等号。',
       ],
       result: 'a^{2}+b^{2}+c^{2}\\ge ab+bc+ca',
-    },
+    },    moreExamples: [
+      {
+        problem: '用均值不等式求自变量加倒数的最小值，自变量为正。',
+        walkthrough: [
+          '两项都是正数。',
+          '算术平均不小于几何平均。',
+          '几何平均为一。',
+        ],
+        result: '2',
+      },
+    ],
+
   },
   {
     id: 'integral-applications',
@@ -2280,10 +2368,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '罗尔定理是最底层那根钉子；拉格朗日把函值之差换成导数乘区间长，柯西把两个函数的增量比换成导数比。',
+    definition:
+      '拉格朗日中值定理说连续可导函数在区间内某点导数等于两端函数值之差除以区间长度；柯西中值定理把它推广到两个函数之比。',
     whenToUse: [
       '出现 f(b) − f(a) 与 b − a',
       '要估计函数值之差的上界',
       '两个函数同时出现且要求比值',
+    ],
+    theorems: [
+      {
+        name: '拉格朗日中值定理',
+        statement: '闭区间连续、开区间可导时，存在一点导数等于割线斜率。',
+        formula: 'f(b)-f(a)=f^{\\prime}(\\xi)(b-a)',
+      },
+      {
+        name: '柯西中值定理',
+        statement: '两个函数满足条件且分母导数不为零时，存在一点使两导数之比等于两端增量之比。',
+        formula: '\\frac{f(b)-f(a)}{g(b)-g(a)}=\\frac{f^{\\prime}(\\xi)}{g^{\\prime}(\\xi)}',
+      },
     ],
     steps: [
       {
@@ -2309,6 +2411,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '先用中值定理把差写成导数乘区间长，再用导数的界去放缩。',
       },
     ],
+    pitfalls: [
+      '区间开闭混淆：连续在闭区间、可导在开区间。',
+      '把中值点当唯一：定理只保证存在。',
+      '柯西定理漏验分母导数：分母导数为零时不能除。',
+    ],
     example: {
       problem: '证明对任意实数 a、b，都有 |arctan a − arctan b| ≤ |a − b|。',
       walkthrough: [
@@ -2317,7 +2424,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '因为 1/(1 + ξ²) ≤ 1，两边取绝对值即得。',
       ],
       result: '|\\arctan a-\\arctan b|\\le|a-b|',
-    },
+    },    moreExamples: [
+      {
+        problem: '用拉格朗日定理估计正弦函数在零点附近的值与自变量之差。',
+        walkthrough: [
+          '割线斜率等于某点余弦。',
+          '余弦绝对值不超过一。',
+          '因此差值不超过区间长度。',
+        ],
+        result: '|\\sin x|\\le|x|',
+      },
+    ],
+
   },
   {
     id: 'reducible-ode',
@@ -7971,10 +8089,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '一阶导看升降，二阶导看弯曲方向：二阶导为正曲线凹向上，为负凹向下，变号处是拐点。曲率则把「弯的程度」量化成数。',
+    definition:
+      '二阶导为正曲线凹向上，为负凹向下，变号处是拐点。曲率刻画弯曲程度，等于二阶导绝对值除以一加一阶导平方的二分之三次方。',
     whenToUse: [
       '求曲线的凹凸区间与拐点',
       '求曲率与曲率半径',
       '证明不等式时用凸性（琴生不等式的来源）',
+    ],
+    theorems: [
+      {
+        name: '凹凸判据',
+        statement: '区间内二阶导恒正则曲线凹向上，恒负则凹向下。',
+      },
+      {
+        name: '曲率公式',
+        statement: '曲率等于二阶导绝对值除以一加一阶导平方的二分之三次方。',
+        formula: 'K=\\frac{|y^{\\prime\\prime}|}{(1+y^{\\prime 2})^{3/2}}',
+      },
     ],
     steps: [
       {
@@ -7995,6 +8126,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '用凸性证不等式',
         body: '凸函数上，割线在函数图像上方；这条性质把所有「平均值与函数值」的不等式统一起来。',
       },
+      {
+        title: '二阶导看凹凸',
+        body: '一阶导看升降，二阶导看弯曲方向。',
+      },
+    ],
+    pitfalls: [
+      '二阶导为零就当拐点：要变号才是。',
+      '曲率公式漏绝对值：曲率非负。',
+      '把曲率半径当曲率：两者互为倒数。',
     ],
     example: {
       problem: '求单位圆的曲率。',
@@ -8004,7 +8144,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '也就是恒等于 1。',
       ],
       result: '单位圆曲率为 1，曲率半径为 1。',
-    },
+    },    moreExamples: [
+      {
+        problem: '求单位圆的曲率。',
+        walkthrough: [
+          '圆的曲率处处相同。',
+          '半径为一，曲率等于一分之一。',
+        ],
+        result: '1',
+      },
+    ],
+
   },
   {
     id: 'improper-integral',
@@ -8091,10 +8241,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '求展开式不必每次算泰勒系数。记住几个基本展开，再用代换、求导、积分、乘除把新函数化归到已知展开，这叫间接展开。',
+    definition:
+      '间接展开法：记住五个基本展开，再用代换、求导、积分把新函数化归到已知展开，最后确认收敛域。',
     whenToUse: [
       '题目要求把函数展开成幂级数',
       '求幂级数的和函数（反方向用）',
       '近似计算或求高阶导数在零点的值',
+    ],
+    theorems: [
+      {
+        name: '逐项求导与积分',
+        statement: '收敛区间内幂级数可逐项求导与积分，收敛半径不变。',
+      },
+      {
+        name: '常用展开',
+        statement: '对数一加 x 的展开式为交替级数，收敛区间为左闭右开。',
+        formula: '\\ln(1+x)=\\sum_{n=1}^{\\infty}\\frac{(-1)^{n-1}x^{n}}{n}',
+      },
     ],
     steps: [
       {
@@ -8115,6 +8278,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '确认收敛域',
         body: '展开式只在收敛区间内成立。端点处要代回级数单独判断，别漏。',
       },
+      {
+        title: '先背五个展开',
+        body: '指数、正弦、余弦、对数、几何级数五组是地基。',
+      },
+    ],
+    pitfalls: [
+      '端点不判：展开式在端点的收敛性要单独看。',
+      '代换后收敛域没换：x 换成 x 平方，区间也变。',
+      '求导后漏积分回去：两边要同步。',
     ],
     example: {
       problem: '把对数函数一加 x 展开成幂级数。',
@@ -8125,7 +8297,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '收敛区间是负一到一，端点单独判。',
       ],
       result: '展开式为交替符号的 x 的 n 次方除以 n 之和。',
-    },
+    },    moreExamples: [
+      {
+        problem: '把一减 x 分之一展开成幂级数并写出收敛域。',
+        walkthrough: [
+          '这是几何级数。',
+          '公比为 x。',
+          '收敛条件为绝对值小于一。',
+        ],
+        result: '\\sum_{n=0}^{\\infty}x^{n},\\,|x|<1',
+      },
+    ],
+
   },
   {
     id: 'tangent-plane',
@@ -8210,10 +8393,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '重积分应用统一成「密度乘微元再累加」：质量是密度积分，质心是一阶矩除以质量，转动惯量是距离平方乘密度。',
+    definition:
+      '重积分应用统一为密度乘微元再累加：质量是密度积分，质心是一阶矩除以质量，转动惯量是距离平方乘密度。',
     whenToUse: [
       '求平面薄片或空间立体的质量、质心',
       '求转动惯量',
       '求引力分量',
+    ],
+    theorems: [
+      {
+        name: '质心公式',
+        statement: '质心坐标等于对应一阶矩除以总质量。',
+        formula: '\\bar x=\\frac{1}{m}\\iint x\\rho\\,d\\sigma',
+      },
+      {
+        name: '转动惯量',
+        statement: '绕轴转动惯量是到轴距离平方乘密度再积分。',
+        formula: 'I_x=\\iint y^{2}\\rho\\,d\\sigma',
+      },
     ],
     steps: [
       {
@@ -8235,6 +8432,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '用对称性化简',
         body: '均匀且区域对称时，质心必在对称轴上，可以先判断再计算，省一半功夫。',
       },
+      {
+        title: '先算质量',
+        body: '质心与转动惯量都从质量起步。',
+      },
+    ],
+    pitfalls: [
+      '距离算成到原点的距离：转动惯量用到轴距离。',
+      '均匀时忘记密度：均匀可直接用面积或体积。',
+      '对称性用错：不均匀时不能直接判质心在对称轴。',
     ],
     example: {
       problem: '求上半单位圆盘的形心纵坐标。',
@@ -8245,7 +8451,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '除以面积得三分之四除以圆周率。',
       ],
       result: '形心纵坐标为圆周率分之四除以三。',
-    },
+    },    moreExamples: [
+      {
+        problem: '求上半单位圆盘的形心纵坐标。',
+        walkthrough: [
+          '面积为二分之圆周率。',
+          '纵坐标一阶矩为三分之二。',
+          '相除得结果。',
+        ],
+        result: '\\frac{4}{3\\pi}',
+      },
+    ],
+
   },
   {
     id: 'stokes-formula',
