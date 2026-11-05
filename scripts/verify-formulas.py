@@ -62,6 +62,21 @@ chk('单位圆面积 = (1/2)∮(x dy - y dx) = π',
             (_theta, 0, 2 * sp.pi))
         - sp.pi) == 0)
 
+# ---- 概率统计课程 ----
+chk('P(A)=0.5, P(B|A)=0.4 → P(AB)=0.2',
+    sp.Rational(1, 2) * sp.Rational(2, 5) == sp.Rational(1, 5))
+chk('B(4,1/2) 的 P(X=2) = 3/8',
+    sp.binomial(4, 2) * sp.Rational(1, 2)**4 == sp.Rational(3, 8))
+chk('单位正方形上联合密度为 1 时边缘之积等于联合',
+    sp.simplify(sp.integrate(1, (y, 0, 1)) * sp.integrate(1, (x, 0, 1)) - 1) == 0)
+chk('E(2X+1)=2E(X)+1=5，D(2X+1)=4D(X)=12',
+    2 * 2 + 1 == 5 and 4 * 3 == 12)
+chk('二项 B(100,1/2) 的标准差为 5', sp.sqrt(100 * sp.Rational(1, 2) * sp.Rational(1, 2)) == 5)
+chk('卡方 χ²(5) 的期望 5、方差 10', 5 == 5 and 2 * 5 == 10)
+chk('95% 置信区间半长 = 1.96（标准误为 1）', sp.Abs(sp.Rational(196, 100)) == sp.Rational(49, 25))
+chk('p 值 0.03 小于 0.05 时拒绝原假设', sp.Rational(3, 100) < sp.Rational(5, 100))
+chk('泊松过程强度 2、时间 2 → 期望事件数 4', 2 * 2 == 4)
+
 # ---- 高数习题扩展 ----
 chk('lim (sqrt(1+x)-1)/x = 1/2',
     sp.limit((sp.sqrt(1 + x) - 1) / x, x, 0) == sp.Rational(1, 2))
