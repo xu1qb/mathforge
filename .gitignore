@@ -22,6 +22,9 @@ server-dist/
 # 临时探针脚本
 scripts/_probe_stats.mjs
 
+# UI 快照产物
+artifacts/
+
 # 安卓构建产物
 android-native/build-*/
 android-native/assets/public/

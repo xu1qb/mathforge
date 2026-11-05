@@ -65,7 +65,25 @@ AUDIT_ROUTES=/wrong-book,/progress node scripts/audit-site.mjs
 
 接入点：`MathInputField` 新增 `topicKey` 属性，`PracticePage` 传入 `activeTopic`。
 
-## 五、还没做（等有预算再说）
+## 五、UI 快照回归
+
+```bash
+npm run ui:snap                      # 抓 5 个关键页面 × 2 个宽度
+npm run ui:snap -- --routes=/practice,/progress
+npm run ui:snap -- --update          # 把本次结果写成新基线
+```
+
+脚本 `scripts/ui-snapshots.mjs`：
+
+- 自动拉起 dev server 与无头 Chrome（用完自动关掉）
+- 每页做三项检查：**空白页**（正文 < 30 字符）、**横向溢出**、**控制台报错**
+- 截图存 `artifacts/ui/<时间戳>/`，与 `baseline.json` 比对哈希，列出变动的页面
+- 首页和练习页每次打开都会随机出题或跑倒计时，属于**动态页**，只做结构检查、不参与哈希比对
+- 只保留最近 5 次产物
+
+失败（空白 / 溢出 / 报错）时退出码非 0，可以直接进 CI 或 pre-push。
+
+## 六、还没做（等有预算再说）
 
 | 项 | 为什么现在不做 |
 |---|---|

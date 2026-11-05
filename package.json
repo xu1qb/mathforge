@@ -19,7 +19,8 @@
     "app:dev": "npm run build:server && concurrently \"vite --port 5176\" \"wait-on http://localhost:5176 && electron .\"",
     "app:build": "vite build && npm run build:server && electron-builder --mac",
     "build:server": "node scripts/build-server.mjs",
-    "build:android": "vite build --outDir dist --emptyOutDir false && bash scripts/build-android-apk.sh"
+    "build:android": "vite build --outDir dist --emptyOutDir false && bash scripts/build-android-apk.sh",
+    "ui:snap": "node --experimental-websocket scripts/ui-snapshots.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.6.0",
