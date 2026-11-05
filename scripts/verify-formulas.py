@@ -31,6 +31,30 @@ chk('lim(e^x - 1 - x)/x^2 = 1/2',
     sp.limit((sp.exp(x) - 1 - x) / x**2, x, 0) == sp.Rational(1, 2))
 chk('lim(sin n)/n = 0', sp.limit(sp.sin(n) / n, n, sp.oo) == 0)
 
+# ---- 曲线积分与三重积分 ----
+_t = sp.symbols('t', real=True)
+_rho, _phi, _theta = sp.symbols('rho varphi theta', positive=True)
+chk('单位圆上 ∮ (x dy - y dx) = 2π',
+    sp.integrate(
+        (sp.cos(_t) * sp.diff(sp.sin(_t), _t) - sp.sin(_t) * sp.diff(sp.cos(_t), _t)),
+        (_t, 0, 2 * sp.pi)) == 2 * sp.pi)
+chk('上半单位球内 ∭ z dV = π/4',
+    sp.simplify(
+        sp.integrate(
+            sp.integrate(
+                sp.integrate((_rho * sp.cos(_phi)) * _rho**2 * sp.sin(_phi), (_rho, 0, 1)),
+                (_phi, 0, sp.pi / 2)),
+            (_theta, 0, 2 * sp.pi))
+        - sp.pi / 4) == 0)
+chk('单位球体积 = 4π/3',
+    sp.simplify(
+        sp.integrate(
+            sp.integrate(
+                sp.integrate(_rho**2 * sp.sin(_phi), (_rho, 0, 1)),
+                (_phi, 0, sp.pi)),
+            (_theta, 0, 2 * sp.pi))
+        - 4 * sp.pi / 3) == 0)
+
 # ---- 导数应用：单调与极值 ----
 chk('x^3-3x 的驻点为 ±1',
     sorted(sp.solve(sp.diff(x**3 - 3*x, x), x)) == [-1, 1])
