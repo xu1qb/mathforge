@@ -28,6 +28,10 @@ interface GlobalSearchDialogProps {
 }
 
 const TYPE_ICON: Record<SearchItemType, typeof Calculator> = {
+  branch: GraduationCap,
+  course: GraduationCap,
+  chapter: FileText,
+  explainer: BookOpenText,
   module: Calculator,
   'knowledge-card': BookOpenText,
   'must-memo': BookmarkCheck,

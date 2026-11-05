@@ -21,8 +21,15 @@ import {
   type CompetitionSkill,
 } from '@/data/competition';
 import { NAV_GROUPS } from '@/components/AppSidebar';
+import { COURSES } from '@/data/courses';
+import { BRANCHES } from '@/data/catalog';
+import { EXPLAINER_TOPICS } from '@/data/explainers';
 
 export type SearchItemType =
+  | 'branch'
+  | 'course'
+  | 'chapter'
+  | 'explainer'
   | 'module'
   | 'knowledge-card'
   | 'must-memo'
@@ -131,6 +138,61 @@ function buildIndex(): SearchItem[] {
         weight: 100,
       });
     }
+  }
+
+  // 1.5 学科分支 / 课程 / 章节 / 原理讲解
+  const branchNameOf = new Map<string, string>();
+  for (const b of BRANCHES) {
+    for (const c of b.courses) if (c.courseId) branchNameOf.set(c.courseId, b.name);
+    items.push({
+      type: 'branch',
+      id: 'br-' + b.id,
+      title: b.name,
+      subtitle: '学科分支 · ' + b.courses.length + ' 门课程',
+      searchText: appendPinyin(b.name + ' ' + b.en + ' ' + b.summary + ' branch 分支'),
+      path: '/branch/' + b.id,
+      weight: 95,
+    });
+  }
+
+  for (const course of COURSES) {
+    const chapterNames = course.chapters.map((c) => c.title).join(' ');
+    items.push({
+      type: 'course',
+      id: 'co-' + course.id,
+      title: course.title,
+      subtitle: (branchNameOf.get(course.id) ?? '课程') + ' · ' + course.chapters.length + ' 章',
+      searchText: appendPinyin(
+        course.title + ' ' + course.tagline + ' ' + chapterNames + ' ' + course.textbook.name + ' course 课程'
+      ),
+      path: '/course/' + course.id,
+      weight: 90,
+    });
+    for (const chapter of course.chapters) {
+      items.push({
+        type: 'chapter',
+        id: 'ch-' + course.id + '-' + chapter.id,
+        title: chapter.title,
+        subtitle: course.title + ' · ' + chapter.textbookRef,
+        searchText: appendPinyin(chapter.title + ' ' + chapter.summary + ' ' + chapter.goals.join(' ') + ' chapter 章节'),
+        path: '/course/' + course.id + '/' + chapter.id,
+        weight: 65,
+      });
+    }
+  }
+
+  for (const topic of EXPLAINER_TOPICS) {
+    items.push({
+      type: 'explainer',
+      id: 'ex-' + topic.id,
+      title: topic.title,
+      subtitle: '原理讲解 · ' + topic.tag,
+      searchText: appendPinyin(
+        topic.title + ' ' + topic.tag + ' ' + topic.essence + ' ' + (topic.definition ?? '') + ' explainer 讲解'
+      ),
+      path: '/explainer?topic=' + topic.id,
+      weight: 60,
+    });
   }
 
   // 2. 知识卡片（161 张）
@@ -305,12 +367,20 @@ export function searchItems(query: string, limitPerType = 5): {
     'must-memo': '必背结论',
     'problem-type': '题型练习',
     formula: '公式手册',
+    branch: '学科分支',
+    course: '课程',
+    chapter: '课程章节',
+    explainer: '原理讲解',
     template: '解题模板',
     competition: '竞赛备战',
     shortcut: '快捷键',
   };
 
   const typeOrder: SearchItemType[] = [
+    'branch',
+    'course',
+    'chapter',
+    'explainer',
     'module',
     'knowledge-card',
     'must-memo',

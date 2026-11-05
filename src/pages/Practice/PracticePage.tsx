@@ -236,6 +236,26 @@ export default function PracticePage() {
     }
   }, []);
 
+  // 统一应用一道题：重置答题状态
+  const applyQuestion = useCallback(
+    (q: PracticeQuestion) => {
+      setQuestion(q);
+      setUserAnswer('');
+      setIsChecked(false);
+      setIsCorrect(false);
+      setFeedback('');
+      setShowAnswer(false);
+      setSelfEvalResult(null);
+      setIsGuessed(false);
+      setHintLevel(0);
+      setCurrentWrongKey(null);
+      setTimeLeft(180);
+      questionStartTimeRef.current = Date.now();
+      recordQuestion(activeTopic);
+    },
+    [activeTopic, recordQuestion]
+  );
+
   // 生成新题目
   const newQuestion = useCallback(() => {
     let q: PracticeQuestion;
@@ -260,20 +280,23 @@ export default function PracticePage() {
     } else {
       q = generatePracticeQuestion(activeTopic, difficulty);
     }
-    setQuestion(q);
-    setUserAnswer('');
-    setIsChecked(false);
-    setIsCorrect(false);
-    setFeedback('');
-    setShowAnswer(false);
-    setSelfEvalResult(null);
-    setIsGuessed(false);
-    setHintLevel(0);
-    setCurrentWrongKey(null);
-    setTimeLeft(180);
-    questionStartTimeRef.current = Date.now();
-    recordQuestion(activeTopic);
-  }, [activeTopic, difficulty, recordQuestion, aiEnabled, aiPool, aiCursor, courseMode]);
+    applyQuestion(q);
+  }, [activeTopic, difficulty, recordQuestion, aiEnabled, aiPool, aiCursor, courseMode, applyQuestion]);
+
+  // 切换课程题模式时立刻换题（setState 异步，不能在同一次点击里读新值）
+  const prevCourseModeRef = useRef(courseMode);
+  useEffect(() => {
+    if (courseMode === prevCourseModeRef.current) return;
+    prevCourseModeRef.current = courseMode;
+    if (courseMode) {
+      const pool = getCourseExercises();
+      if (pool.length > 0) {
+        applyQuestion({ ...pool[Math.floor(Math.random() * pool.length)] });
+      }
+    } else {
+      applyQuestion(generatePracticeQuestion(activeTopic, difficulty));
+    }
+  }, [courseMode, applyQuestion, activeTopic, difficulty]);
 
   // 拉取「当前知识点」审核通过的 AI 题
   // 后台补题：预生成 10 道，跑完自动刷新题库
@@ -1000,7 +1023,6 @@ export default function PracticePage() {
                   onClick={() => {
                     setCourseMode((v) => !v);
                     setAiEnabled(false);
-                    newQuestion();
                   }}
                   className={`px-3 py-1.5 text-sm rounded-lg font-medium transition-all ${
                     courseMode ? 'bg-sky-600 text-white' : 'text-muted-foreground hover:bg-accent'
@@ -1218,8 +1240,15 @@ export default function PracticePage() {
                           {diffInfo.label}
                         </Badge>
                         <Badge variant="secondary" className="font-normal">
-                          {currentTopic.label}
+                          {courseMode && (question as { courseTitle?: string }).courseTitle
+                            ? (question as { courseTitle?: string }).courseTitle
+                            : currentTopic.label}
                         </Badge>
+                        {courseMode && (question as { chapterTitle?: string }).chapterTitle && (
+                          <Badge variant="outline" className="text-[10px] font-normal">
+                            {(question as { chapterTitle?: string }).chapterTitle}
+                          </Badge>
+                        )}
                         {relatedExplainer && (
                           <button
                             onClick={() => navigate('/explainer?topic=' + relatedExplainer.id)}
