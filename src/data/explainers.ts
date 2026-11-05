@@ -3609,10 +3609,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '拓扑只关心「哪些子集算开集」；连续是开集的原像仍开，同胚是双向连续的双射——距离、角度全不重要。',
+    definition:
+      '拓扑空间是集合配上一族开集，满足空集与全集开、任意并开、有限交开。连续映射指开集的原像开。',
     whenToUse: [
       '判断映射是否连续',
       '判断两个空间是否同胚',
       '理解连通、紧致这类不变量',
+    ],
+    theorems: [
+      { name: '连续等价开集原像', statement: '映射连续当且仅当每个开集的原像是开集。', formula: 'f^{-1}(U)\\text{ open}' },
+      { name: '同胚', statement: '双射且双向连续称同胚，拓扑性质在同胚下不变。', },
     ],
     steps: [
       {
@@ -3639,6 +3645,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         formula: 'X\\cong Y',
       },
     ],
+    pitfalls: ['把开集当欧氏开区间：拓扑可以很粗。', '连续只看点列：一般拓扑空间没有度量。', '同胚与同伦混淆：一个是等价，一个是形变。'],
     example: {
       problem: '证明开区间 (0,1) 与实数轴 ℝ 同胚。',
       walkthrough: [
@@ -3648,7 +3655,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '这说明长度、有界性都不是拓扑性质。',
       ],
       result: '(0,1)\\cong\\mathbb{R}',
-    },
+    },    moreExamples: [{ problem: '实数轴上的开区间族能定义拓扑吗？', walkthrough: ['任意并与有限交仍是开区间并。', '满足三条公理。'], result: '可以' }],
+
   },
   {
     id: 'stochastic-process',
@@ -3821,10 +3829,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '熵衡量一个随机变量的平均不确定性；分布越均匀，熵越大，公平硬币的熵正好是 1 bit。',
+    definition:
+      '离散随机变量的香农熵是负的概率乘对数之和，度量平均不确定性。互信息衡量两个变量的相关程度。',
     whenToUse: [
       '计算随机变量的信息量',
       '比较两种分布的混乱程度',
       '理解编码长度的下界',
+    ],
+    theorems: [
+      { name: '熵的范围', statement: '熵非负，且不超过支持集大小的对数。', formula: '0\\le H(X)\\le\\log|X|' },
+      { name: '链式法则', statement: '联合熵等于条件熵之和。', formula: 'H(X,Y)=H(X)+H(Y\\mid X)' },
     ],
     steps: [
       {
@@ -3845,7 +3859,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '编码下界',
         body: '无损编码的平均码长不可能低于熵。',
       },
+      {
+        title: '选对数底',
+        body: '底为二时单位是比特，底为 e 时是奈特。',
+      },
     ],
+    pitfalls: ['把熵当概率：它是期望信息量。', '对数底不同：单位不同（比特/奈特）。', '均匀分布熵最大：只在固定支持集时成立。'],
     example: {
       problem: '一枚硬币正面概率 0.9，求它的熵。',
       walkthrough: [
@@ -3855,7 +3874,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '比公平硬币的 1 bit 小，因为结果更容易猜。',
       ],
       result: 'H\\approx 0.469\\ \\text{bit}',
-    },
+    },    moreExamples: [{ problem: '均匀抛硬币的熵是多少比特？', walkthrough: ['两种结果各一半。', '负二分之一乘对数两次。'], result: '1' }],
+
   },
   {
     id: 'game-nash',
@@ -3949,10 +3969,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '测度是给集合赋「大小」的函数；勒贝格测度让「长度」适用于远比区间复杂的集合，也让积分能处理更多函数。',
+    definition:
+      '测度是定义在 σ 代数上的非负可列可加函数，空集为零。它把「大小」推广到一般集合族。',
     whenToUse: [
       '理解积分为什么需要「可测」',
       '计算奇怪集合的大小（如康托集）',
       '概率论的公理化基础',
+    ],
+    theorems: [
+      { name: '可列可加', statement: '两两不交可测集的并的测度等于测度之和。', formula: '\\mu(\\cup A_n)=\\sum\\mu(A_n)' },
+      { name: '单调性', statement: '包含关系的测度单调。', },
     ],
     steps: [
       {
@@ -3978,6 +4004,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '用简单函数从下方逼近，这比黎曼积分能处理更多函数。',
       },
     ],
+    pitfalls: ['忽略 σ 代数：不是所有子集都可测。', '把有限可加当可列：极限运算会失效。', '忘记零测集：它们不影响积分。'],
     example: {
       problem: '求康托集三分构造中挖掉的总长度。',
       walkthrough: [
@@ -3987,7 +4014,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '剩下的康托集测度为 0，尽管它不可数。',
       ],
       result: 'm(C)=0',
-    },
+    },    moreExamples: [{ problem: '可数集的勒贝格测度是多少？', walkthrough: ['单点测度为零。', '可列可加。'], result: '0' }],
+
   },
   {
     id: 'galois-theory',
@@ -4132,10 +4160,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '不是所有函数都能被算法算出；停机问题就是第一个被证明不可判定的问题，靠对角线法构造矛盾。',
+    definition:
+      '可计算函数指存在图灵机在有限步内算出结果的函数。停机问题问：给定程序与输入，是否存在算法判断它是否停机。',
     whenToUse: [
       '判断一个问题有没有算法解',
       '理解可判定与可识别的区别',
       '认识「程序数量可数而函数不可数」',
+    ],
+    theorems: [
+      { name: '停机问题不可判定', statement: '不存在算法能对任意程序判断是否停机。', },
+      { name: '通用图灵机', statement: '存在能模拟任意图灵机的图灵机。', },
     ],
     steps: [
       {
@@ -4154,7 +4188,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '对角线证明',
         body: '假设有判定器 H，构造程序 P 调用 H 后做相反的事，导出矛盾。',
       },
+      {
+        title: '用对角线法',
+        body: '假设判定器存在，构造调用自身的程序导出矛盾。',
+      },
     ],
+    pitfalls: ['把不可判定当不可计算：函数可计算但判定问题无算法。', '忽略编码：停机问题依赖程序编码。', '混淆可判定与半可判定：后者只保证停机时能确认。'],
     example: {
       problem: '用对角线法证明停机问题不可判定。',
       walkthrough: [
@@ -4164,7 +4203,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '所以 H 不存在。',
       ],
       result: '\\text{HALT}\\ \\text{undecidable}',
-    },
+    },    moreExamples: [{ problem: '存在能判断所有程序是否停机的算法吗？', walkthrough: ['假设存在。', '构造自指程序导出矛盾。'], result: '不存在' }],
+
   },
 
   {
