@@ -55,6 +55,10 @@ import { GRAPH_THEORY_COURSE } from './graph-theory-course';
 import { PROBABILITY_THEORY_COURSE } from './probability-theory-course';
 import { MATH_STATISTICS_COURSE } from './math-statistics-course';
 import { STOCHASTIC_PROCESS_COURSE } from './stochastic-process-course';
+import { CRYPTOGRAPHY_COURSE } from './cryptography-course';
+import { THEORY_OF_COMPUTATION_COURSE } from './theory-of-computation-course';
+import { INFORMATION_THEORY_COURSE } from './information-theory-course';
+import { DISCRETE_MATH_COURSE } from './discrete-math-course';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -112,6 +116,10 @@ export const COURSES: Course[] = [
   PROBABILITY_THEORY_COURSE,
   MATH_STATISTICS_COURSE,
   STOCHASTIC_PROCESS_COURSE,
+  CRYPTOGRAPHY_COURSE,
+  THEORY_OF_COMPUTATION_COURSE,
+  INFORMATION_THEORY_COURSE,
+  DISCRETE_MATH_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {

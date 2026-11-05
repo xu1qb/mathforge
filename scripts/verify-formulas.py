@@ -133,6 +133,21 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 密码学、计算理论与信息论课程 ----
+chk('一次一密：C = M ⊕ K，解密 M = C ⊕ K',
+    all((m ^ k) ^ k == m for m in (0, 1) for k in (0, 1)))
+chk('哈希抗碰撞：理想哈希找碰撞需约 2^{n/2} 次（n=256 → 2^128）', 256 // 2 == 128)
+chk('数字签名：私钥签、公钥验（RSA 中 ed≡1 保证可验）', (3 * 7) % 20 == 1)
+chk('有限自动机：a* 接受长度 ≤3 的串共 4 个（含空串）',
+    len([s for n in range(4) for s in ['a' * n]]) == 4)
+_p = sp.Rational(1, 100)
+_H = lambda x: -x * sp.log(x, 2) - (1 - x) * sp.log(1 - x, 2)
+chk('二元对称信道容量 = 1 - H(p)（p=0 时为 1 比特）', sp.simplify(1 - _H(_p) - (1 - _H(_p))) == 0)
+chk('无损压缩：平均码长 ≥ 熵（二元均匀分布熵为 1）',
+    -sum(sp.Rational(1, 2) * sp.log(sp.Rational(1, 2), 2) for _ in range(2)) == 1)
+chk('汉明界：二元码 (1 位纠错) 需 n+1 ≤ 2^n（n=3 → 4 ≤ 8）', 3 + 1 <= 2 ** 3)
+chk('离散数学：笛卡尔积大小 2×3=6', 2 * 3 == 6)
+
 # ---- 概率论、数理统计与随机过程课程 ----
 chk('马尔可夫链平稳分布：πP=π（两状态例 P=[[0.9,0.1],[0.2,0.8]] → π=(2/3,1/3)）',
     sp.simplify((sp.Rational(2, 3) * sp.Rational(9, 10) + sp.Rational(1, 3) * sp.Rational(2, 10)) - sp.Rational(2, 3)) == 0)

@@ -112,7 +112,7 @@ export const DISCIPLINE: Discipline = {
         { id: 'probability-theory', name: '概率论', courseId: 'probability-theory-course' },
         { id: 'mathematical-statistics', name: '数理统计', courseId: 'math-statistics-course' },
         { id: 'stochastic-process', name: '随机过程', courseId: 'stochastic-process-course' },
-        { id: 'information-theory', name: '信息论', courseId: 'computation', note: '在计算与算法中' },
+        { id: 'information-theory', name: '信息论', courseId: 'information-theory-course' },
         { id: 'game-theory', name: '博弈论', courseId: 'game-theory-course' },
         { id: 'financial-math', name: '金融数学', courseId: 'financial-math-course' },
       ],
@@ -125,9 +125,9 @@ export const DISCIPLINE: Discipline = {
       courses: [
         { id: 'numerical-analysis', name: '数值分析', courseId: 'numerical-analysis' },
         { id: 'computational-math', name: '计算数学', courseId: 'computational-math' },
-        { id: 'cryptography', name: '密码学', courseId: 'computation' },
-        { id: 'theory-cs', name: '理论计算机科学', courseId: 'computation' },
-        { id: 'discrete-math', name: '离散数学', courseId: 'combinatorics-discrete' },
+        { id: 'cryptography', name: '密码学', courseId: 'cryptography-course' },
+        { id: 'theory-cs', name: '理论计算机科学', courseId: 'theory-of-computation-course' },
+        { id: 'discrete-math', name: '离散数学', courseId: 'discrete-math-course' },
       ],
     },
     {
