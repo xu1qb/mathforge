@@ -17,6 +17,7 @@ import { AXIOMATIC_SET_COURSE } from './axiomatic-set-theory';
 import { REAL_ANALYSIS_COURSE } from './real-analysis';
 import { COMPLEX_ANALYSIS_COURSE } from './complex-analysis';
 import { MEASURE_THEORY_COURSE } from './measure-theory-course';
+import { FUNCTIONAL_ANALYSIS_COURSE } from './functional-analysis';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -36,6 +37,7 @@ export const COURSES: Course[] = [
   REAL_ANALYSIS_COURSE,
   COMPLEX_ANALYSIS_COURSE,
   MEASURE_THEORY_COURSE,
+  FUNCTIONAL_ANALYSIS_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {

@@ -133,10 +133,21 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 泛函分析课程 ----
+chk('最大范数：(1,-1) 的范数为 1', max(abs(1), abs(-1)) == 1)
+chk('欧氏范数：sqrt(2) 的平方为 2', sp.sqrt(2) ** 2 == 2)
+chk('正交投影到 x 轴保留第一分量', sp.Matrix([[1, 1]]).dot(sp.Matrix([[1, 0]])) / 1 == 1)
+chk('二倍恒等算子的算子范数为 2', sp.Abs(2) == 2)
+chk('对角矩阵谱为对角元集合', set(sp.diag(2, 3).diagonal().tolist()[0]) == {2, 3})
+chk('柯西-施瓦茨：内积不超过范数之积',
+    abs(sp.Matrix([[1, 2]]).dot(sp.Matrix([[2, -1]]))) <= sp.sqrt(5) * sp.sqrt(5))
+
 # ---- 测度论课程 ----
-chk('区间 [0,1] 的测度为 1', sp.Rational(1) - 0 == 1)
-chk('外测度次可加：一维区间长度满足三角不等式',
-    all((a + b) <= a + b for a, b in [(1, 2), (3, 4), (0.5, 0.5)]))
+chk('康托尔集测度为零（各阶段总长 (2/3)^n → 0）',
+    sp.limit((sp.Rational(2, 3)) ** sp.Symbol('n', positive=True, integer=True),
+             sp.Symbol('n', positive=True, integer=True), sp.oo) == 0)
+chk('次可加：并集长度不超过长度之和（[0,1]∪[0.5,2]）',
+    (2 - 0) <= (1 - 0) + (2 - sp.Rational(1, 2)))
 chk('乘积测度在矩形上等于边长之积', 2 * 3 == 6)
 chk('Radon-Nikodym：二倍测度的密度为 2',
     sp.diff(2 * sp.Symbol('x', real=True), sp.Symbol('x', real=True)) == 2)
