@@ -43,10 +43,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '要证"存在一点使某个等式成立"，把等式移项成"某函数的导数=0"，再验证这个函数在区间两端值相等，罗尔定理自动给出答案。',
+    definition:
+      '罗尔定理：函数在闭区间连续、开区间可导、两端函数值相等时，区间内至少存在一点导数为零。',
     whenToUse: [
       '结论里出现"存在 ξ ∈ (a,b)"',
       '函数在 [a,b] 连续、(a,b) 可导',
       '要证的式子含 f 与 f′ 的混合等式',
+    ],
+    theorems: [
+      {
+        name: '罗尔定理',
+        statement: '两端相等且连续可导，则存在导数为零的点。',
+        formula: 'f(a)=f(b)\\;\\Rightarrow\\;\\exists\\xi,\\,f^{\\prime}(\\xi)=0',
+      },
+      {
+        name: '辅助函数构造',
+        statement: '要证的等式含函数与其导数时，把结论移项后识别成某个函数的导数，再用罗尔定理。',
+      },
     ],
     steps: [
       {
@@ -66,6 +79,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '套定理回代',
         body: '由罗尔定理，存在 ξ 使 F′(ξ)=0，回代即得要证的等式。',
       },
+      {
+        title: '先验三条件',
+        body: '连续、可导、两端相等，缺一不可。',
+      },
+    ],
+    pitfalls: [
+      '漏验三个条件：连续、可导、两端相等，缺一不可。',
+      '区间开闭混用：可导要求在开区间。',
+      '辅助函数构造错：移项要彻底，右边化成零。',
     ],
     example: {
       problem:
@@ -77,7 +99,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '罗尔：存在 ξ 使 F′(ξ)=0，即 f′(ξ)=2ξ。',
       ],
       result: 'f′(ξ)=2ξ',
-    },
+    },    moreExamples: [
+      {
+        problem: '二次多项式减四 x 加三 在一到三上满足罗尔定理，求中间点。',
+        walkthrough: [
+          '两端函数值都为零。',
+          '导数为二 x 减四。',
+          '令其为零得 x 等于二。',
+        ],
+        result: '\\xi=2',
+      },
+    ],
+
   },
   {
     id: 'squeeze',
@@ -5548,10 +5581,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '同一向量在不同基下的坐标不同；过渡矩阵 $P$ 把新坐标换成旧坐标，求逆就能反着换。',
+    definition:
+      '过渡矩阵把一组基下的坐标换到另一组基。它的列是新基向量在旧基下的坐标，坐标变换用它的逆。',
     whenToUse: [
       '两组基之间转换坐标',
       '求基变换矩阵',
       '理解相似矩阵的来源',
+    ],
+    theorems: [
+      {
+        name: '坐标变换',
+        statement: '旧坐标等于过渡矩阵乘新坐标。',
+        formula: 'x_{\\text{old}}=P\\,x_{\\text{new}}',
+      },
+      {
+        name: '过渡矩阵可逆',
+        statement: '两组基之间的过渡矩阵一定可逆。',
+      },
     ],
     steps: [
       {
@@ -5573,6 +5619,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '同一个线性变换在不同基下的矩阵满足相似关系。',
         formula: 'B=P^{-1}AP',
       },
+      {
+        title: '列写新基坐标',
+        body: '过渡矩阵的列是新基在旧基下的坐标。',
+      },
+    ],
+    pitfalls: [
+      '方向搞反：列是新基在旧基下的坐标。',
+      '忘记取逆：从新到旧要乘逆矩阵。',
+      '基向量不是列：按行写会转置错。',
     ],
     example: {
       problem: '旧基 $e_{1},e_{2}$，新基 $\\beta_{1}=(1,1)$、$\\beta_{2}=(1,-1)$，向量旧坐标为 $(2,0)$，求新坐标。',
@@ -5583,7 +5638,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '验证：$1\\cdot(1,1)+1\\cdot(1,-1)=(2,0)$。',
       ],
       result: 'x_{\\text{new}}=(1,1)^{T}',
-    },
+    },    moreExamples: [
+      {
+        problem: '从标准基到一、一与一、零的过渡矩阵。',
+        walkthrough: [
+          '第一列写第一个新基向量。',
+          '第二列写第二个。',
+        ],
+        result: '\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}',
+      },
+    ],
+
   },
   {
     id: 'eigen-properties',
@@ -5821,10 +5886,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '二次型除以长度平方就是瑞利商，它的最大值是最小特征值对应的极值——最大特征值对应最大值，最小特征值对应最小值。',
+    definition:
+      '瑞利商是二次型除以内积，它的取值范围被最小与最大特征值夹住，极值恰在对应特征向量处取到。',
     whenToUse: [
       '求二次型在单位球上的最值',
       '估计矩阵特征值的范围',
       '证明与特征值有关的不等式',
+    ],
+    theorems: [
+      {
+        name: '瑞利商范围',
+        statement: '对称矩阵的瑞利商介于最小与最大特征值之间。',
+        formula: '\\lambda_{\\min}\\le\\frac{x^{T}Ax}{x^{T}x}\\le\\lambda_{\\max}',
+      },
+      {
+        name: '极值点',
+        statement: '瑞利商在对应特征向量处取到特征值。',
+      },
     ],
     steps: [
       {
@@ -5845,6 +5923,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '推广',
         body: '在正交约束下逐层求极值，可得到全部特征值（库朗-费舍尔定理）。',
       },
+      {
+        title: '极值在特征向量',
+        body: '瑞利商的极值点就是特征向量，极值就是特征值。',
+      },
+    ],
+    pitfalls: [
+      '忘记归一化：瑞利商分母要除以内积。',
+      '矩阵不对称时套用：结论针对实对称。',
+      '把极值点当任意向量：必须是对应特征向量。',
     ],
     example: {
       problem: '求 $f=x_{1}^{2}+2x_{2}^{2}$ 在 $x_{1}^{2}+x_{2}^{2}=1$ 上的最大值与最小值。',
@@ -5854,7 +5941,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '最大值 $2$ 在 $x=(0,1)$ 处取到，最小值 $1$ 在 $x=(1,0)$ 处取到。',
       ],
       result: '\\max=2,\\ \\min=1',
-    },
+    },    moreExamples: [
+      {
+        problem: '单位矩阵的瑞利商恒为多少。',
+        walkthrough: [
+          '二次型等于内积。',
+          '相除恒为一。',
+        ],
+        result: '1',
+      },
+    ],
+
   },
 
   {
@@ -6013,10 +6110,22 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '线性空间是满足八条运算法则的集合，元素可以是多项式、矩阵、函数；$\\mathbb{R}^{n}$ 只是其中一个例子。',
+    definition:
+      '线性空间是定义了加法与数乘并满足八条公理的集合。它把向量、多项式、函数统一在同一套语言下。',
     whenToUse: [
       '判断多项式空间、矩阵空间的维数',
       '理解「向量」不必是数组',
       '证明抽象空间中的线性性质',
+    ],
+    theorems: [
+      {
+        name: '维数公式',
+        statement: '有限维线性空间的任意两组基含相同个数的向量。',
+      },
+      {
+        name: '子空间',
+        statement: '子空间对加法与数乘封闭且含零元。',
+      },
     ],
     steps: [
       {
@@ -6036,6 +6145,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '同构',
         body: '同为 $n$ 维的线性空间都同构于 $\\mathbb{R}^{n}$。',
       },
+      {
+        title: '先查公理',
+        body: '判断线性空间逐条验八条公理，考试常只考封闭性。',
+      },
+    ],
+    pitfalls: [
+      '只验封闭不验零元：零元是公理之一。',
+      '把多项式空间当有限维：次数不设上限时是无限维。',
+      '混淆加法与数乘：两种运算都要验。',
     ],
     example: {
       problem: '求次数不超过 $2$ 的多项式空间 $P_{2}[x]$ 的一组基与维数。',
@@ -6046,7 +6164,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '所以它们构成一组基，维数是 $3$。',
       ],
       result: '\\dim P_{2}[x]=3',
-    },
+    },    moreExamples: [
+      {
+        problem: '次数不超过一的多项式空间维数是多少。',
+        walkthrough: [
+          '基为一与 x。',
+          '共两个基向量。',
+        ],
+        result: '2',
+      },
+    ],
+
   },
   {
     id: 'linear-transformation',
@@ -6055,10 +6183,22 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '线性变换是保持加法与数乘的映射；选定一组基后，它被唯一地表示成一个矩阵，换基则矩阵相似。',
+    definition:
+      '线性变换保持加法与数乘。选定基后，线性变换对应一个矩阵，矩阵的列是基向量的像。',
     whenToUse: [
       '把几何变换写成矩阵',
       '求线性变换在给定基下的矩阵',
       '理解相似矩阵的几何含义',
+    ],
+    theorems: [
+      {
+        name: '矩阵表示',
+        statement: '线性变换在给定基下的矩阵，其列是基向量像的坐标。',
+      },
+      {
+        name: '复合与乘法',
+        statement: '线性变换的复合对应矩阵乘法，顺序相反。',
+      },
     ],
     steps: [
       {
@@ -6079,6 +6219,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '几何例子',
         body: '平面旋转、投影、伸缩都是线性变换，对应 $2\\times2$ 矩阵。',
       },
+      {
+        title: '列是像的坐标',
+        body: '变换矩阵的列是基向量的像。',
+      },
+    ],
+    pitfalls: [
+      '基没定就谈矩阵：矩阵依赖基的选择。',
+      '复合顺序搞反：先作用的在右边。',
+      '把非线性映射当线性：平移不是线性变换。',
     ],
     example: {
       problem: '求平面绕原点旋转 $90^{\\circ}$ 的线性变换的矩阵。',
@@ -6089,7 +6238,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '这正是前面见过的正交矩阵，行列式为 $1$。',
       ],
       result: 'A=\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}',
-    },
+    },    moreExamples: [
+      {
+        problem: '变换把 x、y 映到二 x、y，在标准基下的矩阵。',
+        walkthrough: [
+          '第一个基向量映到二、零。',
+          '第二个映到零、一。',
+        ],
+        result: '\\begin{pmatrix}2&0\\\\0&1\\end{pmatrix}',
+      },
+    ],
+
   },
 
   {
@@ -6099,10 +6258,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '核是「被映成零」的向量集合，像是「能映出来的」向量集合；两者维数之和等于定义域维数，这是秩-零化度定理的几何版本。',
+    definition:
+      '核是映到零的向量集合，像是所有像的集合。核衡量丢失的信息，像衡量能到达的范围。',
     whenToUse: [
       '判断线性变换是否单射或满射',
       '求变换的核空间与像空间',
       '验证维数公式',
+    ],
+    theorems: [
+      {
+        name: '秩零度定理',
+        statement: '核维数加像维数等于定义域维数。',
+        formula: '\\dim\\ker T+\\dim\\operatorname{Im}T=\\dim V',
+      },
+      {
+        name: '单射判据',
+        statement: '核为零等价于映射是单射。',
+      },
     ],
     steps: [
       {
@@ -6124,6 +6296,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '单射与满射',
         body: '核为零则单射；像等于目标空间则满射；有限维同维数时两者等价。',
       },
+      {
+        title: '核看零原像',
+        body: '核是所有映到零的向量，解齐次方程即得。',
+      },
+    ],
+    pitfalls: [
+      '核与像混淆：一个在定义域，一个在目标空间。',
+      '只算维数不算基：求核要写出基。',
+      '忽略零向量：核至少含零向量。',
     ],
     example: {
       problem: '求 $T(x,y)=(x+y,\\\\ x-y)$ 的核与像。',
@@ -6134,7 +6315,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '由维数公式，像的维数 $=2-0=2$，即整个 $\\\\mathbb{R}^{2}$，是满射。',
       ],
       result: '\\\\ker T=\\\\{0\\\\},\\\\ \\\\dim\\\\mathrm{im}\\\\,T=2',
-    },
+    },    moreExamples: [
+      {
+        problem: '变换 x、y 映到 x 加 y、零 的核维数。',
+        walkthrough: [
+          '解 x 加 y 等于零。',
+          '解空间是一维。',
+        ],
+        result: '1',
+      },
+    ],
+
   },
   {
     id: 'isomorphism',
@@ -6143,10 +6334,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '两个线性空间之间存在可逆的线性映射，就叫同构；有限维下只需维数相等，因此所有 $n$ 维空间都同构于 $\\\\mathbb{R}^{n}$。',
+    definition:
+      '同构是可逆的线性映射，保持加法与数乘。同维数的有限维空间都同构。',
     whenToUse: [
       '判断两个空间是否「本质上一样」',
       '把抽象空间的问题搬到 $\\\\mathbb{R}^{n}$ 计算',
       '理解坐标映射的意义',
+    ],
+    theorems: [
+      {
+        name: '同构判据',
+        statement: '有限维空间同构当且仅当维数相同。',
+        formula: 'V\\cong W\\;\\Leftrightarrow\\;\\dim V=\\dim W',
+      },
+      {
+        name: '同构保持结构',
+        statement: '同构把基映成基，把线性关系原样保留。',
+      },
     ],
     steps: [
       {
@@ -6167,6 +6371,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '意义',
         body: '同构保持线性运算，所以抽象空间的问题都能翻译成矩阵问题。',
       },
+      {
+        title: '同维即同构',
+        body: '有限维空间只看维数是否相同。',
+      },
+    ],
+    pitfalls: [
+      '只看元素个数：无限集也可能同构。',
+      '把同构当相等：同构是结构相同，元素不同。',
+      '忘记线性：同构首先是线性映射。',
     ],
     example: {
       problem: '判断 $P_{2}[x]$ 与 $\\\\mathbb{R}^{3}$ 是否同构。',
@@ -6177,7 +6390,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '所以两者同构。',
       ],
       result: 'P_{2}[x]\\\\cong\\\\mathbb{R}^{3}',
-    },
+    },    moreExamples: [
+      {
+        problem: '二维实空间与一次多项式空间是否同构。',
+        walkthrough: [
+          '两者维数都是二。',
+          '因此同构。',
+        ],
+        result: '\\text{yes}',
+      },
+    ],
+
   },
   {
     id: 'derivative-sign',
