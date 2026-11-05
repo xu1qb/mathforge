@@ -9,6 +9,8 @@ import {
   Search,
   ChevronDown,
   ChevronRight,
+  BookOpen,
+  AlertTriangle,
 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -245,6 +247,44 @@ export default function ExplainerPage() {
             </CardContent>
           </Card>
 
+          {/* 严格定义 */}
+          {topic.definition && (
+            <Card>
+              <CardContent className="p-5">
+                <div className="mb-2 flex items-center gap-2">
+                  <BookOpen className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-semibold">严格定义</span>
+                </div>
+                <p className="text-sm leading-relaxed text-muted-foreground">{topic.definition}</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* 定理与公式 */}
+          {topic.theorems && topic.theorems.length > 0 && (
+            <Card>
+              <CardContent className="p-5">
+                <div className="mb-3 flex items-center gap-2">
+                  <Lightbulb className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-semibold">定理与公式</span>
+                </div>
+                <div className="space-y-3">
+                  {topic.theorems.map((t, i) => (
+                    <div key={i} className="rounded-md border border-border/60 p-3">
+                      <div className="text-sm font-medium text-foreground">{t.name}</div>
+                      <p className="mt-1 text-sm text-muted-foreground">{t.statement}</p>
+                      {t.formula && (
+                        <div className="mt-2 overflow-x-auto rounded bg-muted/50 p-2">
+                          <MathRenderer expression={t.formula} displayMode />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* 什么时候用 */}
           <Card>
             <CardContent className="p-5">
@@ -309,6 +349,54 @@ export default function ExplainerPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* 更多例题 */}
+          {topic.moreExamples && topic.moreExamples.length > 0 && (
+            <Card>
+              <CardContent className="space-y-5 p-5">
+                <div className="flex items-center gap-2">
+                  <Lightbulb className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-semibold">更多例题</span>
+                </div>
+                {topic.moreExamples.map((e2, i) => (
+                  <div key={i} className="border-t border-border/60 pt-4 first:border-0 first:pt-0">
+                    <p className="mb-2 rounded-md bg-muted/50 p-3 text-sm">{e2.problem}</p>
+                    <ul className="space-y-1.5">
+                      {e2.walkthrough.map((w, j) => (
+                        <li key={j} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                          {w}
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-2 overflow-x-auto rounded-md bg-primary/10 p-3">
+                      <MathRenderer expression={e2.result} displayMode />
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* 易错点 */}
+          {topic.pitfalls && topic.pitfalls.length > 0 && (
+            <Card>
+              <CardContent className="p-5">
+                <div className="mb-2 flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-amber-500" />
+                  <span className="text-sm font-semibold">易错点</span>
+                </div>
+                <ul className="space-y-1.5">
+                  {topic.pitfalls.map((p, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
 
           {/* 配套练习 */}
           {practiceLinks.length > 0 && (

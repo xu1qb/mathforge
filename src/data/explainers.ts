@@ -14,13 +14,25 @@ export interface ExplainerTopic {
   /** 难度：基础 / 进阶 / 竞赛 */
   level: '基础' | '进阶' | '竞赛';
   essence: string;
+  /** 严格定义（教材写法），让学生知道概念到底怎么定义 */
+  definition?: string;
   whenToUse: string[];
   steps: ExplainerStep[];
+  /** 定理与公式：一条一篇讲解里可以有多条 */
+  theorems?: { name: string; statement: string; formula?: string }[];
+  /** 易错点 */
+  pitfalls?: string[];
   example: {
     problem: string;
     walkthrough: string[];
     result: string;
   };
+  /** 额外例题（教材通常一节课 2-3 道） */
+  moreExamples?: {
+    problem: string;
+    walkthrough: string[];
+    result: string;
+  }[];
 }
 
 export const EXPLAINER_TOPICS: ExplainerTopic[] = [
@@ -117,10 +129,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '只有 0/0 或 ∞/∞ 型，且求导后极限存在（或为 ∞）时，才能上下分别求导再取极限。乱用必错。',
+    definition:
+      '若两个函数在 x₀ 附近都可导、且都趋于零或都趋于无穷，则它们之商的极限可能等于导数之商的极限。这就是洛必达法则，本质是把「零比零」变成「导数之比」。',
     whenToUse: [
       '代入后是 0/0 或 ∞/∞',
       '求导后式子更简单',
       '导函数之比极限存在',
+    ],
+    theorems: [
+      {
+        name: '洛必达法则（零比零型）',
+        statement: '在去心邻域内两函数可导且分母导数不为零，若两者都趋于零、导数之商极限存在，则原极限等于导数之商的极限。',
+        formula: '\\lim\\frac{f}{g}=\\lim\\frac{f^{\\prime}}{g^{\\prime}}',
+      },
+      {
+        name: '高阶无穷小之比',
+        statement: '零比零型的极限由最低阶非零项决定，因此反复用洛必达直到分母不趋于零为止。',
+      },
     ],
     steps: [
       {
@@ -140,6 +165,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '可重复用',
         body: '若求导后仍是未定式，且条件满足，可再次洛必达。',
       },
+      {
+        title: '换成等价量更快',
+        body: '先用等价无穷小化简，再决定是否洛必达，常能少求一次导。',
+      },
+    ],
+    pitfalls: [
+      '没验证前提就套：导数之商不存在时，原极限仍可能存在，不能反推法则失效。',
+      '在非未定式上用：一比二这种直接极限被拿去求导，结果全错。',
+      '和等价无穷小混用：分子换了等价量、分母没换，极限值会变。',
     ],
     example: {
       problem: '求 lim(x→0) (sin x)/x。',
@@ -149,7 +183,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '得 lim cos x / 1 = cos 0 = 1。',
       ],
       result: '\\displaystyle\\lim_{x\\to 0}\\frac{\\sin x}{x}=1',
-    },
+    },    moreExamples: [
+      {
+        problem: '求 x 趋于零时 (e 的 x 次方减一减 x) 除以 x 平方的极限。',
+        walkthrough: [
+          '这是零比零型，可以连续用两次洛必达。',
+          '第一次求导后仍是零比零。',
+          '第二次求导得指数除以二。',
+          '代入零得二分之一。',
+        ],
+        result: '\\frac{1}{2}',
+      },
+    ],
+
   },
   {
     id: 'taylor',
@@ -199,10 +245,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '乘除结构里可以把复杂的无穷小换成同阶的简单量，极限不变；加减结构里直接换会丢掉同阶项，必须多展一阶。',
+    definition:
+      '若两个无穷小之比的极限为一，则称它们等价，记作 α ~ β。等价替换的依据是：乘积因子可以用等价量替换而不改变极限，加减法不一定。',
     whenToUse: [
       '0/0 型极限，式子里出现 sin、tan、ln(1+x)、e^x−1',
       '复杂因子以乘除形式出现',
       '想快速判断无穷小的阶',
+    ],
+    theorems: [
+      {
+        name: '等价替换定理',
+        statement: '在乘除运算中，无穷小因子可用其等价无穷小替换，极限不变。',
+        formula: '\\lim\\frac{\\alpha\\beta}{\\gamma}=\\lim\\frac{\\alpha\\beta^{\\prime}}{\\gamma}',
+      },
+      {
+        name: '常用等价关系',
+        statement: '正弦、正切、反正弦、对数一加、指数减一等在零点都与自变量等价。',
+        formula: '\\sin x\\sim x,\\quad\\ln(1+x)\\sim x,\\quad e^{x}-1\\sim x',
+      },
     ],
     steps: [
       {
@@ -223,6 +283,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '复核阶数',
         body: '替换后看分子分母的最低次是否匹配，阶数对不上说明换错了。',
       },
+      {
+        title: '确认趋于零的前提',
+        body: '等价替换要求自变量趋于零，趋于其他点要先平移。',
+      },
+    ],
+    pitfalls: [
+      '在加减法里直接替换：两个同阶项相减会抵消，替换后误差被放大，必须展开到不抵消的阶。',
+      '忽略替换前提：只在自变量趋于零时成立，趋于其他点要平移。',
+      '把阶数看错：高阶无穷小替换后可能把主导项换没了。',
     ],
     example: {
       problem: '求 lim(x→0) (tan x − sin x)/x³。',
@@ -232,7 +301,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '除以 x³，极限为 1/2。',
       ],
       result: '\\displaystyle\\lim_{x\\to 0}\\frac{\\tan x-\\sin x}{x^{3}}=\\frac{1}{2}',
-    },
+    },    moreExamples: [
+      {
+        problem: '求 x 趋于零时 (tan x 减 sin x) 除以 x 立方的极限。',
+        walkthrough: [
+          '分子两项都是无穷小，不能直接相减替换。',
+          '通分后化为 sin x 乘 (1 减 cos x) 除以 cos x 除以 x 立方。',
+          '用等价关系：sin x 等价 x，1 减 cos x 等价二分之 x 平方。',
+          '结果为二分之一。',
+        ],
+        result: '\\frac{1}{2}',
+      },
+    ],
+
   },
   {
     id: 'riemann',
@@ -241,10 +322,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       'n 项和只要能凑成 (1/n)Σf(i/n)，它的极限就是 f 在 [0,1] 上的定积分——求和算不动时的标准出路。',
+    definition:
+      '把区间分成 n 份，用每份上某点的函数值乘区间长度求和，再让最大子区间长度趋于零。若极限存在，就称这个极限为定积分。它不依赖分法与取点。',
     whenToUse: [
       '求 n 项和的极限，分母次数比分子高一次',
       '和式里出现 i/n 这样的结构',
       '硬求和求不出来',
+    ],
+    theorems: [
+      {
+        name: '可积的充分条件',
+        statement: '闭区间上连续的函数一定可积；有有限个第一类间断点的有界函数也可积。',
+      },
+      {
+        name: '和式的标准化',
+        statement: '把和式凑成 n 分之一乘某个函数在 i 比 n 处的取值，就能把求和式变成定积分。',
+        formula: '\\lim\\frac{1}{n}\\sum f\\left(\\frac{i}{n}\\right)=\\int_{0}^{1}f(x)\\,dx',
+      },
     ],
     steps: [
       {
@@ -265,6 +359,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '算这个积分',
         body: '转成定积分后直接用牛顿-莱布尼茨求值。',
       },
+      {
+        title: '取特殊分法',
+        body: '证明可积时取等分与右端点，能覆盖大多数考试情形。',
+      },
+    ],
+    pitfalls: [
+      '区间长度写错：分成 n 份时每份长度是 n 分之一，不是 1。',
+      '取点与分法不一致：写成函数在端点取值却按中点求和的思路，表达式对不上。',
+      '把和式极限直接当积分：必须先凑成标准形式，否则提取不出被积函数。',
     ],
     example: {
       problem: '求 lim (1/n)(√(1/n) + √(2/n) + … + √(n/n))。',
@@ -274,7 +377,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '算得 2/3。',
       ],
       result: '\\displaystyle\\int_{0}^{1}\\sqrt{x}\\,dx=\\frac{2}{3}',
-    },
+    },    moreExamples: [
+      {
+        problem: '把 i 从 1 到 n 的 (i 比 n) 平方求和再除以 n，求极限。',
+        walkthrough: [
+          '这正是标准形式：n 分之一乘 f(i/n)，其中 f 是平方。',
+          '转成平方在零到一上的定积分。',
+          '积分得三分之一。',
+        ],
+        result: '\\frac{1}{3}',
+      },
+    ],
+
   },
   {
     id: 'byparts',
@@ -283,10 +397,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '把不好积的 ∫u dv 换成 uv − ∫v du；u 选对了，剩下的积分一定比原来简单。',
+    definition:
+      '分部积分由乘积求导公式移项得到：把被积式看成 u 乘 dv，积分等于 u 乘 v 减去 v 乘 du 的积分。它的作用是降低被积函数的复杂度。',
     whenToUse: [
       '被积函数是两类函数相乘',
       '出现 ln x、arctan x 单独一个因子',
       '换元之后仍然积不出来',
+    ],
+    theorems: [
+      {
+        name: '分部积分公式',
+        statement: '两个可导函数乘积的积分，等于 u 乘 v 减去交换后的积分。',
+        formula: '\\int u\\,dv=uv-\\int v\\,du',
+      },
+      {
+        name: '选 u 的口诀',
+        statement: '反三角、对数、幂、三角、指数，按此顺序优先取为 u，越靠前越应求导。',
+      },
     ],
     steps: [
       {
@@ -307,6 +434,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '上下限要跟着 uv 那一项一起代。',
         formula: '\\int_{a}^{b}u\\,dv=\\Bigl[uv\\Bigr]_{a}^{b}-\\int_{a}^{b}v\\,du',
       },
+      {
+        title: '连续两次分部',
+        body: '多项式乘指数或三角时，按多项式阶数连续分部，直到降为零次。',
+      },
+    ],
+    pitfalls: [
+      'u 选反了：把指数当 u、多项式当 dv，积分会越做越复杂。',
+      '循环积分忘记移项：两次分部回到原式后要移项解出，不能继续无限分部。',
+      '定积分忘记端点项：定积分分部后有 uv 在端点的差，漏掉就错。',
     ],
     example: {
       problem: '求 ∫ x e^x dx。',
@@ -316,7 +452,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '代公式：x e^x − ∫e^x dx = x e^x − e^x + C。',
       ],
       result: '\\displaystyle\\int x e^{x}\\,dx=(x-1)e^{x}+C',
-    },
+    },    moreExamples: [
+      {
+        problem: '计算 x 乘正弦 x 的积分。',
+        walkthrough: [
+          '取多项式为 u，正弦为 dv。',
+          '分部得负 x 乘余弦加余弦的积分。',
+          '余弦积分为正弦。',
+          '结果为负 x 余弦加正弦加常数。',
+        ],
+        result: '-x\\cos x+\\sin x+C',
+      },
+    ],
+
   },
   {
     id: 'series-test',
@@ -325,10 +473,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '通项不趋于 0 直接发散；正项级数用比值或比较，交错级数用莱布尼茨，任意项先看绝对收敛。',
+    definition:
+      '级数收敛指部分和数列有极限。判断收敛的通用路线是：先看通项是否趋于零，再按正项、交错、任意项分类选择判别法。',
     whenToUse: [
       '判断 Σaₙ 的敛散性',
       '求收敛半径与收敛域',
       '解答里需要写明用了哪个判别法',
+    ],
+    theorems: [
+      {
+        name: '收敛的必要条件',
+        statement: '级数收敛则通项必趋于零；通项不趋于零时级数一定发散。',
+        formula: '\\sum a_{n}<\\infty\\;\\Rightarrow\\;a_{n}\\to 0',
+      },
+      {
+        name: '比值与根值判别',
+        statement: '正项级数相邻项比值（或通项的 n 次根）极限小于一收敛、大于一发散、等于一时失效。',
+        formula: '\\lim\\left|\\frac{a_{n+1}}{a_{n}}\\right|<1\\;\\Rightarrow\\;\\sum a_{n}<\\infty',
+      },
     ],
     steps: [
       {
@@ -356,6 +518,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '绝对收敛必然收敛；只有条件收敛时才要单独说明。',
         formula: '\\sum|a_{n}|<+\\infty',
       },
+      {
+        title: '先看通项',
+        body: '通项不趋于零可直接判发散，省掉后面所有判别步骤。',
+      },
+    ],
+    pitfalls: [
+      '反过来用必要条件：通项趋于零只是必要，调和级数就是反例。',
+      '判据等于一时下结论：比值等于一时判别法失效，要换比较法。',
+      '交错级数只看绝对值：绝对值收敛是绝对收敛，条件收敛要另判。',
     ],
     example: {
       problem: '判断 Σ n/2ⁿ 的敛散性。',
@@ -365,7 +536,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '由比值判别法，级数收敛。',
       ],
       result: '\\displaystyle\\sum_{n=1}^{\\infty}\\frac{n}{2^{n}}=2',
-    },
+    },    moreExamples: [
+      {
+        problem: '判断 n 的阶乘除以 n 的 n 次方这个级数是否收敛。',
+        walkthrough: [
+          '这是正项级数，通项趋于零。',
+          '算相邻项比值，极限为自然常数分之一。',
+          '极限小于一。',
+          '由比值判别法，级数收敛。',
+        ],
+        result: '\\sum_{n=1}^{\\infty}\\dfrac{n!}{n^{n}}<\\infty',
+      },
+    ],
+
   },
   {
     id: 'rank',
@@ -1141,10 +1324,22 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '偏导存在推不出可微；判可微要用定义式看 Δz 减去全微分后是不是比 ρ 高阶，而「偏导连续」只是充分条件。',
+    definition:
+      '二元函数在一点可微，指函数增量能写成两个偏导乘自变量增量之和，再加一个比增量长度高阶的无穷小。偏导存在只是必要条件，可微更强：它要求函数在该点能被一个平面近似。',
     whenToUse: [
       '判断分段函数在原点是否可微',
       '区分连续、偏导存在、可微、偏导连续四者',
       '选择题里给一个分段函数让你判断',
+    ],
+    theorems: [
+      {
+        name: '可微的充分条件',
+        statement: '若两个偏导在一点的某邻域内存在且在该点连续，则函数在该点可微。',
+      },
+      {
+        name: '偏导存在但不可微的反例',
+        statement: '分段函数在原点处两个偏导都存在，但沿某些方向的差商极限不同，因此不可微。',
+      },
     ],
     steps: [
       {
@@ -1171,6 +1366,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '记住充分条件',
         body: '偏导在邻域内连续 ⇒ 可微；反过来不成立，所以不能用「偏导存在」去推可微。',
       },
+      {
+        title: '沿不同直线逼近',
+        body: '判断不可微常沿不同直线趋近，极限不同即可下结论。',
+      },
+    ],
+    pitfalls: [
+      '把偏导存在当可微：这是最典型的错误，多元情形比一元复杂。',
+      '只沿着坐标轴验证：可微要求在任意方向都成立。',
+      '忽略连续：可微必连续，连续不一定可微，判断顺序不能反。',
     ],
     example: {
       problem: 'f(x,y) = √|xy|，判断它在原点是否可微。',
@@ -1182,7 +1386,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
       ],
       result:
         '\\lim_{\\rho\\to 0}\\frac{\\sqrt{|\\Delta x\\,\\Delta y|}}{\\rho}\\ge\\frac{1}{\\sqrt{2}}\\neq 0',
-    },
+    },    moreExamples: [
+      {
+        problem: '判断分段函数在原点处是否可微，该函数在原点取零，其他点取 xy 除以根号下 x 平方加 y 平方。',
+        walkthrough: [
+          '两个偏导在原点都等于零。',
+          '考察差商是否比增量长度高阶。',
+          '沿不同方向取极限，结果不同。',
+          '因此不可微。',
+        ],
+        result: '\\text{not differentiable}',
+      },
+    ],
+
   },
   {
     id: 'linear-system',
@@ -1720,10 +1936,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '期望是加权平均，方差是偏离程度的平方平均；记住 D(X)=E(X²)−[E(X)]² 和线性变换的两条性质，八成题就够了。',
+    definition:
+      '期望是随机变量的加权平均，方差是偏离期望的平方的平均。它们把分布压缩成两个数，但一般不唯一确定分布。',
     whenToUse: [
       '求随机变量的期望与方差',
       '已知分布求数字特征',
       '判断独立与不独立时的方差可加性',
+    ],
+    theorems: [
+      {
+        name: '期望的线性性',
+        statement: '期望对和与常数倍线性，不需要独立性。',
+        formula: 'E(aX+bY)=aE(X)+bE(Y)',
+      },
+      {
+        name: '方差公式',
+        statement: '方差等于平方的期望减期望的平方；独立时和的方差等于方差之和。',
+        formula: 'D(X)=E(X^{2})-E(X)^{2}',
+      },
     ],
     steps: [
       {
@@ -1750,6 +1980,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '常见分布记牢',
         body: '二项 B(n,p)：np 与 np(1−p)；泊松：λ 与 λ；正态：μ 与 σ²；指数：1/λ 与 1/λ²。',
       },
+      {
+        title: '用量纲自检',
+        body: '方差带平方量纲、期望与原变量同量纲，可快速自检结果。',
+      },
+    ],
+    pitfalls: [
+      '把线性性用到方差上：方差对和一般不线性，只有独立才可加。',
+      '相关系数为零当成独立：它只排除线性关系。',
+      '期望不存在的分布硬算：重尾分布的期望可能发散。',
     ],
     example: {
       problem: 'X 服从 B(10, 0.3)，求 E(X) 与 D(X)。',
@@ -1759,7 +1998,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '也可用 E(X²) − [E(X)]² 验证：E(X²) = D + E² = 2.1 + 9 = 11.1。',
       ],
       result: 'E(X)=3,\\qquad D(X)=2.1',
-    },
+    },    moreExamples: [
+      {
+        problem: '已知期望为二、方差为三，求二倍加一的期望与方差。',
+        walkthrough: [
+          '期望线性：二乘二加一等于五。',
+          '方差乘系数平方：四乘三等于十二。',
+          '常数不影响方差。',
+        ],
+        result: 'E=5,\\quad D=12',
+      },
+    ],
+
   },
   {
     id: 'linear-dependence',
@@ -3440,10 +3690,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '特征值是使 Ax = λx 成立的数；解法固定：算特征多项式 det(A − λI) = 0，再代回求特征向量。',
+    definition:
+      '若存在非零向量 v 使得矩阵 A 乘 v 等于标量 λ 乘 v，则 λ 是特征值、v 是对应特征向量。特征值由特征方程给出，是相似变换下的不变量。',
     whenToUse: [
       '求矩阵的特征值与特征向量',
       '判断矩阵能否对角化',
       '分析动力系统的稳定性',
+    ],
+    theorems: [
+      {
+        name: '特征多项式',
+        statement: '特征值是特征多项式为零的根，矩阵的迹等于特征值之和，行列式等于特征值之积。',
+        formula: '\\det(A-\\lambda I)=0',
+      },
+      {
+        name: '可对角化判据',
+        statement: 'n 阶矩阵可对角化当且仅当有 n 个线性无关的特征向量；实对称矩阵一定可正交对角化。',
+      },
     ],
     steps: [
       {
@@ -3465,6 +3728,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '特征值之和等于迹，之积等于行列式。',
         formula: '\\sum\\lambda_{i}=\\mathrm{tr}A,\\quad \\prod\\lambda_{i}=|A|',
       },
+      {
+        title: '代回验算',
+        body: '求出特征向量后代回验证，能挡住大部分计算错误。',
+      },
+    ],
+    pitfalls: [
+      '把特征向量算成零向量：定义要求非零。',
+      '忘记代回检验：求出的特征向量要验证 A v 等于 λ v。',
+      '重特征值直接下结论：重根可能凑不够特征向量，需要看几何重数。',
     ],
     example: {
       problem: '求 A = [[2,1],[1,2]] 的特征值。',
@@ -3475,7 +3747,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '代回可求得对应的特征向量。',
       ],
       result: '\\lambda_{1}=3,\\ \\lambda_{2}=1',
-    },
+    },    moreExamples: [
+      {
+        problem: '求矩阵一、二、二、一 的特征值。',
+        walkthrough: [
+          '写出特征多项式，对角线减 λ。',
+          '展开得 λ 减一的平方减四。',
+          '解出两个根。',
+          '特征值为三与负一。',
+        ],
+        result: '\\lambda=3,\\,-1',
+      },
+    ],
+
   },
   {
     id: 'quadratic-form',
@@ -4532,10 +4816,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '选坐标系看区域形状：绕轴旋转的柱体用柱坐标，球形或锥形用球坐标，棱角分明的长方体用直角坐标切片。选对了，限就好定。',
+    definition:
+      '三重积分是空间区域上的积分：把区域切成小体积块，用函数值乘体积求和再取极限。计算时化成累次积分，坐标系的选择取决于区域形状与被积函数。',
     whenToUse: [
       '求空间立体的质量、质心、转动惯量',
       '被积函数含 x 方加 y 方，或区域是旋转体',
       '区域是球、半球、锥与球之间',
+    ],
+    theorems: [
+      {
+        name: '柱坐标体积元',
+        statement: '绕轴旋转的区域用柱坐标，体积元多一个径向因子。',
+        formula: 'dV=r\\,dr\\,d\\theta\\,dz',
+      },
+      {
+        name: '球坐标体积元',
+        statement: '球形或锥形区域用球坐标，体积元多径向平方与正弦。',
+        formula: 'dV=r^{2}\\sin\\varphi\\,dr\\,d\\varphi\\,d\\theta',
+      },
     ],
     steps: [
       {
@@ -4555,6 +4853,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '定限后逐层积分',
         body: '由内向外逐层积，每层上限只含外层变量。上限写错时回头检查区域的边界描述。',
       },
+      {
+        title: '先画区域再定限',
+        body: '画清楚区域形状再确定各层上下限，能避免限写反。',
+      },
+    ],
+    pitfalls: [
+      '漏掉雅可比因子：柱坐标少乘 r、球坐标少乘 r 方正弦，结果会差一大截。',
+      '积分限写反：内层上限只能含外层变量。',
+      '对称性用错：被积函数是奇函数才可直接判零。',
     ],
     example: {
       problem: '计算区域为上半单位球时，被积函数取 z 的三重积分。',
@@ -4565,7 +4872,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '三者相乘得到最终结果。',
       ],
       result: '结果为 π/4。',
-    },
+    },    moreExamples: [
+      {
+        problem: '求单位球内被积函数取 1 的三重积分。',
+        walkthrough: [
+          '球坐标下径向从零到一、极角零到圆周率、方位角一整圈。',
+          '体积元带径向平方与正弦。',
+          '三个积分相乘。',
+          '结果为三分之四倍圆周率。',
+        ],
+        result: '\\frac{4\\pi}{3}',
+      },
+    ],
+
   },
   {
     id: 'compactness',
@@ -4868,6 +5187,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '求导只需要四把工具：基本公式、四则运算、复合函数链式法则、隐函数与参数方程。任何初等函数的导数都是这四样拼出来的。',
+    definition:
+      '函数在点 x₀ 的导数定义为差商的极限：若该极限存在，就说函数在 x₀ 可导。几何上它是切线斜率，物理上是瞬时变化率；可导必连续，连续不一定可导。',
     whenToUse: [
       '遇到复合结构，想不起怎么拆',
       '隐函数或参数方程给出曲线，要求切线斜率',
@@ -4893,6 +5214,31 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '隐函数两边同时对自变量求导，把未知导数当一个整体解出来；参数方程则两个导数相除。',
         formula: '\\frac{dy}{dx}=\\frac{y^{\\prime}(t)}{x^{\\prime}(t)}',
       },
+      {
+        title: '先化简再求导',
+        body: '能拆成和、差、常数倍的先拆开，能取对数的先取对数（对数求导法），可以避免复杂的乘积与商法则。',
+      },
+      {
+        title: '回头检验', 
+        body: '把求出的导数在特殊点代入检验，或对结果再积一次看能否还原，能挡住大部分符号错误。',
+      },
+    ],
+    theorems: [
+      {
+        name: '链式法则',
+        statement: '若外层函数在对应点可导、内层函数在 x 处可导，则复合函数可导，且导数等于外层导数乘内层导数。',
+        formula: '(f\\circ g)^{\\prime}(x)=f^{\\prime}(g(x))\\,g^{\\prime}(x)',
+      },
+      {
+        name: '反函数求导',
+        statement: '单调可导且导数不为零时，反函数的导数等于原函数导数的倒数。',
+        formula: '(f^{-1})^{\\prime}(y)=\\frac{1}{f^{\\prime}(x)}',
+      },
+    ],
+    pitfalls: [
+      '漏乘内层导数：复合函数只对外层求导，是最常见的错误。',
+      '把 ln(x²) 直接写成 2/x：应当先化简成 2ln x 再求导，或老实用链式法则。',
+      '对 |x| 在零点求导：那里不可导，导数为 ±1 的分段结论不适用。',
     ],
     example: {
       problem: '求正弦的平方这个复合函数的导数。',
@@ -4902,7 +5248,28 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '结果为二倍乘余弦。',
       ],
       result: '导数为二倍乘余弦。',
-    },
+    },    moreExamples: [
+      {
+        problem: '求 y = ln(sin x) 的导数。',
+        walkthrough: [
+          '外层是对数，内层是正弦。',
+          '外层求导得 1/sin x。',
+          '乘内层导数 cos x。',
+          '结果为 cot x。',
+        ],
+        result: '\\cot x',
+      },
+      {
+        problem: '求隐函数 y² + x² = 1 在点 (0,1) 处的切线斜率。',
+        walkthrough: [
+          '两边对 x 求导得 2y 乘 y 撇加 2x 等于零。',
+          '解出 y 撇等于负 x 比 y。',
+          '代入点得斜率零。',
+        ],
+        result: '0',
+      },
+    ],
+
   },
   {
     id: 'newton-leibniz',
@@ -4911,10 +5278,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '定积分等于原函数在两端点的差。这条公式把「求极限的和式」变成「找原函数」，反常积分则是把无穷区间或无界函数也用同一个公式算出来。',
+    definition:
+      '设 f 在闭区间上连续，F 是它的一个原函数，则 f 在该区间上的定积分等于 F 在两端点之差。这条公式把「求和式的极限」化为「求原函数」，是微积分基本定理的实用形式。',
     whenToUse: [
       '算定积分，先找原函数再代上下限',
       '积分区间无穷，或被积函数在端点无界',
       '判断反常积分收敛还是发散',
+    ],
+    theorems: [
+      {
+        name: '微积分基本定理',
+        statement: '变上限积分函数的导数等于被积函数本身，这说明求导与积分互为逆运算。',
+        formula: '\\frac{d}{dx}\\int_{a}^{x}f(t)\\,dt=f(x)',
+      },
+      {
+        name: '换元与分部',
+        statement: '定积分换元要同步换限；分部积分公式在定积分上多出端点代入项。',
+        formula: '\\int_{a}^{b}u\\,dv=[uv]_{a}^{b}-\\int_{a}^{b}v\\,du',
+      },
     ],
     steps: [
       {
@@ -4935,6 +5316,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '记住常用参照',
         body: '倒数幂在指数大于一时收敛、小于等于一时发散，这是比较判别法的基准。',
       },
+      {
+        title: '核对积分区间',
+        body: '换元后区间要跟着换；反常积分先取极限再代入端点。',
+      },
+    ],
+    pitfalls: [
+      '原函数不唯一：相差常数不影响定积分，但写答案时要说明用的是哪一个原函数。',
+      '反常积分直接代端点：无界点要先取极限，不能把发散当有限值。',
+      '换元忘了换限：用新变量算却仍代入旧上下限，结果差一个系数。',
     ],
     example: {
       problem: '计算正弦函数在零到 π 上的定积分，以及倒数平方在 1 到无穷上的反常积分。',
@@ -4944,7 +5334,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '让 t 趋于无穷，负倒数趋于零，结果为 1。',
       ],
       result: '定积分为 2，反常积分为 1。',
-    },
+    },    moreExamples: [
+      {
+        problem: '计算 x 乘指数 e 的 x 次方在零到一上的定积分。',
+        walkthrough: [
+          '先求原函数，用分部积分得 (x 减一) 乘指数。',
+          '代入上限一得零。',
+          '代入下限零得负一。',
+          '相减得 1。',
+        ],
+        result: '1',
+      },
+    ],
+
   },
   {
     id: 'green-formula',
@@ -4953,10 +5355,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '沿闭曲线的第二类曲线积分，等于曲线围成区域上的二重积分，被积函数是两个偏导之差。它把「沿边界走一圈」换成「在内部算面积」。',
+    definition:
+      '设闭曲线 L 围成区域 D，P、Q 在 D 上有连续偏导，L 取正向，则沿 L 的第二类曲线积分等于 D 上两个偏导之差的二重积分。它把边界上的积分与内部的积分联系起来。',
     whenToUse: [
       '闭曲线上的第二类曲线积分，直接算很麻烦',
       '要由曲线积分反求区域面积',
       '判断积分是否与路径无关',
+    ],
+    theorems: [
+      {
+        name: '格林公式',
+        statement: '闭曲线上的第二类曲线积分，等于围成区域上偏导之差的二重积分，方向取逆时针。',
+        formula: '\\oint_{L}P\\,dx+Q\\,dy=\\iint_{D}(Q_{x}-P_{y})\\,d\\sigma',
+      },
+      {
+        name: '路径无关条件',
+        statement: '单连通区域上，曲线积分与路径无关当且仅当两个偏导恒相等，此时存在势函数。',
+      },
     ],
     steps: [
       {
@@ -4977,6 +5392,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '检查路径无关',
         body: '当两个偏导相等时，在单连通区域上积分与路径无关，可以换一条好算的路径。',
       },
+      {
+        title: '补线凑闭合',
+        body: '曲线不闭合时先补一段简单的线凑成闭曲线，算完再减去补线部分。',
+      },
+    ],
+    pitfalls: [
+      '方向取反：顺时针要补一个负号，否则结果正好差符号。',
+      '区域有洞：多连通区域要挖洞后再用，不能直接套。',
+      '偏导条件没验：P、Q 在区域内要有连续偏导，否则公式不成立。',
     ],
     example: {
       problem: '用格林公式计算沿单位圆正向的曲线积分，被积式为 x 乘 dy 减 y 乘 dx。',
@@ -4987,7 +5411,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '结果为 2π，与直接参数化算得一致。',
       ],
       result: '结果为 2π。',
-    },
+    },    moreExamples: [
+      {
+        problem: '用格林公式求单位圆所围区域的面积。',
+        walkthrough: [
+          '取 P 为负 y、Q 为 x。',
+          '偏导之差等于 2。',
+          '二重积分等于 2 乘面积。',
+          '面积公式给出半个环路积分，结果为圆周率。',
+        ],
+        result: '\\pi',
+      },
+    ],
+
   },
   {
     id: 'integral-applications-more',
