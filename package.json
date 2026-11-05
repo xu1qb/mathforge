@@ -21,7 +21,8 @@
     "build:server": "node scripts/build-server.mjs",
     "build:android": "vite build --outDir dist --emptyOutDir false && bash scripts/build-android-apk.sh",
     "ui:snap": "node --experimental-websocket scripts/ui-snapshots.mjs",
-    "ai:fill": "node scripts/ai-fill.mjs"
+    "ai:fill": "node scripts/ai-fill.mjs",
+    "ai:fill:batch": "node scripts/ai-fill-batch.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.6.0",
