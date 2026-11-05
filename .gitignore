@@ -20,6 +20,7 @@ build/
 server-dist/
 
 # 临时探针脚本
+scripts/_probe_*.mjs
 scripts/_probe_stats.mjs
 
 # Python 缓存
