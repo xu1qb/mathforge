@@ -51,10 +51,57 @@ def latex_to_plain(s):
 def norm(v):
     s = (v or "").strip().replace(" ", "")
     s = latex_to_plain(s)
-    # 去掉变量前缀：n=7 / x=7 / \{7\} 与 7 视为同一答案
-    s = re.sub(r"^[a-zA-Z]\s*=\s*", "", s)
+    # 去掉变量前缀：n=7 / x=7 / x_1=7 / x_(1)=7 都视为同一答案
+    s = re.sub(r"^[a-zA-Z](?:_(?:\(?\d+\)?|\{\d+\}))?\s*=\s*", "", s)
     s = s.strip("{}")
     return s
+
+
+VALUE_SPLIT = re.compile(r"或|,|，|、|;|；|\\,")
+VAR_PREFIX = re.compile(r"^[a-zA-Z](?:_(?:\(?\d+\)?|\{\d+\}))?\s*=\s*")
+
+
+def split_values(s):
+    """把「x1=3, x2=2/5」「x=2/5 或 x=3」这类多值答案拆成值列表"""
+    parts = [p.strip() for p in VALUE_SPLIT.split(s) if p.strip()]
+    return [VAR_PREFIX.sub("", p) for p in parts]
+
+
+def value_equal(x, y, trans):
+    """两个单一值是否相等（符号化简 + 数值容差）"""
+    import sympy as sp
+    from sympy.parsing.sympy_parser import parse_expr
+    try:
+        ex = parse_expr(x, transformations=trans, evaluate=True)
+        ey = parse_expr(y, transformations=trans, evaluate=True)
+    except Exception:
+        return False
+    diff = sp.simplify(ex - ey)
+    if diff == 0:
+        return True
+    if not getattr(diff, "free_symbols", set()):
+        try:
+            return abs(float(diff)) < 1e-9
+        except Exception:
+            return False
+    return False
+
+
+def sets_equal(va, vb, trans):
+    """值集合（可重复）相等：无序匹配"""
+    if len(va) != len(vb):
+        return False
+    used = [False] * len(vb)
+    for x in va:
+        hit = False
+        for i, y in enumerate(vb):
+            if not used[i] and value_equal(x, y, trans):
+                used[i] = True
+                hit = True
+                break
+        if not hit:
+            return False
+    return True
 
 
 def main():
@@ -85,6 +132,16 @@ def main():
 
     try:
         trans = standard_transformations + (implicit_multiplication_application,)
+
+        # 多值答案按集合比对（顺序、写法不同也算对）
+        va, vb = split_values(a), split_values(b)
+        if len(va) > 1 or len(vb) > 1:
+            if sets_equal(va, vb, trans):
+                print(json.dumps({"equal": True, "method": "set"}))
+                return
+            print(json.dumps({"equal": False, "method": "set"}))
+            return
+
         ea = parse_expr(a, transformations=trans, evaluate=True)
         eb = parse_expr(b, transformations=trans, evaluate=True)
     except Exception:

@@ -143,6 +143,17 @@ if (verifyAvailable()) {
   await check('等价判定：根式', async () => {
     assert.equal((await answersEquivalent('\\sqrt{2}', '2^{1/2}')).equal, true);
   });
+
+  await check('等价判定：多值答案按集合比较（顺序/写法不同也算对）', async () => {
+    assert.equal(
+      (await answersEquivalent('x_{1}=3, x_{2}=\\dfrac{2}{5}', 'x=\\frac{2}{5} 或 x=3')).equal,
+      true,
+    );
+    assert.equal((await answersEquivalent('x=2 或 x=-3', 'x_{1}=-3, x_{2}=2')).equal, true);
+    // 集合不同必须判错
+    assert.equal((await answersEquivalent('x=2 或 x=-3', 'x=2 或 x=5')).equal, false);
+    assert.equal((await answersEquivalent('x=2 或 x=-3', 'x=2')).equal, false);
+  });
 } else {
   console.log('跳过等价判定测试：未找到 sympy（设置 MATH_PYTHON_PATH）');
 }

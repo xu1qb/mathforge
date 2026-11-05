@@ -1,7 +1,7 @@
 // EXPORTS: AiLabPage
 // AI 出题实验室：调用后端模型生成题目，服务端已做 LaTeX/书写校验
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, Loader2, AlertTriangle, CheckCircle2, Save, Cpu } from 'lucide-react';
 import PageShell from '@/components/PageShell';
@@ -13,6 +13,9 @@ import { Button } from '@/components/ui/button';
 import {
   fetchAiHealth,
   fetchAiQuestions,
+  fetchPoolStatus,
+  fillPool,
+  type FillJob,
   getApiBase,
   isNativeApp,
   setApiBase,
@@ -183,6 +186,13 @@ const DIFFICULTIES = [
 export default function AiLabPage() {
   const navigate = useNavigate();
   const [health, setHealth] = useState<AiHealth | null>(null);
+  const [pool, setPool] = useState<{ total: number; byTopic: Record<string, number>; job: FillJob | null } | null>(null);
+  const [poolBusy, setPoolBusy] = useState(false);
+
+  const refreshPool = useCallback(async () => {
+    const st = await fetchPoolStatus().catch(() => null);
+    if (st) setPool({ total: st.total, byTopic: st.byTopic, job: st.job });
+  }, []);
   const [topic, setTopic] = useState('极限计算');
   const [difficulty, setDifficulty] = useState<'basic' | 'advanced' | 'competition'>('basic');
   const [count, setCount] = useState(3);
@@ -205,7 +215,8 @@ export default function AiLabPage() {
     fetchAiHealth()
       .then(setHealth)
       .catch(() => setHealth(null));
-  }, []);
+    void refreshPool();
+  }, [refreshPool]);
 
   const generate = async () => {
     setLoading(true);
@@ -380,6 +391,68 @@ export default function AiLabPage() {
                 <span>{error}</span>
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        {/* 预生成池 */}
+        <Card className="border-border/60">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Sparkles className="size-4 text-violet-500" />
+              预生成池
+              <span className="text-xs font-normal text-muted-foreground">
+                已入库 {pool?.total ?? 0} 道，练习时秒开
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="flex flex-wrap gap-1.5">
+              {pool && Object.keys(pool.byTopic).length > 0 ? (
+                Object.entries(pool.byTopic)
+                  .sort((a, b) => b[1] - a[1])
+                  .slice(0, 8)
+                  .map(([k, v]) => (
+                    <Badge key={k} variant="secondary" className="text-[11px]">
+                      {k} · {v}
+                    </Badge>
+                  ))
+              ) : (
+                <span className="text-xs text-muted-foreground">还没有预生成题目</span>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5"
+                disabled={poolBusy || health?.mode !== 'live'}
+                onClick={async () => {
+                  setPoolBusy(true);
+                  try {
+                    const { job } = await fillPool(topic, 'basic', 10);
+                    toast(job.error ?? '已启动后台补题：' + topic);
+                    for (let i = 0; i < 40; i++) {
+                      await new Promise((r) => setTimeout(r, 3000));
+                      const st = await fetchPoolStatus(topic).catch(() => null);
+                      if (st) setPool(st);
+                      if (!st?.job?.running) break;
+                    }
+                    toast.success('补题结束，见上方统计');
+                  } catch {
+                    toast.error('补题失败，检查后端是否在线');
+                  } finally {
+                    setPoolBusy(false);
+                  }
+                }}
+              >
+                {poolBusy ? <Loader2 className="size-3.5 animate-spin" /> : <Sparkles className="size-3.5" />}
+                给「{topic}」补 10 道
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => void refreshPool()} disabled={poolBusy}>
+                刷新
+              </Button>
+              <span className="text-[11px] text-muted-foreground">只收严格档验证通过的题</span>
+            </div>
           </CardContent>
         </Card>
 
