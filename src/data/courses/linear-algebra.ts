@@ -19,16 +19,16 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
   },
   chapters: [
     {
-      id: 'det-matrix',
-      title: '行列式与矩阵',
-      textbookRef: '第 1–2 章',
+      id: 'determinant',
+      title: '行列式',
+      textbookRef: '第 1 章',
       summary: '先学会算行列式和矩阵，这是后面一切操作的语法',
       goals: [
         '会用性质化简行列式，不再硬展开',
         '掌握矩阵乘法与逆矩阵的判定',
         '理解秩是「有效信息量」',
       ],
-      lessonIds: ['det-basics', 'determinant-expansion', 'matrix-algebra', 'special-matrices', 'inverse-adjugate', 'rank'],
+      lessonIds: ['det-basics', 'determinant-expansion'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -60,14 +60,6 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
           steps: ['$\\det A=1\\times4-2\\times2=0$。', '行列式为零，矩阵不可逆（两行成比例）。'],
         },
         {
-          id: 'la1-4',
-          level: '基础',
-          question: '求对角矩阵 $A=\\begin{pmatrix}2&0\\\\0&3\\end{pmatrix}$ 的平方。',
-          answer: '$\\begin{pmatrix}4&0\\\\0&9\\end{pmatrix}$',
-          hint: '对角矩阵的幂就是对对角元分别取幂。',
-          steps: ['对角阵相乘时非对角元仍为 $0$。', '对角元各自平方：$2^{2}=4$，$3^{2}=9$。'],
-        },
-        {
           id: 'la1-5',
           level: '进阶',
           question: '判断 $Q=\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}$ 是否为正交矩阵。',
@@ -80,6 +72,37 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
           ],
         },
         {
+          id: 'la1-7',
+          level: '基础',
+          question: '已知三阶矩阵 $A$ 满足 $|A|=3$，求 $|A^{*}|$。',
+          answer: '$9$',
+          hint: '用 $|A^{*}|=|A|^{n-1}$。',
+          steps: ['由 $AA^{*}=|A|I$ 取行列式得 $|A||A^{*}|=|A|^{3}$。', '代入 $|A|=3$：$3|A^{*}|=27$。', '所以 $|A^{*}|=9=3^{2}$。'],
+        },
+      ],
+    },
+    {
+      id: 'matrix-algebra',
+      title: '矩阵及其运算',
+      textbookRef: '第 2 章',
+      summary: '矩阵的加法、乘法、逆与秩，是后面一切运算的语法',
+      goals: [
+        '掌握矩阵乘法与不可交换性',
+        '会求逆矩阵与伴随矩阵',
+        '理解秩是有效信息量',
+      ],
+      lessonIds: ['matrix-algebra', 'special-matrices', 'inverse-adjugate', 'rank'],
+      practiceTopics: ['matrix-op'],
+      exercises: [
+        {
+          id: 'la1-4',
+          level: '基础',
+          question: '求对角矩阵 $A=\\begin{pmatrix}2&0\\\\0&3\\end{pmatrix}$ 的平方。',
+          answer: '$\\begin{pmatrix}4&0\\\\0&9\\end{pmatrix}$',
+          hint: '对角矩阵的幂就是对对角元分别取幂。',
+          steps: ['对角阵相乘时非对角元仍为 $0$。', '对角元各自平方：$2^{2}=4$，$3^{2}=9$。'],
+        },
+        {
           id: 'la1-6',
           level: '基础',
           question: '求 $A=\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}$ 的伴随矩阵。',
@@ -90,14 +113,6 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
             '副对角元变号：$2\\to-2$，$3\\to-3$。',
             '得到 $A^{*}=\\begin{pmatrix}4&-2\\\\-3&1\\end{pmatrix}$，与 $A^{-1}$ 只差 $1/|A|$。',
           ],
-        },
-        {
-          id: 'la1-7',
-          level: '基础',
-          question: '已知三阶矩阵 $A$ 满足 $|A|=3$，求 $|A^{*}|$。',
-          answer: '$9$',
-          hint: '用 $|A^{*}|=|A|^{n-1}$。',
-          steps: ['由 $AA^{*}=|A|I$ 取行列式得 $|A||A^{*}|=|A|^{3}$。', '代入 $|A|=3$：$3|A^{*}|=27$。', '所以 $|A^{*}|=9=3^{2}$。'],
         },
         {
           id: 'la1-8',
@@ -115,7 +130,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
     },
     {
       id: 'linear-systems',
-      title: '线性方程组',
+      title: '矩阵的初等变换与线性方程组',
       textbookRef: '第 3 章',
       summary: '高斯消元 + 秩判据，一次性看清唯一解、无穷多解、无解',
       goals: ['用初等行变换化阶梯形', '用秩判断解的情况', '会写基础解系与通解'],
@@ -215,7 +230,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
     },
     {
       id: 'vector-space',
-      title: '向量空间',
+      title: '向量组的线性相关性',
       textbookRef: '第 4 章',
       summary: '基与维数，是「用几个数描述一个对象」的严格版本',
       goals: ['判断线性相关与无关', '求极大无关组与秩', '理解基、维数、坐标'],
@@ -311,12 +326,12 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
       ],
     },
     {
-      id: 'eigen',
-      title: '特征值与对角化',
+      id: 'similar-quadratic',
+      title: '相似矩阵及二次型',
       textbookRef: '第 5 章',
       summary: '找到「不被变换改变方向」的那些向量，矩阵就变简单了',
       goals: ['求特征值与特征向量', '判断能否对角化', '理解相似与迹、行列式的关系'],
-      lessonIds: ['eigen-basics', 'eigen-diagonalization', 'jordan-form', 'eigen-properties', 'matrix-power'],
+      lessonIds: ['eigen-basics', 'eigen-diagonalization', 'jordan-form', 'eigen-properties', 'matrix-power', 'quadratic-form', 'positive-definite', 'inertia-theorem', 'orthogonal-diagonalization', 'rayleigh-quotient'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -410,17 +425,6 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
             '两条性质都满足，特征值 $3$ 与 $1$ 可信。',
           ],
         },
-      ],
-    },
-    {
-      id: 'quadratic',
-      title: '二次型',
-      textbookRef: '第 5 章（后半）',
-      summary: '把二次多项式写成矩阵形式，正定与否一眼看出',
-      goals: ['写出二次型的矩阵', '用配方法或正交变换化标准形', '判定正定性'],
-      lessonIds: ['quadratic-form', 'positive-definite', 'inertia-theorem', 'orthogonal-diagonalization', 'rayleigh-quotient'],
-      practiceTopics: ['matrix-op'],
-      exercises: [
         {
           id: 'la5-1',
           level: '基础',

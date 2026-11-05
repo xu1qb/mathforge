@@ -62,6 +62,14 @@ chk('单位圆面积 = (1/2)∮(x dy - y dx) = π',
             (_theta, 0, 2 * sp.pi))
         - sp.pi) == 0)
 
+# ---- 定积分应用与曲面积分 ----
+chk('上半单位圆绕 x 轴旋转体体积 = 4π/3',
+    sp.simplify(sp.pi * sp.integrate(1 - x**2, (x, -1, 1)) - 4 * sp.pi / 3) == 0)
+chk('单位球面对 (x,y,z) 的通量 = 4π（高斯公式）',
+    sp.simplify(3 * (4 * sp.pi / 3) - 4 * sp.pi) == 0)
+chk('单位圆周长 = 2π（弧长积分）',
+    sp.integrate(1, (_theta, 0, 2 * sp.pi)) == 2 * sp.pi)
+
 # ---- 高数课程例题 ----
 chk('lim sin3x/x = 3', sp.limit(sp.sin(3 * x) / x, x, 0) == 3)
 chk('lim (1+1/n)^n = e', sp.limit((1 + 1 / n)**n, n, sp.oo) == sp.E)
