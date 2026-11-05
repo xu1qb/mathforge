@@ -799,10 +799,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '求极限、判无穷小的阶、做近似，八成就用这几个展开；记到三次项，绝大多数题够用。',
+    definition:
+      '常用展开表是泰勒公式的具体化，记熟指数、正弦、余弦、对数、几何级数五组，其余靠代换与运算推出。',
     whenToUse: [
       '0/0 型但洛必达越算越复杂',
       '要判断无穷小的阶',
       '做近似计算或估计误差',
+    ],
+    theorems: [
+      {
+        name: '几何级数展开',
+        statement: '公比绝对值小于一时，一减公比分之一可以展开成幂级数。',
+        formula: '\\frac{1}{1-x}=\\sum_{n=0}^{\\infty}x^{n}',
+      },
+      {
+        name: '指数展开',
+        statement: '指数函数的展开式对所有实数收敛。',
+        formula: 'e^{x}=\\sum_{n=0}^{\\infty}\\frac{x^{n}}{n!}',
+      },
     ],
     steps: [
       {
@@ -834,6 +848,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '分母是 x 的几次就展到几次，多展是浪费，少展会漏项。',
       },
     ],
+    pitfalls: [
+      '收敛域记错：对数展开只在特定区间成立。',
+      '代换后忘改收敛域：x 换成 x 平方后区间也变。',
+      '阶乘漏写：指数与正弦展开的分母含阶乘。',
+    ],
     example: {
       problem: '求 lim(x→0) (e^x − 1 − x)/x²。',
       walkthrough: [
@@ -842,7 +861,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '除以 x²，极限为 1/2。',
       ],
       result: '\\displaystyle\\lim_{x\\to 0}\\frac{e^{x}-1-x}{x^{2}}=\\frac{1}{2}',
-    },
+    },    moreExamples: [
+      {
+        problem: '写出正弦的三阶展开。',
+        walkthrough: [
+          '正弦展开只有奇次项。',
+          '第一项为 x，第二项为负六分之 x 立方。',
+        ],
+        result: 'x-\\frac{x^{3}}{6}',
+      },
+    ],
+
   },
   {
     id: 'mvt-construct',
@@ -2577,10 +2606,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '周期函数展开成三角级数，系数靠正交性积分求出；奇函数只剩正弦项，偶函数只剩余弦项，先看奇偶性能省一半计算。',
+    definition:
+      '周期函数可展开成三角级数，系数由函数与正弦余弦的内积给出。这是把周期信号分解成频率成分的工具。',
     whenToUse: [
       '把周期函数展开成傅里叶级数',
       '求傅里叶系数 aₙ、bₙ',
       '判断级数在某点的收敛值',
+    ],
+    theorems: [
+      {
+        name: '傅里叶系数',
+        statement: '余弦与正弦系数分别是函数在一个周期上与对应三角函数的积分平均值。',
+        formula: 'a_{n}=\\frac{1}{\\pi}\\int_{-\\pi}^{\\pi}f(x)\\cos nx\\,dx',
+      },
+      {
+        name: '狄利克雷条件',
+        statement: '分段光滑的周期函数，其傅里叶级数在连续点收敛到函数值，在跳跃点收敛到左右极限平均。',
+      },
     ],
     steps: [
       {
@@ -2607,6 +2649,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '函数越光滑系数衰减越快：方波是 1/n，抛物线是 1/n²。',
       },
     ],
+    pitfalls: [
+      '周期与区间不匹配：积分区间要覆盖一个完整周期。',
+      '奇偶性没用：奇函数只含正弦项，可省一半计算。',
+      '端点收敛值写错：跳跃点取左右极限平均。',
+    ],
     example: {
       problem: '把 f(x) = x 在 (−π, π) 上展开成傅里叶级数。',
       walkthrough: [
@@ -2616,7 +2663,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '在端点 x = ±π 处收敛到 0，等于左右极限的平均值。',
       ],
       result: 'x=2\\sum_{n=1}^{\\infty}\\frac{(-1)^{n+1}}{n}\\sin nx',
-    },
+    },    moreExamples: [
+      {
+        problem: '求偶函数展开式中的正弦系数。',
+        walkthrough: [
+          '偶函数乘正弦是奇函数。',
+          '对称区间积分为零。',
+          '所有正弦系数为零。',
+        ],
+        result: 'b_{n}=0',
+      },
+    ],
+
   },
   {
     id: 'one-to-infinity',
@@ -5362,10 +5420,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '单调性只看导数的正负，极值只看导数变号。做题顺序永远是：定义域 → 求导 → 分解 → 找临界点 → 列表判号。',
+    definition:
+      '导数符号决定单调性：正为增、负为减、零为驻点。结合二阶导或符号变化可判定极大极小。',
     whenToUse: [
       '求函数的单调区间、极值、闭区间最值',
       '证明不等式（把不等式变成函数的最值问题）',
       '判断方程有几个根（靠单调性和端点值）',
+    ],
+    theorems: [
+      {
+        name: '单调性判据',
+        statement: '区间内导数恒正则函数递增，恒负则递减。',
+        formula: 'f^{\\prime}>0\\;\\Rightarrow\\;\\text{increasing}',
+      },
+      {
+        name: '极值第一充分条件',
+        statement: '驻点两侧导数变号，则取极值：正变负为极大，负变正为极小。',
+      },
     ],
     steps: [
       {
@@ -5394,6 +5465,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '求最值时把驻点和两个端点的函数值都算出来比较，最大者即最大值。',
       },
     ],
+    pitfalls: [
+      '只看驻点：导数不存在的点也可能是极值点。',
+      '变号判断错：要比较左右两侧符号。',
+      '把驻点都当极值：不变号的驻点不是极值。',
+    ],
     example: {
       problem: '求 f(x) = x³ − 3x 的单调区间与极值。',
       walkthrough: [
@@ -5404,7 +5480,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         'x = −1 处导数由正变负，取极大值 2；x = 1 处由负变正，取极小值 −2。',
       ],
       result: '递增区间 (−∞, −1) 与 (1, +∞)，递减区间 (−1, 1)，极大值 2，极小值 −2。',
-    },
+    },    moreExamples: [
+      {
+        problem: '求三次多项式减三倍自变量的极值。',
+        walkthrough: [
+          '导数等于零得两个驻点。',
+          '判断两侧符号变化。',
+          '一个极大一个极小。',
+        ],
+        result: '2,\\,-2',
+      },
+    ],
+
   },
   {
     id: 'recurrence-general-term',
@@ -5413,10 +5500,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '递推题的难点不在算，而在第一步认结构。先看相邻项之间是差、是比、还是系数关系，再决定用累加、累乘还是待定系数。',
+    definition:
+      '递推数列求通项的常用手法：一阶线性递推用待定系数化为等比，分式递推可试不动点，二阶线性递推用特征方程。',
     whenToUse: [
       '给出首项与相邻项关系，要求通项',
       '判断数列是等差还是等比',
       '先求通项再求前 n 项和',
+    ],
+    theorems: [
+      {
+        name: '一阶线性递推',
+        statement: '形式为下一项等于 a 倍当前项加 b 的递推，可平移成等比数列。',
+        formula: 'a_{n+1}=aa_{n}+b',
+      },
+      {
+        name: '特征方程法',
+        statement: '二阶线性递推的通项由特征根决定，两根不同为两个指数的组合。',
+      },
     ],
     steps: [
       {
@@ -5435,6 +5535,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '写通项并回代检验',
         body: '算出等比部分后减回常数得到通项，再代入首项检验一次，防止平移量算错。',
       },
+      {
+        title: '不动点平移',
+        body: '把递推平移到不动点，就化成等比数列。',
+      },
+    ],
+    pitfalls: [
+      '平移量算错：不动点是 b 除以一减 a。',
+      '初值代入错：求出的常数要用首项确定。',
+      '特征根重根：重根要给一项乘 n。',
     ],
     example: {
       problem: '数列满足首项为 1，后一项等于前一项的 2 倍再加 3，求通项。',
@@ -5445,7 +5554,19 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '减去 3 得通项，代入 n = 1 得到 1，与已知一致。',
       ],
       result: '通项为 2 的 n 加 1 次方再减 3。',
-    },
+    },    moreExamples: [
+      {
+        problem: '首项为一，下一项等于二倍当前项加三，求通项。',
+        walkthrough: [
+          '不动点为负三。',
+          '平移后成等比数列。',
+          '公比为二。',
+          '整理得通项。',
+        ],
+        result: '2^{n+1}-3',
+      },
+    ],
+
   },
   {
     id: 'line-integral',
@@ -6322,10 +6443,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '高阶导数就是反复求导。真正要学的是三件事：常见函数的 n 阶导公式、莱布尼茨公式、以及用微分做线性近似。',
+    definition:
+      '高阶导数是对导数再求导。常用的三类结果：幂函数、指数、正弦余弦的 n 阶导都有固定形式；乘积的 n 阶导用莱布尼茨公式。',
     whenToUse: [
       '题目要求第 n 阶导数的一般表达式',
       '两个函数乘积的高阶导数（莱布尼茨公式）',
       '用微分估计误差或用切线近似函数值',
+    ],
+    theorems: [
+      {
+        name: '莱布尼茨公式',
+        statement: '两个函数乘积的 n 阶导数，按二项式系数展开求和。',
+        formula: '(uv)^{(n)}=\\sum_{k=0}^{n}C_{n}^{k}u^{(n-k)}v^{(k)}',
+      },
+      {
+        name: '常用 n 阶导',
+        statement: '指数函数的 n 阶导是系数 n 次方乘自身，正弦余弦每四阶循环。',
+        formula: '(e^{ax})^{(n)}=a^{n}e^{ax}',
+      },
     ],
     steps: [
       {
@@ -6348,6 +6483,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '微分主部就是切线增量。小范围内用一阶近似，误差比增量高阶；这是误差估计的起点。',
         formula: 'f(x_0+\\Delta x)\\approx f(x_0)+f^{\\prime}(x_0)\\Delta x',
       },
+      {
+        title: '找规律再归纳',
+        body: '算前三阶找系数与符号规律，猜出通式后用归纳法验证。',
+      },
+    ],
+    pitfalls: [
+      '符号循环搞错：正弦求导四次回到自身，别多算一次。',
+      '莱布尼茨漏项：k 从零到 n 全部要写。',
+      '阶乘忘记：n 阶导的系数含阶乘。',
     ],
     example: {
       problem: '求三次多项式的二阶导数。',
@@ -6357,7 +6501,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '三次多项式的二阶导是一次函数。',
       ],
       result: '二阶导为一次函数，系数由原式决定。',
-    },
+    },    moreExamples: [
+      {
+        problem: '求三次多项式的二阶导数。',
+        walkthrough: [
+          '一阶导降一次幂。',
+          '再求一次降到一次。',
+        ],
+        result: '6x',
+      },
+    ],
+
   },
   {
     id: 'integration-substitution',
@@ -6676,10 +6830,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '多元极值分两步：先解一阶偏导为零找驻点，再用二阶偏导构成的判别式判断是极大、极小还是鞍点。',
+    definition:
+      '多元极值先解一阶偏导为零得驻点，再用二阶偏导构成的判别式判断极大、极小或鞍点；有界闭区域还要比较边界。',
     whenToUse: [
       '求二元函数的极大值、极小值',
       '应用题里求成本最小、利润最大',
       '判断一个驻点到底是极值还是鞍点',
+    ],
+    theorems: [
+      {
+        name: '二阶判别',
+        statement: '判别式大于零时看自偏导符号，小于零为鞍点，等于零需另判。',
+        formula: '\\Delta=f_{xx}f_{yy}-f_{xy}^{2}',
+      },
+      {
+        name: '最值比较',
+        statement: '闭区域上的最值出现在内部驻点或边界上，需逐一比较。',
+      },
     ],
     steps: [
       {
@@ -6700,6 +6867,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '边界另算',
         body: '判别式只处理内部驻点。有界闭区域上的最值还要比较边界上的值。',
       },
+      {
+        title: '比较边界值',
+        body: '闭区域最值要在驻点与边界上各算一遍再比较。',
+      },
+    ],
+    pitfalls: [
+      '漏边界：内部驻点不等于最值。',
+      '判别式符号看反：大于零才是极值。',
+      '混合偏导求错：f_xy 要对两个变量各求一次。',
     ],
     example: {
       problem: '求 x 平方加 x 乘 y 加 y 平方的极值。',
@@ -6710,7 +6886,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '极小值为零。',
       ],
       result: '原点处取极小值零。',
-    },
+    },    moreExamples: [
+      {
+        problem: '求 x 方加 x y 加 y 方的极值。',
+        walkthrough: [
+          '驻点为原点。',
+          '判别式为正三。',
+          '自偏导为正，取极小。',
+        ],
+        result: '0',
+      },
+    ],
+
   },
   {
     id: 'implicit-parametric-diff',
@@ -6719,10 +6906,24 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '隐函数求导把方程两边同时求导，把未知导数当整体解出来；参数方程求导就是两个导数相除。两者都不需要先解出显式函数。',
+    definition:
+      '隐函数求导对两边同时求导再解出导数；参数方程求导是两个导数相除，二阶导还要再除一次参数导数。',
     whenToUse: [
       '曲线由方程给出，解不出显式函数',
       '曲线用参数方程表示，要求切线斜率',
       '求二阶导（参数方程要再除一次参数导数）',
+    ],
+    theorems: [
+      {
+        name: '隐函数导数',
+        statement: '二元方程确定的隐函数，导数为两个偏导之比的相反数。',
+        formula: '\\frac{dy}{dx}=-\\frac{F_x}{F_y}',
+      },
+      {
+        name: '参数方程导数',
+        statement: '纵坐标导数除以横坐标导数即切线斜率。',
+        formula: '\\frac{dy}{dx}=\\frac{y^{\\prime}(t)}{x^{\\prime}(t)}',
+      },
     ],
     steps: [
       {
@@ -6743,6 +6944,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '二阶导要再除一次',
         body: '参数方程的二阶导，是把一阶导再对参数求导后，除以横坐标导数，容易漏除。',
       },
+      {
+        title: '二阶导再除参数',
+        body: '参数方程的二阶导要把一阶导再对参数求导后除以横坐标导数。',
+      },
+    ],
+    pitfalls: [
+      '对 y 求导漏乘 y 撇：链式法则不能省。',
+      '二阶导忘记再除一次：容易只对 t 求导就完事。',
+      '参数区间与点不对应：代值前先确认 t。',
     ],
     example: {
       problem: '单位圆方程给出曲线，求其导数表达式。',
@@ -6752,7 +6962,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '解出导数等于负 x 比 y。',
       ],
       result: '导数为负 x 比 y。',
-    },
+    },    moreExamples: [
+      {
+        problem: '求单位圆参数方程在四分之一处的切线斜率。',
+        walkthrough: [
+          '分别对参数求导。',
+          '相除得负余切。',
+          '代入参数值。',
+        ],
+        result: '-1',
+      },
+    ],
+
   },
   {
     id: 'concavity-curvature',
@@ -6924,10 +7145,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '曲面在一点的切平面由梯度张成：把函数写成隐式方程，梯度就是法向量，切平面与法线都能直接写出来。',
+    definition:
+      '曲面在一点的切平面由该点梯度给出法向量，点法式方程即可写出；法线方向就是梯度方向。',
     whenToUse: [
       '求曲面在某点的切平面或法线',
       '求曲线在空间中的切线',
       '用切平面做近似计算',
+    ],
+    theorems: [
+      {
+        name: '切平面方程',
+        statement: '隐式曲面在一点的切平面，法向量为三元函数的梯度。',
+        formula: 'F_x(x-x_0)+F_y(y-y_0)+F_z(z-z_0)=0',
+      },
+      {
+        name: '全微分的几何意义',
+        statement: '全微分就是切平面带来的线性增量，小范围内用切平面代替曲面。',
+      },
     ],
     steps: [
       {
@@ -6948,6 +7182,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '用切平面近似',
         body: '小范围内用切平面代替曲面，这就是全微分的几何意义。',
       },
+      {
+        title: '法向量即梯度',
+        body: '曲面写成隐式方程后，梯度就是法向量，切平面直接点法式。',
+      },
+    ],
+    pitfalls: [
+      '梯度算错：三个偏导都要在给定点取值。',
+      '法向量与方向向量混：曲面切平面用梯度做法向。',
+      '忘记代点：方程必须经过给定点。',
     ],
     example: {
       problem: '求抛物面在横纵坐标都为 1 处的切平面。',
@@ -6958,7 +7201,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '整理成标准形式。',
       ],
       result: '切平面为二倍 x 加二倍 y 减 z 减二等于零。',
-    },
+    },    moreExamples: [
+      {
+        problem: '求抛物面在横纵坐标都为一处的切平面。',
+        walkthrough: [
+          '写成隐式方程。',
+          '求三个偏导。',
+          '点法式展开。',
+        ],
+        result: '2x+2y-z-2=0',
+      },
+    ],
+
   },
   {
     id: 'multi-integral-applications',
