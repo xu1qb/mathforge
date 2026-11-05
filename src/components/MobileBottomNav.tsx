@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, BarChart3, BookOpen, Flame, Menu, Search } from 'lucide-react';
+import { Home, BarChart3, BookOpen, Flame, Menu, Search, NotebookPen, Target } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -10,7 +10,8 @@ import { cn } from '@/lib/utils';
 const BOTTOM_ITEMS = [
   { path: '/', label: '首页', icon: Home },
   { path: '/practice', label: '练习', icon: BarChart3 },
-  { path: '/formulas', label: '公式', icon: BookOpen },
+  { path: '/wrong-book', label: '错题', icon: NotebookPen },
+  { path: '/progress', label: '报告', icon: Target },
   { path: '/competition', label: '竞赛', icon: Flame },
 ];
 

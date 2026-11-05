@@ -93,6 +93,8 @@ const PDELazy = lazy(() => import("@/pages/PDE/PDEPage"));
 const DiffGeoLazy = lazy(() => import("@/pages/DiffGeo/DiffGeoPage"));
 const CompetitionLazy = lazy(() => import("@/pages/Competition/CompetitionPage"));
 const PracticeLazy = lazy(() => import("@/pages/Practice/PracticePage"));
+const WrongBookLazy = lazy(() => import("@/pages/WrongBook/WrongBookPage"));
+const ProgressLazy = lazy(() => import("@/pages/Progress/ProgressPage"));
 const KnowledgeMapLazy = lazy(() => import("@/pages/KnowledgeMap/KnowledgeMapPage"));
 const IntegralVisLazy = lazy(() => import("@/pages/IntegralVisualization/IntegralVisualizationPage"));
 const ToolsLazy = lazy(() => import("@/pages/Tools/ToolsPage"));
@@ -230,6 +232,8 @@ export default function App() {
           <Route path="diff-geo" element={<DiffGeoPage />} />
           <Route path="competition" element={<CompetitionPage />} />
           <Route path="practice" element={<PracticePage />} />
+          <Route path="wrong-book" element={<Suspense fallback={<div className="h-64" />}><WrongBookLazy /></Suspense>} />
+          <Route path="progress" element={<Suspense fallback={<div className="h-64" />}><ProgressLazy /></Suspense>} />
           <Route path="ai-lab" element={<AiLabPageLazy />} />
           <Route path="ai-review" element={<AiReviewPageLazy />} />
           <Route path="integral-visualization" element={<IntegralVisPage />} />
