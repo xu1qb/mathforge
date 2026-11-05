@@ -204,7 +204,28 @@ AI 出题 → 校验（按档位）→ 入库 pending → 人工审核 → appro
 
 服务端测试强制 `CACHE_DIR=/tmp/mf-test-cache`，不会污染真实题库。
 
-## 十三、预生成池（AI 题秒开）
+## 十三、异构校验（第二模型）
+
+同模型自校验有盲区：模型对某知识点有系统性误解时，「独立求解」也会错成一样，双解一致照样通过。
+实测抽检 13 道里有 2 道答案错（见 `docs/ai-quality.md`）。
+
+解法是让**独立求解与裁决走另一个模型**：
+
+```bash
+LLM_VERIFY_BASE_URL=https://api.deepseek.com/v1
+LLM_VERIFY_API_KEY=（可以是同一个 key）
+LLM_VERIFY_MODEL=deepseek-reasoner
+```
+
+三个变量留空时自动回退主模型，行为与以前一致；配置后 `/api/health` 会返回 `verifyModel` 字段。
+
+> 注意 `CACHE_DIR`：题库存在这个目录里，换目录等于换一个空库。
+> 调试时用临时目录、正式跑用默认 `.cache/ai`，两者数据不会自动合并。
+
+已验证效果：主模型 `deepseek-chat` 把 `sinα+cosα=1/5` 那道题的符号判反（答 −7/5），
+推理模型 `deepseek-reasoner` 独立解得 +7/5，正是异构校验应该起的作用。
+
+## 十四、预生成池（AI 题秒开）
 
 按需生成一题要 5–15 秒，用户等不起。预生成池把这道工序挪到后台：
 
@@ -228,7 +249,7 @@ npm run ai:fill -- --topic=极限计算 --count=10 --difficulty=basic
 
 练习页的「AI 题」开关现在优先读池子（秒开），池子空了才回落到审核通过的题库。
 
-## 十四、打包成桌面 App
+## 十五、打包成桌面 App
 
 `npm run app:build` 会做三件事：
 
@@ -250,7 +271,7 @@ npm run app:dev     # 开发调试（Vite 5176 + Electron）
 npm run app:build   # 产出 release/ 下的 .app
 ```
 
-## 十五、当前边界
+## 十六、当前边界
 
 - 只实现了「生成题目」；「生成讲解内容」的接口在 `server/prompts.ts` 里已有模板，尚未接页面
 - 已审核题目还没有进入练习页的抽题池（下一步接）

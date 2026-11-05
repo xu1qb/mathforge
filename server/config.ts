@@ -57,6 +57,18 @@ export interface ServerConfig {
   noveltyFilter: boolean;
   /** 语义校验档位：strict 拒绝不可验证题 / balanced 放行但标记 / off 只做形式校验 */
   verifyMode: 'strict' | 'balanced' | 'off';
+  /**
+   * 第二模型（异构校验）：独立求解与裁决走这里，能打破「同模型自校验」的盲区。
+   * 三个字段都为空时自动回退到主模型。
+   */
+  verifyBaseUrl: string;
+  verifyApiKey: string;
+  verifyModel: string;
+}
+
+/** 是否配置了可用的第二模型 */
+export function hasVerifyModel(): boolean {
+  return Boolean(config.verifyBaseUrl && config.verifyApiKey && config.verifyModel);
 }
 
 function env(key: string, fallback = ''): string {
@@ -96,4 +108,7 @@ export const config: ServerConfig = {
   agentMaxRounds: Number(env('AGENT_MAX_ROUNDS', '6')),
   noveltyFilter: env('NOVELTY_FILTER', '1') !== '0',
   verifyMode: (env('VERIFY_MODE', 'balanced') as 'strict' | 'balanced' | 'off'),
+  verifyBaseUrl: env('LLM_VERIFY_BASE_URL', '').replace(/\/$/, ''),
+  verifyApiKey: env('LLM_VERIFY_API_KEY', ''),
+  verifyModel: env('LLM_VERIFY_MODEL', ''),
 };

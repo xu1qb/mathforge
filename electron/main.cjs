@@ -48,6 +48,10 @@ function startServer() {
       LLM_API_KEY: cfg.apiKey || '',
       LLM_MODEL: cfg.model || 'deepseek-chat',
       LLM_BASE_URL: cfg.baseUrl || 'https://api.deepseek.com/v1',
+      // 异构校验：默认用同厂商的推理模型复核（和生成模型不同源）
+      LLM_VERIFY_MODEL: cfg.verifyModel || 'deepseek-reasoner',
+      LLM_VERIFY_API_KEY: cfg.verifyApiKey || cfg.apiKey || '',
+      LLM_VERIFY_BASE_URL: cfg.verifyBaseUrl || cfg.baseUrl || 'https://api.deepseek.com/v1',
       AGENT_MODE: cfg.agentMode ? '1' : '0',
       DUAL_SOLVE: '1',
     },

@@ -1,7 +1,7 @@
 // EXPORTS: independentSolve
 // 独立求解：只给题干，不给答案，让模型再解一遍，用于「双解一致」校验
 
-import { chat, type ChatMessage } from './llm.ts';
+import { chat, chatSecondary, type ChatMessage } from './llm.ts';
 
 
 
@@ -29,7 +29,8 @@ export async function judgeAnswer(questionLatex: string, claimed: string): Promi
       content: '题目：' + questionLatex + '\n待检验答案：' + claimed + '\n请独立计算后判断该答案是否正确。',
     },
   ];
-  const reply = await chat(messages);
+  // 裁决用第二模型：和出题模型不同源，才能发现「稳定地错」
+  const reply = await chatSecondary(messages);
   const start = reply.indexOf('{');
   const end = reply.lastIndexOf('}');
   if (start < 0 || end <= start) return null;
@@ -54,7 +55,8 @@ export async function independentSolve(questionLatex: string): Promise<Independe
     },
     { role: 'user', content: '题目：' + questionLatex },
   ];
-  const reply = await chat(messages);
+  // 独立求解同样走第二模型
+  const reply = await chatSecondary(messages);
   const start = reply.indexOf('{');
   const end = reply.lastIndexOf('}');
   if (start < 0 || end <= start) return null;

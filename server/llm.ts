@@ -1,8 +1,8 @@
-// EXPORTS: chat, llmMode
+// EXPORTS: chat, chatSecondary, llmMode
 // 模型调用层：只依赖 fetch，兼容任何 OpenAI 风格的 /chat/completions
 // 没有配置 API Key 时自动进入 mock 模式，保证本地端到端可测
 
-import { config } from './config.ts';
+import { config, hasVerifyModel } from './config.ts';
 
 export type Role = 'system' | 'user' | 'assistant';
 
@@ -78,6 +78,42 @@ export async function chatWithTools(messages: ChatMessage[], tools: unknown[]): 
       arguments: t.function?.arguments ?? '{}',
     }));
     return { content: msg?.content ?? '', toolCalls };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/**
+ * 第二模型调用（异构校验用）。
+ * 没配置 LLM_VERIFY_* 时直接回退到主模型，行为与以前一致。
+ */
+export async function chatSecondary(messages: ChatMessage[]): Promise<string> {
+  if (!hasVerifyModel()) return chat(messages);
+  if (config.provider === 'mock') return mockReply(messages);
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), config.timeoutMs);
+  try {
+    const res = await fetch(config.verifyBaseUrl + '/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + config.verifyApiKey,
+      },
+      body: JSON.stringify({
+        model: config.verifyModel,
+        messages,
+        temperature: 0.3,
+        max_tokens: 2000,
+      }),
+      signal: controller.signal,
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error('第二模型 ' + res.status + ' ' + text.slice(0, 200));
+    }
+    const data = (await res.json()) as { choices?: { message?: { content?: string } }[] };
+    return data.choices?.[0]?.message?.content ?? '';
   } finally {
     clearTimeout(timer);
   }

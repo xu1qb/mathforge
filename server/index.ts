@@ -2,7 +2,7 @@
 // HTTP 服务：只提供 /api/*，前端仍由 Vite 提供；生产可把 dist 交给静态服务器
 
 import { createServer } from 'node:http';
-import { config, applyRuntimeConfig } from './config.ts';
+import { config, applyRuntimeConfig, hasVerifyModel } from './config.ts';
 import { generateQuestions } from './generate.ts';
 import { llmMode } from './llm.ts';
 import { validateQuestion } from './validate.ts';
@@ -56,6 +56,8 @@ const server = createServer(async (req, res) => {
         mode: llmMode(),
         model: config.model,
         provider: config.provider,
+        /** 配置了第二模型时返回它的名字，用于前端提示「已启用异构校验」 */
+        verifyModel: hasVerifyModel() ? config.verifyModel : null,
         time: new Date().toISOString(),
       });
       return;
