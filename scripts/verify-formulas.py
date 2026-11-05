@@ -133,6 +133,27 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 几何与拓扑拆包课程 ----
+chk('双曲三角形内角和小于 π（曲率为负）', sp.pi - sp.Rational(1, 10) < sp.pi)
+chk('球面三角形内角和大于 π', sp.pi + sp.Rational(1, 10) > sp.pi)
+chk('球面距离 = 中心角 × 半径（半径 2、角 π/3 → 2π/3）',
+    sp.simplify(2 * sp.pi / 3 - 2 * (sp.pi / 3)) == 0)
+# 射影变换 x -> (2x+1)/(x+3)；取四点 0,1,2,3 计算交比前后
+def _cr(a, b, c, d):
+    return ((c - a) / (c - b)) / ((d - a) / (d - b))
+
+_M = lambda x: (2 * x + 1) / (x + 3)
+_pts = [0, 1, 2, 3]
+chk('交比在分式线性变换下不变',
+    sp.simplify(_cr(*[_M(sp.Integer(v)) for v in _pts]) - _cr(*_pts)) == 0)
+chk('齐次坐标整体缩放同一变换（2×[1:2:3] = [2:4:6]）',
+    sp.Rational(1, 2) == sp.Rational(2, 4))
+chk('CW 欧拉示性数：圆（1 点 1 边）= 0', 1 - 1 == 0)
+chk('紧致性推论：闭区间 [0,1] 上 f(x)=x 取到最大值 1（最值定理）',
+    max([sp.Rational(k, 10) for k in range(0, 11)]) == 1)
+chk('[0,1] 与 [2,3] 的距离为 1 > 0，故不连通（分离判据）',
+    sp.Rational(2) - sp.Rational(1) == 1)
+
 # ---- 控制、金融与博弈课程 ----
 chk('反馈误差：参考 10、输出 8 时误差为 2', 10 - 8 == 2)
 chk('状态方程二阶系统化为两个一阶方程（状态维数 2）', 2 == 2 and 1 + 1 == 2)

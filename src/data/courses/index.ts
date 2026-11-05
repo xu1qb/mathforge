@@ -42,6 +42,10 @@ import { MATHEMATICAL_BIOLOGY_COURSE } from './mathematical-biology';
 import { CONTROL_THEORY_COURSE } from './control-theory-course';
 import { FINANCIAL_MATH_COURSE } from './financial-math-course';
 import { GAME_THEORY_COURSE } from './game-theory-course';
+import { NON_EUCLIDEAN_COURSE } from './non-euclidean';
+import { PROJECTIVE_GEOMETRY_COURSE } from './projective-geometry';
+import { TOPOLOGY_COURSE } from './topology-course';
+import { ALGEBRAIC_TOPOLOGY_COURSE } from './algebraic-topology-course';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -86,6 +90,10 @@ export const COURSES: Course[] = [
   CONTROL_THEORY_COURSE,
   FINANCIAL_MATH_COURSE,
   GAME_THEORY_COURSE,
+  NON_EUCLIDEAN_COURSE,
+  PROJECTIVE_GEOMETRY_COURSE,
+  TOPOLOGY_COURSE,
+  ALGEBRAIC_TOPOLOGY_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {
