@@ -4152,10 +4152,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '目标与约束都是线性的，最优值一定在可行域的顶点取到；对偶问题给出同一最优值的上界。',
+    definition:
+      '线性规划是在线性约束下优化线性目标。可行域是多面体，最优值在顶点取到（若有界）。',
     whenToUse: [
       '资源分配、生产计划这类优化',
       '把文字约束写成线性不等式组',
       '用对偶检验最优性',
+    ],
+    theorems: [
+      { name: '顶点最优', statement: '有界可行域上线性目标的最优值在顶点取到。', },
+      { name: '强对偶', statement: '原问题与对偶问题最优值相等（可行时）。', },
     ],
     steps: [
       {
@@ -4176,7 +4182,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '原问题的上界由对偶问题给出，强对偶下两者最优值相等。',
         formula: '\\min\\ b^{T}y\\quad \\text{s.t.}\\ A^{T}y\\ge c',
       },
+      {
+        title: '画可行域',
+        body: '二维问题先画图找顶点，再逐个比较目标值。',
+      },
     ],
+    pitfalls: ['忽略可行域无界：可能无最优解。', '把整数规划当线性规划：放松后取整不一定最优。', '约束方向写反：可行域会变空。'],
     example: {
       problem: '最大化 3x + 2y，约束 x + y ≤ 4、x ≤ 2、y ≤ 3、x, y ≥ 0。',
       walkthrough: [
@@ -4186,7 +4197,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '对偶变量可验算最优值一致。',
       ],
       result: '\\max=10\\ \\text{at}\\ (2,2)',
-    },
+    },    moreExamples: [{ problem: '在 x 不超过二、y 不超过三时 x 加 y 的最大值？', walkthrough: ['可行域为矩形。', '右上角取到。'], result: '5' }],
+
   },
   {
     id: 'non-euclidean',
@@ -4195,10 +4207,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '把欧几里得的第五公设换掉，就得到非欧几何；双曲几何里过直线外一点有无数条平行线，三角形内角和小于 180°。',
+    definition:
+      '非欧几何是修改平行公设得到的几何。双曲几何中过直线外一点有多条平行线，球面几何中任意两条测地线相交。',
     whenToUse: [
       '理解几何公理体系的作用',
       '区分欧氏、双曲、椭圆几何',
       '处理曲率不为零的空间',
+    ],
+    theorems: [
+      { name: '双曲内角和', statement: '双曲三角形内角和小于 180 度。', },
+      { name: '球面内角和', statement: '球面三角形内角和大于 180 度。', },
     ],
     steps: [
       {
@@ -4223,6 +4241,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '圆盘内部是双曲平面，边界在无穷远处，距离越靠边越大。',
       },
     ],
+    pitfalls: ['照搬欧氏结论：内角和不再固定。', '把球面几何当双曲：曲率符号相反。', '忽略模型：非欧几何需要具体模型才能验证。'],
     example: {
       problem: '双曲三角形内角和为 π/2，它的面积是多少？',
       walkthrough: [
@@ -4231,7 +4250,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '角亏越大，面积越大，这与欧氏几何不同。',
       ],
       result: 'S=\\pi-(\\alpha+\\beta+\\gamma)',
-    },
+    },    moreExamples: [{ problem: '球面三角形的内角和是多少？', walkthrough: ['球面曲率为正。', '内角和大于 180 度。'], result: '大于 180 度' }],
+
   },
   {
     id: 'computability',
@@ -4294,10 +4314,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '环是能加能乘的代数结构；理想是对乘法封闭的加法子群，用它做商就像整数模 n，把「倍数」一次性归零。',
+    definition:
+      '环是集合配上加法与乘法，加法成交换群、乘法结合且对加法分配。理想是对加法与「环元素乘理想元素」封闭的子集。',
     whenToUse: [
       '判断一个子集是不是理想',
       '构造商环并判断它是否是域',
       '理解模运算的代数本质',
+    ],
+    theorems: [
+      { name: '商环', statement: '理想给出商环，商映射是同态。', formula: 'R/I' },
+      { name: '同态核', statement: '环同态的核是理想，像是子环。', },
     ],
     steps: [
       {
@@ -4325,6 +4351,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: 'I 是极大理想当且仅当 R/I 是域，这是造域的常用手法。',
       },
     ],
+    pitfalls: ['只验加法封闭：理想还要对左乘右乘封闭。', '把理想当子环：子环不要求吸收乘法。', '交换性想当然：非交换环左右理想不同。'],
     example: {
       problem: '在 Z₆ 里找出零因子，并说明 ⟨2⟩ 是不是理想。',
       walkthrough: [
@@ -4334,7 +4361,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '所以 ⟨2⟩ 是理想，商环 Z₆/⟨2⟩ ≅ Z₂ 是域，⟨2⟩ 极大。',
       ],
       result: '\\mathbb{Z}_{6}/\\langle 2\\rangle\\cong\\mathbb{Z}_{2}',
-    },
+    },    moreExamples: [{ problem: '整数环中偶数集是理想吗？', walkthrough: ['偶数加偶数仍偶。', '任意整数乘偶数仍偶。'], result: '是' }],
+
   },
   {
     id: 'projective-geometry',
@@ -4343,10 +4371,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '射影平面在欧氏平面上加了一条无穷远线，平行线在那里相交；齐次坐标让「无穷远」和普通点用同一套公式处理。',
+    definition:
+      '射影平面是向量空间的一维子空间全体，用齐次坐标表示，整体缩放视为同一点。',
     whenToUse: [
       '处理平行线的交点问题',
       '化简圆锥曲线的分类',
       '理解透视投影下的不变量',
+    ],
+    theorems: [
+      { name: '德萨格定理', statement: '两个三角形对应顶点连线共点时，对应边交点共线。', },
+      { name: '对偶原理', statement: '射影平面中点与线对偶，定理自动对偶成立。', },
     ],
     steps: [
       {
@@ -4367,7 +4401,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '四个共线点的交比在射影变换下不变，是最基本的射影不变量。',
         formula: '(A,B;C,D)=\\frac{AC\\cdot BD}{AD\\cdot BC}',
       },
+      {
+        title: '齐次化再验证',
+        body: '把仿射坐标写成齐次坐标，检查结论是否包含无穷远情形。',
+      },
     ],
+    pitfalls: ['忽略无穷远点：平行线在射影平面相交。', '齐次坐标不整体缩放比较。', '把射影当欧氏：长度角度不再有定义。'],
     example: {
       problem: '求直线 x + y = 1 与 x + y = 2 的交点。',
       walkthrough: [
@@ -4377,7 +4416,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '它在无穷远线上，方向就是两直线的公共方向。',
       ],
       result: '(1:-1:0)',
-    },
+    },    moreExamples: [{ problem: '两条平行线在射影平面中的交点？', walkthrough: ['方向相同。', '交于无穷远点。'], result: '无穷远点' }],
+
   },
   {
     id: 'fundamental-group',
@@ -4386,10 +4426,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '基本群记录「绕不回来的圈有多少种」；圆周的基本群是整数，球面是平凡群，这个差别证明两者不同胚。',
+    definition:
+      '基本群是以基点为起终点的闭路在同伦意义下的群，运算是路的连接。它是同胚不变量。',
     whenToUse: [
       '证明两个空间不同胚',
       '理解洞与环路的关系',
       '计算简单的拓扑不变量',
+    ],
+    theorems: [
+      { name: '圆的基本群', statement: '圆周的基本群同构于整数群。', formula: '\\pi_1(S^{1})\\cong\\mathbb{Z}' },
+      { name: '同伦不变', statement: '同伦等价的空间有同构的基本群。', },
     ],
     steps: [
       {
@@ -4416,6 +4462,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '基本群不同则空间不同胚，这是最常用的分类手段。',
       },
     ],
+    pitfalls: ['忽略基点：不同基点需用道路连接。', '把同伦当同胚：同伦更弱。', '以为基本群总交换：一般非交换。'],
     example: {
       problem: '证明圆周与球面不同胚。',
       walkthrough: [
@@ -4425,7 +4472,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '这也说明「有没有洞」是拓扑性质。',
       ],
       result: '\\pi_{1}(S^{1})\\not\\cong\\pi_{1}(S^{2})',
-    },
+    },    moreExamples: [{ problem: '环面的基本群是什么？', walkthrough: ['两个独立绕圈方向。', '生成元两个且交换。'], result: '整数群的平方' }],
+
   },
   {
     id: 'p-vs-np',
@@ -4434,10 +4482,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       'P 是能快速求解的问题，NP 是能快速验证解的问题；P 是否等于 NP 是理论计算机最大的开放问题。',
+    definition:
+      'P 是多项式时间可解的问题类，NP 是多项式时间可验证证书的问题类。P 是否等于 NP 是未解难题。',
     whenToUse: [
       '判断一个问题的复杂度类别',
       '理解「难解」的严格含义',
       '认识 NP 完全问题的意义',
+    ],
+    theorems: [
+      { name: '库克－列文定理', statement: '布尔可满足性是 NP 完全的。', },
+      { name: 'NP 完全性', statement: 'NP 完全问题有多项式算法则 P 等于 NP。', },
     ],
     steps: [
       {
@@ -4462,6 +4516,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: 'P ≠ NP 被普遍相信，但至今没有证明。',
       },
     ],
+    pitfalls: ['把 NP 当不可解：NP 只是可验证。', '混淆求解与验证：证书验证更快。', '认为所有 NP 问题都难：有的在 P 中。'],
     example: {
       problem: '为什么「验证解」比「求解」容易？',
       walkthrough: [
@@ -4471,7 +4526,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '若 P = NP，则所有可验证的问题都能快速求解。',
       ],
       result: '\\text{SAT}\\in\\text{NP-complete}',
-    },
+    },    moreExamples: [{ problem: '布尔可满足性属于哪个类？', walkthrough: ['解可在多项式时间验证。', '且是 NP 完全。'], result: 'NP 完全' }],
+
   },
   {
     id: 'control-theory',
@@ -4480,10 +4536,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '线性系统的稳定性由极点在复平面的位置决定：全在左半平面就稳定，一旦进入右半平面就发散。',
+    definition:
+      '控制系统用状态方程描述：状态随时间的导数由当前状态与输入决定。稳定性由系统矩阵的极点决定。',
     whenToUse: [
       '判断反馈系统是否稳定',
       '设计极点位置来调响应速度',
       '理解 PID 参数对稳定性的影响',
+    ],
+    theorems: [
+      { name: '极点判稳', statement: '连续系统稳定当且仅当所有极点在左半平面。', },
+      { name: '能控性判据', statement: '能控性矩阵满秩等价于系统能控。', },
     ],
     steps: [
       {
@@ -4510,6 +4572,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '负反馈把极点往左拉，提高稳定性，但过强会引起振荡。',
       },
     ],
+    pitfalls: ['开环当闭环：反馈改变极点。', '忽略能观性：状态不可测则无法任意配置。', '离散系统套连续判据：稳定域是单位圆内。'],
     example: {
       problem: '二阶系统 s² + 2s + 5 的极点在哪？稳定吗？',
       walkthrough: [
@@ -4519,7 +4582,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '阻尼比 ζ = 1/√5 ≈ 0.45，属于欠阻尼。',
       ],
       result: 's=-1\\pm 2i',
-    },
+    },    moreExamples: [{ problem: '一阶系统极点为负三时稳定吗？', walkthrough: ['极点位于左半平面。', '稳定。'], result: '稳定' }],
+
   },
   {
     id: 'category-theory',
@@ -4528,10 +4592,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '范畴只关心对象之间的箭头（态射）以及它们怎么复合，不关心对象内部长什么样；函子是范畴之间的「保持结构的映射」。',
+    definition:
+      '范畴由对象与态射组成，态射可复合且每个对象有恒等态射。函子是范畴之间的映射，自然变换是函子之间的映射。',
     whenToUse: [
       '统一不同数学领域的构造',
       '理解泛性质（积、余积、自由对象）',
       '看懂现代数学的通用语言',
+    ],
+    theorems: [
+      { name: '米田引理', statement: '对象由其表示函子决定，嵌入是全忠实的。', },
+      { name: '泛性质', statement: '积、余积等由泛性质唯一确定（同构意义）。', },
     ],
     steps: [
       {
@@ -4552,7 +4622,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '泛性质',
         body: '积、余积、自由对象都用「唯一存在的箭头」来定义，比具体构造更本质。',
       },
+      {
+        title: '画交换图',
+        body: '把定义写成交换图，检查所有路径复合相同，是最直接的理解方式。',
+      },
     ],
+    pitfalls: ['把对象当集合：范畴对象是抽象的。', '函子方向搞反：协变与反变不同。', '忽略自然性：交换图必须对所有对象成立。'],
     example: {
       problem: '在集合范畴里，两个集合的积是什么？',
       walkthrough: [
@@ -4562,7 +4637,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '这个唯一性正是「积」的泛性质。',
       ],
       result: '|A\\times B|=|A|\\cdot|B|',
-    },
+    },    moreExamples: [{ problem: '集合范畴中的积是什么？', walkthrough: ['满足泛性质的构造。', '即笛卡尔积。'], result: '笛卡尔积' }],
+
   },
 
   {
