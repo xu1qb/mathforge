@@ -1,151 +1,92 @@
 // EXPORTS: BranchesPage
-// 学科总览：11 个大类 × 全部分支，显示覆盖状态（有页面 / 仅考点 / 待补）
+// 学科总览：学科 → 分支 → 课程 三层，全部对齐参考视频的十分类
 
-import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BookOpen, Circle, CircleDot, CircleSlash } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { BookOpen, GraduationCap, Clock, ArrowRight, Layers } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import PageShell from '@/components/PageShell';
 import { Badge } from '@/components/ui/badge';
-import { BRANCH_CATEGORIES, branchStatus, type Branch } from '@/data/branches';
-import { EXPLAINER_TOPICS } from '@/data/explainers';
+import { DISCIPLINE, BRANCHES } from '@/data/catalog';
+import { getCourse } from '@/data/courses';
 import { cn } from '@/lib/utils';
 
-const ACCENT: Record<string, string> = {
-  amber: 'text-amber-600',
-  sky: 'text-sky-600',
-  rose: 'text-rose-600',
-  violet: 'text-violet-600',
-  emerald: 'text-emerald-600',
-  teal: 'text-teal-600',
-  cyan: 'text-cyan-600',
-  orange: 'text-orange-600',
-  slate: 'text-slate-500',
-  pink: 'text-pink-600',
-  yellow: 'text-yellow-600',
-};
-
 export default function BranchesPage() {
-  const navigate = useNavigate();
-
-  const topicTags = useMemo(
-    () => new Set(EXPLAINER_TOPICS.map((t) => t.tag)),
-    []
+  const totalCourses = BRANCHES.reduce((a, b) => a + b.courses.length, 0);
+  const readyCourses = BRANCHES.reduce(
+    (a, b) => a + b.courses.filter((c) => c.courseId && getCourse(c.courseId)).length,
+    0
   );
-
-  const stats = useMemo(() => {
-    let page = 0;
-    let topic = 0;
-    let empty = 0;
-    for (const c of BRANCH_CATEGORIES) {
-      for (const b of c.branches) {
-        const s = branchStatus(b, topicTags);
-        if (s === 'page') page += 1;
-        else if (s === 'topic') topic += 1;
-        else empty += 1;
-      }
-    }
-    return { page, topic, empty, total: page + topic + empty };
-  }, [topicTags]);
-
-  const openBranch = (b: Branch, status: ReturnType<typeof branchStatus>) => {
-    if (status === 'page' && b.pagePath) navigate(b.pagePath);
-    else if (status === 'topic' && b.tags && b.tags.length > 0) {
-      navigate('/explainer?tag=' + encodeURIComponent(b.tags[0]));
-    }
-  };
 
   return (
     <PageShell
       title="学科总览"
-      description="按 11 个大类浏览全部分支，看得见边界，也看得见还没做的部分"
-      width="wide"
+      description={'一个学科 · ' + BRANCHES.length + ' 个分支 · ' + totalCourses + ' 个课程位置'}
       back
     >
+      <Card className="mb-5">
+        <CardContent className="flex flex-wrap items-center justify-between gap-3 p-5">
+          <div className="flex items-center gap-3">
+            <Layers className="h-5 w-5 text-primary" />
+            <div>
+              <div className="text-base font-semibold">{DISCIPLINE.name}</div>
+              <div className="text-xs text-muted-foreground">{DISCIPLINE.en}</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <Badge variant="secondary">{BRANCHES.length} 个分支</Badge>
+            <Badge variant="outline">{readyCourses} 门已建</Badge>
+            <Badge variant="outline">{totalCourses - readyCourses} 门待补</Badge>
+          </div>
+        </CardContent>
+      </Card>
 
-      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {[
-          { label: '大类', value: BRANCH_CATEGORIES.length, icon: BookOpen },
-          { label: '分支总数', value: stats.total, icon: Circle },
-          { label: '已有页面', value: stats.page, icon: CircleDot },
-          { label: '待补', value: stats.empty, icon: CircleSlash },
-          { label: '考点', value: EXPLAINER_TOPICS.length, icon: BookOpen },
-        ].map((s) => (
-          <Card key={s.label} className="border-border/60">
-            <CardContent className="flex items-center gap-3 p-4">
-              <s.icon className="size-5 text-muted-foreground" />
-              <div>
-                <div className="text-xl font-semibold tabular-nums">{s.value}</div>
-                <div className="text-xs text-muted-foreground">{s.label}</div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <div className="space-y-6">
-        {BRANCH_CATEGORIES.map((cat) => {
-          const pageCount = cat.branches.filter((b) => branchStatus(b, topicTags) === 'page').length;
+      <div className="grid gap-4 lg:grid-cols-2">
+        {BRANCHES.map((b) => {
+          const ready = b.courses.filter((c) => c.courseId && getCourse(c.courseId)).length;
           return (
-            <section key={cat.id}>
-              <div className="mb-3 flex flex-wrap items-baseline gap-2">
-                <h2 className={cn('text-base font-semibold', ACCENT[cat.accent] ?? '')}>{cat.zh}</h2>
-                <span className="text-xs text-muted-foreground">{cat.en}</span>
-                <Badge variant="outline" className="ml-auto text-xs">
-                  {cat.branches.length} 个分支 · {pageCount} 个有页面
-                </Badge>
-              </div>
+            <Card key={b.id} className="flex h-full flex-col">
+              <CardContent className="flex flex-1 flex-col p-5">
+                <div className="mb-1 flex items-start justify-between gap-2">
+                  <Link to={'/branch/' + b.id} className="group flex items-center gap-2">
+                    <span className="text-sm font-semibold group-hover:text-primary">{b.name}</span>
+                    <ArrowRight className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                  <span className="shrink-0 text-[11px] text-muted-foreground">
+                    {ready}/{b.courses.length} 已建
+                  </span>
+                </div>
+                <p className="mb-3 text-xs text-muted-foreground">{b.summary}</p>
 
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                {cat.branches.map((b) => {
-                  const status = branchStatus(b, topicTags);
-                  const clickable = status !== 'empty';
-                  return (
-                    <div
-                      key={b.id}
-                      role={clickable ? 'button' : undefined}
-                      tabIndex={clickable ? 0 : undefined}
-                      onClick={() => clickable && openBranch(b, status)}
-                      onKeyDown={(e) => {
-                        if (clickable && (e.key === 'Enter' || e.key === ' ')) {
-                          e.preventDefault();
-                          openBranch(b, status);
-                        }
-                      }}
-                      className={cn(
-                        'flex items-start justify-between gap-3 rounded-xl border p-3 text-left transition-colors',
-                        clickable
-                          ? 'border-border bg-card hover:border-primary/40 hover:bg-accent'
-                          : 'cursor-default border-dashed border-border/60 bg-muted/20'
-                      )}
-                    >
-                      <div className="min-w-0">
-                        <div
-                          className={cn(
-                            'text-sm font-medium',
-                            clickable ? 'text-foreground' : 'text-muted-foreground'
-                          )}
-                        >
-                          {b.zh}
-                        </div>
-                        <div className="truncate text-xs text-muted-foreground">{b.en}</div>
-                        {b.note && (
-                          <div className="mt-1 text-[11px] text-muted-foreground/70">{b.note}</div>
-                        )}
-                      </div>
-                      <Badge
-                        variant={status === 'page' ? 'default' : status === 'topic' ? 'secondary' : 'outline'}
-                        className="shrink-0 text-[10px]"
+                <div className="mt-auto flex flex-wrap gap-1.5">
+                  {b.courses.map((c) => {
+                    const course = c.courseId ? getCourse(c.courseId) : undefined;
+                    return course ? (
+                      <Link key={c.id} to={'/course/' + course.id}>
+                        <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-[11px] text-primary transition-colors hover:bg-primary/20">
+                          <GraduationCap className="h-3 w-3" />
+                          {c.name}
+                        </span>
+                      </Link>
+                    ) : (
+                      <span
+                        key={c.id}
+                        className={cn('inline-flex items-center gap-1 rounded-md border border-dashed px-2 py-1 text-[11px] text-muted-foreground')}
                       >
-                        {status === 'page' ? '页面' : status === 'topic' ? '考点' : '待补'}
-                      </Badge>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
+                        <Clock className="h-3 w-3" />
+                        {c.name}
+                      </span>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
           );
         })}
+      </div>
+
+      <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
+        <BookOpen className="h-3.5 w-3.5" />
+        分支与课程按参考视频的十分类组织；虚线框为待补内容，实心标签可直接进入课程。
       </div>
     </PageShell>
   );

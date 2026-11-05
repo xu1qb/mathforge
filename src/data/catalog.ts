@@ -39,6 +39,7 @@ export const DISCIPLINE: Discipline = {
         { id: 'set-theory', name: '集合论', courseId: 'combinatorics-discrete', note: '与离散课程共用' },
         { id: 'mathematical-logic', name: '数理逻辑', note: '待建' },
         { id: 'axiomatic-set', name: '公理化集合论', courseId: 'logic-foundations' },
+        { id: 'modern-survey', name: '现代数学导论', courseId: 'modern-math', note: '总览课' },
       ],
     },
     {
@@ -77,6 +78,7 @@ export const DISCIPLINE: Discipline = {
       en: 'Algebra & Number Theory',
       summary: '结构与整数的深层',
       courses: [
+        { id: 'linear-algebra', name: '线性代数', courseId: 'linear-algebra' },
         { id: 'group-theory', name: '群论', courseId: 'algebra-number' },
         { id: 'ring-theory', name: '环论', courseId: 'algebra-number' },
         { id: 'field-theory', name: '域论', note: '待建' },
