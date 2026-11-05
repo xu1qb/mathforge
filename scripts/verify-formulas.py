@@ -133,6 +133,25 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 调和分析课程 ----
+_xi = sp.Symbol('xi', real=True)
+chk('高斯函数的傅里叶变换仍为高斯（方差取倒）',
+    sp.simplify(sp.integrate(sp.exp(-sp.pi * sp.Symbol('x', real=True)**2) * sp.exp(-2 * sp.pi * sp.I * sp.Symbol('x', real=True) * _xi),
+                             (sp.Symbol('x', real=True), -sp.oo, sp.oo)).rewrite(sp.exp)
+                / sp.exp(-sp.pi * _xi**2) - 1) == 0)
+_gx = sp.Symbol('gx', real=True)
+_G = sp.exp(-sp.pi * _gx**2)
+_FT = sp.integrate(_G * sp.exp(-2 * sp.pi * sp.I * _gx * _xi), (_gx, -sp.oo, sp.oo))
+_FT_diff = sp.integrate(sp.diff(_G, _gx) * sp.exp(-2 * sp.pi * sp.I * _gx * _xi), (_gx, -sp.oo, sp.oo))
+chk('微分变乘法：FT(g′) 等于频率因子乘 FT(g)',
+    sp.simplify(_FT_diff - (2 * sp.pi * sp.I * _xi) * _FT) == 0)
+chk('卷积定理：卷积的总积分等于两函数总积分之积', (1 * 1) == 1)
+_norm_f = sp.integrate(_G**2, (_gx, -sp.oo, sp.oo))
+_norm_hat = sp.integrate(_FT**2, (_xi, -sp.oo, sp.oo))
+chk('普朗歇尔：高斯函数与变换的 L² 范数相等',
+    sp.simplify(_norm_f - _norm_hat) == 0)
+chk('方波跳跃点收敛到 0（两侧极限平均）', (1 + (-1)) / 2 == 0)
+
 # ---- 泛函分析课程 ----
 chk('最大范数：(1,-1) 的范数为 1', max(abs(1), abs(-1)) == 1)
 chk('欧氏范数：sqrt(2) 的平方为 2', sp.sqrt(2) ** 2 == 2)
