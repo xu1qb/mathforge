@@ -22,6 +22,8 @@ import { HARMONIC_ANALYSIS_COURSE } from './harmonic-analysis';
 import { DIFFERENTIAL_GEOMETRY_COURSE } from './differential-geometry';
 import { ALGEBRAIC_GEOMETRY_COURSE } from './algebraic-geometry';
 import { DIFFERENTIAL_TOPOLOGY_COURSE } from './differential-topology';
+import { FIELD_THEORY_COURSE } from './field-theory';
+import { ALGEBRAIC_NUMBER_COURSE } from './algebraic-number-theory';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -46,6 +48,8 @@ export const COURSES: Course[] = [
   DIFFERENTIAL_GEOMETRY_COURSE,
   ALGEBRAIC_GEOMETRY_COURSE,
   DIFFERENTIAL_TOPOLOGY_COURSE,
+  FIELD_THEORY_COURSE,
+  ALGEBRAIC_NUMBER_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {

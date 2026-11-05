@@ -133,6 +133,20 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 域论与代数数论课程 ----
+chk('有理数添根号二的扩张次数为 2（极小多项式次数）',
+    sp.degree(sp.minimal_polynomial(sp.sqrt(2), sp.Symbol('x')), sp.Symbol('x')) == 2)
+chk('根号二在有理数上的极小多项式为 x²-2',
+    sp.minimal_polynomial(sp.sqrt(2), sp.Symbol('x')) == sp.Symbol('x')**2 - 2)
+chk('有限域的阶必须是素数幂（4 是 2²）', 4 == 2 ** 2)
+chk('6 不是素数幂，不存在 6 元有限域',
+    not any(p ** k == 6 for p in (2, 3, 5) for k in (1, 2, 3)))
+chk('二分之一不是代数整数（极小多项式 2x-1 非首一）',
+    sp.minimal_polynomial(sp.Rational(1, 2), sp.Symbol('x')) == 2 * sp.Symbol('x') - 1
+    and sp.Poly(sp.minimal_polynomial(sp.Rational(1, 2), sp.Symbol('x')), sp.Symbol('x')).LC() == 2)
+chk('二次域 p 分歧当且仅当 p 整除判别式（判别式 8 的素因子为 2）',
+    [p for p in (2, 3, 5, 7) if 8 % p == 0] == [2])
+
 # ---- 代数几何与微分拓扑课程 ----
 chk('贝祖定理：两条二次曲线交点数为 2×2=4', 2 * 2 == 4)
 chk('贝祖定理：直线与三次曲线交点数 1×3=3', 1 * 3 == 3)
