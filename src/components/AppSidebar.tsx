@@ -75,6 +75,8 @@ const NAV_GROUPS: NavGroup[] = [
       { path: '/practice', label: '练习训练', icon: GraduationCap },
       { path: '/wrong-book', label: '错题本', icon: NotebookPen },
       { path: '/progress', label: '学习报告', icon: BarChart3 },
+      { path: '/about', label: '关于', icon: Info },
+      { path: '/privacy', label: '隐私政策', icon: ShieldCheck },
       { path: '/ai-lab', label: 'AI 出题', icon: Sparkles },
       { path: '/ai-review', label: 'AI 审核', icon: ShieldCheck },
       { path: '/explainer', label: '原理讲解', icon: Lightbulb },

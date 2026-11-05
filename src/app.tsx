@@ -94,6 +94,8 @@ const DiffGeoLazy = lazy(() => import("@/pages/DiffGeo/DiffGeoPage"));
 const CompetitionLazy = lazy(() => import("@/pages/Competition/CompetitionPage"));
 const PracticeLazy = lazy(() => import("@/pages/Practice/PracticePage"));
 const WrongBookLazy = lazy(() => import("@/pages/WrongBook/WrongBookPage"));
+const AboutLazy = lazy(() => import("@/pages/About/AboutPage"));
+const PrivacyLazy = lazy(() => import("@/pages/About/PrivacyPage"));
 const ProgressLazy = lazy(() => import("@/pages/Progress/ProgressPage"));
 const KnowledgeMapLazy = lazy(() => import("@/pages/KnowledgeMap/KnowledgeMapPage"));
 const IntegralVisLazy = lazy(() => import("@/pages/IntegralVisualization/IntegralVisualizationPage"));
@@ -234,6 +236,8 @@ export default function App() {
           <Route path="practice" element={<PracticePage />} />
           <Route path="wrong-book" element={<Suspense fallback={<div className="h-64" />}><WrongBookLazy /></Suspense>} />
           <Route path="progress" element={<Suspense fallback={<div className="h-64" />}><ProgressLazy /></Suspense>} />
+          <Route path="about" element={<Suspense fallback={<div className="h-64" />}><AboutLazy /></Suspense>} />
+          <Route path="privacy" element={<Suspense fallback={<div className="h-64" />}><PrivacyLazy /></Suspense>} />
           <Route path="ai-lab" element={<AiLabPageLazy />} />
           <Route path="ai-review" element={<AiReviewPageLazy />} />
           <Route path="integral-visualization" element={<IntegralVisPage />} />

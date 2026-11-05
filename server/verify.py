@@ -22,6 +22,8 @@ def latex_to_plain(s):
     s = s.replace("\\left", "").replace("\\right", "")
     s = s.replace("\\cdot", "*").replace("\\times", "*")
     s = s.replace("\\pi", "pi").replace("\\infty", "oo")
+    # 数学符号：√2 → sqrt(2)，方便和 LaTeX 写法统一
+    s = re.sub(r"√\s*([0-9]+|[a-zA-Z])", r"sqrt(\1)", s)
     s = re.sub(r"\\text\{[^}]*\}", "", s)
 
     while True:
@@ -43,6 +45,8 @@ def latex_to_plain(s):
 
     s = re.sub(r"\\[a-zA-Z]+", "", s)
     s = s.replace("^{", "**(")
+    # 普通幂次：e^4 → e**(4)；已经带括号的不动
+    s = re.sub(r"\^([0-9A-Za-z.]+)", r"**(\1)", s)
     s = re.sub(r"\*\*\(([^()]*)\)", lambda m: "**(" + m.group(1) + ")", s)
     s = s.replace("{", "(").replace("}", ")")
     return s.strip()
