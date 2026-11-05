@@ -153,7 +153,7 @@ export const DISCIPLINE: Discipline = {
         { id: 'axiomatic-set-theory', name: '公理化集合论', courseId: 'axiomatic-set-theory' },
         { id: 'model-theory', name: '模型论', courseId: 'model-theory' },
         { id: 'recursion-theory', name: '递归论', courseId: 'logic-foundations' },
-        { id: 'proof-theory', name: '证明论', note: '待建' },
+        { id: 'proof-theory', name: '证明论', courseId: 'proof-theory' },
       ],
     },
     {
@@ -162,7 +162,7 @@ export const DISCIPLINE: Discipline = {
       en: 'Frontiers & Interdisciplinary',
       summary: '与其他学科交汇的新方向',
       courses: [
-        { id: 'data-science', name: '数据科学中的数学', note: '待建' },
+        { id: 'data-science', name: '数据科学中的数学', courseId: 'data-science-math' },
         { id: 'quantum-math', name: '量子数学基础', note: '待建' },
         { id: 'ml-theory', name: '机器学习理论', note: '待建' },
       ],

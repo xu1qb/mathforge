@@ -133,6 +133,18 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 证明论与数据科学课程 ----
+chk('分离规则是重言式：(P∧(P→Q))→Q',
+    all((not (p and ((not p) or q))) or q for p in (True, False) for q in (True, False)))
+chk('最小二乘正规方程：残差与特征正交（两点数据）',
+    (1 * (2 - 1 * 2) + 2 * (4 - 2 * 2)) == 0)
+_gx0, _eta = sp.Integer(1), sp.Rational(1, 2)
+_gx1 = _gx0 - _eta * 2 * _gx0
+chk('梯度下降一步后目标下降（f=x²，x0=1，η=1/2 → x1=0）',
+    _gx1 == 0 and _gx1**2 < _gx0**2)
+chk('贝叶斯网络链式分解：P(A)P(B|A) = 0.5×0.4 = 0.2',
+    sp.Rational(1, 2) * sp.Rational(2, 5) == sp.Rational(1, 5))
+
 # ---- 数学物理与模型论课程 ----
 _x = sp.Symbol('x', real=True)
 _t = sp.Symbol('t', positive=True)
