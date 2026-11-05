@@ -5,6 +5,8 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageShell from '@/components/PageShell';
 import ProblemText from '@/components/ProblemText';
+import MathInputField from '@/components/MathInputField';
+import { checkPracticeAnswer } from '@/lib/math-practice';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -24,8 +26,16 @@ const TOPIC_LABEL = new Map(PRACTICE_TOPICS.map((t) => [t.key, t.label]));
 
 export default function WrongBookPage() {
   const navigate = useNavigate();
-  const { dueToday, pending, trulyMastered, markReviewRemembered, markReviewForgotten, markMastered, removeItem } =
-    useWrongBook();
+  const {
+    dueToday,
+    pending,
+    trulyMastered,
+    markReviewRemembered,
+    markReviewForgotten,
+    markMastered,
+    removeItem,
+    incrementRetry,
+  } = useWrongBook();
   const [tab, setTab] = useState<Tab>('due');
   const [topic, setTopic] = useState('all');
 
@@ -125,6 +135,7 @@ export default function WrongBookPage() {
                 masteredView={tab === 'mastered'}
                 onRemembered={() => markReviewRemembered(w.id)}
                 onForgotten={() => markReviewForgotten(w.id)}
+                onRetry={(correct) => incrementRetry(w.id, correct)}
                 onMastered={() => markMastered(w.id)}
                 onRemove={() => removeItem(w.id)}
               />
@@ -141,6 +152,7 @@ function WrongCard({
   masteredView,
   onRemembered,
   onForgotten,
+  onRetry,
   onMastered,
   onRemove,
 }: {
@@ -148,11 +160,27 @@ function WrongCard({
   masteredView: boolean;
   onRemembered: () => void;
   onForgotten: () => void;
+  onRetry: (correct: boolean) => void;
   onMastered: () => void;
   onRemove: () => void;
 }) {
   const [showAnswer, setShowAnswer] = useState(false);
+  const [answer, setAnswer] = useState('');
+  const [result, setResult] = useState<{ correct: boolean; message: string } | null>(null);
   const days = Math.max(0, Math.ceil((item.nextReviewDate - Date.now()) / 86400000));
+
+  // 真实判分：答对推进复习阶段，答错重置回第一轮
+  const handleCheck = () => {
+    const r = checkPracticeAnswer(item.question, answer);
+    setResult(r);
+    onRetry(r.correct);
+    if (r.correct) {
+      onRemembered();
+      setShowAnswer(true);
+    } else {
+      onForgotten();
+    }
+  };
 
   return (
     <Card>
@@ -205,29 +233,81 @@ function WrongCard({
           </Button>
         )}
 
-        <div className="flex flex-wrap items-center gap-2">
-          {!masteredView && (
-            <>
-              <Button size="sm" className="gap-1.5" onClick={onRemembered}>
-                <CheckCircle2 className="size-3.5" /> 回忆起来了
+        {!masteredView && (
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <div className="min-w-0 flex-1">
+                <MathInputField
+                  value={answer}
+                  onChange={setAnswer}
+                  topicKey={item.topicKey}
+                  label="重做一遍"
+                  placeholder="输入答案，支持 sqrt / pi / ^"
+                  showPalette
+                  defaultPreview={false}
+                  disabled={result?.correct === true}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && answer.trim() && result?.correct !== true) {
+                      e.preventDefault();
+                      handleCheck();
+                    }
+                  }}
+                />
+              </div>
+              <Button
+                size="sm"
+                className="mt-6 shrink-0 gap-1.5"
+                onClick={handleCheck}
+                disabled={!answer.trim() || result?.correct === true}
+              >
+                <CheckCircle2 className="size-3.5" /> 检查
               </Button>
-              <Button size="sm" variant="outline" className="gap-1.5" onClick={onForgotten}>
-                <RotateCcw className="size-3.5" /> 还是不会
+            </div>
+
+            {result && (
+              <p
+                className={cn(
+                  'rounded-md px-2 py-1.5 text-xs',
+                  result.correct ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600',
+                )}
+              >
+                {result.correct ? '答对了，已推进到下一轮复习' : result.message || '答案不对，再看看解析'}
+              </p>
+            )}
+
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+              <button className="text-emerald-600 hover:underline" onClick={onRemembered}>
+                想起来了（跳过输入，直接进入下一轮）
+              </button>
+              <button className="text-muted-foreground hover:underline" onClick={onForgotten}>
+                还是不会
+              </button>
+              <button className="text-muted-foreground hover:underline" onClick={onMastered}>
+                标记掌握
+              </button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="ml-auto gap-1.5 text-muted-foreground hover:text-destructive"
+                onClick={onRemove}
+              >
+                <Trash2 className="size-3.5" /> 删除
               </Button>
-              <Button size="sm" variant="ghost" className="gap-1.5" onClick={onMastered}>
-                <Sparkles className="size-3.5" /> 直接标记掌握
-              </Button>
-            </>
-          )}
-          <Button
-            size="sm"
-            variant="ghost"
-            className="ml-auto gap-1.5 text-muted-foreground hover:text-destructive"
-            onClick={onRemove}
-          >
-            <Trash2 className="size-3.5" /> 删除
-          </Button>
-        </div>
+            </div>
+          </div>
+        )}
+        {masteredView && (
+          <div className="flex justify-end">
+            <Button
+              size="sm"
+              variant="ghost"
+              className="gap-1.5 text-muted-foreground hover:text-destructive"
+              onClick={onRemove}
+            >
+              <Trash2 className="size-3.5" /> 删除
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
