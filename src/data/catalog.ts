@@ -163,8 +163,8 @@ export const DISCIPLINE: Discipline = {
       summary: '与其他学科交汇的新方向',
       courses: [
         { id: 'data-science', name: '数据科学中的数学', courseId: 'data-science-math' },
-        { id: 'quantum-math', name: '量子数学基础', note: '待建' },
-        { id: 'ml-theory', name: '机器学习理论', note: '待建' },
+        { id: 'quantum-math', name: '量子数学基础', courseId: 'quantum-math' },
+        { id: 'ml-theory', name: '机器学习理论', courseId: 'ml-theory' },
       ],
     },
   ],

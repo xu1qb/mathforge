@@ -133,6 +133,19 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 量子数学与机器学习理论课程 ----
+chk('CHSH：量子最大值 2√2 超过经典界 2',
+    sp.simplify(2 * sp.sqrt(2) - 2) > 0)
+chk('U(1) 门是酉算子（|U†U|=1）',
+    sp.simplify(sp.Abs(sp.exp(-sp.I * sp.Symbol('theta', real=True))) - 1) == 0)
+chk('玻恩规则：半半态两项概率 |1/√2|² 之和为 1',
+    sp.simplify(2 * sp.Abs(1 / sp.sqrt(2))**2 - 1) == 0)
+chk('霍夫丁：n 增大界变小（n=100 vs n=10，ε=0.1）',
+    sp.exp(-2 * 100 * sp.Rational(1, 100)) < sp.exp(-2 * 10 * sp.Rational(1, 100)))
+chk('偏差方差分解：期望误差 = 偏差²+方差+噪声（数值例）',
+    sp.Rational(4, 100) + sp.Rational(9, 100) + sp.Rational(1, 100) == sp.Rational(14, 100))
+chk('L1 与 L2 惩罚不同（|2|=2，2²=4）', sp.Abs(2) != 2 ** 2)
+
 # ---- 证明论与数据科学课程 ----
 chk('分离规则是重言式：(P∧(P→Q))→Q',
     all((not (p and ((not p) or q))) or q for p in (True, False) for q in (True, False)))
