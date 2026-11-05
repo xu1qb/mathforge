@@ -69,29 +69,13 @@ export interface NavGroup {
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    name: '学习与备考',
+    name: '学习',
     items: [
       { path: '/', label: '首页', icon: Home },
-      { path: '/competition', label: '竞赛备战中心', icon: Trophy },
       { path: '/practice', label: '练习训练', icon: GraduationCap },
       { path: '/wrong-book', label: '错题本', icon: NotebookPen },
       { path: '/progress', label: '学习报告', icon: BarChart3 },
-      { path: '/about', label: '关于', icon: Info },
-      { path: '/privacy', label: '隐私政策', icon: ShieldCheck },
-      { path: '/ai-lab', label: 'AI 出题', icon: Sparkles },
-      { path: '/ai-review', label: 'AI 审核', icon: ShieldCheck },
-      { path: '/explainer', label: '原理讲解', icon: Lightbulb },
-      { path: '/flow', label: '解题流程图', icon: Workflow },
-    ],
-  },
-  {
-    name: '计算工具',
-    items: [
-      { path: '/calculator', label: '科学计算器', icon: Calculator },
-      { path: '/symbolic', label: '符号代数', icon: Sigma },
-      { path: '/formulas', label: '公式手册', icon: BookOpenText },
-      { path: '/photo-solve', label: '拍照识题', icon: Camera },
-      { path: '/tools', label: '实用工具', icon: Wrench },
+      { path: '/competition', label: '竞赛备战中心', icon: Trophy },
     ],
   },
   {
@@ -106,14 +90,7 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    name: '基础数学',
-    items: [
-      { path: '/number-theory', label: '数论基础', icon: Hash },
-      { path: '/linear-algebra', label: '线性代数', icon: Grid3x3 },
-    ],
-  },
-  {
-    name: '分析学',
+    name: '学科工具',
     items: [
       { path: '/calculus', label: '微积分', icon: FunctionSquare },
       { path: '/multivariable', label: '多元微积分', icon: Layers },
@@ -121,21 +98,23 @@ const NAV_GROUPS: NavGroup[] = [
       { path: '/pde', label: '偏微分方程', icon: Waves },
       { path: '/fourier', label: '傅里叶级数', icon: Activity },
       { path: '/complex', label: '复变函数', icon: PlusSquare },
-    ],
-  },
-  {
-    name: '几何 · 离散 · 现代',
-    items: [
       { path: '/diff-geo', label: '微分几何', icon: Globe },
       { path: '/discrete', label: '离散数学', icon: ToggleLeft },
       { path: '/modern', label: '现代数学', icon: Sparkles },
+      { path: '/number-theory', label: '数论基础', icon: Hash },
+      { path: '/linear-algebra', label: '线性代数', icon: Grid3x3 },
+      { path: '/probability', label: '概率统计', icon: BarChart3 },
+      { path: '/numerical', label: '数值分析', icon: Target },
     ],
   },
   {
-    name: '概率 · 计算',
+    name: '计算工具',
     items: [
-      { path: '/probability', label: '概率统计', icon: BarChart3 },
-      { path: '/numerical', label: '数值分析', icon: Target },
+      { path: '/calculator', label: '科学计算器', icon: Calculator },
+      { path: '/symbolic', label: '符号代数', icon: Sigma },
+      { path: '/formulas', label: '公式手册', icon: BookOpenText },
+      { path: '/photo-solve', label: '拍照识题', icon: Camera },
+      { path: '/tools', label: '实用工具', icon: Wrench },
     ],
   },
   {
@@ -155,6 +134,22 @@ const NAV_GROUPS: NavGroup[] = [
       { path: '/spellbook', label: '公式咒语', icon: BookMarked },
       { path: '/mathematician-quiz', label: '数学家测试', icon: Brain },
       { path: '/teacher', label: '我当老师', icon: PenSquare },
+    ],
+  },
+  {
+    name: '内容与 AI',
+    items: [
+      { path: '/explainer', label: '原理讲解', icon: Lightbulb },
+      { path: '/flow', label: '解题流程图', icon: Workflow },
+      { path: '/ai-lab', label: 'AI 出题', icon: Sparkles },
+      { path: '/ai-review', label: 'AI 审核', icon: ShieldCheck },
+    ],
+  },
+  {
+    name: '关于',
+    items: [
+      { path: '/about', label: '关于', icon: Info },
+      { path: '/privacy', label: '隐私政策', icon: ShieldCheck },
     ],
   },
 ];
