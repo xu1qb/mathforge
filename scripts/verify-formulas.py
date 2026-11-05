@@ -62,6 +62,34 @@ chk('单位圆面积 = (1/2)∮(x dy - y dx) = π',
             (_theta, 0, 2 * sp.pi))
         - sp.pi) == 0)
 
+# ---- 第二批补篇（隐函数/曲率/反常/展开/切平面/重积分应用/斯托克斯） ----
+_y = sp.Function('y')
+_id = sp.idiff(_y(x)**2 + x**2 - 1, _y(x), x)
+chk('隐函数 x^2+y^2=1 的导数为 -x/y',
+    sp.simplify(_id - (-x / _y(x))) == 0)
+_pp = sp.symbols('pp', real=True)
+chk('单位圆曲率为 1（参数式曲率公式）',
+    sp.simplify(
+        abs(sp.diff(sp.cos(_pp), _pp) * sp.diff(sp.sin(_pp), _pp, 2)
+            - sp.diff(sp.sin(_pp), _pp) * sp.diff(sp.cos(_pp), _pp, 2))
+        / (sp.diff(sp.cos(_pp), _pp)**2 + sp.diff(sp.sin(_pp), _pp)**2)**sp.Rational(3, 2)) == 1)
+chk('int_0^1 x^(-1/2) dx = 2', sp.integrate(x**sp.Rational(-1, 2), (x, 0, 1)) == 2)
+chk('ln(1+x) 的展开式为交替级数',
+    sp.simplify(sp.series(sp.log(1 + x), x, 0, 6).removeO()
+                - sum((-1)**(k + 1) * x**k / k for k in range(1, 6))) == 0)
+_ax, _ay = sp.symbols('ax ay', real=True)
+_fsurf = _ax**2 + _ay**2 - sp.Symbol('az', real=True)
+chk('z=x^2+y^2 在 (1,1) 的切平面法向量为 (2,2,-1)',
+    [_fsurf.diff(_ax).subs({_ax: 1, _ay: 1}), _fsurf.diff(_ay).subs({_ax: 1, _ay: 1}), sp.Integer(-1)]
+    == [2, 2, -1])
+_rr = sp.symbols('rr', positive=True)
+chk('上半单位圆盘形心纵坐标 = 4/(3π)',
+    sp.simplify(
+        sp.integrate(sp.integrate(_rr * sp.sin(_theta) * _rr, (_rr, 0, 1)), (_theta, 0, sp.pi))
+        / (sp.pi / 2) - 4 / (3 * sp.pi)) == 0)
+chk('单位圆上 (y,z,x) 的环量 = -π（斯托克斯）',
+    sp.integrate(sp.sin(_theta) * sp.diff(sp.cos(_theta), _theta), (_theta, 0, 2 * sp.pi)) == -sp.pi)
+
 # ---- 新补讲解（高阶导/换元/可分离/有理函数/链式/极值） ----
 chk("(x^3)'' = 6x", sp.diff(x**3, x, 2) == 6 * x)
 chk('int 2x cos(x^2) dx = sin(x^2)',

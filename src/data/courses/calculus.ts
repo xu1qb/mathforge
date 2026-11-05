@@ -59,7 +59,7 @@ export const CALCULUS_COURSE: Course = {
         '掌握链式法则',
         '会做隐函数与参数方程求导',
       ],
-      lessonIds: ['derivative-rules', 'higher-derivative'],
+      lessonIds: ['derivative-rules', 'higher-derivative', 'implicit-parametric-diff'],
       practiceTopics: ['derivative-basic'],
       exercises: [
         {
@@ -82,7 +82,7 @@ export const CALCULUS_COURSE: Course = {
         '掌握拉格朗日与柯西中值定理',
         '用导数符号判断单调与极值',
       ],
-      lessonIds: ['rolle', 'mvt-construct', 'lagrange-cauchy', 'derivative-sign', 'inequality-proof', 'classic-inequalities'],
+      lessonIds: ['rolle', 'mvt-construct', 'lagrange-cauchy', 'derivative-sign', 'concavity-curvature', 'inequality-proof', 'classic-inequalities'],
       practiceTopics: ['derivative-basic', 'function-property', 'inequality-solve'],
       exercises: [
         {
@@ -128,7 +128,7 @@ export const CALCULUS_COURSE: Course = {
         '理解定积分定义',
         '会判断反常积分敛散',
       ],
-      lessonIds: ['newton-leibniz', 'riemann', 'definite-integral-substitution', 'integral-estimate'],
+      lessonIds: ['newton-leibniz', 'riemann', 'definite-integral-substitution', 'improper-integral', 'integral-estimate'],
       practiceTopics: ['integral-basic'],
       exercises: [
         {
@@ -220,7 +220,7 @@ export const CALCULUS_COURSE: Course = {
         '掌握隐函数求导与梯度',
         '会用拉格朗日乘数法',
       ],
-      lessonIds: ['multivar-chain', 'multivar-differentiability', 'implicit-diff', 'directional-derivative', 'multivar-extrema', 'lagrange'],
+      lessonIds: ['multivar-chain', 'multivar-differentiability', 'implicit-diff', 'directional-derivative', 'multivar-extrema', 'tangent-plane', 'lagrange'],
       practiceTopics: ['function-property', 'conic-sections'],
       exercises: [
         {
@@ -243,7 +243,7 @@ export const CALCULUS_COURSE: Course = {
         '掌握三重积分的坐标选择',
         '会算重积分应用',
       ],
-      lessonIds: ['double-integral-order', 'double-integral-symmetry', 'triple-integral'],
+      lessonIds: ['double-integral-order', 'double-integral-symmetry', 'triple-integral', 'multi-integral-applications'],
       practiceTopics: ['integral-basic', 'conic-sections'],
       exercises: [
         {
@@ -266,7 +266,7 @@ export const CALCULUS_COURSE: Course = {
         '会用格林公式',
         '会用高斯公式算通量',
       ],
-      lessonIds: ['line-integral', 'green-formula', 'surface-integral-gauss'],
+      lessonIds: ['line-integral', 'green-formula', 'surface-integral-gauss', 'stokes-formula'],
       practiceTopics: ['integral-basic'],
       exercises: [
         {
@@ -289,7 +289,7 @@ export const CALCULUS_COURSE: Course = {
         '掌握幂级数收敛半径',
         '会算傅里叶系数',
       ],
-      lessonIds: ['series-test', 'series-sum', 'power-series-domain', 'fourier-series', 'taylor', 'taylor-table', 'recurrence-general-term'],
+      lessonIds: ['series-test', 'series-sum', 'power-series-domain', 'power-series-expansion', 'fourier-series', 'taylor', 'taylor-table', 'recurrence-general-term'],
       practiceTopics: ['series-convergence', 'sequence-recurrence'],
       exercises: [
         {
