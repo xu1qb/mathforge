@@ -1339,7 +1339,11 @@ export default function PracticePage() {
                           onChange={setUserAnswer}
                           onKeyDown={handleKeyDown}
                           label="你的答案"
-                          placeholder={currentTopic.answerPlaceholder}
+                          placeholder={
+                            question.answer.trim().startsWith('[[')
+                              ? '矩阵请按 [[1,2],[3,4]] 输入'
+                              : currentTopic.answerPlaceholder
+                          }
                           disabled={isChecked}
                           showPalette
                           topicKey={activeTopic}

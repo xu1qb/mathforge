@@ -1679,6 +1679,38 @@ export function generatePracticeQuestion(topicKey: string, difficulty: Difficult
  * 检查用户答案是否正确
  * 返回 { correct: boolean, normalizedAnswer: string }
  */
+/** 解析用户与标准答案的矩阵写法，元素逐一比较；无法解析时返回 null */
+function parseMatrixAnswer(correctRaw: string, userRaw: string): boolean | null {
+  const toArray = (raw: string): number[][] | null => {
+    try {
+      const val = evaluate(raw) as unknown;
+      const arr = Array.isArray(val)
+        ? val
+        : val && typeof (val as { toArray?: () => unknown }).toArray === 'function'
+          ? (val as { toArray: () => unknown }).toArray()
+          : null;
+      if (!Array.isArray(arr) || arr.length === 0) return null;
+      const rows = arr.map((r) => (Array.isArray(r) ? r.map(Number) : [Number(r)]));
+      if (rows.some((r) => r.some((v) => !Number.isFinite(v)))) return null;
+      return rows;
+    } catch {
+      return null;
+    }
+  };
+  const a = toArray(correctRaw);
+  const b = toArray(userRaw);
+  if (!a || !b) return null;
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i].length !== b[i].length) return false;
+    for (let j = 0; j < a[i].length; j++) {
+      const diff = Math.abs(a[i][j] - b[i][j]);
+      if (diff > 1e-6 * Math.max(1, Math.abs(a[i][j]))) return false;
+    }
+  }
+  return true;
+}
+
 export function checkPracticeAnswer(
   question: PracticeQuestion,
   userAnswer: string,
@@ -1686,6 +1718,16 @@ export function checkPracticeAnswer(
   const userNorm = normalizeMathInput(userAnswer.trim());
 
   if (!userNorm) return { correct: false, message: '请输入答案' };
+
+  // 矩阵型答案：写成 [[a,b],[c,d]]，逐元素比较
+  if (/^\s*\[/.test(question.answer.trim())) {
+    const parsed = parseMatrixAnswer(question.answer, userNorm);
+    if (parsed !== null) {
+      return parsed
+        ? { correct: true, message: '回答正确！' }
+        : { correct: false, message: '矩阵元素不匹配，请检查每个位置' };
+    }
+  }
 
   // 数值型答案
   if (question.answerType === 'numeric') {

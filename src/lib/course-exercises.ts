@@ -9,6 +9,12 @@ const LEVEL_TO_DIFF = { 基础: 'basic', 进阶: 'advanced', 竞赛: 'competitio
 /** LaTeX 答案转成判分器能比对的纯文本 */
 function toPlainAnswer(src: string): string {
   let s = src.replace(/^\$+|\$+$/g, '').trim();
+  // 矩阵：\\begin{pmatrix}a&b\\c&d\\end{pmatrix} 转成 [[a,b],[c,d]]
+  s = s.replace(/\\begin\{pmatrix\}([\s\S]*?)\\end\{pmatrix\}/g, (_m, body: string) => {
+    const rows = String(body).split('\\\\');
+    const cells = rows.map((row) => '[' + row.split('&').map((x) => x.trim()).join(',') + ']');
+    return '[' + cells.join(',') + ']';
+  });
   // 分数：\dfrac{a}{b} / \frac{a}{b} → (a)/(b)
   for (let i = 0; i < 4; i++) {
     s = s.replace(/\\d?frac\{([^{}]*)\}\{([^{}]*)\}/g, '(($1)/($2))');

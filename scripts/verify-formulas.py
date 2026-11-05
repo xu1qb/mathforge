@@ -133,6 +133,20 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 现代数学课程 ----
+_nint, _mint = sp.symbols('nint mint', integer=True)
+chk('自然数与偶数等势（2n=2m 只能推出 n=m）',
+    sp.solve(sp.Eq(2 * _nint, 2 * _mint), _nint) == [_mint])
+chk('模六加法群中 2 的阶为 3',
+    (2 * 3) % 6 == 0 and (2 * 1) % 6 != 0 and (2 * 2) % 6 != 0)
+chk('立方体欧拉示性数 8-12+6=2', 8 - 12 + 6 == 2)
+chk('可数集测度为零（可列个零之和为零）',
+    sp.summation(sp.Integer(0), (sp.Symbol('k', integer=True), 1, sp.oo)) == 0)
+chk('均匀硬币的香农熵为 1 比特', sp.log(sp.Rational(1, 2), 2) * -1 == 1)
+chk('一百以内素数个数为 25', len([n for n in range(2, 101) if sp.isprime(n)]) == 25)
+chk('线性规划 max x+y（x≤2, y≤3）为 5', 2 + 3 == 5)
+chk('RSA 取 p=3,q=11,e=3 时 d=7（3·7≡1 mod 20）', (3 * 7) % 20 == 1)
+
 # ---- 概率统计课程 ----
 chk('P(A)=0.5, P(B|A)=0.4 → P(AB)=0.2',
     sp.Rational(1, 2) * sp.Rational(2, 5) == sp.Rational(1, 5))
