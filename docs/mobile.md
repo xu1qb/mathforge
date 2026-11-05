@@ -6,6 +6,9 @@
 
 包名 `com.mathforge.app`，minSdk 24（Android 7.0+），targetSdk 34。
 
+> **状态：已真机验证通过（2026-11-05）**。白屏问题（file:// 下 ES module 被 CORS 拦截）已修复，
+> 现在改用应用内本地 HTTP 服务托管 assets，加载失败也会显示错误原因而不是白屏。
+
 ## 二、怎么装的
 
 1. 把 APK 传到手机（AirDrop / 微信文件 / USB 都行）

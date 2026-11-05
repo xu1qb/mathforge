@@ -209,6 +209,18 @@ export default function PracticePage() {
   // 各知识点做题统计
   const statsByTopic = stats.topics;
 
+  // 当前知识点的历史正确率 → 给难度建议
+  const topicStat = statsByTopic[activeTopic];
+  const topicAccuracy = topicStat && topicStat.attempts > 0 ? topicStat.correct / topicStat.attempts : null;
+  const difficultyHint =
+    topicAccuracy === null || (topicStat?.attempts ?? 0) < 2
+      ? null
+      : topicAccuracy >= 0.85 && difficulty !== 'competition'
+        ? { text: '正确率 ' + Math.round(topicAccuracy * 100) + '%，可以试试' + (difficulty === 'basic' ? '进阶' : '竞赛') + '了', next: (difficulty === 'basic' ? 'advanced' : 'competition') as Difficulty, label: difficulty === 'basic' ? '切到进阶' : '切到竞赛' }
+        : topicAccuracy <= 0.5 && difficulty !== 'basic'
+          ? { text: '正确率 ' + Math.round(topicAccuracy * 100) + '%，先打牢基础更稳', next: 'basic' as Difficulty, label: '切到基础' }
+          : null;
+
   // 初始加载连胜记录
   useEffect(() => {
     try {
@@ -986,6 +998,34 @@ export default function PracticePage() {
                   {fillJob ? `补题中 ${fillJob.filled}/${fillJob.target}` : '补题'}
                 </button>
               </div>
+
+              {topicAccuracy !== null && (
+                <div className="flex items-center gap-1.5 text-xs">
+                  <span className="text-muted-foreground">
+                    本知识点正确率
+                    <span
+                      className={
+                        topicAccuracy >= 0.8
+                          ? 'ml-1 font-medium text-emerald-600'
+                          : topicAccuracy >= 0.5
+                            ? 'ml-1 font-medium text-amber-600'
+                            : 'ml-1 font-medium text-rose-500'
+                      }
+                    >
+                      {Math.round(topicAccuracy * 100)}%
+                    </span>
+                    <span className="ml-1 opacity-60">（{topicStat?.attempts} 题）</span>
+                  </span>
+                  {difficultyHint && (
+                    <button
+                      onClick={() => setDifficulty(difficultyHint.next)}
+                      className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-emerald-700 hover:bg-emerald-500/20 dark:text-emerald-400"
+                    >
+                      {difficultyHint.label}
+                    </button>
+                  )}
+                </div>
+              )}
 
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">答题模式：</span>
