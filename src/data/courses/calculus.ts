@@ -59,7 +59,7 @@ export const CALCULUS_COURSE: Course = {
         '掌握链式法则',
         '会做隐函数与参数方程求导',
       ],
-      lessonIds: ['derivative-rules'],
+      lessonIds: ['derivative-rules', 'higher-derivative'],
       practiceTopics: ['derivative-basic'],
       exercises: [
         {
@@ -105,7 +105,7 @@ export const CALCULUS_COURSE: Course = {
         '会做换元积分',
         '知道什么时候拆成部分分式',
       ],
-      lessonIds: ['byparts'],
+      lessonIds: ['byparts', 'integration-substitution', 'rational-integral'],
       practiceTopics: ['integral-basic'],
       exercises: [
         {
@@ -174,7 +174,7 @@ export const CALCULUS_COURSE: Course = {
         '掌握二阶常系数方程',
         '会做可降阶与欧拉方程',
       ],
-      lessonIds: ['linear-ode', 'second-order-ode', 'reducible-ode'],
+      lessonIds: ['separable-ode', 'linear-ode', 'second-order-ode', 'reducible-ode'],
       practiceTopics: ['ode-solving'],
       exercises: [
         {
@@ -220,7 +220,7 @@ export const CALCULUS_COURSE: Course = {
         '掌握隐函数求导与梯度',
         '会用拉格朗日乘数法',
       ],
-      lessonIds: ['multivar-differentiability', 'implicit-diff', 'directional-derivative', 'lagrange'],
+      lessonIds: ['multivar-chain', 'multivar-differentiability', 'implicit-diff', 'directional-derivative', 'multivar-extrema', 'lagrange'],
       practiceTopics: ['function-property', 'conic-sections'],
       exercises: [
         {

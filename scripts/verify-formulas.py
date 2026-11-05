@@ -62,6 +62,24 @@ chk('单位圆面积 = (1/2)∮(x dy - y dx) = π',
             (_theta, 0, 2 * sp.pi))
         - sp.pi) == 0)
 
+# ---- 新补讲解（高阶导/换元/可分离/有理函数/链式/极值） ----
+chk("(x^3)'' = 6x", sp.diff(x**3, x, 2) == 6 * x)
+chk('int 2x cos(x^2) dx = sin(x^2)',
+    sp.simplify(sp.integrate(2 * x * sp.cos(x**2), x) - sp.sin(x**2)) == 0)
+chk("y=e^(x^2) 满足 y'=2xy 且 y(0)=1",
+    sp.simplify(sp.diff(sp.exp(x**2), x) - 2 * x * sp.exp(x**2)) == 0)
+chk('int 1/(x^2-1) dx = (1/2)ln|(x-1)/(x+1)|',
+    sp.simplify(
+        sp.diff(sp.Rational(1, 2) * sp.log((x - 1) / (x + 1)), x) - 1 / (x**2 - 1)) == 0)
+_xx, _yy = sp.symbols('xx yy', real=True)
+_f2 = _xx**2 + _xx * _yy + _yy**2
+chk('f=x^2+xy+y^2 在原点取极小（判别式 3>0，f_xx=2>0）',
+    sp.simplify(sp.diff(_f2, _xx, 2) * sp.diff(_f2, _yy, 2) - sp.diff(_f2, _xx, _yy)**2) == 3
+    and sp.diff(_f2, _xx, 2) == 2)
+_tt = sp.symbols('tt', real=True)
+chk('链式法则：z=x^2 y, x=t, y=t^2 → dz/dt=4t^3',
+    sp.simplify(sp.diff((_tt**2) * (_tt**2), _tt) - 4 * _tt**3) == 0)
+
 # ---- 定积分应用与曲面积分 ----
 chk('上半单位圆绕 x 轴旋转体体积 = 4π/3',
     sp.simplify(sp.pi * sp.integrate(1 - x**2, (x, -1, 1)) - 4 * sp.pi / 3) == 0)
