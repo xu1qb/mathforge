@@ -31,6 +31,21 @@ chk('lim(e^x - 1 - x)/x^2 = 1/2',
     sp.limit((sp.exp(x) - 1 - x) / x**2, x, 0) == sp.Rational(1, 2))
 chk('lim(sin n)/n = 0', sp.limit(sp.sin(n) / n, n, sp.oo) == 0)
 
+
+# ---- 概率：中心极限与估计 ----
+_p, _n = sp.Rational(1, 2), 100
+chk('二项 B(100, 1/2) 的标准差为 5',
+    sp.sqrt(_n * _p * (1 - _p)) == 5)
+_u = sp.Symbol('u', real=True)
+chk('均匀分布 U(0,1) 的方差为 1/12',
+    sp.simplify(sp.integrate((_u - sp.Rational(1, 2))**2, (_u, 0, 1)) - sp.Rational(1, 12)) == 0)
+_v = sp.Symbol('v', positive=True)
+chk('指数分布 Exp(2) 的方差为 1/4',
+    sp.simplify(
+        sp.integrate((_v - sp.Rational(1, 2))**2 * 2 * sp.exp(-2 * _v), (_v, 0, sp.oo)) - sp.Rational(1, 4)) == 0)
+chk('指数分布 Exp(2) 的均值为 1/2',
+    sp.simplify(sp.integrate(_v * 2 * sp.exp(-2 * _v), (_v, 0, sp.oo)) - sp.Rational(1, 2)) == 0)
+
 # ---- 曲线积分与三重积分 ----
 _t = sp.symbols('t', real=True)
 _rho, _phi, _theta = sp.symbols('rho varphi theta', positive=True)
