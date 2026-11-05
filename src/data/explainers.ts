@@ -698,10 +698,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '正定等价于顺序主子式全正，也等价于对称矩阵特征值全正；只判正定用主子式，要标准形时用特征值。',
+    definition:
+      '二次型正定指对任意非零向量取值都为正。判据是矩阵的所有顺序主子式都为正，或所有特征值为正。',
     whenToUse: [
       '判断二次型是否正定',
       '求参数范围使二次型正定',
       '化标准形、求惯性指数',
+    ],
+    theorems: [
+      {
+        name: '顺序主子式判据',
+        statement: '对称矩阵正定当且仅当所有顺序主子式大于零。',
+        formula: '\\Delta_k>0\\;\\forall k',
+      },
+      {
+        name: '特征值判据',
+        statement: '正定等价于所有特征值为正。',
+      },
     ],
     steps: [
       {
@@ -723,6 +736,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '配方法',
         body: '化成平方和，正平方项的个数就是正惯性指数。',
       },
+      {
+        title: '验顺序主子式',
+        body: '全部顺序主子式为正才正定。',
+      },
+    ],
+    pitfalls: [
+      '只验行列式：所有顺序主子式都要验。',
+      '半正当正定：存在非零向量取零值时为半正定。',
+      '非对称矩阵套用：判据针对对称矩阵。',
     ],
     example: {
       problem: 'f = x₁² + 2x₂² + 3x₃² + 2x₁x₂，判断它是否正定。',
@@ -732,7 +754,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '顺序主子式全正，所以正定。',
       ],
       result: '\\Delta_{1}=1,\\ \\Delta_{2}=1,\\ \\Delta_{3}=3',
-    },
+    },    moreExamples: [
+      {
+        problem: '判断 x 方加二 x y 加二 y 方是否正定。',
+        walkthrough: [
+          '一阶主子式为一。',
+          '二阶行列式为一。',
+          '都为正，因此正定。',
+        ],
+        result: '\\text{positive definite}',
+      },
+    ],
+
   },
   {
     id: 'bayes',
@@ -1442,10 +1475,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '特征值解 |λE−A| = 0，特征向量解 (λE−A)x = 0；凑够 n 个线性无关的特征向量，A 就能写成 PΛP⁻¹，幂运算随之变简单。',
+    definition:
+      '矩阵可对角化，指存在可逆矩阵使其相似于对角矩阵。判据是有 n 个线性无关的特征向量，实对称矩阵一定满足。',
     whenToUse: [
       '求矩阵的特征值与特征向量',
       '判断矩阵能否相似对角化',
       '求 A 的高次幂或矩阵函数',
+    ],
+    theorems: [
+      {
+        name: '可对角化判据',
+        statement: 'n 阶矩阵可对角化当且仅当每个特征值的几何重数等于代数重数。',
+        formula: 'A\\sim\\Lambda',
+      },
+      {
+        name: '实对称矩阵',
+        statement: '实对称矩阵必可正交对角化，特征向量可取得两两正交。',
+      },
     ],
     steps: [
       {
@@ -1473,6 +1519,11 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         formula: 'A^{n}=P\\Lambda^{n}P^{-1}',
       },
     ],
+    pitfalls: [
+      '重根直接判可对角化：要看特征向量个数。',
+      '特征向量不独立：凑够 n 个独立向量才行。',
+      '把相似当相等：对角化是相似变换。',
+    ],
     example: {
       problem: 'A = [[2,1],[1,2]]，求 Aⁿ。',
       walkthrough: [
@@ -1483,7 +1534,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
       ],
       result:
         'A^{n}=\\frac{1}{2}\\begin{pmatrix}3^{n}+1 & 3^{n}-1\\\\ 3^{n}-1 & 3^{n}+1\\end{pmatrix}',
-    },
+    },    moreExamples: [
+      {
+        problem: '二、一、一、二 是否可对角化。',
+        walkthrough: [
+          '两个特征值不同。',
+          '不同特征值的特征向量线性无关。',
+          '因此可对角化。',
+        ],
+        result: '\\text{yes}',
+      },
+    ],
+
   },
   {
     id: 'function-of-rv',
@@ -4726,10 +4788,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '二次型是二次齐次多项式，写成 xᵀAx 后，通过配方法或正交变换化标准形；正负惯性指数决定它的形状。',
+    definition:
+      '二次型是二次齐次多项式，可用对称矩阵表示。化简二次型就是通过可逆线性变换把它变成只含平方项的标准形。',
     whenToUse: [
       '化二次型为标准形',
       '判断二次型是否正定',
       '求曲面类型（椭圆、双曲）',
+    ],
+    theorems: [
+      {
+        name: '矩阵表示',
+        statement: '二次型与对称矩阵一一对应，矩阵元素取交叉项系数的一半。',
+        formula: 'f=x^{T}Ax',
+      },
+      {
+        name: '标准形',
+        statement: '任何实二次型都可通过正交变换化为对角形。',
+      },
     ],
     steps: [
       {
@@ -4750,6 +4825,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '所有特征值大于零，或全部顺序主子式大于零。',
         formula: '\\lambda_{i}>0',
       },
+      {
+        title: '交叉项除二',
+        body: '写矩阵时交叉项系数要除以二。',
+      },
+    ],
+    pitfalls: [
+      '交叉项系数忘除二：矩阵元素是系数的一半。',
+      '矩阵不对称：二次型矩阵必须对称。',
+      '变换不可逆：合同变换要求可逆。',
     ],
     example: {
       problem: '判断 f = x₁² + 2x₁x₂ + 2x₂² 是否正定。',
@@ -4760,7 +4844,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '配方验证：f = (x₁ + x₂)² + x₂²，两项平方和。',
       ],
       result: '\\lambda_{1}>0,\\ \\lambda_{2}>0',
-    },
+    },    moreExamples: [
+      {
+        problem: '写出 x 方加二 x y 加 y 方的矩阵。',
+        walkthrough: [
+          '对角元取平方项系数。',
+          '交叉项系数一半放在非对角。',
+        ],
+        result: '\\begin{pmatrix}1&1\\\\1&1\\end{pmatrix}',
+      },
+    ],
+
   },
 
   {
@@ -4998,10 +5092,22 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '不能对角化的矩阵仍能化成「对角块 + 上三角 $1$」的若尔当标准形；差别就在于这些 $1$ 记录了广义特征向量的层次。',
+    definition:
+      '不能对角化的矩阵可以化成若尔当标准形：对角线上是特征值，上对角线上是零或一。它刻画了矩阵在相似意义下的最简结构。',
     whenToUse: [
       '处理不可对角化的矩阵',
       '计算矩阵的幂与指数函数',
       '理解重特征值对应的几何重数不足',
+    ],
+    theorems: [
+      {
+        name: '若尔当标准形',
+        statement: '任意复矩阵都相似于若尔当标准形，且不计块次序时唯一。',
+      },
+      {
+        name: '块数与几何重数',
+        statement: '同一特征值的若尔当块个数等于其几何重数。',
+      },
     ],
     steps: [
       {
@@ -5021,6 +5127,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '用途',
         body: '若尔当形让矩阵幂和 $e^{At}$ 变得可算，是解线性微分方程组的工具。',
       },
+      {
+        title: '不能对角化看块',
+        body: '缺陷矩阵用若尔当标准形，块数等于几何重数。',
+      },
+    ],
+    pitfalls: [
+      '以为所有矩阵都能对角化：缺陷矩阵只能到若尔当形。',
+      '块次序纠结：标准形在不计次序意义下唯一。',
+      '几何重数算错：等于特征空间的维数。',
     ],
     example: {
       problem: '说明 $A=\\begin{pmatrix}1&1\\\\0&1\\end{pmatrix}$ 的若尔当标准形。',
@@ -5031,7 +5146,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '它的若尔当块就是 $J_{2}(1)=\\begin{pmatrix}1&1\\\\0&1\\end{pmatrix}$ 本身。',
       ],
       result: 'J_{2}(1)',
-    },
+    },    moreExamples: [
+      {
+        problem: '二阶矩阵只有一个特征值且特征空间维数为一，若尔当块是几阶。',
+        walkthrough: [
+          '几何重数为一。',
+          '因此只有一个块。',
+          '块为二阶。',
+        ],
+        result: 'J_{2}',
+      },
+    ],
+
   },
   {
     id: 'inertia-theorem',
@@ -5040,10 +5166,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '二次型用不同的可逆替换化标准形，系数会变，但正平方项和负平方项的个数——正负惯性指数——永远不变。',
+    definition:
+      '惯性定理说二次型的标准形中正负平方项的个数是合同不变量，分别叫正负惯性指数，与所用的可逆变换无关。',
     whenToUse: [
       '判断二次型的类型（正定、负定、不定）',
       '比较两个二次型是否合同',
       '求二次型的秩与符号差',
+    ],
+    theorems: [
+      {
+        name: '惯性定理',
+        statement: '实二次型的正负惯性指数在可逆线性变换下不变。',
+        formula: 'p+q=r',
+      },
+      {
+        name: '合同分类',
+        statement: '两个实对称矩阵合同当且仅当正负惯性指数相同。',
+      },
     ],
     steps: [
       {
@@ -5065,6 +5204,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '正定判据',
         body: '$p=n$ 即全为正平方项，二次型正定。',
       },
+      {
+        title: '指数数个数',
+        body: '正负惯性指数数的是平方项的个数。',
+      },
+    ],
+    pitfalls: [
+      '把系数当惯性指数：惯性指数数的是项的个数。',
+      '变换后指数变化：惯性指数是合同不变量。',
+      '秩与指数混：秩等于正负指数之和。',
     ],
     example: {
       problem: '求 $f=x^{2}-y^{2}$ 的正负惯性指数与秩。',
@@ -5075,7 +5223,17 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '既有正又有负，属于不定二次型。',
       ],
       result: 'p=1,\\ q=1,\\ r=2',
-    },
+    },    moreExamples: [
+      {
+        problem: 'x 方减 y 方的正负惯性指数。',
+        walkthrough: [
+          '正项一个。',
+          '负项一个。',
+        ],
+        result: 'p=1,\\,q=1',
+      },
+    ],
+
   },
 
   {
@@ -5434,10 +5592,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '基础',
     essence:
       '特征值之和等于迹，之积等于行列式；不同特征值对应的特征向量一定线性无关，这两条能省掉大量计算。',
+    definition:
+      '特征值满足迹等于和、行列式等于积；不同特征值的特征向量线性无关；实对称矩阵不同特征值的特征向量正交。',
     whenToUse: [
       '已知部分特征值反求另一个',
       '快速检查算出的特征值对不对',
       '判断特征向量组是否线性无关',
+    ],
+    theorems: [
+      {
+        name: '迹与行列式',
+        statement: '特征值之和等于迹，之积等于行列式。',
+        formula: '\\sum\\lambda_i=\\operatorname{tr}A,\\quad\\prod\\lambda_i=\\det A',
+      },
+      {
+        name: '正交性',
+        statement: '实对称矩阵属于不同特征值的特征向量互相正交。',
+      },
     ],
     steps: [
       {
@@ -5459,6 +5630,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '$A^{k}$ 的特征值是 $\\lambda_{i}^{k}$，$f(A)$ 是 $f(\\lambda_{i})$。',
         formula: '\\lambda(A^{k})=\\lambda^{k}',
       },
+      {
+        title: '迹与行列式速查',
+        body: '特征值之和等于迹、之积等于行列式，可快速校验。',
+      },
+    ],
+    pitfalls: [
+      '迹当行列式：一个是和一个是积。',
+      '同特征值的向量也当正交：只对不同特征值成立。',
+      '复特征值忽略：实矩阵也可能有复特征值。',
     ],
     example: {
       problem: '$A$ 是三阶矩阵，特征值为 $1,2,x$，且 $|A|=24$，求 $x$。',
@@ -5468,7 +5648,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '顺便可得迹 $=1+2+12=15$，等于对角元之和。',
       ],
       result: 'x=12',
-    },
+    },    moreExamples: [
+      {
+        problem: '二阶矩阵迹为二、行列式为负三，求特征值。',
+        walkthrough: [
+          '特征值之和为二。',
+          '之积为负三。',
+          '解二次方程得三与负一。',
+        ],
+        result: '3,\\,-1',
+      },
+    ],
+
   },
   {
     id: 'matrix-power',
@@ -5477,10 +5668,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '把矩阵对角化成 $A=P\\Lambda P^{-1}$ 后，$A^{k}=P\\Lambda^{k}P^{-1}$，而对角阵的幂只是对角元取幂。',
+    definition:
+      '求矩阵的高次幂，通常先对角化：把矩阵写成相似变换形式，幂就变成对角元的幂，再乘回去。',
     whenToUse: [
       '求矩阵的高次幂',
       '分析马尔可夫链的长期行为',
       '求递推数列的通项',
+    ],
+    theorems: [
+      {
+        name: '对角化求幂',
+        statement: '若矩阵可对角化，则它的 n 次幂等于相似变换矩阵乘对角元 n 次幂再乘逆。',
+        formula: 'A^{n}=P\\Lambda^{n}P^{-1}',
+      },
+      {
+        name: '若尔当块求幂',
+        statement: '不可对角化时用若尔当块，幂次由二项式展开给出。',
+      },
     ],
     steps: [
       {
@@ -5502,6 +5706,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '极限行为',
         body: '$|\\lambda_{i}|<1$ 的项随 $k$ 趋于零，主导项由最大特征值决定。',
       },
+      {
+        title: '对角化后求幂',
+        body: 'A 的 n 次幂等于 P 乘对角元 n 次幂再乘 P 逆。',
+      },
+    ],
+    pitfalls: [
+      '忘记乘回逆矩阵：只算了对角部分。',
+      '特征值幂次算错：对角元逐个取幂。',
+      '不可对角化硬套：需要若尔当形。',
     ],
     example: {
       problem: '已知 $A=\\begin{pmatrix}2&1\\\\1&2\\end{pmatrix}$ 可对角化，特征值为 $3,1$，求 $A^{k}$ 的主导项。',
@@ -5512,7 +5725,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '$k$ 很大时由 $3^{k}$ 主导。',
       ],
       result: 'A^{k}=\\tfrac{1}{2}\\begin{pmatrix}3^{k}+1&3^{k}-1\\\\3^{k}-1&3^{k}+1\\end{pmatrix}',
-    },
+    },    moreExamples: [
+      {
+        problem: '求一、一、零、一 的三次幂。',
+        walkthrough: [
+          '矩阵是单位阵加幂零阵。',
+          '幂零项三次以上为零。',
+          '展开得结果。',
+        ],
+        result: '\\begin{pmatrix}1&3\\\\0&1\\end{pmatrix}',
+      },
+    ],
+
   },
   {
     id: 'orthogonal-diagonalization',
@@ -5521,10 +5745,23 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '二次型矩阵是对称阵，一定能被正交矩阵对角化；标准形的系数就是特征值，且变换保持长度。',
+    definition:
+      '实对称矩阵可用正交矩阵对角化：先求特征值与特征向量，重特征值的向量做施密特正交化，再单位化拼成正交矩阵。',
     whenToUse: [
       '化二次型为标准形且要求变换是正交的',
       '判断二次型类型（看特征值符号）',
       '求曲面主轴方向',
+    ],
+    theorems: [
+      {
+        name: '正交对角化',
+        statement: '实对称矩阵存在正交矩阵 Q 使其对角化。',
+        formula: 'Q^{T}AQ=\\Lambda',
+      },
+      {
+        name: '谱定理',
+        statement: '实对称矩阵的特征值全为实数，特征向量可取得标准正交。',
+      },
     ],
     steps: [
       {
@@ -5545,6 +5782,15 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '写标准形',
         body: '令 $x=Qy$，二次型化为 $\\lambda_{1}y_{1}^{2}+\\cdots+\\lambda_{n}y_{n}^{2}$。',
       },
+      {
+        title: '重根先正交化',
+        body: '同一特征值的特征向量若不正交，先做施密特。',
+      },
+    ],
+    pitfalls: [
+      '重特征值忘记正交化：同特征值的向量未必正交。',
+      '忘记单位化：正交矩阵要求列向量模长为一。',
+      '顺序不一致：特征值与特征向量要对应。',
     ],
     example: {
       problem: '用正交变换化 $f=2x_{1}^{2}+2x_{2}^{2}+2x_{1}x_{2}$ 为标准形。',
@@ -5555,7 +5801,18 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '标准形为 $3y_{1}^{2}+y_{2}^{2}$，正定。',
       ],
       result: 'f=3y_{1}^{2}+y_{2}^{2}',
-    },
+    },    moreExamples: [
+      {
+        problem: '把二、一、一、二 正交对角化后对角元是什么。',
+        walkthrough: [
+          '特征值为三与负一。',
+          '实对称矩阵可正交对角化。',
+          '对角元即特征值。',
+        ],
+        result: '3,\\,-1',
+      },
+    ],
+
   },
   {
     id: 'rayleigh-quotient',
