@@ -133,6 +133,53 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 力学、运筹学与生物数学课程 ----
+chk('F=ma：质量 3、加速度 2 时合力为 6', 6 - 3 * 2 == 0)
+chk('动量守恒：两物完全非弹性碰撞后共速（1×2+1×0=2×v）',
+    sp.solve(sp.Eq(1 * 2 + 1 * 0, 2 * sp.Symbol('v')), sp.Symbol('v')) == [1])
+chk('平行轴定理：细杆绕端点 I=ml²/3，绕中心 ml²/12',
+    sp.simplify(sp.Rational(1, 3) - (sp.Rational(1, 12) + sp.Rational(1, 4))) == 0)
+chk('线性规划：x≤2、y≤3 时 x+y 最大值为 5', 2 + 3 == 5)
+chk('弱对偶：原问题可行值 3 不超过对偶可行值 5（LP：max x, x≤5）', 3 <= 5)
+def _max_flow(cap, s, t):
+    # Edmonds-Karp，cap 为邻接字典
+    from collections import deque
+    res = {u: dict(v) for u, v in cap.items()}
+    flow = 0
+    while True:
+        prev, q = {}, deque([s])
+        while q:
+            u = q.popleft()
+            for v, c in res.get(u, {}).items():
+                if c > 0 and v not in prev:
+                    prev[v] = u
+                    q.append(v)
+        if t not in prev:
+            return flow
+        # 找瓶颈
+        path, v, b = [], t, float('inf')
+        while v != s:
+            u = prev[v]
+            b = min(b, res[u][v])
+            path.append((u, v))
+            v = u
+        for u, v in path:
+            res[u][v] -= b
+            res.setdefault(v, {})
+            res[v][u] = res[v].get(u, 0) + b
+        flow += b
+
+_cap = {'s': {'a': 3, 'b': 2}, 'a': {'t': 2}, 'b': {'t': 3}, 't': {}}
+chk('最大流最小割：四节点网络最大流为 4', _max_flow(_cap, 's', 't') == 4)
+chk('逻辑斯蒂：种群等于容量时增长率为 0（r·N(1-N/K)）',
+    sp.simplify(sp.Symbol('r', positive=True) * 5 * (1 - sp.Rational(5, 5))) == 0)
+chk('SIR：R0 = β/γ，β=0.4、γ=0.2 时 R0=2',
+    sp.Rational(4, 10) / sp.Rational(2, 10) == 2)
+chk('米氏方程：S=Km 时速率为最大速率的一半',
+    sp.simplify(sp.Symbol('V', positive=True) * sp.Symbol('K', positive=True)
+                / (sp.Symbol('K', positive=True) + sp.Symbol('K', positive=True))
+                - sp.Symbol('V', positive=True) / 2) == 0)
+
 # ---- 量子数学与机器学习理论课程 ----
 chk('CHSH：量子最大值 2√2 超过经典界 2',
     sp.simplify(2 * sp.sqrt(2) - 2) > 0)

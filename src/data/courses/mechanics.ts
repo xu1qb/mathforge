@@ -1,0 +1,96 @@
+import type { Course } from './types';
+
+export const MECHANICS_COURSE: Course = {
+  id: 'mechanics',
+  title: '力学',
+  tagline: '牛顿、能量与刚体转动',
+  textbook: { name: '力学（舒幼生） + Classical Mechanics（Taylor）', edition: '第 1 版 / 第 1 版' },
+  prerequisites: ['高等数学'],
+  hours: 32,
+  intro: {
+    what: '力学研究物体的运动与受力：牛顿定律给出动力学，能量与动量给出守恒律，刚体与拉格朗日方法处理复杂系统。',
+    objects: ['牛顿定律', '能量与动量', '刚体转动', '拉格朗日力学'],
+    history: ['17 世纪：牛顿建立经典力学', '18 世纪：拉格朗日与分析力学', '19 世纪：哈密顿力学'],
+  },
+  chapters: [
+    {
+      id: 'me-newton',
+      title: '牛顿力学',
+      textbookRef: '舒幼生 第 1 章 / Taylor 第 1 章',
+      summary: '力与加速度',
+      goals: ['画受力图', '写运动方程'],
+      lessonIds: ['newtonian-mechanics'],
+      practiceTopics: ['derivative-basic'],
+      exercises: [
+        {
+          id: 'me1-1',
+          level: '基础',
+          question: '恒定合力下质点做什么运动？',
+          answer: '匀加速直线运动',
+          hint: '加速度恒定。',
+          steps: ['基', '础'],
+        },
+      ],
+    },
+    {
+      id: 'me-energy',
+      title: '能量与动量',
+      textbookRef: '舒幼生 第 2 章 / Taylor 第 2 章',
+      summary: '守恒律',
+      goals: ['判断守恒', '联立求解'],
+      lessonIds: ['energy-momentum'],
+      practiceTopics: ['integral-basic'],
+      exercises: [
+        {
+          id: 'me2-1',
+          level: '进阶',
+          question: '完全非弹性碰撞后速度如何？',
+          answer: '总动量除以总质量',
+          hint: '动量守恒。',
+          steps: ['进', '阶'],
+        },
+      ],
+    },
+    {
+      id: 'me-rigid',
+      title: '刚体转动',
+      textbookRef: '舒幼生 第 3 章 / Taylor 第 3 章',
+      summary: '转动惯量与角动量',
+      goals: ['算转动惯量', '用转动定律'],
+      lessonIds: ['rigid-body-dynamics'],
+      practiceTopics: ['integral-basic'],
+      exercises: [
+        {
+          id: 'me3-1',
+          level: '进阶',
+          question: '细杆绕端点与绕中心哪个转动惯量大？',
+          answer: '绕端点更大',
+          hint: '质量分布更远。',
+          steps: ['进', '阶'],
+        },
+      ],
+    },
+    {
+      id: 'me-lagrange',
+      title: '拉格朗日力学',
+      textbookRef: '舒幼生 第 4 章 / Taylor 第 4 章',
+      summary: '能量方法',
+      goals: ['写拉格朗日量', '用欧拉-拉格朗日方程'],
+      lessonIds: ['lagrangian-mechanics'],
+      practiceTopics: ['ode-solving'],
+      exercises: [
+        {
+          id: 'me4-1',
+          level: '进阶',
+          question: '拉格朗日量等于什么？',
+          answer: 'T 减 V',
+          hint: '动能减势能。',
+          steps: ['进', '阶'],
+        },
+      ],
+    },
+  ],
+  applications: [{ title: '航天', scene: '工程', example: '轨道力学用牛顿力学。' }, { title: '机器人', scene: '工程', example: '刚体转动用于关节建模。' }],
+  crossings: [{ subject: '高等数学', relation: '力学方程是微分方程。', courseId: 'calculus' }, { subject: '数学物理', relation: '拉格朗日方法属于分析力学。', courseId: 'mathematical-physics' }],
+  toolPath: '/multivariable',
+};

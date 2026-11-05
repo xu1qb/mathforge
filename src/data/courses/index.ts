@@ -36,6 +36,9 @@ import { PROOF_THEORY_COURSE } from './proof-theory';
 import { DATA_SCIENCE_MATH_COURSE } from './data-science-math';
 import { QUANTUM_MATH_COURSE } from './quantum-math';
 import { MACHINE_LEARNING_THEORY_COURSE } from './ml-theory';
+import { MECHANICS_COURSE } from './mechanics';
+import { OPERATIONS_RESEARCH_COURSE } from './operations-research';
+import { MATHEMATICAL_BIOLOGY_COURSE } from './mathematical-biology';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -74,6 +77,9 @@ export const COURSES: Course[] = [
   DATA_SCIENCE_MATH_COURSE,
   QUANTUM_MATH_COURSE,
   MACHINE_LEARNING_THEORY_COURSE,
+  MECHANICS_COURSE,
+  OPERATIONS_RESEARCH_COURSE,
+  MATHEMATICAL_BIOLOGY_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {
