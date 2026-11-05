@@ -76,7 +76,7 @@ import {
   type PracticeQuestion,
   type Difficulty,
 } from '@/lib/math-practice';
-import { fetchQueue, fetchPool, fillPool, fetchPoolStatus, type AiQuestion, type FillJob } from '@/lib/ai-client';
+import { fetchQueue, fetchPool, fillPool, fetchPoolStatus, reviewQuestion, type AiQuestion, type FillJob } from '@/lib/ai-client';
 import { toast } from 'sonner';
 import { scopedStorage } from '@/lib/lark-mock';
 import { useWrongBook, useLearningStats, usePracticeSettings, useQuestionFavorites, WRONG_REASON_LABELS } from '@/hooks/use-learning';
@@ -1241,6 +1241,26 @@ export default function PracticePage() {
                            <RefreshCw className="size-4 mr-1.5" />
                            换一题
                          </Button>
+                         {aiEnabled && question && question.id.startsWith('ai-') && (
+                           <Button
+                             variant="ghost"
+                             size="sm"
+                             className="text-muted-foreground hover:text-destructive"
+                             title="题目或答案有问题？点一下让它下架"
+                             onClick={async () => {
+                               try {
+                                 await reviewQuestion(question.id, 'reject', '用户报错');
+                                 toast('已下架这道题，换一道新的');
+                                 newQuestion();
+                               } catch {
+                                 toast.error('报错失败，请稍后再试');
+                               }
+                             }}
+                           >
+                             <Flag className="size-4 mr-1.5" />
+                             报错
+                           </Button>
+                         )}
                          <Button
                            variant="ghost"
                            size="sm"
