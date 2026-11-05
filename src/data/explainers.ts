@@ -4648,10 +4648,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '素数越来越稀，但不会消失；素数定理说不超过 x 的素数大约有 x/ln x 个，欧拉乘积把这件事和 ζ 函数绑在一起。',
+    definition:
+      '素数计数函数统计不超过给定值的素数个数。素数定理说它与「该值除以其自然对数」之比的极限为一。',
     whenToUse: [
       '估计某范围内的素数个数',
       '理解 ζ 函数与素数的关系',
       '判断素数分布的稀疏速度',
+    ],
+    theorems: [
+      { name: '素数定理', statement: '素数计数与对数积分渐近。', formula: '\\pi(x)\\sim\\frac{x}{\\ln x}' },
+      { name: '欧拉乘积', statement: '黎曼 ζ 函数可写成素数的欧拉乘积。', },
     ],
     steps: [
       {
@@ -4678,6 +4684,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '更好的误差估计等价于 ζ 的非平凡零点都在临界线上，这正是黎曼假设。',
       },
     ],
+    pitfalls: ['把渐近当等式：只是比值趋于一。', '忽略误差项：实际计数有波动。', '用初等证明套用：需要复分析。'],
     example: {
       problem: '估计 1000 以内的素数个数，并与真值比较。',
       walkthrough: [
@@ -4687,7 +4694,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '这就是「素数定理是渐近式，不是等式」的含义。',
       ],
       result: '\\pi(1000)=168',
-    },
+    },    moreExamples: [{ problem: '一百以内的素数有多少个？', walkthrough: ['逐个筛去合数。', '共二十五个。'], result: '25' }],
+
   },
   {
     id: 'representation-theory',
@@ -4696,10 +4704,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '把抽象群元素映成可计算的矩阵，就是表示；特征标（矩阵的迹）是表示最轻量的指纹，正交关系用来分解表示。',
+    definition:
+      '群的表示是把群元素映成向量空间上的可逆线性变换，并保持乘法。特征标是表示的迹。',
     whenToUse: [
       '把对称性转成线性代数',
       '分解一个表示成不可约部分',
       '理解量子力学里的对称性',
+    ],
+    theorems: [
+      { name: '正交关系', statement: '不可约表示的特征标满足正交关系。', },
+      { name: '完备性', statement: '有限群的正则表示分解为不可约表示之直和。', },
     ],
     steps: [
       {
@@ -4721,7 +4735,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '不可约特征标彼此正交，可用来判断表示是否可约。',
         formula: '\\langle\\chi_{i},\\chi_{j}\\rangle=\\delta_{ij}',
       },
+      {
+        title: '先看维数',
+        body: '一维表示最容易构造，先从它入手理解表示与特征标。',
+      },
     ],
+    pitfalls: ['把表示当群同构：表示不必忠实。', '混淆特征标与表示：特征标是迹函数。', '忽略基域：复表示与实表示不同。'],
     example: {
       problem: '写出三阶循环群 Z₃ 的一维表示。',
       walkthrough: [
@@ -4731,7 +4750,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '三个一维表示的特征标互相正交。',
       ],
       result: '\\rho_{k}(g)=\\omega^{k},\\ \\omega=e^{2\\pi i/3}',
-    },
+    },    moreExamples: [{ problem: '一维表示对应什么矩阵？', walkthrough: ['一维空间上的线性变换。', '就是乘一个数。'], result: '数（1×1 矩阵）' }],
+
   },
   {
     id: 'option-pricing',
@@ -4740,10 +4760,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '期权的公允价格由「无套利 + 连续对冲」唯一确定；在风险中性测度下，折现后的价格是鞅，直接给出闭式公式。',
+    definition:
+      '期权定价给出衍生品的无套利价格。Black－Scholes 模型假设标的服从几何布朗运动，价格由偏微分方程或风险中性期望给出。',
     whenToUse: [
       '计算欧式期权理论价格',
       '理解对冲与风险中性',
       '分析希腊字母对价格的影响',
+    ],
+    theorems: [
+      { name: 'BS 方程', statement: '期权价格满足抛物型偏微分方程。', formula: '\\partial_t V+\\frac{1}{2}\\sigma^{2}S^{2}\\partial_{SS}V+rS\\partial_S V-rV=0' },
+      { name: '风险中性定价', statement: '价格等于风险中性测度下的折现期望。', },
     ],
     steps: [
       {
@@ -4770,6 +4796,7 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         body: '反解 σ：用市场价格倒推市场预期的波动率。',
       },
     ],
+    pitfalls: ['把模型价格当真实价格：假设过强。', '忽略波动率微笑：实际偏离常数波动率。', '忘记无套利前提：有套利时公式失效。'],
     example: {
       problem: 'S = 100、K = 100、r = 5%、σ = 20%、T = 1，求看涨期权价格。',
       walkthrough: [
@@ -4779,7 +4806,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         'C = 100×0.6368 − 100×e^(−0.05)×0.5596 ≈ 10.45。',
       ],
       result: 'C\\approx 10.45',
-    },
+    },    moreExamples: [{ problem: 'BS 模型中期权价格依赖哪些参数？', walkthrough: ['标的价格、执行价、期限、波动率、利率。'], result: '五个参数' }],
+
   },
   {
     id: 'lagrangian-mechanics',
@@ -4788,10 +4816,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '拉格朗日力学不写受力分析，只写动能减势能，再由欧拉–拉格朗日方程自动得到运动方程。',
+    definition:
+      '拉格朗日力学用动能减势能构造拉格朗日量，运动方程由变分原理给出，与牛顿力学等价但更易处理约束。',
     whenToUse: [
       '处理带约束的机械系统',
       '推导复杂系统的运动方程',
       '找守恒量与对称性的关系',
+    ],
+    theorems: [
+      { name: '欧拉－拉格朗日方程', statement: '作用量取极值给出运动方程。', formula: '\\frac{d}{dt}\\frac{\\partial L}{\\partial\\dot q}-\\frac{\\partial L}{\\partial q}=0' },
+      { name: '诺特定理', statement: '对称性对应守恒量。', },
     ],
     steps: [
       {
@@ -4812,7 +4846,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '对称性与守恒',
         body: 'L 不显含某个坐标，对应的广义动量守恒（诺特定理）。',
       },
+      {
+        title: '写广义坐标',
+        body: '先选独立广义坐标消去约束，再写动能与势能。',
+      },
     ],
+    pitfalls: ['把拉格朗日量当能量：它是动能减势能。', '忽略约束处理：广义坐标要选对。', '变分与普通极值混淆：是对函数求极值。'],
     example: {
       problem: '用拉格朗日方法推导单摆方程。',
       walkthrough: [
@@ -4822,7 +4861,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '化简得 θ̈ + (g/L) sinθ = 0。',
       ],
       result: '\\ddot{\\theta}+\\frac{g}{L}\\sin\\theta=0',
-    },
+    },    moreExamples: [{ problem: '拉格朗日量等于什么？', walkthrough: ['动能减势能。'], result: 'T 减 V' }],
+
   },
   {
     id: 'lotka-volterra',
@@ -4831,10 +4871,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '捕食者–猎物模型没有稳定焦点，而是绕平衡点转圈：数量此消彼长，周期由初始条件决定。',
+    definition:
+      '洛特卡－沃尔泰拉方程描述捕食者与猎物的相互作用：猎物增长被捕食抑制，捕食者增长依赖猎物。',
     whenToUse: [
       '解释种群数量的周期振荡',
       '求生态模型平衡点',
       '判断系统是否守恒',
+    ],
+    theorems: [
+      { name: '平衡点', statement: '两物种共存时存在非零平衡点。', },
+      { name: '周期轨道', statement: '经典模型中轨道围绕平衡点闭合。', },
     ],
     steps: [
       {
@@ -4856,7 +4902,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '周期与初值',
         body: '振幅由初始种群决定，系统没有阻尼。',
       },
+      {
+        title: '找平衡点',
+        body: '令两个导数同时为零，解出共存平衡与灭绝平衡。',
+      },
     ],
+    pitfalls: ['忽略参数范围：某些参数导致灭绝。', '把闭合轨道当稳定焦点。', '离散化后行为改变：数值方法可能失真。'],
     example: {
       problem: '取 a = 1、b = 0.1、c = 0.075、d = 1.5，求平衡点。',
       walkthrough: [
@@ -4866,7 +4917,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '初始值偏离时，数量沿闭合轨道振荡。',
       ],
       result: '(x^{*},y^{*})=(20,10)',
-    },
+    },    moreExamples: [{ problem: '捕食者为零时猎物如何变化？', walkthrough: ['无捕食则指数增长。', '受资源限制时趋于饱和。'], result: '增长或饱和' }],
+
   },
 
   {
@@ -7152,10 +7204,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '紧致性是有限性的无限版：任意开覆盖都能砍到有限个。连续映射保紧致，于是闭区间上的连续函数必然有界并取到最值。',
+    definition:
+      '紧致性指每个开覆盖都有有限子覆盖。欧氏空间中紧致等价于有界闭。连续函数在紧集上取到最值。',
     whenToUse: [
       '要证明某个函数在区域上取到最大值或最小值',
       '判断一个空间是否紧致（有界闭区间是最典型的例子）',
       '想把有限情形的结论推广到无限集合',
+    ],
+    theorems: [
+      { name: '海涅－博雷尔', statement: '欧氏空间中紧致等价于有界闭。', },
+      { name: '连续保紧', statement: '紧集的连续像是紧集。', },
     ],
     steps: [
       {
@@ -7175,7 +7233,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '推出极值存在',
         body: '有界闭集上的连续函数既取到上确界也取到下确界，所以最大值与最小值都存在。',
       },
+      {
+        title: '用有界闭判据',
+        body: '欧氏空间先验有界与闭，能快速判断紧致性。',
+      },
     ],
+    pitfalls: ['把有界当紧：还需闭。', '只验一个覆盖：要对所有开覆盖。', '在非欧空间套用有界闭判据。'],
     example: {
       problem: '说明闭区间上的连续函数一定有最大值。',
       walkthrough: [
@@ -7185,7 +7248,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '这个取到的上确界就是最大值。',
       ],
       result: '连续函数在闭区间上必取到最大值与最小值。',
-    },
+    },    moreExamples: [{ problem: '开区间零到一紧致吗？', walkthrough: ['不闭。', '不是紧集。'], result: '不紧致' }],
+
   },
   {
     id: 'group-homomorphism',
@@ -7194,10 +7258,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '进阶',
     essence:
       '同态是保持运算的映射，核衡量它丢掉了多少信息。把核压成一个点得到商群，同态就变成单射，这就是第一同构定理。',
+    definition:
+      '群同态是保持运算的映射。核是映到单位元的元素集合，像是子群，二者由第一同构定理联系。',
     whenToUse: [
       '两个群结构相似，想说明它们差在哪',
       '构造商群、判断子群是否正规',
       '把复杂的群化归成简单的已知群',
+    ],
+    theorems: [
+      { name: '第一同构定理', statement: '商群同构于同态的像。', formula: 'G/\\ker\\varphi\\cong\\operatorname{Im}\\varphi' },
+      { name: '核是正规子群', statement: '同态的核总是正规子群。', },
     ],
     steps: [
       {
@@ -7218,7 +7288,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '对照整数取模',
         body: '整数群到 n 阶循环群的取模映射是最标准的例子：核是 n 的倍数，商群就是 n 阶循环群。',
       },
+      {
+        title: '算核与像',
+        body: '先求核判断单射，再求像判断满射。',
+      },
     ],
+    pitfalls: ['核与像混淆：一个在定义域，一个在陪域。', '以为核总是平凡：非单同态核非平凡。', '忽略正规性：商群需要正规子群。'],
     example: {
       problem: '整数群通过取模映射映到六阶循环群，求核与商群。',
       walkthrough: [
@@ -7227,7 +7302,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '由第一同构定理，整数群除以 6 的倍数，与六阶循环群同构。',
       ],
       result: '核是 6 的倍数全体，商群同构于六阶循环群。',
-    },
+    },    moreExamples: [{ problem: '模六到模三的约化映射核是什么？', walkthrough: ['映到零的元素是零与三。', '核有两个元素。'], result: '两元素子群' }],
+
   },
   {
     id: 'lebesgue-integral',
@@ -7236,10 +7312,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '黎曼积分切定义域，勒贝格积分切值域：先看函数取到哪些值，再测这些值的原像有多大。这样极限与积分可以交换次序。',
+    definition:
+      '勒贝格积分先对简单函数定义，再用上确界推广到非负可测函数，最后拆正负部处理一般函数。',
     whenToUse: [
       '函数太病态，黎曼不可积但仍想定义积分',
       '需要把极限搬到积分号内（单调收敛、控制收敛）',
       '概率论里把期望写成积分',
+    ],
+    theorems: [
+      { name: '单调收敛', statement: '非负单调递增函数列可交换极限与积分。', },
+      { name: '控制收敛', statement: '被可积函数控制时可交换。', },
     ],
     steps: [
       {
@@ -7259,7 +7341,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '拿走收敛定理',
         body: '单调收敛定理与控制收敛定理，是这套积分比黎曼积分好用的真正原因：极限和积分可以换位置。',
       },
+      {
+        title: '先拆正负部',
+        body: '一般可测函数拆成正部与负部，分别积分再相减。',
+      },
     ],
+    pitfalls: ['把黎曼可积当勒贝格：反之才成立。', '忽略零测集：不影响积分值。', '随意交换极限与积分：需定理保证。'],
     example: {
       problem: '说明有理数集上取 1、无理数上取 0 的函数在闭区间上的积分。',
       walkthrough: [
@@ -7268,7 +7355,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '按勒贝格积分，非零的那部分只在零测集上，所以积分等于零。',
       ],
       result: '勒贝格积分等于 0，与黎曼积分形成对比。',
-    },
+    },    moreExamples: [{ problem: '有理数取一、无理数取零的函数积分？', walkthrough: ['有理数集零测。', '积分为零。'], result: '0' }],
+
   },
   {
     id: 'np-reduction',
@@ -7277,10 +7365,16 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     level: '竞赛',
     essence:
       '证明一个新问题难，不需要从头论证，只要把已知的难问题在多项式时间内变成它。这种“搬运难度”的手法就是归约。',
+    definition:
+      '归约是把一个问题实例在多项式时间内改造成另一个问题实例，并保持答案一致。用它传递难度。',
     whenToUse: [
       '想说明某问题是 NP 困难的',
       '设计算法前判断问题有没有希望多项式求解',
       '做算法题时把陌生问题化归成熟悉的模型',
+    ],
+    theorems: [
+      { name: '归约传递性', statement: '多项式归约可复合。', },
+      { name: 'NP 完全定义', statement: '属于 NP 且所有 NP 问题可归约到它。', },
     ],
     steps: [
       {
@@ -7299,7 +7393,12 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         title: '串起归约链',
         body: '可满足性归约到三元可满足性，再归约到团、顶点覆盖、哈密顿回路，形成一张难度地图。',
       },
+      {
+        title: '检查两方向',
+        body: '归约要保证「原实例是」当且仅当「新实例是」，两个方向都要验。',
+      },
     ],
+    pitfalls: ['归约方向反：要从已知难问题归约到新问题。', '忽略多项式时间：指数量级归约无意义。', '答案不一致：归约必须保持等价。'],
     example: {
       problem: '说明“找最大团”至少和三元可满足性一样难。',
       walkthrough: [
@@ -7309,7 +7408,8 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
         '于是三元可满足性归约到团问题，团问题是 NP 困难的。',
       ],
       result: '团问题是 NP 完全的。',
-    },
+    },    moreExamples: [{ problem: '要证新问题 NP 困难，归约方向？', walkthrough: ['从已知 NP 完全问题出发。', '归约到新问题。'], result: '已知难问题 → 新问题' }],
+
   },
   {
     id: 'law-of-large-numbers',
