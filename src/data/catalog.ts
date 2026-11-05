@@ -53,7 +53,7 @@ export const DISCIPLINE: Discipline = {
         { id: 'complex-analysis', name: '复分析', courseId: 'complex-analysis' },
         { id: 'functional-analysis', name: '泛函分析', note: '待建' },
         { id: 'harmonic-analysis', name: '调和分析', note: '待建' },
-        { id: 'measure-theory', name: '测度论', note: '待建' },
+        { id: 'measure-theory', name: '测度论', courseId: 'measure-theory-course' },
         { id: 'ode', name: '常微分方程', courseId: 'analysis', note: '在分析学导论中' },
       ],
     },

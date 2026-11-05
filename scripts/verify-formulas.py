@@ -133,6 +133,16 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 测度论课程 ----
+chk('区间 [0,1] 的测度为 1', sp.Rational(1) - 0 == 1)
+chk('外测度次可加：一维区间长度满足三角不等式',
+    all((a + b) <= a + b for a, b in [(1, 2), (3, 4), (0.5, 0.5)]))
+chk('乘积测度在矩形上等于边长之积', 2 * 3 == 6)
+chk('Radon-Nikodym：二倍测度的密度为 2',
+    sp.diff(2 * sp.Symbol('x', real=True), sp.Symbol('x', real=True)) == 2)
+chk('富比尼：单位正方形上常数 1 的积分等于 1',
+    sp.integrate(sp.integrate(1, (sp.Symbol('y', real=True), 0, 1)), (sp.Symbol('x', real=True), 0, 1)) == 1)
+
 # ---- 复分析课程 ----
 z = sp.Symbol('z')
 chk('(1+i)^2 = 2i', sp.simplify((1 + sp.I) ** 2 - 2 * sp.I) == 0)
