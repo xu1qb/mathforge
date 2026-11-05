@@ -1060,7 +1060,9 @@ export function usePracticeSettings() {
       const raw = scopedStorage.getItem(PRACTICE_SETTINGS_KEY);
       if (raw) return JSON.parse(raw);
     } catch { /* ignore */ }
-    return { answerMode: 'self-eval' }; // 默认自评模式
+    // 默认输入判分：能真正判对错，也让数学键盘有用武之地；
+    // 已保存过偏好的用户不受影响（下面会读 localStorage）
+    return { answerMode: 'auto' };
   });
 
   const setAnswerMode = useCallback((mode: AnswerMode) => {

@@ -675,9 +675,9 @@ export default function PracticePage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* 左侧：知识点分类选择 */}
-        <div className="lg:col-span-1 space-y-4">
+      <div className="flex flex-col gap-6 lg:grid lg:grid-cols-4">
+        {/* 知识点分类选择（手机端排在题目之后） */}
+        <div id="topic-panel" className="order-2 lg:order-1 lg:col-span-1 space-y-4">
           {/* 竞赛模拟快捷入口 */}
           <Card className="border-emerald-200/60 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 overflow-hidden">
             <CardContent className="p-4">
@@ -795,7 +795,13 @@ export default function PracticePage() {
                         return (
                           <button
                             key={topic.key}
-                            onClick={() => setActiveTopic(topic.key)}
+                            onClick={() => {
+                              setActiveTopic(topic.key);
+                              // 手机端选完滚回题目，免得用户还要手动往回滑
+                              if (window.matchMedia('(max-width: 1023px)').matches) {
+                                document.getElementById('practice-tabs')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                              }
+                            }}
                             className={`w-full flex items-start gap-2.5 px-2.5 py-2 rounded-lg text-left transition-all ${
                               activeTopic === topic.key
                                 ? 'bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200/60 dark:border-emerald-800/40'
@@ -854,8 +860,27 @@ export default function PracticePage() {
         </div>
 
         {/* 右侧：练习区 */}
-        <div className="lg:col-span-3 space-y-4">
-           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className="order-1 lg:order-2 lg:col-span-3 space-y-4">
+           {/* 手机端：当前知识点 + 换题入口（知识点列表在下方） */}
+           <div className="lg:hidden flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/60 px-3 py-2">
+             <div className="min-w-0">
+               <p className="text-[11px] text-muted-foreground">当前知识点</p>
+               <p className="truncate text-sm font-medium text-foreground">{currentTopic.label}</p>
+             </div>
+             <Button
+               size="sm"
+               variant="outline"
+               className="shrink-0 gap-1"
+               onClick={() =>
+                 document.getElementById('topic-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+               }
+             >
+               <BookOpen className="size-3.5" />
+               换知识点
+             </Button>
+           </div>
+
+           <Tabs id="practice-tabs" value={activeTab} onValueChange={setActiveTab} className="w-full">
              <TabsList className="mb-4 w-full grid grid-cols-2 md:grid-cols-4">
                <TabsTrigger value="practice" className="text-sm">练习模式</TabsTrigger>
                <TabsTrigger value="challenge" className="text-sm">限时挑战</TabsTrigger>
