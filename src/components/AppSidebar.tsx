@@ -1,6 +1,6 @@
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarProvider, SidebarInset, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { NavLink, useLocation } from 'react-router-dom';
-import { COURSES } from '@/data/courses';
+import { BRANCHES } from '@/data/catalog';
 import { useState, useMemo, useEffect, memo, lazy, Suspense } from 'react';
 import {
   Calculator,
@@ -98,9 +98,9 @@ const NAV_GROUPS: NavGroup[] = [
     name: '学科',
     items: [
       { path: '/branches', label: '分支总览', icon: Library },
-      ...COURSES.map((c) => ({
-        path: '/course/' + c.id,
-        label: c.title + '课程',
+      ...BRANCHES.map((b) => ({
+        path: '/branch/' + b.id,
+        label: b.name,
         icon: GraduationCap,
       })),
     ],
