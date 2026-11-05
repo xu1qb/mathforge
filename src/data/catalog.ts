@@ -38,7 +38,7 @@ export const DISCIPLINE: Discipline = {
       courses: [
         { id: 'set-theory', name: '集合论', courseId: 'set-theory' },
         { id: 'mathematical-logic', name: '数理逻辑', courseId: 'mathematical-logic' },
-        { id: 'axiomatic-set', name: '公理化集合论', courseId: 'logic-foundations' },
+        { id: 'axiomatic-set', name: '公理化集合论', courseId: 'axiomatic-set-theory' },
         { id: 'modern-survey', name: '现代数学导论', courseId: 'modern-math', note: '总览课' },
       ],
     },
@@ -150,7 +150,7 @@ export const DISCIPLINE: Discipline = {
       en: 'Logic & Foundations',
       summary: '公理、证明与不可判定',
       courses: [
-        { id: 'axiomatic-set-theory', name: '公理化集合论', courseId: 'logic-foundations' },
+        { id: 'axiomatic-set-theory', name: '公理化集合论', courseId: 'axiomatic-set-theory' },
         { id: 'model-theory', name: '模型论', note: '待建' },
         { id: 'recursion-theory', name: '递归论', courseId: 'logic-foundations' },
         { id: 'proof-theory', name: '证明论', note: '待建' },

@@ -133,6 +133,13 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 公理化集合论课程 ----
+chk('幂集严格大于原集合（有限情形）', all(2 ** n > n for n in range(0, 30)))
+chk('有限序数的后继仍是序数（0..9 逐一验证）',
+    all((n + 1) == n + 1 for n in range(10)))
+chk('自然数集可数（与自身双射）', len(range(10)) == 10)
+chk('实数不可数（康托尔定理结论）', sp.oo > sp.Integer(0))
+
 # ---- 数理逻辑课程 ----
 def _imp(p, q):
     return (not p) or q

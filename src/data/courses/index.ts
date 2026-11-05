@@ -13,6 +13,7 @@ import { LOGIC_FOUNDATIONS_COURSE } from './logic-foundations';
 import { APPLIED_MATH_COURSE } from './applied-math';
 import { SET_THEORY_COURSE } from './set-theory';
 import { LOGIC_COURSE } from './mathematical-logic';
+import { AXIOMATIC_SET_COURSE } from './axiomatic-set-theory';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -28,6 +29,7 @@ export const COURSES: Course[] = [
   APPLIED_MATH_COURSE,
   SET_THEORY_COURSE,
   LOGIC_COURSE,
+  AXIOMATIC_SET_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {
