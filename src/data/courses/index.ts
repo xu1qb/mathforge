@@ -11,6 +11,7 @@ import { COMBINATORICS_DISCRETE_COURSE } from './combinatorics-discrete';
 import { COMPUTATION_COURSE } from './computation';
 import { LOGIC_FOUNDATIONS_COURSE } from './logic-foundations';
 import { APPLIED_MATH_COURSE } from './applied-math';
+import { SET_THEORY_COURSE } from './set-theory';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -24,6 +25,7 @@ export const COURSES: Course[] = [
   COMPUTATION_COURSE,
   LOGIC_FOUNDATIONS_COURSE,
   APPLIED_MATH_COURSE,
+  SET_THEORY_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {

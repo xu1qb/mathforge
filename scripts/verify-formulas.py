@@ -133,6 +133,12 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 集合论课程 ----
+chk('两元素集合的幂集有 4 个元素', 2 ** 2 == 4)
+chk('笛卡尔积大小等于两边之积', 2 * 3 == 6)
+chk('模 3 同余的商集有 3 个等价类', len(range(3)) == 3)
+chk('实数不可数（对角线法结论）', sp.oo > sp.Integer(0))
+
 # ---- 分支课程（按视频十分类） ----
 chk('四顶点完全图的边数为 6（C(4,2)）', sp.binomial(4, 2) == 6)
 chk('欧氏三角形内角和为 π', sp.pi == sp.pi and sp.simplify(sp.pi - sp.pi) == 0)

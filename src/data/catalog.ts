@@ -36,7 +36,7 @@ export const DISCIPLINE: Discipline = {
       en: 'Foundations',
       summary: '数学的语言层：集合、逻辑与公理',
       courses: [
-        { id: 'set-theory', name: '集合论', courseId: 'combinatorics-discrete', note: '与离散课程共用' },
+        { id: 'set-theory', name: '集合论', courseId: 'set-theory' },
         { id: 'mathematical-logic', name: '数理逻辑', note: '待建' },
         { id: 'axiomatic-set', name: '公理化集合论', courseId: 'logic-foundations' },
         { id: 'modern-survey', name: '现代数学导论', courseId: 'modern-math', note: '总览课' },
