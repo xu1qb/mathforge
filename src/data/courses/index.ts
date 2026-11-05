@@ -26,6 +26,8 @@ import { FIELD_THEORY_COURSE } from './field-theory';
 import { ALGEBRAIC_NUMBER_COURSE } from './algebraic-number-theory';
 import { COMBINATORICS_COURSE } from './combinatorics';
 import { LATTICE_THEORY_COURSE } from './lattice-theory';
+import { CODING_THEORY_COURSE } from './coding-theory';
+import { NUMERICAL_ANALYSIS_COURSE } from './numerical-analysis';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -54,6 +56,8 @@ export const COURSES: Course[] = [
   ALGEBRAIC_NUMBER_COURSE,
   COMBINATORICS_COURSE,
   LATTICE_THEORY_COURSE,
+  CODING_THEORY_COURSE,
+  NUMERICAL_ANALYSIS_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {

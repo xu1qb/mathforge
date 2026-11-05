@@ -100,7 +100,7 @@ export const DISCIPLINE: Discipline = {
         { id: 'set-theory-2', name: '集合论', courseId: 'combinatorics-discrete' },
         { id: 'category-theory', name: '范畴论', courseId: 'modern-math', note: '在现代数学导论中' },
         { id: 'lattice', name: '格论', courseId: 'lattice-theory' },
-        { id: 'coding', name: '编码理论', note: '待建' },
+        { id: 'coding', name: '编码理论', courseId: 'coding-theory' },
       ],
     },
     {
@@ -123,7 +123,7 @@ export const DISCIPLINE: Discipline = {
       en: 'Computation & Algorithms',
       summary: '可计算的边界在哪里',
       courses: [
-        { id: 'numerical-analysis', name: '数值分析', note: '待建' },
+        { id: 'numerical-analysis', name: '数值分析', courseId: 'numerical-analysis' },
         { id: 'computational-math', name: '计算数学', note: '待建' },
         { id: 'cryptography', name: '密码学', courseId: 'computation' },
         { id: 'theory-cs', name: '理论计算机科学', courseId: 'computation' },

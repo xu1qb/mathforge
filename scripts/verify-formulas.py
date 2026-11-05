@@ -133,6 +133,18 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 编码与数值分析课程 ----
+chk('最小距离 3 → 纠错能力 1（(3-1)//2）', (3 - 1) // 2 == 1)
+chk('汉明码 [7,4,3]：长度 2^3-1=7，消息 7-3=4', 2 ** 3 - 1 == 7 and 7 - 3 == 4)
+chk('辛普森公式对三次多项式精确（x³ 在 [0,1] 积分为 1/4）',
+    sp.simplify((1 / 6) * (0 + 4 * sp.Rational(1, 8) + 1) - sp.Rational(1, 4)) == 0)
+chk('梯形公式对一次多项式精确（x 在 [0,1] 积分为 1/2）',
+    sp.simplify((1 / 2) * (0 + 1) - sp.Rational(1, 2)) == 0)
+_x0 = sp.Integer(1)
+_x1 = _x0 - (_x0**2 - 2) / (2 * _x0)
+chk('牛顿法求 √2：一步后更接近真值（x0=1 → x1=1.5）',
+    _x1 == sp.Rational(3, 2) and abs(sp.N(_x1 - sp.sqrt(2))) < abs(sp.N(_x0 - sp.sqrt(2))))
+
 # ---- 组合与格论课程 ----
 chk('组合数 C(5,2)=10', sp.binomial(5, 2) == 10)
 chk('排列数 P(5,3)=5·4·3=60', 5 * 4 * 3 == 60)
