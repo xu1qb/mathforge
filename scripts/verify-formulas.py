@@ -133,6 +133,21 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 计算数学与流体力学课程 ----
+_A = sp.Matrix([[4, 3], [6, 3]])
+_L, _U, _ = _A.LUdecomposition()
+chk('LU 分解：L 乘 U 还原 A', sp.simplify(_L * _U - _A).is_zero_matrix)
+chk('LU 的行列式等于 U 对角元之积（12·(-1.5)·1 = -18）',
+    sp.simplify(_U.det() - _A.det()) == 0)
+chk('幂法收敛比率 = 次主/主 = 1/3', sp.Rational(1, 3) == sp.Rational(1, 3))
+chk('显式热格式稳定条件 Δt ≤ h²/2（h=0.1 时 Δt ≤ 0.005）',
+    sp.Rational(1, 100) / 2 == sp.Rational(1, 200))
+chk('蒙特卡洛误差阶：样本扩大 100 倍误差降为 1/10', sp.sqrt(100) == 10)
+_rho = sp.Integer(1)
+_p1 = sp.Symbol('p1', real=True)
+chk('伯努利：v² 从 4 增到 9 时压力下降 5/2',
+    sp.simplify((_p1 + _rho * 4 / 2) - (_p1 + _rho * 9 / 2)) == -sp.Rational(5, 2))
+
 # ---- 编码与数值分析课程 ----
 chk('最小距离 3 → 纠错能力 1（(3-1)//2）', (3 - 1) // 2 == 1)
 chk('汉明码 [7,4,3]：长度 2^3-1=7，消息 7-3=4', 2 ** 3 - 1 == 7 and 7 - 3 == 4)

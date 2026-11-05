@@ -124,7 +124,7 @@ export const DISCIPLINE: Discipline = {
       summary: '可计算的边界在哪里',
       courses: [
         { id: 'numerical-analysis', name: '数值分析', courseId: 'numerical-analysis' },
-        { id: 'computational-math', name: '计算数学', note: '待建' },
+        { id: 'computational-math', name: '计算数学', courseId: 'computational-math' },
         { id: 'cryptography', name: '密码学', courseId: 'computation' },
         { id: 'theory-cs', name: '理论计算机科学', courseId: 'computation' },
         { id: 'discrete-math', name: '离散数学', courseId: 'combinatorics-discrete' },
@@ -137,7 +137,7 @@ export const DISCIPLINE: Discipline = {
       summary: '力学、生态、优化与控制',
       courses: [
         { id: 'mechanics', name: '力学', courseId: 'applied-math' },
-        { id: 'fluid-dynamics', name: '流体力学', note: '待建' },
+        { id: 'fluid-dynamics', name: '流体力学', courseId: 'fluid-dynamics' },
         { id: 'mathematical-physics', name: '数学物理', note: '待建' },
         { id: 'mathematical-biology', name: '生物数学', courseId: 'applied-math' },
         { id: 'operations-research', name: '运筹学', courseId: 'applied-math' },
