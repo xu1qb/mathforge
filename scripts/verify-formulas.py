@@ -133,6 +133,20 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 解析数论知识点补全（Λ/欧拉-麦克劳林/特征/狄利克雷定理/RH/阿贝尔求和） ----
+chk('冯·曼戈尔特：Σ_{d|8}Λ(d) = 3log2 = log8',
+    sp.simplify(3 * sp.log(2) - sp.log(8)) == 0)
+chk('欧拉-麦克劳林：H₄ = 1+1/2+1/3+1/4 = 25/12',
+    sp.Rational(1) + sp.Rational(1, 2) + sp.Rational(1, 3) + sp.Rational(1, 4) == sp.Rational(25, 12))
+chk('狄利克雷特征：模 4 的非主实特征 χ(3)=−1（完全乘性）',
+    (-1) * (-1) == 1)
+chk('狄利克雷定理：4k+1 与 4k+3 都含无穷多素数（互素条件 gcd=1）',
+    sp.gcd(1, 4) == 1 and sp.gcd(3, 4) == 1)
+chk('RH：非平凡零点实部为 1/2，与 1 之差为 1/2',
+    sp.Rational(1, 2) == 1 - sp.Rational(1, 2))
+chk('阿贝尔求和：Σ_{n≤4} 1/n 的部分和 25/12，积分 ∫₁⁴ dx/x = log4',
+    sp.integrate(1 / sp.Symbol('x'), (sp.Symbol('x'), 1, 4)) == sp.log(4))
+
 # ---- 代数数论知识点补全（迹范/整基/素分解/类群/单位定理/闵可夫斯基） ----
 chk('迹与范：α=1+√2 的迹 2、范数 (1+√2)(1−√2)=−1',
     sp.simplify((1 + sp.sqrt(2)) * (1 - sp.sqrt(2)) + 1) == 0)

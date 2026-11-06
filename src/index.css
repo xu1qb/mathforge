@@ -1,4 +1,8 @@
-@import "tailwindcss";
+/* Tailwind v4 自动扫描会连 dist/、android-native/ 一起扫，构建从 5 秒涨到 10 分钟，
+   这里关闭自动扫描并显式声明内容源 */
+@import "tailwindcss" source(none);
+@source "../index.html";
+@source "./**/*.{ts,tsx,css}";
 @import "tw-animate-css";
 @import "./tailwind-theme.css";
 @import "./typography.css";
