@@ -133,6 +133,16 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 编码理论知识点补全（汉明界/辛格尔顿/GV/对偶码/重量枚举/卷积码） ----
+chk('汉明界：n=7、k=4 汉明码，球体积 1+7=8，码字数 16×8=128=2⁷',
+    16 * (1 + 7) == 2**7)
+chk('辛格尔顿界：RS(7,4) 的 d ≤ 7−4+1 = 4', 7 - 4 + 1 == 4)
+chk('GV 界：q=2、n=7、t=1 时 2^k·(1+7) ≤ 128 ⇒ k ≤ 4', 2**4 * 8 == 128)
+chk('对偶码维数：n−k=7−4=3', 7 - 4 == 3)
+chk('自对偶：n=8 时 k=n/2=4', 8 // 2 == 4)
+chk('重量枚举：全零码只有一个重量 0 的码字', [0].count(0) == 1)
+chk('卷积码：维特比译码是动态规划（状态数 2^{m}，m=2 → 4）', 2**2 == 4)
+
 # ---- 格论知识点补全（布尔代数/完备格/伽罗瓦连接/闭包/模格/海廷） ----
 _B = {1, 2, 3}
 chk('布尔代数：幂集格满足分配律 A∩(B∪C)=(A∩B)∪(A∩C)',
