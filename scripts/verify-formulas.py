@@ -133,6 +133,16 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 离散数学知识点补全（证明方法/归纳/序列求和/复杂度/整除/布尔函数） ----
+chk('归纳：1+2+…+100 = 100·101/2 = 5050', 100 * 101 // 2 == 5050)
+chk('等比求和：Σ_{k=0}^{4} 2^k = 31 = 2⁵−1', sum(2**k for k in range(5)) == 2**5 - 1)
+chk('裂项：1/(1·2)+1/(2·3)+1/(3·4) = 1−1/4 = 3/4',
+    sum(sp.Rational(1, k * (k + 1)) for k in range(1, 4)) == sp.Rational(3, 4))
+chk('二分查找：2¹⁰=1024 ≥ 1000，故 log₂1000 需要 10 步', 2**10 >= 1000)
+chk('欧几里得：gcd(48,18)=6', sp.gcd(48, 18) == 6)
+chk('带余除法：48 = 2·18 + 12 且 0 ≤ 12 < 18', 48 == 2 * 18 + 12 and 0 <= 12 < 18)
+chk('布尔函数计数：2 元共 2^{2²}=16 个', 2**(2**2) == 16)
+
 # ---- 编码理论知识点补全（汉明界/辛格尔顿/GV/对偶码/重量枚举/卷积码） ----
 chk('汉明界：n=7、k=4 汉明码，球体积 1+7=8，码字数 16×8=128=2⁷',
     16 * (1 + 7) == 2**7)
