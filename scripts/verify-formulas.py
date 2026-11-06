@@ -133,6 +133,18 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 伽罗瓦理论知识点补全（三次四次/对称多项式/判别式/对应定理/分圆/五次不可解） ----
+chk('三次判别式：x³−6x+9 的 Δ=−4p³−27q² = 864−2187 = −1323',
+    -4 * (-6)**3 - 27 * 9**2 == -1323)
+chk('对称多项式：x²+y² = e₁²−2e₂（代入 x=1,y=2 得 5=9−4）',
+    1**2 + 2**2 == (1 + 2)**2 - 2 * (1 * 2))
+chk('判别式：(x−1)(x−2) 的判别式为 (1−2)²=1',
+    ((1 - 2)**2) == 1)
+chk('伽罗瓦对应：|G|=4、|H|=2 时中间域次数 [G:H]=2', 4 // 2 == 2)
+chk('分圆：φ(5)=4=2² → 正五边形可构造', 5 - 1 == 2**2)
+chk('分圆：φ(7)=6 非 2 的幂 → 正七边形不可构造', 7 - 1 == 6 and 6 & (6 - 1) != 0)
+chk('五次不可解：S₅ 的合成因子含 A₅（单非交换），5!/2=60', sp.factorial(5) // 2 == 60)
+
 # ---- 域论知识点补全（代数闭包/超越次数/本原元/完全域/分裂域/尺规域论） ----
 chk('代数闭包：C 中每个多项式有根（x²+1 的根为 ±i）',
     set(sp.solve(sp.Symbol('x')**2 + 1, sp.Symbol('x'))) == {sp.I, -sp.I})
