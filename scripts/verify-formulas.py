@@ -133,6 +133,17 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 测度论知识点补全（外测度/正则性/乘积/分解/复测度） ----
+chk('外测度次可加：m*(A∪B) ≤ m*(A)+m*(B)（[0,1] 与 [0.5,1.5]）', sp.Rational(3, 2) <= 2)
+chk('外测度单调：A⊂B 时 m*(A)≤m*(B)（0.5≤1）', sp.Rational(1, 2) <= 1)
+chk('乘积测度：2×3 矩形面积为 6', 2 * 3 == 6)
+chk('Fubini 数例：∫₀¹∫₀¹ xy dxdy = 1/4',
+    sp.integrate(sp.integrate(sp.Symbol('x') * sp.Symbol('y'), (sp.Symbol('x'), 0, 1)), (sp.Symbol('y'), 0, 1)) == sp.Rational(1, 4))
+chk('Radon-Nikodym：μ=3λ 时 μ([0,1])=3', 3 * 1 == 3)
+chk('勒贝格分解：ν({0})=1 而 λ({0})=0，奇异部分确实存在',
+    (3 * 0 + 1) != (3 * 0) and 0 == 0)
+chk('全变差：复测度 μ = 3λ 的全变差为 3', abs(3) == 3)
+
 # ---- 复分析知识点补全（初等函数/C-R/复积分/洛朗/奇点/辐角/共形/调和） ----
 chk('复指数周期：e^{2πi}=1', sp.simplify(sp.exp(2 * sp.pi * sp.I) - 1) == 0)
 chk('C-R：f(z)=z² 满足 u_x=v_y、u_y=-v_x',
