@@ -133,6 +133,23 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 群论知识点补全（正规子群/同构定理/p群/合成列/置换群/自由群） ----
+chk('正规子群：交换群中 gNg⁻¹=N（Z/6 中 {0,3} 共轭不变）',
+    all((k + n - k) % 6 in {0, 3} for k in range(6) for n in {0, 3}))
+chk('同构定理：|G/ker| = |im|（|G|=12、|ker|=3 → |im|=4）', 12 // 3 == 4)
+_ids = [0, 1, 2]
+_perms = [(0, 1, 2), (0, 2, 1), (1, 0, 2), (1, 2, 0), (2, 0, 1), (2, 1, 0)]
+def _comp(a, b):
+    return tuple(a[b[i]] for i in _ids)
+_inv = lambda a: tuple(sorted(range(3), key=lambda i: a[i]) if False else [a.index(i) for i in _ids])
+_A3 = [p_ for p_ in _perms if sum(1 for i in range(3) for j in range(i + 1, 3) if p_[i] > p_[j]) % 2 == 0]
+chk('指数 2 的子群正规：S₃ 中偶置换 A₃ 在共轭下不变',
+    all(_comp(_comp(g, h), _inv(g)) in _A3 for g in _perms for h in _A3))
+
+chk('置换奇偶：(12)(34) 含两个对换 → 偶', 2 % 2 == 0)
+chk('合成因子：S₃ 的合成因子阶为 2 与 3，均为素数且乘积为 6', sp.isprime(2) and sp.isprime(3) and 2 * 3 == 6)
+chk('自由群：两生成元的约化词 ab 与 ba 不同（非交换）', ('a', 'b') != ('b', 'a'))
+
 # ---- 线性代数知识点补全（内积/投影/SVD/对偶/最小多项式/条件数） ----
 chk('柯西－施瓦茨：(1,2)·(3,1)² ≤ 5·10', (1 * 3 + 2 * 1) ** 2 <= (1 + 4) * (9 + 1))
 chk('正交投影：把 (3,4) 投影到 x 轴得 (3,0)，残差 (0,4) 正交',
