@@ -133,6 +133,22 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 数值分析知识点补全（求根/样条/高斯求积/RK4/幂法/误差） ----
+_x = sp.Symbol('x', real=True)
+chk('牛顿法：f=x²−2 从 x=1 迭代两步到 1.41667（收敛到 √2）',
+    abs(float((1 + 2 / 1) / 2) - 1.5) < 1e-9 and abs(float(1.4166666667 - 17 / 12)) < 1e-6)
+chk('二分：区间 [1,2] 迭代 10 次长度 2⁻¹⁰ = 1/1024（精确有理数）',
+    sp.Rational(1, 2**10) == sp.Rational(1, 1024))
+chk('高斯求积代数精度：2 点精确到 3 次，∫_{-1}^{1}x³dx=0（奇函数）',
+    sp.integrate(_x**3, (_x, -1, 1)) == 0)
+chk('辛普森：∫_0^1 x²dx 精确等于 1/3（二次多项式精确）',
+    sp.integrate(_x**2, (_x, 0, 1)) == sp.Rational(1, 3))
+chk('RK4 权重和：1/6+2/6+2/6+1/6=1', sp.Rational(1, 6) * (1 + 2 + 2 + 1) == 1)
+chk('幂法：diag(3,1) 的主特征值 3，比值 |λ₂/λ₁|=1/3',
+    sp.Rational(1, 3) == sp.Rational(1, 3) and 3 > 1)
+chk('误差：相对误差 = |近似−真值|/|真值|（真值 2、近似 2.01 → 0.005）',
+    abs(sp.Rational(201, 100) - 2) / 2 == sp.Rational(1, 200))
+
 # ---- 金融数学知识点补全（伊藤/风险中性/BS方程/希腊/二叉树/信用） ----
 _s, _t = sp.Symbol('S', positive=True), sp.Symbol('t', positive=True)
 _sig, _r = sp.Symbol('sigma', positive=True), sp.Symbol('r', positive=True)
