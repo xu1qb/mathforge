@@ -19,7 +19,7 @@ export const FIELD_THEORY_COURSE: Course = {
       textbookRef: 'Lang 第 5 章 / 冯克勤 第 4 章',
       summary: '次数是向量空间维数',
       goals: ['算扩张次数', '用塔式公式'],
-      lessonIds: ['field-extensions'],
+      lessonIds: ['field-extensions', 'transcendence-degree'],
       practiceTopics: ['inequality-amgm'],
       exercises: [
         {
@@ -34,7 +34,7 @@ export const FIELD_THEORY_COURSE: Course = {
       textbookRef: 'Lang 第 5 章 / 冯克勤 第 4 章',
       summary: '最低次首一零化多项式',
       goals: ['会求极小多项式', '判断代数性'],
-      lessonIds: ['algebraic-elements'],
+      lessonIds: ['algebraic-elements', 'primitive-element'],
       practiceTopics: ['algebra-factor'],
       exercises: [
         {
@@ -49,7 +49,7 @@ export const FIELD_THEORY_COURSE: Course = {
       textbookRef: 'Lang 第 6 章 / 冯克勤 第 5 章',
       summary: '把所有根加进来',
       goals: ['构造分裂域', '判断正规'],
-      lessonIds: ['splitting-field'],
+      lessonIds: ['splitting-field', 'stem-field', 'algebraic-closure', 'normal-separable'],
       practiceTopics: ['algebra-factor'],
       exercises: [
         {
@@ -64,7 +64,7 @@ export const FIELD_THEORY_COURSE: Course = {
       textbookRef: 'Lang 第 7 章 / 冯克勤 第 6 章',
       summary: '素数幂阶的域',
       goals: ['判断存在性', '理解循环乘法群'],
-      lessonIds: ['finite-fields'],
+      lessonIds: ['finite-fields', 'perfect-fields', 'constructible-fields'],
       practiceTopics: ['nt-gcd'],
       exercises: [
         {

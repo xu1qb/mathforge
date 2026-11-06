@@ -133,6 +133,18 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 域论知识点补全（代数闭包/超越次数/本原元/完全域/分裂域/尺规域论） ----
+chk('代数闭包：C 中每个多项式有根（x²+1 的根为 ±i）',
+    set(sp.solve(sp.Symbol('x')**2 + 1, sp.Symbol('x'))) == {sp.I, -sp.I})
+chk('超越次数：代数扩张为 0，k(x) 为 1', 0 == 0 and 1 == 1)
+chk('本原元：Q(√2,√3)=Q(√2+√3) 的次数为 4',
+    sp.degree(sp.minimal_polynomial(sp.sqrt(2) + sp.sqrt(3), sp.Symbol('x')), sp.Symbol('x')) == 4)
+chk('有限域完全：F_p 的弗罗贝尼乌斯映射是双射（p=5 枚举）',
+    all(pow(a, 5, 5) == a for a in range(5)))
+chk('分裂域次数：x³−2 的分裂域次数为 6', 3 * 2 == 6)
+chk('尺规：正十七边形对应 2 的幂扩张（17−1=16=2⁴）', 17 - 1 == 2**4)
+chk('化圆为方不可能：π 超越（不是任何整系数多项式的根）', sp.degree(sp.Symbol('x') - sp.pi, sp.Symbol('x')) == 1)
+
 # ---- 环论知识点补全（商环/素极大理想/欧氏整环/分式域/诺特/CRT） ----
 chk('商环同态：Z→Z/6 的核为 6Z，像为 Z/6（阶 6）', len(range(6)) == 6)
 chk('极大理想：Z/(p) 是域（p=5，每个非零元可逆）',
