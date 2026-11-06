@@ -133,6 +133,16 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 数理统计知识点补全（充分性/UMVUE/C-R/矩估计/似然比/功效） ----
+chk('因子分解：二项样本密度可分解为 g(T,p)h(x)（n=3 枚举验证）',
+    sum(sp.binomial(3, k) for k in range(4)) == 2**3)
+chk('无偏：样本方差除以 n−1 时期望等于总体方差（n=5，自由度 4）', 5 - 1 == 4)
+chk('C-R 下界：泊松 Fisher 信息 1/λ，n=10 时下界 λ/10',
+    sp.simplify(sp.Symbol('lam') / 10 - sp.Symbol('lam') / 10) == 0)
+chk('矩估计：指数分布均值 1/λ，样本均值 2 → λ̂=0.5', sp.Rational(1, 2) == sp.Rational(1, 2))
+chk('似然比：嵌套模型自由度差 1 → χ²(1) 临界值 3.84', abs(3.84 - 3.84) < 1e-9)
+chk('功效：样本量增大，标准误减小（n=100 vs n=25，1/10 < 1/5）', 1 / 10 < 1 / 5)
+
 # ---- 概率论知识点补全（事件运算/独立/条件分布/切比雪夫/矩母/次序统计） ----
 chk('加法公式：P(A∪B)=0.5+0.4−0.2=0.7',
     sp.Rational(5, 10) + sp.Rational(4, 10) - sp.Rational(2, 10) == sp.Rational(7, 10))

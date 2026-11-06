@@ -14,21 +14,21 @@ export const MATH_STATISTICS_COURSE: Course = {
     {
       id: 'ms-sample', title: '样本与统计量', textbookRef: '教材 第 1 章 / Casella 第 7 章', summary: '统计量与自由度',
       goals: ['算统计量', '理解无偏'],
-      lessonIds: ['statistics-basics'],
+      lessonIds: ['statistics-basics', 'sufficiency'],
       practiceTopics: ['random-variable'],
       exercises: [{ id: 'ms1-1', level: '进阶', question: '样本方差除以 n-1 的原因？', answer: '无偏', hint: '自由度。', steps: ['进', '阶'] }],
     },
     {
       id: 'ms-dist', title: '抽样分布', textbookRef: '教材 第 2 章 / Casella 第 5 章', summary: '卡方 t F',
       goals: ['识别三大分布', '查分位数'],
-      lessonIds: ['sampling-distribution'],
+      lessonIds: ['sampling-distribution', 'cramer-rao'],
       practiceTopics: ['random-variable'],
       exercises: [{ id: 'ms2-1', level: '进阶', question: '方差未知时均值标准化服从？', answer: 't 分布', hint: '自由度 n-1。', steps: ['进', '阶'] }],
     },
     {
       id: 'ms-est', title: '参数估计', textbookRef: '教材 第 3 章 / Casella 第 7 章', summary: '点估计与区间',
       goals: ['矩估计', '置信区间'],
-      lessonIds: ['parameter-estimation'],
+      lessonIds: ['parameter-estimation', 'method-of-moments', 'umvue'],
       practiceTopics: ['random-variable'],
       exercises: [{ id: 'ms3-1', level: '进阶', question: '置信区间半长公式？', answer: 'z 乘标准误', hint: '分位数。', steps: ['进', '阶'] }],
     },
@@ -42,7 +42,7 @@ export const MATH_STATISTICS_COURSE: Course = {
     {
       id: 'ms-test', title: '假设检验', textbookRef: '教材 第 5 章 / Casella 第 8 章', summary: 'p 值与两类错误',
       goals: ['写假设', '解读 p 值'],
-      lessonIds: ['hypothesis-testing'],
+      lessonIds: ['hypothesis-testing', 'likelihood-ratio-test', 'power-function'],
       practiceTopics: ['probability-classical'],
       exercises: [{ id: 'ms5-1', level: '基础', question: 'p 值小于显著性水平时？', answer: '拒绝原假设', hint: '判据。', steps: ['基', '础'] }],
     },
