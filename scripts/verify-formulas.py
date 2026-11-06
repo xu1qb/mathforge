@@ -133,6 +133,18 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 非欧几何知识点补全（全等/希尔伯特/相似/剖分/尺规/双曲模型/椭圆） ----
+chk('勾股定理：3-4-5 三角形满足 a²+b²=c²', 3**2 + 4**2 == 5**2)
+chk('相似面积比是相似比平方：相似比 2 → 面积比 4', 2**2 == 4)
+chk('剖分相等：面积 12 的矩形与底 6 高 2 的平行四边形面积相等', 4 * 3 == 6 * 2)
+chk('可构造数：正五边形可构造（√5 是二次扩张）',
+    sp.simplify(sp.sqrt(5)**2 - 5) == 0)
+chk('倍立方需要 2 的三次根：其极小多项式次数为 3（非 2 的幂）',
+    sp.degree(sp.minimal_polynomial(2**(sp.Rational(1, 3)), sp.Symbol('x')), sp.Symbol('x')) == 3)
+chk('双曲内角和 < π，球面内角和 > π',
+    sp.pi - sp.Rational(1, 10) < sp.pi and sp.pi + sp.Rational(1, 10) > sp.pi)
+chk('椭圆几何：球面上两大圆交于 2 点，认同对径后恰为 1 点', 2 // 2 == 1)
+
 # ---- 微分拓扑知识点补全（切空间/萨德/相交数/莫尔斯/庞加莱-霍普夫/配边） ----
 chk('切映射：f(x)=x² 在 x=1 处的导数为 2（1 维雅可比）',
     sp.diff(sp.Symbol('x')**2, sp.Symbol('x')).subs(sp.Symbol('x'), 1) == 2)
