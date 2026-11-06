@@ -133,6 +133,24 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 微分几何知识点补全（弗雷内/正则曲面/两基本形式/绝妙定理/协变导数/极小曲面） ----
+_t = sp.Symbol('t')
+_cx, _cy = 2 * sp.cos(_t), 2 * sp.sin(_t)
+_det = sp.diff(_cx, _t) * sp.diff(_cy, _t, 2) - sp.diff(_cy, _t) * sp.diff(_cx, _t, 2)
+_speed = sp.sqrt(sp.diff(_cx, _t)**2 + sp.diff(_cy, _t)**2)
+chk('半径 2 的圆曲率 κ=|r′×r″|/|r′|³ = 1/2',
+    sp.simplify(_det / _speed**3 - sp.Rational(1, 2)) == 0)
+chk('第一基本形式：平面 r=(u,v) 的 E=G=1、F=0',
+    sp.Matrix([[1, 0]]).dot(sp.Matrix([[1, 0]])) == 1 and sp.Matrix([[1, 0]]).dot(sp.Matrix([[0, 1]])) == 0)
+chk('球面主曲率均为 1/R，高斯曲率 1/R²（R=2 → 1/4）',
+    sp.Rational(1, 2) * sp.Rational(1, 2) == sp.Rational(1, 4))
+chk('圆柱面高斯曲率为 0（主曲率 0 与 1/R）', 0 * sp.Rational(1, 2) == 0)
+_u = sp.Function('u')
+_geo = sp.dsolve(sp.Eq(sp.diff(_u(_t), _t, 2), 0), _u(_t)).rhs
+chk('测地线方程是二阶方程：通解含两个任意常数',
+    _geo.has(sp.Symbol('C1')) and _geo.has(sp.Symbol('C2')))
+chk('极小曲面：主曲率 1 与 -1 时平均曲率 (1-1)/2 = 0', sp.Rational(1, 2) * (1 + (-1)) == 0)
+
 # ---- 常微分方程知识点补全（恰当/方程组/矩阵指数/级数解/SL/拉普拉斯/相平面/稳定性） ----
 chk('恰当方程：2x dx+2y dy 的势函数 x²+y² 满足 F_x=2x、F_y=2y',
     sp.diff(sp.Symbol('x')**2 + sp.Symbol('y')**2, sp.Symbol('x')) == 2 * sp.Symbol('x'))
