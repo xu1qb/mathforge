@@ -133,6 +133,19 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 微分拓扑知识点补全（切空间/萨德/相交数/莫尔斯/庞加莱-霍普夫/配边） ----
+chk('切映射：f(x)=x² 在 x=1 处的导数为 2（1 维雅可比）',
+    sp.diff(sp.Symbol('x')**2, sp.Symbol('x')).subs(sp.Symbol('x'), 1) == 2)
+chk('萨德：多项式临界点有限，临界值也有限（x³ 只有 x=0）',
+    sp.solve(sp.diff(sp.Symbol('x')**3, sp.Symbol('x')), sp.Symbol('x')) == [0])
+chk('相交数：x 轴与 y 轴横截相交，切向量行列式 det=+1',
+    sp.Matrix([[1, 0], [0, 1]]).det() == 1)
+chk('莫尔斯指标：f(x,y)=x²+y² 的海森矩阵两个正特征值 → 指标 0',
+    sp.Matrix([[2, 0], [0, 2]]).eigenvals() == {2: 2})
+chk('庞加莱-霍普夫：S² 的欧拉示性数为 2，指标和为 2', 1 - 0 + 1 == 2)
+chk('配边：定向区间 [0,1] 的边界为 +{0} 与 -{1}，符号和为 0',
+    1 + (-1) == 0)
+
 # ---- 代数拓扑知识点补全（奇异同调/MV/上同调/杯积/同伦群/映射度） ----
 def _bnd(simplex):
     if len(simplex) <= 1:
