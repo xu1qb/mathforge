@@ -133,6 +133,16 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 组合数学知识点补全（二项式恒等式/容斥/递推/卡特兰/分拆/波利亚） ----
+chk('帕斯卡恒等式：C(5,2)=C(4,1)+C(4,2)=4+6', sp.binomial(5, 2) == sp.binomial(4, 1) + sp.binomial(4, 2))
+chk('范德蒙德卷积：Σ C(2,k)C(3,2−k) = C(5,2)', sum(sp.binomial(2, k) * sp.binomial(3, 2 - k) for k in range(3)) == sp.binomial(5, 2))
+chk('容斥：1..100 中非 2 非 3 倍数 = 100−50−33+16 = 33', 100 - 50 - 33 + 16 == 33)
+chk('斐波那契：F₅=5 且满足 F₅=F₄+F₃', 5 == 3 + 2)
+chk('卡特兰：C₃ = C(6,3)/4 = 5', sp.binomial(6, 3) // 4 == 5)
+chk('分拆数：p(4)=5', len([[4], [3, 1], [2, 2], [2, 1, 1], [1, 1, 1, 1]]) == 5)
+chk('伯恩赛德：正方形顶点二染色的轨道数 (16+2+4+2)/4 = 6',
+    sp.Rational(16 + 2 + 4 + 2, 4) == 6)
+
 # ---- 表示论知识点补全（正则表示/正交关系/特征标表/诱导/互反/李代数） ----
 chk('正则表示：S₃ 的不可约维数平方和 1+1+4=6=|G|', 1**2 + 1**2 + 2**2 == 6)
 chk('特征标正交：S₃ 平凡与符号特征标内积 (1−3+2)/6 = 0',
