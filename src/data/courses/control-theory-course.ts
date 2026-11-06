@@ -19,7 +19,7 @@ export const CONTROL_THEORY_COURSE: Course = {
       textbookRef: '胡寿松 第 1 章 / Ogata 第 1 章',
       summary: '误差驱动控制',
       goals: ['画框图', '分析闭环'],
-      lessonIds: ['feedback-systems'],
+      lessonIds: ['feedback-systems', 'transfer-function', 'bode-nyquist'],
       practiceTopics: ['ode-solving'],
       exercises: [
         {
@@ -34,7 +34,7 @@ export const CONTROL_THEORY_COURSE: Course = {
       textbookRef: '胡寿松 第 2 章 / Ogata 第 2 章',
       summary: '一阶方程组',
       goals: ['建模', '分析能控'],
-      lessonIds: ['state-space-model'],
+      lessonIds: ['state-space-model', 'controllability-observability'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -49,7 +49,7 @@ export const CONTROL_THEORY_COURSE: Course = {
       textbookRef: '胡寿松 第 3 章 / Ogata 第 3 章',
       summary: '不求解判稳',
       goals: ['构造 V', '判稳定性'],
-      lessonIds: ['lyapunov-stability'],
+      lessonIds: ['lyapunov-stability', 'routh-hurwitz'],
       practiceTopics: ['ode-solving'],
       exercises: [
         {
@@ -64,7 +64,7 @@ export const CONTROL_THEORY_COURSE: Course = {
       textbookRef: '胡寿松 第 4 章 / Ogata 第 4 章',
       summary: '极点决定行为',
       goals: ['算极点', '判稳定'],
-      lessonIds: ['control-theory'],
+      lessonIds: ['control-theory', 'pole-placement', 'lqr-optimal'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {

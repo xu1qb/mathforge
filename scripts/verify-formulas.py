@@ -133,6 +133,22 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 控制论知识点补全（传递函数/劳斯/能控能观/极点配置/频域/LQR） ----
+_s = sp.Symbol('s')
+chk('闭环传递函数：G=1、H=1 时 G/(1+GH)=1/2',
+    sp.simplify(1 / (1 + 1 * 1) - sp.Rational(1, 2)) == 0)
+chk('劳斯：s²+3s+2 的根为 −1、−2（全在左半平面，稳定）',
+    set(sp.solve(_s**2 + 3 * _s + 2, _s)) == {-2, -1})
+chk('能控矩阵：A=diag(1,2)、B=(1,1)^T 时 [B,AB] 行列式 = 2−1 = 1 ≠ 0（能控）',
+    sp.Matrix([[1, 1], [1, 2]]).det() == 1)
+chk('能观对偶：能控矩阵行列式非零 ⇔ 能观矩阵行列式非零',
+    sp.Matrix([[1, 1], [1, 2]]).det() == sp.Matrix([[1, 1], [1, 2]]).T.det())
+chk('极点配置：A=0、B=1、极点 −2 → K=2（闭环 A−BK=−2）', 0 - 1 * 2 == -2)
+_P0 = sp.Symbol('P')
+chk('LQR 标量黎卡提：2P−P²+1=0 的两根为 1±√2，取正根 1+√2',
+    set(sp.solve(sp.Eq(2 * _P0 - _P0**2 + 1, 0), _P0)) == {1 - sp.sqrt(2), 1 + sp.sqrt(2)})
+chk('奈奎斯特：Z=N+P，开环稳定 P=0、不包围 N=0 → 闭环稳定 Z=0', 0 + 0 == 0)
+
 # ---- 运筹学知识点补全（敏感分析/运输/整数规划/DP/网络/排队） ----
 _u, _v = sp.Symbol('u', positive=True), sp.Symbol('v', positive=True)
 chk('强对偶：原问题 max x+y (x≤2,y≤3) 值 5 = 对偶 min 2u+3v (u,v≥1) 在 u=v=1 处值 5',
