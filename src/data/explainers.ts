@@ -13630,6 +13630,52 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     example: { problem: '泛性质确定的对象唯一吗？', walkthrough: ['在同构意义下唯一。'], result: '同构唯一' },
     moreExamples: [{ problem: '积由什么刻画？', walkthrough: ['到各分量的映射唯一确定。'], result: '泛性质' }],
   },
+  {
+    id: 'bounded-variation',
+    title: '有界变差函数：能写成两个单调函数之差',
+    tag: '实分析',
+    level: '竞赛',
+    essence: '有界变差函数是「总振荡有限」的函数，它恰好是两个单调递增函数之差，因此几乎处处可导。',
+    definition: '函数在区间上的变差是所有分割上相邻差绝对值之和的上确界。变差有限时称有界变差。',
+    whenToUse: ['判断变差有限', '分析单调分解', '研究可导性'],
+    theorems: [
+      { name: '若尔当分解', statement: '有界变差函数等于两个增函数之差。', },
+      { name: '几乎处处可导', statement: '有界变差函数几乎处处可导。', },
+    ],
+    steps: [
+      { title: '取分割', body: '把区间细分。', },
+      { title: '求和', body: '相邻差的绝对值。', },
+      { title: '取上确界', body: '得总变差。', },
+      { title: '做分解', body: '构造两个增函数。', },
+      { title: '用可导性', body: '几乎处处可导。', },
+    ],
+    pitfalls: ['把连续当有界变差。', '忽略上确界要取所有分割。', '混淆变差与振幅。'],
+    example: { problem: '单调函数的变差等于什么？', walkthrough: ['端点函数值之差。'], result: '端点差' },
+    moreExamples: [{ problem: '有界变差函数几乎处处可导吗？', walkthrough: ['是。'], result: '是' }],
+  },
+  {
+    id: 'maximum-modulus',
+    title: '最大模原理与施瓦茨引理',
+    tag: '复分析',
+    level: '竞赛',
+    essence: '解析函数的最大模只能在边界取到（非常数时），由此推出施瓦茨引理与许多估值。',
+    definition: '非常数解析函数在区域内不取到最大模。施瓦茨引理给出单位圆盘到自身的解析映射在原点的导数界。',
+    whenToUse: ['估计解析函数', '证明唯一性', '研究映射'],
+    theorems: [
+      { name: '最大模原理', statement: '非常数解析函数内部无最大模。', },
+      { name: '施瓦茨引理', statement: '单位圆盘自映射满足导数界。', },
+    ],
+    steps: [
+      { title: '验解析', body: '区域上解析。', },
+      { title: '找边界', body: '闭区域边界取最大。', },
+      { title: '比较', body: '内部值不超过边界。', },
+      { title: '用施瓦茨', body: '原点导数不超过一。', },
+      { title: '取等条件', body: '只有旋转映射取等。', },
+    ],
+    pitfalls: ['把最大模原理用于非常数函数内部取值。', '忽略区域有界。', '施瓦茨引理忘记归一化条件。'],
+    example: { problem: '非常数解析函数的最大模在哪里取到？', walkthrough: ['边界。'], result: '边界' },
+    moreExamples: [{ problem: '施瓦茨引理中导数绝对值不超过？', walkthrough: ['一。'], result: '1' }],
+  },
 ];
 
 

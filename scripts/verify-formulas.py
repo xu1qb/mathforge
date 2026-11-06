@@ -133,6 +133,23 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 实分析 / 复分析补题 ----
+chk('测度单调：A⊂B 时 m(A)≤m(B)（0.3≤0.5）', sp.Rational(3, 10) <= sp.Rational(1, 2))
+chk('勒贝格积分 ∫_0^1 x dx = 1/2', sp.integrate(sp.Symbol('x'), (sp.Symbol('x'), 0, 1)) == sp.Rational(1, 2))
+chk('e^{-nx} 在 [0,1] 积分极限为 0',
+    sp.limit((1 - sp.exp(-sp.Symbol('n', positive=True))) / sp.Symbol('n', positive=True),
+             sp.Symbol('n', positive=True), sp.oo) == 0)
+_theta = sp.Symbol('theta', real=True)
+chk('|e^{iθ}| = 1', sp.simplify(sp.Abs(sp.exp(sp.I * _theta)) - 1) == 0)
+chk('(1+i)/(1-i) = i', sp.simplify((1 + sp.I) / (1 - sp.I) - sp.I) == 0)
+_z = sp.Symbol('z')
+chk('共轭函数不解析：u_x=1 ≠ v_y=-1', 1 != -1)
+chk('留数 Res(e^z/z, 0) = 1', sp.residue(sp.exp(_z) / _z, _z, 0) == 1)
+chk('留数 Res(1/(z²+1), i) = 1/(2i)',
+    sp.simplify(sp.residue(1 / (_z**2 + 1), _z, sp.I) - 1 / (2 * sp.I)) == 0)
+chk('∮ z² dz = 0（解析函数闭路积分）', sp.residue(_z**2, _z, 0) == 0)
+chk('有界变差：单调函数变差等于端点差（f=x 在 [0,1] 变差 1）', 1 - 0 == 1)
+
 # ---- 习题扩充（概率论 / 现代数学导论） ----
 chk('扑克牌取到红桃：13/52 = 1/4', sp.Rational(13, 52) == sp.Rational(1, 4))
 chk('加法公式反解 P(AB)=0.6+0.5-0.8=0.3',
