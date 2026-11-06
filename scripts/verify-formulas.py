@@ -133,6 +133,28 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 数学物理知识点补全（拉普拉斯/分离变量/极值原理/特殊函数/傅里叶变换/格林） ----
+_x, _y, _t = sp.Symbol('x'), sp.Symbol('y'), sp.Symbol('t')
+chk('拉普拉斯：u=x²−y² 满足 u_xx+u_yy=0',
+    sp.diff(_x**2 - _y**2, _x, 2) + sp.diff(_x**2 - _y**2, _y, 2) == 0)
+chk('分离变量：u=sin(x)e^{−t} 满足热方程 u_t=u_xx',
+    sp.simplify(sp.diff(sp.sin(_x) * sp.exp(-_t), _t)
+                - sp.diff(sp.sin(_x) * sp.exp(-_t), _x, 2)) == 0)
+chk('热核：G(x,t)=e^{−x²/(4t)}/√(4πt) 积分为 1（t=1 时）',
+    sp.simplify(sp.integrate(sp.exp(-_x**2 / 4) / sp.sqrt(4 * sp.pi), (_x, -sp.oo, sp.oo)) - 1) == 0)
+chk('勒让德正交：∫_{−1}^{1} P₁(x)P₂(x)dx = 0',
+    sp.integrate(_x * (3 * _x**2 - 1) / 2, (_x, -1, 1)) == 0)
+chk('傅里叶变换微分法则：d/dx → iξ（验证 e^{iξx} 的导数）',
+    sp.simplify(sp.diff(sp.exp(sp.I * sp.Symbol('xi') * _x), _x)
+                - sp.I * sp.Symbol('xi') * sp.exp(sp.I * sp.Symbol('xi') * _x)) == 0)
+_xr = sp.Symbol('x', real=True)
+_G = sp.diff(sp.Abs(_xr) / 2, _xr)
+chk('格林：|x|/2 的导数在 x=±1 处为 ±1/2（斜率差为 1，对应 δ）',
+    sp.simplify(_G.subs(_xr, 1) - sp.Rational(1, 2)) == 0
+    and sp.simplify(_G.subs(_xr, -1) + sp.Rational(1, 2)) == 0)
+chk('波动方程：u=sin(x−t) 满足 u_tt=u_xx',
+    sp.simplify(sp.diff(sp.sin(_x - _t), _t, 2) - sp.diff(sp.sin(_x - _t), _x, 2)) == 0)
+
 # ---- 流体力学知识点补全（连续/欧拉/涡量/雷诺数/势流/湍流） ----
 _x, _y = sp.Symbol('x'), sp.Symbol('y')
 chk('连续方程：不可压二维流 u=x, v=−y 满足 u_x+v_y=0',
