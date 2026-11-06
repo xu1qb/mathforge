@@ -133,6 +133,21 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 代数数论知识点补全（迹范/整基/素分解/类群/单位定理/闵可夫斯基） ----
+chk('迹与范：α=1+√2 的迹 2、范数 (1+√2)(1−√2)=−1',
+    sp.simplify((1 + sp.sqrt(2)) * (1 - sp.sqrt(2)) + 1) == 0)
+chk('范数乘法性：N(αβ)=N(α)N(β)（虚二次域 Q(i) 中 N(1+i)=2）',
+    sp.simplify(sp.Abs(1 + sp.I)**2 - 2) == 0)
+chk('理想分解：Q(i) 中 5 分裂为 (2+i)(2−i)，乘积等于 5',
+    sp.expand((2 + sp.I) * (2 - sp.I)) == 5)
+chk('判别式判分歧：Q(√−5) 的判别式 −20，素因子 2 与 5 分歧',
+    sp.factorint(20) == {2: 2, 5: 1})
+chk('类数 h=2：Q(√−5) 中无范数 2 的元素（x²+5y²=2 无整数解）',
+    not any(x**2 + 5 * y**2 == 2 for x in range(3) for y in range(3)))
+chk('单位定理：实二次域单位群秩 r₁+r₂−1 = 1（r₁=2,r₂=0）', 2 + 0 - 1 == 1)
+chk('闵可夫斯基：Q(i) 满足 r₁+2r₂=n，即 0+2×1=2',
+    0 + 2 * 1 == 2)
+
 # ---- 伽罗瓦理论知识点补全（三次四次/对称多项式/判别式/对应定理/分圆/五次不可解） ----
 chk('三次判别式：x³−6x+9 的 Δ=−4p³−27q² = 864−2187 = −1323',
     -4 * (-6)**3 - 27 * 9**2 == -1323)

@@ -19,7 +19,7 @@ export const ALGEBRAIC_NUMBER_COURSE: Course = {
       textbookRef: 'Neukirch 第 1 章 / 冯克勤 第 1 章',
       summary: '首一整系数多项式的根',
       goals: ['判断代数整数', '求整数环'],
-      lessonIds: ['algebraic-integers'],
+      lessonIds: ['algebraic-integers', 'trace-norm', 'integral-basis'],
       practiceTopics: ['nt-gcd'],
       exercises: [
         {
@@ -34,7 +34,7 @@ export const ALGEBRAIC_NUMBER_COURSE: Course = {
       textbookRef: 'Neukirch 第 2 章 / 冯克勤 第 2 章',
       summary: '用理想恢复唯一性',
       goals: ['分解理想', '理解分歧指数'],
-      lessonIds: ['ideal-factorization'],
+      lessonIds: ['ideal-factorization', 'prime-splitting'],
       practiceTopics: ['nt-gcd'],
       exercises: [
         {
@@ -49,7 +49,7 @@ export const ALGEBRAIC_NUMBER_COURSE: Course = {
       textbookRef: 'Neukirch 第 3 章 / 冯克勤 第 3 章',
       summary: '诺特整闭维数一',
       goals: ['判断戴德金', '理解类群'],
-      lessonIds: ['dedekind-domains'],
+      lessonIds: ['dedekind-domains', 'class-number', 'minkowski-bound'],
       practiceTopics: ['nt-gcd'],
       exercises: [
         {
@@ -64,7 +64,7 @@ export const ALGEBRAIC_NUMBER_COURSE: Course = {
       textbookRef: 'Neukirch 第 4 章 / 冯克勤 第 4 章',
       summary: '重指数与判别式',
       goals: ['判断分歧', '用判别式'],
-      lessonIds: ['ramification'],
+      lessonIds: ['ramification', 'dirichlet-unit'],
       practiceTopics: ['nt-gcd'],
       exercises: [
         {
