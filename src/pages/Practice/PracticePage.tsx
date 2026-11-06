@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import MathInputField from '@/components/MathInputField';
+import RichMath from '@/components/RichMath';
 import {
   Select,
   SelectContent,
@@ -1345,7 +1346,13 @@ export default function PracticePage() {
                   <div className="board-surface board-surface bg-[var(--board-bg)] rounded-xl p-6 text-center">
                     <div className="text-xs text-emerald-400/70 font-medium tracking-wider mb-3">题目</div>
                     <div className="text-emerald-100 text-lg leading-relaxed">
-                      <MathRenderer expression={question.questionLatex} displayMode />
+                      {courseMode ? (
+                        <div className="text-center text-lg leading-relaxed">
+                          <RichMath text={question.questionLatex} />
+                        </div>
+                      ) : (
+                        <MathRenderer expression={question.questionLatex} displayMode />
+                      )}
                     </div>
                   </div>
 
@@ -1371,7 +1378,9 @@ export default function PracticePage() {
                           placeholder={
                             question.answer.trim().startsWith('[[')
                               ? '矩阵请按 [[1,2],[3,4]] 输入'
-                              : currentTopic.answerPlaceholder
+                              : courseMode
+                                ? '输入答案（数值 / 表达式 / 关键结论）'
+                                : currentTopic.answerPlaceholder
                           }
                           disabled={isChecked}
                           showPalette

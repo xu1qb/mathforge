@@ -46,7 +46,8 @@ export const COURSE_EXERCISES: CourseExerciseItem[] = COURSES.flatMap((course) =
       id: 'course-' + course.id + '-' + ex.id,
       topicKey: 'course:' + course.id,
       question: toPlainText(ex.question),
-      questionLatex: ex.question.replace(/^\$|\$/g, ''),
+      // 课程题的题干是「中文 + $...$ 混排」，保留 $ 交给 RichMath 渲染
+      questionLatex: ex.question,
       answer: toPlainAnswer(ex.answer),
       answerDisplay: ex.answer,
       answerType: /^[\d\s+\-*/().^]+$/.test(toPlainAnswer(ex.answer)) ? 'numeric' : 'expression',
