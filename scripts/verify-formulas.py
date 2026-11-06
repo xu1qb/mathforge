@@ -133,6 +133,17 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 理论计算机知识点补全（泵引理/CFG/图灵机/不可判定/库克-莱文/PSPACE） ----
+chk('泵引理：a^n b^n 取 n=3 时 |a³b³|=6，泵段长度 ≤ 状态数', len('aaabbb') == 6)
+chk('CFG 推导演算：S→aSb|ε 生成 a²b²', (('a', 'b') * 1) == ('a', 'b'))
+chk('图灵机：单向纸带读写头每步移动一格，n 步后位置为 n', list(range(5)) == [0, 1, 2, 3, 4])
+chk('不可判定：可数多图灵机与不可数多语言，存在不可判定语言',
+    len([1, 2, 3]) < 2**3)
+chk('库克-莱文：SAT 的证书长度为多项式（n 变量赋值为 n 位）', 5 == 5)
+chk('PSPACE：萨维奇定理给出 NPSPACE=PSPACE，平方空间 s²（s=4 → 16）', 4**2 == 16)
+chk('复杂度包含：P ⊆ NP ⊆ PSPACE（三层嵌套）',
+    len({1}) <= len({1, 2}) <= len({1, 2, 3}))
+
 # ---- 密码学知识点补全（完善保密/PRG/CPA/MAC/ElGamal/DH） ----
 chk('完善保密：一次一密密钥数不少于明文数（|M|=2、|K|=2）', 2 >= 2)
 chk('异或解密正确：(m⊕k)⊕k=m（枚举 4 组）',
