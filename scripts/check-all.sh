@@ -35,8 +35,13 @@ fi
 
 step "4/9 公式正确性（数学断言 + 生成器复核）"
 WS="$(cd .. && pwd)"
+# sympy 工具链不在仓库内：优先用同级 .tooling/py，其次回退到原 workspace 路径
+PY_TOOLING="${MATH_PY_TOOLING:-$WS/.tooling/py}"
+if [ ! -d "$PY_TOOLING" ]; then
+  PY_TOOLING="$HOME/Documents/deepseek-harness/default-workspace/.tooling/py"
+fi
 if [ -d "$WS/.tooling/py" ]; then
-  if PYTHONPATH="$WS/.tooling/py" python3 scripts/verify-formulas.py >"$TMP/mf-check-formula.log" 2>&1; then
+  if PYTHONPATH="$PY_TOOLING" python3 scripts/verify-formulas.py >"$TMP/mf-check-formula.log" 2>&1; then
     ok "formulas（$(grep -o '[0-9]*/[0-9]* passed' "$TMP/mf-check-formula.log" | tail -1)）"
   else
     bad "formulas"; grep '^FAIL' "$TMP/mf-check-formula.log" | sed 's/^/    /'
@@ -99,7 +104,7 @@ fi
 
 step "8/9 服务端（校验与生成链路）"
 # 强制 mock：测试绝不能打到真实模型（会花钱且结果不稳定）
-if LLM_API_KEY= DUAL_SOLVE=0 AGENT_MODE=0 CACHE_DIR=/tmp/mf-test-cache ./node_modules/.bin/tsx server/test.ts >"$TMP/mf-check-server.log" 2>&1; then
+if LLM_API_KEY= DUAL_SOLVE=0 AGENT_MODE=0 CACHE_DIR=/tmp/mf-test-cache MATH_PYTHON_PATH="$PY_TOOLING" ./node_modules/.bin/tsx server/test.ts >"$TMP/mf-check-server.log" 2>&1; then
   ok "server（$(tail -1 "$TMP/mf-check-server.log")）"
 else
   bad "server"; tail -6 "$TMP/mf-check-server.log" | sed 's/^/    /'
