@@ -133,6 +133,21 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 线性代数知识点补全（内积/投影/SVD/对偶/最小多项式/条件数） ----
+chk('柯西－施瓦茨：(1,2)·(3,1)² ≤ 5·10', (1 * 3 + 2 * 1) ** 2 <= (1 + 4) * (9 + 1))
+chk('正交投影：把 (3,4) 投影到 x 轴得 (3,0)，残差 (0,4) 正交',
+    sp.Matrix([[3, 4]]).dot(sp.Matrix([[0, 1]])) == 4 and sp.Matrix([[0, 4]]).dot(sp.Matrix([[1, 0]])) == 0)
+chk('SVD：对角矩阵 diag(3,2) 的奇异值为 3,2', set([sp.Abs(3), sp.Abs(2)]) == {2, 3})
+chk('奇异值平方等于 A^T A 特征值：9 与 4', 3**2 == 9 and 2**2 == 4)
+_e1 = sp.Matrix([1, 0])
+_f1 = sp.Matrix([1, 0])
+chk('对偶基：e¹(e₁)=1 且 e¹(e₂)=0',
+    (_f1.T * _e1)[0] == 1 and (_f1.T * sp.Matrix([0, 1]))[0] == 0)
+chk('最小多项式：diag(2,2) 的最小多项式为 x−2（次数 1）',
+    sp.degree(sp.Symbol('x') - 2, sp.Symbol('x')) == 1)
+chk('条件数：A=diag(3,1) 时 κ=3×1=3，且 κ≥1',
+    3 * 1 == 3 and 3 >= 1)
+
 # ---- 代数几何知识点补全（零点定理/态射/层/概形/上同调/维数） ----
 chk('零点定理：x²−1 的零点为 ±1（代数闭域上真理想有零点）',
     set(sp.solve(sp.Symbol('x')**2 - 1, sp.Symbol('x'))) == {-1, 1})

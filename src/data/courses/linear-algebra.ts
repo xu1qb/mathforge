@@ -635,7 +635,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
       textbookRef: '第 5 章',
       summary: '找到「不被变换改变方向」的那些向量，矩阵就变简单了',
       goals: ['求特征值与特征向量', '判断能否对角化', '理解相似与迹、行列式的关系'],
-      lessonIds: ['eigen-basics', 'eigen-diagonalization', 'jordan-form', 'eigen-properties', 'matrix-power', 'quadratic-form', 'positive-definite', 'inertia-theorem', 'orthogonal-diagonalization', 'rayleigh-quotient'],
+      lessonIds: ['eigen-basics', 'eigen-diagonalization', 'jordan-form', 'eigen-properties', 'matrix-power', 'minimal-polynomial', 'quadratic-form', 'positive-definite', 'inertia-theorem', 'orthogonal-diagonalization', 'rayleigh-quotient'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -895,7 +895,7 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
         '求多项式空间、矩阵空间的维数',
         '写出线性变换在给定基下的矩阵',
       ],
-      lessonIds: ['linear-space', 'transition-matrix', 'linear-transformation', 'kernel-image', 'isomorphism'],
+      lessonIds: ['linear-space', 'transition-matrix', 'linear-transformation', 'kernel-image', 'isomorphism', 'dual-space'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -1050,6 +1050,25 @@ export const LINEAR_ALGEBRA_COURSE: Course = {
           answer: '$\\begin{pmatrix}2&0\\\\0&1\\end{pmatrix}$',
           hint: '分别看基向量的像。',
           steps: ['第一个基向量映到 $(2,0)$。', '第二个映到 $(0,1)$。'],
+        },
+      ],
+    },
+    {
+      id: 'la-inner',
+      title: '内积、SVD 与数值',
+      textbookRef: '同济 第 6 章 / Strang 第 4–7 章',
+      summary: '正交性、投影、奇异值分解与条件数',
+      goals: ['算内积与投影', '用 SVD', '估计条件数'],
+      lessonIds: ['inner-product', 'orthogonal-projection', 'svd', 'matrix-norms'],
+      practiceTopics: ['matrix-op'],
+      exercises: [
+        {
+          id: 'la-inner-1',
+          level: '进阶',
+          question: '单位矩阵的条件数是多少？',
+          answer: '1',
+          hint: '范数为 1，逆也是单位矩阵。',
+          steps: ['$\|I\|=1$。', '逆仍是单位矩阵。', '乘积为一。'],
         },
       ],
     },
