@@ -1719,6 +1719,39 @@ export function checkPracticeAnswer(
 
   if (!userNorm) return { correct: false, message: '请输入答案' };
 
+  // 文字类答案（课程习题常见，如「当前解最优」）：按规范化文本比对，支持「或/、」并列
+  if (/[\u4e00-\u9fa5]/.test(question.answer)) {
+    const norm = (s: string) =>
+      s
+        .replace(/\s+/g, '')
+        .replace(/[，。；：、""''（）()\[\]【】]/g, '')
+        .replace(/[.。!！?？]$/, '');
+    const targets = new Set<string>();
+    for (const part of question.answer.split(/[或/、;；,，]/)) {
+      const whole = norm(part);
+      const head = norm(part.split(/[（(]/)[0]);
+      if (whole) targets.add(whole);
+      if (head) targets.add(head);
+    }
+    const user = norm(userAnswer);
+    if (user.length > 0) {
+      // 只允许「完全一致」或「用户答案里包含完整参考答案」，不做反向包含：
+      // 否则「可逆」会被判成「不可逆」的正确答案。
+      const hit = [...targets].find(
+        (t) =>
+          t === user ||
+          (t.length >= 2 && user.includes(t)) ||
+          // 单字结论（「是」）：允许用户在其后补充说明，但不能是「不是」
+          (t.length === 1 && /[\u4e00-\u9fa5]/.test(t) && user.startsWith(t))
+      );
+      if (hit) return { correct: true, message: '回答正确！' };
+    }
+    return {
+      correct: false,
+      message: '与参考答案不一致，可点「看答案」对照',
+    };
+  }
+
   // 矩阵型答案：写成 [[a,b],[c,d]]，逐元素比较
   if (/^\s*\[/.test(question.answer.trim())) {
     const parsed = parseMatrixAnswer(question.answer, userNorm);
