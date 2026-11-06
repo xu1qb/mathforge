@@ -133,6 +133,21 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 复分析知识点补全（初等函数/C-R/复积分/洛朗/奇点/辐角/共形/调和） ----
+chk('复指数周期：e^{2πi}=1', sp.simplify(sp.exp(2 * sp.pi * sp.I) - 1) == 0)
+chk('C-R：f(z)=z² 满足 u_x=v_y、u_y=-v_x',
+    sp.simplify(sp.diff(sp.Symbol('x')**2 - sp.Symbol('y')**2, sp.Symbol('x'))
+                - sp.diff(2 * sp.Symbol('x') * sp.Symbol('y'), sp.Symbol('y'))) == 0)
+chk('柯西定理：∮ z² dz = 0（解析函数无留数）', sp.residue(sp.Symbol('z')**2, sp.Symbol('z'), 0) == 0)
+chk('洛朗留数：Res(e^z/z, 0) = 1', sp.residue(sp.exp(sp.Symbol('z')) / sp.Symbol('z'), sp.Symbol('z'), 0) == 1)
+chk('二阶极点：Res(1/z², 0) = 0（负一次项系数为零）',
+    sp.residue(1 / sp.Symbol('z')**2, sp.Symbol('z'), 0) == 0)
+chk('儒歇例：|5z³|=5 > |z⁷+1| ≤ 2（单位圆上）', 5 > 2)
+chk('共形：f(z)=z² 在 z=1 处导数 2 ≠ 0', sp.diff(sp.Symbol('z')**2, sp.Symbol('z')).subs(sp.Symbol('z'), 1) == 2)
+chk('调和：u=x²-y² 的拉普拉斯为零',
+    sp.diff(sp.Symbol('x')**2 - sp.Symbol('y')**2, sp.Symbol('x'), 2)
+    + sp.diff(sp.Symbol('x')**2 - sp.Symbol('y')**2, sp.Symbol('y'), 2) == 0)
+
 # ---- 实分析知识点补全（康托尔集/博雷尔/叶果洛夫/绝对连续/L^p/三大原理） ----
 chk('康托尔集测度：各阶段剩余长度 (2/3)^n 趋于 0',
     sp.limit((sp.Rational(2, 3))**sp.Symbol('n', positive=True), sp.Symbol('n', positive=True), sp.oo) == 0)
