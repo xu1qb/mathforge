@@ -133,6 +133,24 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 量子数学知识点补全（量子比特/量子门/测量/不可克隆/QFT/Grover） ----
+_sq2 = 1 / sp.sqrt(2)
+chk('量子比特归一化：|α|²+|β|² = 1（(|0⟩+|1⟩)/√2）', sp.simplify(2 * _sq2**2 - 1) == 0)
+_H = sp.Matrix([[1, 1], [1, -1]]) / sp.sqrt(2)
+chk('Hadamard 是酉矩阵：H†H = I', sp.simplify(_H.H * _H) == sp.eye(2))
+_X = sp.Matrix([[0, 1], [1, 0]])
+chk('Pauli X 酉性：X² = I', sp.simplify(_X * _X) == sp.eye(2))
+_psi = sp.Matrix([_sq2, _sq2])
+chk('测量概率：|+⟩ 测得 0 的概率 = 1/2', sp.simplify(abs(_psi[0])**2 - sp.Rational(1, 2)) == 0)
+_plus = sp.Matrix([_sq2, _sq2])
+_clone_linear = sp.Matrix([_sq2, 0, 0, _sq2])          # 线性性给出的像 (|00⟩+|11⟩)/√2
+_clone_true = sp.kronecker_product(_plus, _plus)        # 真正复制 |+⟩|+⟩
+chk('不可克隆：线性性给出的像 ≠ |+⟩|+⟩（复制映射非线性）',
+    sp.simplify(_clone_linear - _clone_true) != sp.zeros(4, 1))
+chk('QFT：N=4 时门数 O(log²N)=4（2²=4）', int(sp.log(4, 2))**2 == 4)
+chk('Grover：N=100 时查询数约 (π/4)·10 ≈ 7.85，取 7 或 8',
+    int(3.14159 / 4 * 10) == 7)
+
 # ---- 数据科学知识点补全（线性回归/logistic/偏差方差/交叉验证/PCA/聚类） ----
 import numpy as _np
 _X = _np.array([[1.0, 0.0], [1.0, 1.0], [1.0, 2.0]])
