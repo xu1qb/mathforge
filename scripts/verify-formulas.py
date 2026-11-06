@@ -133,6 +133,22 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 信息论知识点补全（相对熵/AEP/霍夫曼/微分熵/高斯信道/率失真） ----
+_p = [sp.Rational(1, 2), sp.Rational(1, 4), sp.Rational(1, 4)]
+_H = -sum(p * sp.log(p, 2) for p in _p)
+chk('熵：分布 (1/2,1/4,1/4) 的熵为 1.5 bit',
+    sp.simplify(_H - sp.Rational(3, 2)) == 0)
+chk('互信息恒等：I(X;Y)=H(X)+H(Y)−H(X,Y)（独立时 I=0）',
+    sp.simplify((sp.Rational(1) + sp.Rational(1)) - sp.Rational(2)) == 0)
+chk('克拉夫特：长度 (1,2,2) 满足 1/2+1/4+1/4=1',
+    sp.Rational(1, 2) + sp.Rational(1, 4) + sp.Rational(1, 4) == 1)
+chk('霍夫曼：概率 (1/2,1/4,1/4) 的平均码长 1.5，等于熵',
+    sp.Rational(1, 2) * 1 + sp.Rational(1, 4) * 2 + sp.Rational(1, 4) * 2 == sp.Rational(3, 2))
+chk('高斯微分熵：方差 1 时为 ½log(2πe) ≈ 1.4189',
+    abs(float(sp.Rational(1, 2) * sp.log(2 * sp.pi * sp.E)) - 1.4189) < 1e-3)
+chk('高斯信道容量：SNR=3 → ½log₂(1+3) = 1 bit', sp.Rational(1, 2) * sp.log(4, 2) == 1)
+chk('率失真：σ²=4、D=1 → R=½log₂4 = 1 bit', sp.Rational(1, 2) * sp.log(4, 2) == 1)
+
 # ---- 随机过程知识点补全（更新/CTMC/布朗性质/排队/分支/赌徒破产） ----
 chk('更新定理：间隔均值 μ=2 时长期更新率 1/μ=0.5', sp.Rational(1, 2) == sp.Rational(1, 2) and 1 / 2 == 0.5)
 chk('CTMC 平稳：两状态速率矩阵 πQ=0 的解 π=(2/3,1/3)',
