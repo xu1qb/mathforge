@@ -144,9 +144,10 @@ const main = async () => {
         );
 
       let info = await readInfo();
-      // 空白页重试一次：慢编译或异步渲染都可能让首帧偏空
-      if ((info.text ?? 0) < 30) {
-        await sleep(2500);
+      // 轮询等待首屏渲染完成：内容变多后首次渲染可能慢于固定等待，
+      // 这里等到正文超过 80 字符（或 8 秒超时）再判空白。
+      for (let i = 0; i < 32 && (info.text ?? 0) < 80; i++) {
+        await sleep(250);
         info = await readInfo();
       }
       const shot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true });

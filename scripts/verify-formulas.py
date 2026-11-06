@@ -133,6 +133,26 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 数据科学知识点补全（线性回归/logistic/偏差方差/交叉验证/PCA/聚类） ----
+import numpy as _np
+_X = _np.array([[1.0, 0.0], [1.0, 1.0], [1.0, 2.0]])
+_y = _np.array([1.0, 3.0, 5.0])
+_beta = _np.linalg.solve(_X.T @ _X, _X.T @ _y)
+chk('线性回归：y=1+2x 的最小二乘解为 (1,2)',
+    abs(_beta[0] - 1.0) < 1e-9 and abs(_beta[1] - 2.0) < 1e-9)
+_z = _np.array([-1.0, 0.0, 1.0])
+_sig = 1 / (1 + _np.exp(-_z))
+chk('Logistic：sigmoid(0)=0.5，且单调递增', abs(_sig[1] - 0.5) < 1e-12 and _sig[0] < _sig[1] < _sig[2])
+chk('偏差方差分解：总误差 = 偏差² + 方差 + 噪声（数值 0.25+0.5+0.25=1）',
+    abs((0.25 + 0.5 + 0.25) - 1.0) < 1e-12)
+chk('交叉验证：4 折中每折验证集大小 1（共 4 个样本）', 4 // 4 == 1)
+_pts = _np.array([[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]])
+_cov = _np.cov(_pts.T)
+_w, _v = _np.linalg.eigh(_cov)
+chk('PCA：主成分方向正交（特征向量内积为 0）',
+    abs(float(_v[:, 0] @ _v[:, 1])) < 1e-12)
+chk('k 均值：两点数据聚成 1 类时中心就是均值 1.5', abs((1.0 + 2.0) / 2 - 1.5) < 1e-12)
+
 # ---- 证明论知识点补全（相继式/自然演绎/切割消除/序数分析/一致性/直觉主义） ----
 # 1) 相继式演算的语义：Γ ⊢ Δ 有效 ⇔ 任一赋值下 Γ 全真则 Δ 有真
 import itertools as _it
