@@ -38,6 +38,12 @@ export const FUNCTIONAL_ANALYSIS_COURSE: Course = {
           hint: '取分量绝对值最大者。',
           steps: ['两个分量绝对值都是 1。', '最大范数为 1。'],
         },
+        {
+          id: 'fa1-2', level: '基础', question: '向量 $(1,-1)$ 的欧氏范数是多少？', answer: '$\\sqrt{2}$', hint: '平方和开根。', steps: ['$1+1=2$。', '开根得 $\\sqrt2$。'],
+        },
+        {
+          id: 'fa1-3', level: '进阶', question: '范数必须满足哪三条性质？', answer: '正定、齐次、三角不等式', hint: '定义。', steps: ['正定性。', '齐次性。', '三角不等式。'],
+        },
       ],
     },
     {
@@ -56,6 +62,12 @@ export const FUNCTIONAL_ANALYSIS_COURSE: Course = {
           answer: '$(1,0)$',
           hint: '保留 $x$ 分量。',
           steps: ['$x$ 轴是闭子空间。', '投影为 $(1,0)$。'],
+        },
+        {
+          id: 'fa2-2', level: '进阶', question: '两个正交向量的范数平方满足什么关系？', answer: '相加', hint: '毕达哥拉斯恒等式。', steps: ['内积为零。', '展开交叉项消失。'],
+        },
+        {
+          id: 'fa2-3', level: '基础', question: '把 $(2,3)$ 投影到 $x$ 轴，结果是什么？', answer: '$(2,0)$', hint: '保留第一个分量。', steps: ['$x$ 轴为闭子空间。', '投影为 $(2,0)$。'],
         },
       ],
     },
@@ -76,6 +88,12 @@ export const FUNCTIONAL_ANALYSIS_COURSE: Course = {
           hint: '取单位球上像的范数上确界。',
           steps: ['像的范数是原像两倍。', '上确界为 2。'],
         },
+        {
+          id: 'fa3-2', level: '进阶', question: '三倍恒等算子的算子范数是多少？', answer: '$3$', hint: '像的范数为三倍。', steps: ['单位球上像范数上确界为 3。'],
+        },
+        {
+          id: 'fa3-3', level: '进阶', question: '线性算子连续与有界是什么关系？', answer: '等价', hint: '基本定理。', steps: ['连续推出有界。', '有界推出连续。'],
+        },
       ],
     },
     {
@@ -94,6 +112,12 @@ export const FUNCTIONAL_ANALYSIS_COURSE: Course = {
           answer: '\\{2,3\\}',
           hint: '特征值即对角元。',
           steps: ['对角矩阵特征值为对角元。', '谱是两点集合。'],
+        },
+        {
+          id: 'fa4-2', level: '进阶', question: '对角元为 $1,4$ 的对角矩阵的谱是什么？', answer: '$\\{1,4\\}$', hint: '特征值即对角元。', steps: ['特征值为 1 与 4。'],
+        },
+        {
+          id: 'fa4-3', level: '竞赛', question: '紧自伴算子的特征向量能构成什么？', answer: '正交基', hint: '谱定理。', steps: ['特征向量正交。', '且完备。'],
         },
       ],
     },

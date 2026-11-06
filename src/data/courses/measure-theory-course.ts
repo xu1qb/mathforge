@@ -38,6 +38,12 @@ export const MEASURE_THEORY_COURSE: Course = {
           hint: '区间长度。',
           steps: ['区间可测。', '长度为一。'],
         },
+        {
+          id: 'mt1-2', level: '基础', question: '闭区间 $[0,1]$ 的勒贝格测度是多少？', answer: '$1$', hint: '区间长度。', steps: ['区间可测。', '长度为一。'],
+        },
+        {
+          id: 'mt1-3', level: '进阶', question: '外测度满足次可加性吗？', answer: '满足', hint: '$m^*(A\\cup B)\\le m^*(A)+m^*(B)$。', steps: ['覆盖并集可用两者覆盖之并。', '因此次可加。'],
+        },
       ],
     },
     {
@@ -56,6 +62,12 @@ export const MEASURE_THEORY_COURSE: Course = {
           answer: '能，且唯一',
           hint: '扩张定理。',
           steps: ['区间构成半环。', '长度是预测度。', '扩张唯一。'],
+        },
+        {
+          id: 'mt2-2', level: '进阶', question: '区间长度作为预测度，其扩张得到的测度唯一吗？', answer: '唯一', hint: '满足有限性条件。', steps: ['区间族生成博雷尔 σ 代数。', '扩张唯一。'],
+        },
+        {
+          id: 'mt2-3', level: '基础', question: '计数测度在单点集上的值是多少？', answer: '$1$', hint: '按定义。', steps: ['单点计数为一。'],
         },
       ],
     },
@@ -76,6 +88,12 @@ export const MEASURE_THEORY_COURSE: Course = {
           hint: '面积。',
           steps: ['面积为 1。', '累次积分也是 1。'],
         },
+        {
+          id: 'mt3-2', level: '基础', question: '单位正方形在乘积测度下的测度是多少？', answer: '$1$', hint: '边长之积。', steps: ['$1\\times1=1$。'],
+        },
+        {
+          id: 'mt3-3', level: '进阶', question: '富比尼定理换序需要什么条件？', answer: '函数可积（或非负）', hint: '绝对可积。', steps: ['非负时用托内利。', '一般情形要求可积。'],
+        },
       ],
     },
     {
@@ -94,6 +112,12 @@ export const MEASURE_THEORY_COURSE: Course = {
           answer: '$2$',
           hint: '写成积分形式。',
           steps: ['$\\mu=2\\lambda$。', '密度为常数 2。'],
+        },
+        {
+          id: 'mt4-2', level: '基础', question: '测度 $\\mu=3\\lambda$ 关于 $\\lambda$ 的密度是多少？', answer: '$3$', hint: '常值密度。', steps: ['写成积分形式。', '被积函数为 3。'],
+        },
+        {
+          id: 'mt4-3', level: '进阶', question: '绝对连续的定义是什么？', answer: '$\\nu$ 的零测集也是 $\\mu$ 的零测集', hint: '零测集传递。', steps: ['$\\nu(A)=0\\Rightarrow\\mu(A)=0$。'],
         },
       ],
     },

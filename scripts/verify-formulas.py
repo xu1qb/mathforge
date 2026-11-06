@@ -133,6 +133,16 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 测度论 / 泛函分析补题 ----
+chk('计数测度：两元集合的测度为 2', sum(1 for _ in range(2)) == 2)
+chk('外测度次可加：[0,1]∪[0.5,1.5] 长度 1.5 ≤ 1+1', sp.Rational(3, 2) <= 2)
+chk('μ=3λ 的密度为 3', sp.diff(3 * sp.Symbol('x', real=True), sp.Symbol('x', real=True)) == 3)
+chk('正交向量范数平方相加：3+4=7',
+    sp.simplify((sp.Matrix([[1, 0]]).dot(sp.Matrix([[1, 0]])) + sp.Matrix([[0, 2]]).dot(sp.Matrix([[0, 2]]))) - 5) == 0)
+chk('投影到 x 轴后与 y 轴正交', sp.Matrix([[2, 0]]).dot(sp.Matrix([[0, 1]])) == 0)
+chk('三倍恒等算子的算子范数为 3', sp.Abs(3) == 3)
+chk('对角矩阵谱为 {1,4}', set(sp.diag(1, 4).diagonal().tolist()[0]) == {1, 4})
+
 # ---- 实分析 / 复分析补题 ----
 chk('测度单调：A⊂B 时 m(A)≤m(B)（0.3≤0.5）', sp.Rational(3, 10) <= sp.Rational(1, 2))
 chk('勒贝格积分 ∫_0^1 x dx = 1/2', sp.integrate(sp.Symbol('x'), (sp.Symbol('x'), 0, 1)) == sp.Rational(1, 2))

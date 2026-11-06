@@ -13676,6 +13676,44 @@ export const EXPLAINER_TOPICS: ExplainerTopic[] = [
     example: { problem: '非常数解析函数的最大模在哪里取到？', walkthrough: ['边界。'], result: '边界' },
     moreExamples: [{ problem: '施瓦茨引理中导数绝对值不超过？', walkthrough: ['一。'], result: '1' }],
   },
+  {
+    id: 'signed-measures', title: '符号测度与 Hahn－Jordan 分解', tag: '测度论', level: '竞赛',
+    essence: '符号测度允许取负值。Hahn 分解把空间分成正负两块，Jordan 分解再把符号测度写成两个正测度之差。', definition: '符号测度是可列可加但可取负值的集函数。Hahn 分解给出正集与负集的划分，Jordan 分解给出唯一的两正测度之差。',
+    whenToUse: ['处理带符号的测度', '分解电荷分布', '研究绝对连续'],
+    theorems: [
+      { name: 'Hahn 分解', statement: '空间可分成正集与负集。', },
+      { name: 'Jordan 分解', statement: '符号测度等于两个正测度之差。', },
+    ],
+    steps: [
+      { title: '找正集', body: '测度非负的集合。', },
+      { title: '找负集', body: '测度非正的集合。', },
+      { title: '验证划分', body: '两者不交且并为全空间。', },
+      { title: '构造正负部', body: '由划分定义。', },
+      { title: '得分解', body: '符号测度等于正部减负部。', },
+    ],
+    pitfalls: ['把符号测度当正测度。', 'Hahn 分解不唯一但正负部唯一。', '忽略可列可加。'],
+    example: { problem: '符号测度的 Jordan 分解唯一吗？', walkthrough: ['正负部唯一。'], result: '唯一' },
+    moreExamples: [{ problem: 'Hahn 分解把空间分成什么？', walkthrough: ['正集与负集。'], result: '正负两块' }],
+  },
+  {
+    id: 'uniform-boundedness', title: '一致有界原理：逐点有界推出等度有界', tag: '泛函分析', level: '竞赛',
+    essence: '巴拿赫－施坦豪斯定理说：完备空间上一族有界算子若逐点有界，则它们的范数一致有界。', definition: '巴拿赫空间上的一族有界线性算子，若对每个点都有界，则算子范数集合有界。它是三大基本定理之一。',
+    whenToUse: ['证明算子族一致有界', '推导发散性', '分析收敛'],
+    theorems: [
+      { name: '逐点有界推出范数有界', statement: '完备性保证。', },
+      { name: '推论：收敛点集闭', statement: '逐点极限算子有界。', },
+    ],
+    steps: [
+      { title: '验完备', body: '空间必须是巴拿赫空间。', },
+      { title: '验逐点有界', body: '每点被控制。', },
+      { title: '用定理', body: '得范数一致界。', },
+      { title: '取推论', body: '极限算子有界。', },
+      { title: '反例', body: '不完备空间失效。', },
+    ],
+    pitfalls: ['忽略完备性。', '把逐点有界当一致有界（结论才是）。', '混淆算子范数与逐点值。'],
+    example: { problem: '一致有界原理要求空间？', walkthrough: ['完备（巴拿赫）。'], result: '完备' },
+    moreExamples: [{ problem: '逐点有界能推出什么？', walkthrough: ['算子范数一致有界。'], result: '范数有界' }],
+  },
 ];
 
 
