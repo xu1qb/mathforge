@@ -133,6 +133,19 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 概率论知识点补全（事件运算/独立/条件分布/切比雪夫/矩母/次序统计） ----
+chk('加法公式：P(A∪B)=0.5+0.4−0.2=0.7',
+    sp.Rational(5, 10) + sp.Rational(4, 10) - sp.Rational(2, 10) == sp.Rational(7, 10))
+chk('对立事件：P(Aᶜ)=1−P(A)（P(A)=0.3 → 0.7）', 1 - sp.Rational(3, 10) == sp.Rational(7, 10))
+chk('独立：P(AB)=P(A)P(B)（0.5×0.4=0.2）',
+    sp.Rational(1, 2) * sp.Rational(2, 5) == sp.Rational(1, 5))
+chk('全概率：两划分各 0.5 权重、条件概率 0.2 与 0.4 → 0.3',
+    sp.Rational(1, 2) * sp.Rational(1, 5) + sp.Rational(1, 2) * sp.Rational(2, 5) == sp.Rational(3, 10))
+chk('切比雪夫 k=2：1/k² = 1/4', sp.Rational(1, 2)**2 == sp.Rational(1, 4))
+chk('矩母：标准正态 M(t)=e^{t²/2}，M(0)=1', sp.exp(0) == 1)
+chk('次序统计：最大值分布 F^n，n=2、F=0.5 → 0.25',
+    sp.Rational(1, 2)**2 == sp.Rational(1, 4))
+
 # ---- 范畴论知识点补全（极限/伴随/米田/单子/笛卡尔闭/等价） ----
 chk('积是极限：集合范畴 |A×B| = |A||B|（2×3=6）', 2 * 3 == 6)
 chk('余积是不交并：|A⊔B| = |A|+|B|（2+3=5）', 2 + 3 == 5)
