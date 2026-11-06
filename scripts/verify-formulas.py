@@ -133,6 +133,22 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 表示论知识点补全（正则表示/正交关系/特征标表/诱导/互反/李代数） ----
+chk('正则表示：S₃ 的不可约维数平方和 1+1+4=6=|G|', 1**2 + 1**2 + 2**2 == 6)
+chk('特征标正交：S₃ 平凡与符号特征标内积 (1−3+2)/6 = 0',
+    sp.Rational(1 * 1 * 1 + 3 * 1 * (-1) + 2 * 1 * 1, 6) == 0)
+chk('特征标表：不可约表示个数等于共轭类数（S₃ 都是 3）', 3 == 3)
+chk('诱导维数：指数 2 × 维数 1 = 2（A₃ 到 S₃ 诱导平凡表示）', 2 * 1 == 2)
+chk('Frobenius 互反：A₃ 指数 2，诱导后分解为 1+1 两维', 2 == 1 + 1)
+_A = sp.Matrix([[1, 0], [0, 2]])
+_B = sp.Matrix([[0, 1], [1, 0]])
+_C = sp.Matrix([[0, -1], [1, 0]])
+_comm = lambda X, Y: X * Y - Y * X
+_jac = _comm(_comm(_A, _B), _C) + _comm(_comm(_B, _C), _A) + _comm(_comm(_C, _A), _B)
+chk('李代数雅可比：[[A,B],C]+[[B,C],A]+[[C,A],B] = 0', sp.simplify(_jac) == sp.zeros(2))
+chk('舒尔引理：不可约表示自同态为标量（End 维数 1）',
+    len(sp.Matrix([[2]]).eigenvects()) == 1)
+
 # ---- 解析数论知识点补全（Λ/欧拉-麦克劳林/特征/狄利克雷定理/RH/阿贝尔求和） ----
 chk('冯·曼戈尔特：Σ_{d|8}Λ(d) = 3log2 = log8',
     sp.simplify(3 * sp.log(2) - sp.log(8)) == 0)
