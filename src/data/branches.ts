@@ -1,9 +1,10 @@
 // 学科分支数据模型：11 个大类 × 若干分支
 // 设计原则：分支是「唯一真相」，侧栏分组、学科总览页、覆盖统计都从这里派生。
-// 覆盖状态由 pagePath / tags 推导，不手工维护：
+// 覆盖状态由 pagePath / tags / courseId 推导，不手工维护：
 //   pagePath 有值 → 有专门页面
 //   tags 非空    → 只有原理讲解考点
-//   两者皆无     → 待补
+//   courseId 有值 → 已有课程包（/course/:id）
+//   三者皆无     → 待补
 
 export interface Branch {
   id: string;
@@ -13,6 +14,8 @@ export interface Branch {
   pagePath?: string;
   /** 关联的原理讲解标签（一个标签可能被多个分支共用） */
   tags?: string[];
+  /** 已建成的课程包 id（对应 src/data/courses 里的 Course.id） */
+  courseId?: string;
   /** 待补分支的补充说明 */
   note?: string;
 }
@@ -26,7 +29,7 @@ export interface BranchCategory {
   branches: Branch[];
 }
 
-export type BranchStatus = 'page' | 'topic' | 'empty';
+export type BranchStatus = 'page' | 'topic' | 'course' | 'empty';
 
 export const BRANCH_CATEGORIES: BranchCategory[] = [
   {
@@ -76,10 +79,10 @@ export const BRANCH_CATEGORIES: BranchCategory[] = [
       { id: 'non-euclidean', zh: '非欧几何', en: 'Non-Euclidean Geometry', tags: ['非欧几何'] },
       { id: 'projective-geometry', zh: '射影几何', en: 'Projective Geometry', tags: ['射影几何'] },
       { id: 'differential-geometry', zh: '微分几何', en: 'Differential Geometry', pagePath: '/diff-geo' },
-      { id: 'algebraic-geometry', zh: '代数几何', en: 'Algebraic Geometry', note: '超纲 · 暂缓' },
+      { id: 'algebraic-geometry', zh: '代数几何', en: 'Algebraic Geometry', courseId: 'algebraic-geometry' },
       { id: 'topology', zh: '拓扑学', en: 'Topology', tags: ['拓扑'] },
       { id: 'algebraic-topology', zh: '代数拓扑', en: 'Algebraic Topology', tags: ['代数拓扑'] },
-      { id: 'differential-topology', zh: '微分拓扑', en: 'Differential Topology', note: '超纲 · 暂缓' },
+      { id: 'differential-topology', zh: '微分拓扑', en: 'Differential Topology', courseId: 'differential-topology' },
     ],
   },
   {
@@ -92,7 +95,7 @@ export const BRANCH_CATEGORIES: BranchCategory[] = [
       { id: 'ring-theory', zh: '环论', en: 'Ring Theory', tags: ['环论'] },
       { id: 'field-theory', zh: '域论', en: 'Field Theory', tags: ['伽罗瓦'] },
       { id: 'galois-theory', zh: '伽罗瓦理论', en: 'Galois Theory', tags: ['伽罗瓦'] },
-      { id: 'algebraic-number-theory', zh: '代数数论', en: 'Algebraic Number Theory', note: '超纲 · 暂缓' },
+      { id: 'algebraic-number-theory', zh: '代数数论', en: 'Algebraic Number Theory', courseId: 'algebraic-number-theory' },
       { id: 'analytic-number-theory', zh: '解析数论', en: 'Analytic Number Theory', tags: ['解析数论'] },
       { id: 'representation-theory', zh: '表示论', en: 'Representation Theory', tags: ['表示论'] },
     ],
@@ -108,7 +111,7 @@ export const BRANCH_CATEGORIES: BranchCategory[] = [
       { id: 'mathematical-logic', zh: '数理逻辑', en: 'Mathematical Logic', pagePath: '/discrete' },
       { id: 'set-theory', zh: '集合论', en: 'Set Theory', tags: ['集合论'] },
       { id: 'category-theory', zh: '范畴论', en: 'Category Theory', tags: ['范畴论'] },
-      { id: 'lattice-theory', zh: '格论', en: 'Lattice Theory', note: '超纲 · 暂缓' },
+      { id: 'lattice-theory', zh: '格论', en: 'Lattice Theory', courseId: 'lattice-theory' },
       { id: 'information-theory', zh: '信息论', en: 'Information Theory', tags: ['信息论'] },
       { id: 'computability', zh: '可计算性', en: 'Computability', tags: ['可计算性'] },
     ],
@@ -146,7 +149,7 @@ export const BRANCH_CATEGORIES: BranchCategory[] = [
     branches: [
       { id: 'mathematical-physics', zh: '数学物理', en: 'Mathematical Physics', pagePath: '/pde' },
       { id: 'mechanics', zh: '力学', en: 'Mechanics', tags: ['力学'] },
-      { id: 'fluid-dynamics', zh: '流体力学', en: 'Fluid Dynamics', note: '超纲 · 暂缓' },
+      { id: 'fluid-dynamics', zh: '流体力学', en: 'Fluid Dynamics', courseId: 'fluid-dynamics' },
       { id: 'mathematical-biology', zh: '生物数学', en: 'Mathematical Biology', tags: ['生物数学'] },
       { id: 'operations-research', zh: '运筹学', en: 'Operations Research', tags: ['运筹学'] },
       { id: 'control-theory', zh: '控制论', en: 'Control Theory', tags: ['控制论'] },
@@ -158,10 +161,10 @@ export const BRANCH_CATEGORIES: BranchCategory[] = [
     en: 'Logic & Foundations',
     accent: 'slate',
     branches: [
-      { id: 'axiomatic-set-theory', zh: '公理化集合论', en: 'Axiomatic Set Theory', note: '超纲 · 暂缓' },
-      { id: 'model-theory', zh: '模型论', en: 'Model Theory', note: '超纲 · 暂缓' },
-      { id: 'recursion-theory', zh: '递归论', en: 'Recursion Theory', note: '超纲 · 暂缓' },
-      { id: 'proof-theory', zh: '证明论', en: 'Proof Theory', note: '超纲 · 暂缓' },
+      { id: 'axiomatic-set-theory', zh: '公理化集合论', en: 'Axiomatic Set Theory', courseId: 'axiomatic-set-theory' },
+      { id: 'model-theory', zh: '模型论', en: 'Model Theory', courseId: 'model-theory' },
+      { id: 'recursion-theory', zh: '递归论', en: 'Recursion Theory', courseId: 'logic-foundations' },
+      { id: 'proof-theory', zh: '证明论', en: 'Proof Theory', courseId: 'proof-theory' },
     ],
   },
   {
@@ -197,5 +200,6 @@ export const ALL_BRANCHES: Branch[] = BRANCH_CATEGORIES.flatMap((c) => c.branche
 export function branchStatus(b: Branch, topicTags: Set<string>): BranchStatus {
   if (b.pagePath) return 'page';
   if (b.tags && b.tags.some((t) => topicTags.has(t))) return 'topic';
+  if (b.courseId) return 'course';
   return 'empty';
 }

@@ -244,7 +244,7 @@ export default function SprintHomePage() {
         {/* 学科分支入口条 */}
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
           {BRANCH_CATEGORIES.filter((c) => c.id !== 'competition').map((cat) => {
-            const covered = cat.branches.filter((b) => b.pagePath || b.tags).length;
+            const covered = cat.branches.filter((b) => b.pagePath || (b.tags && b.tags.length > 0) || b.courseId).length;
             return (
               <button
                 key={cat.id}
@@ -253,7 +253,7 @@ export default function SprintHomePage() {
               >
                 <div className="truncate text-sm font-medium text-foreground">{cat.zh}</div>
                 <div className="text-xs text-muted-foreground">
-                  {covered}/{cat.branches.length} 有内容
+                  {covered}/{cat.branches.length} 分支覆盖
                 </div>
               </button>
             );

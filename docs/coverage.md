@@ -4,151 +4,153 @@
 用途：明确「现在有什么」，缺口写在这里，后续按需补，不重复讨论。
 
 > **数据源**：分支的结构化定义在 `src/data/branches.ts`（11 大类，62 个学术分支 + 4 个竞赛分支）。
-> 「学科总览」页 `/branches` 直接由它渲染，覆盖状态也是从 `pagePath` / `tags` 推导的。
-> 本文档是给人读的说明页，新增分支时请同时更新两者。
+> 「学科总览」页 `/branches`、首页分支条都从它派生；覆盖状态由 `pagePath` / `tags` / `courseId` 推导，不手工维护。
+> 下表由分支数据生成，新增分支或课程时请同时更新数据与本文档。
 
-图例：✅ 有独立页面 · ◐ 有专门考点/条目（原理讲解里可查） · — 暂无
+图例：✅ 有独立页面 · ● 有课程包 · ◐ 有专门考点 · — 暂无
 
-> 2026-11 更新：补了三角恒等变换、平面几何、群论入门、拓扑学入门、随机过程五个考点，
-> 对应分支由「—」升为「◐」。考点在「原理讲解」页按标签分组可见。
+有内容分支：57/62（62 个学术分支里，只剩 5 个前沿交叉分支暂缓）
+
+> 2026-11 更新：62 个课程包全部建成（305 章、717 个知识点挂载）。
+> 原来的「超纲 · 暂缓」清单里，代数几何、代数数论、格论、微分拓扑、流体力学、
+> 公理化集合论、模型论、递归论、证明论九个分支已补齐课程，不再是缺口。
+
+## 课程包总览
+
+- **62 个课程包**，覆盖 11 个学科大类；每包 3–9 章，章节带教材对照（`textbookRef`）
+- 知识点文章 633 篇，全部满足「内容厚度标准」（定义 / 定理 / 例题 / 易错点 / 步骤）
+- 课程首页、章节页、知识点页、练习集、学科介绍、应用与交叉六件套齐备
 
 ## 1. 基础数学 Foundations
 
-| 分支 | 状态 | 对应页面 |
+| 分支 | 状态 | 对应入口 |
 |---|---|---|
-| 算术 Arithmetic | ◐ | 科学计算器 |
-| 初等代数 Elementary Algebra | ◐ | 符号代数 |
-| 欧氏几何 Euclidean Geometry | ◐ | 考点「平面几何：相似与圆幂」 |
-| 初等数论 Elementary Number Theory | ✅ | 数论基础 |
-| 三角学 Trigonometry | ◐ | 公式手册 + 考点「三角恒等变换」 |
-| 解析几何 Analytic Geometry | ◐ | 二维绘图 |
-| 线性代数 Linear Algebra | ✅ | 线性代数 |
-| 抽象代数 Abstract Algebra | ◐ | 现代数学 |
+| 算术 Arithmetic | ✅ | `/calculator` |
+| 初等代数 Elementary Algebra | ✅ | `/symbolic` |
+| 欧氏几何 Euclidean Geometry | ◐ | 考点：欧氏几何 |
+| 初等数论 Elementary Number Theory | ✅ | `/number-theory` |
+| 三角学 Trigonometry | ◐ | 考点：三角学 |
+| 解析几何 Analytic Geometry | ✅ | `/plot-2d` |
+| 线性代数 Linear Algebra | ✅ | `/linear-algebra` |
+| 抽象代数 Abstract Algebra | ✅ | `/modern` |
 
 ## 2. 分析学 Analysis
 
-| 分支 | 状态 | 对应页面 |
+| 分支 | 状态 | 对应入口 |
 |---|---|---|
-| 微积分 Calculus | ✅ | 微积分 |
-| 实分析 Real Analysis | ◐ | 微积分 / 原理讲解 |
-| 复分析 Complex Analysis | ✅ | 复变函数 |
-| 泛函分析 Functional Analysis | ◐ | 现代数学 |
-| 调和分析 Harmonic Analysis | ✅ | 傅里叶级数 |
-| 测度论 Measure Theory | ◐ | 考点「测度论：把长度变成函数」 |
-| 常微分方程 ODE | ✅ | 常微分方程、偏微分方程 |
+| 微积分 Calculus | ✅ | `/calculus` |
+| 实分析 Real Analysis | ✅ | `/multivariable` |
+| 复分析 Complex Analysis | ✅ | `/complex` |
+| 泛函分析 Functional Analysis | ✅ | `/modern` |
+| 调和分析 Harmonic Analysis | ✅ | `/fourier` |
+| 测度论 Measure Theory | ◐ | 考点：测度论 |
+| 常微分方程 ODE | ✅ | `/ode` |
+| 偏微分方程 PDE | ✅ | `/pde` |
 
 ## 3. 几何与拓扑 Geometry & Topology
 
-| 分支 | 状态 | 对应页面 |
+| 分支 | 状态 | 对应入口 |
 |---|---|---|
-| 非欧几何 Non-Euclidean | ◐ | 考点「非欧几何：换掉平行公设」 |
-| 射影几何 Projective | ◐ | 考点「射影几何：把平行线交于无穷远」 |
-| 微分几何 Differential Geometry | ✅ | 微分几何 |
-| 代数几何 Algebraic Geometry | — | |
-| 拓扑学 Topology | ◐ | 考点「拓扑学入门：只看开集」 |
-| 代数拓扑 Algebraic Topology | ◐ | 考点「代数拓扑：用基本群区分空间」 |
-| 微分拓扑 Differential Topology | — | |
+| 非欧几何 Non-Euclidean Geometry | ◐ | 考点：非欧几何 |
+| 射影几何 Projective Geometry | ◐ | 考点：射影几何 |
+| 微分几何 Differential Geometry | ✅ | `/diff-geo` |
+| 代数几何 Algebraic Geometry | ● | 课程包：代数几何（/course/algebraic-geometry） |
+| 拓扑学 Topology | ◐ | 考点：拓扑 |
+| 代数拓扑 Algebraic Topology | ◐ | 考点：代数拓扑 |
+| 微分拓扑 Differential Topology | ● | 课程包：微分拓扑（/course/differential-topology） |
 
 ## 4. 代数与数论 Algebra & Number Theory
 
-| 分支 | 状态 | 对应页面 |
+| 分支 | 状态 | 对应入口 |
 |---|---|---|
-| 群论 Group Theory | ◐ | 考点「群论入门：先看阶」 |
-| 环论 Ring Theory | ◐ | 考点「环论入门：理想与商环」 |
-| 域论 Field Theory | ◐ | 考点「伽罗瓦理论：五次方程为什么解不出」 |
-| 伽罗瓦理论 Galois Theory | ◐ | 同上（一个考点覆盖两分支） |
-| 代数数论 | — | |
-| 解析数论 Analytic Number Theory | ◐ | 考点「解析数论：素数有多少个」 |
-| 表示论 Representation Theory | ◐ | 考点「表示论：把群变成矩阵」 |
+| 群论 Group Theory | ◐ | 考点：代数 |
+| 环论 Ring Theory | ◐ | 考点：环论 |
+| 域论 Field Theory | ◐ | 考点：伽罗瓦 |
+| 伽罗瓦理论 Galois Theory | ◐ | 考点：伽罗瓦 |
+| 代数数论 Algebraic Number Theory | ● | 课程包：代数数论（/course/algebraic-number-theory） |
+| 解析数论 Analytic Number Theory | ◐ | 考点：解析数论 |
+| 表示论 Representation Theory | ◐ | 考点：表示论 |
 
 ## 5. 组合与离散 Combinatorics & Discrete
 
-| 分支 | 状态 | 对应页面 |
+| 分支 | 状态 | 对应入口 |
 |---|---|---|
-| 组合数学 Combinatorics | ◐ | 离散数学 |
-| 图论 Graph Theory | ◐ | 离散数学、现代数学 |
-| 数理逻辑 Mathematical Logic | ◐ | 离散数学 |
-| 集合论 Set Theory | ◐ | 考点「集合论：用双射比大小」 |
-| 范畴论 Category Theory | ◐ | 考点「范畴论：对象与态射」 |
-| 格论 Lattice Theory | — | |
-| 信息论 Information Theory | ◐ | 考点「信息论：熵就是不确定性」 |
-| 可计算性 Computability | ◐ | 考点「可计算性：停机问题不可判定」 |
+| 组合数学 Combinatorics | ✅ | `/discrete` |
+| 图论 Graph Theory | ✅ | `/discrete` |
+| 数理逻辑 Mathematical Logic | ✅ | `/discrete` |
+| 集合论 Set Theory | ◐ | 考点：集合论 |
+| 范畴论 Category Theory | ◐ | 考点：范畴论 |
+| 格论 Lattice Theory | ● | 课程包：格论（/course/lattice-theory） |
+| 信息论 Information Theory | ◐ | 考点：信息论 |
+| 可计算性 Computability | ◐ | 考点：可计算性 |
 
 ## 6. 概率与统计 Probability & Statistics
 
-| 分支 | 状态 | 对应页面 |
+| 分支 | 状态 | 对应入口 |
 |---|---|---|
-| 概率论 Probability Theory | ✅ | 概率统计、原理讲解（贝叶斯/数字特征） |
-| 数理统计 Mathematical Statistics | ✅ | 概率统计 |
-| 随机过程 Stochastic Processes | ◐ | 考点「随机过程入门：马尔可夫与泊松」 |
-| 信息论 Information Theory | ◐ | 见组合与离散一节 |
-| 博弈论 Game Theory | ◐ | 考点「博弈论：纳什均衡怎么找」 |
-| 金融数学 Mathematical Finance | ◐ | 考点「金融数学：Black–Scholes 定价」 |
+| 概率论 Probability Theory | ✅ | `/probability` |
+| 数理统计 Mathematical Statistics | ✅ | `/probability` |
+| 随机过程 Stochastic Processes | ◐ | 考点：概率 |
+| 博弈论 Game Theory | ◐ | 考点：博弈论 |
+| 金融数学 Mathematical Finance | ◐ | 考点：金融数学 |
 
 ## 7. 计算与算法 Computation & Algorithms
 
-| 分支 | 状态 | 对应页面 |
+| 分支 | 状态 | 对应入口 |
 |---|---|---|
-| 数值分析 Numerical Analysis | ✅ | 数值分析 |
-| 计算数学 Computational Mathematics | ◐ | 数值分析 |
-| 离散数学 Discrete Mathematics | ✅ | 离散数学 |
-| 密码学 Cryptography | ◐ | 考点「密码学：RSA 三步」 |
-| 理论计算机科学 TCS | ◐ | 考点「理论计算机：P 与 NP」 |
+| 数值分析 Numerical Analysis | ✅ | `/numerical` |
+| 计算数学 Computational Mathematics | ✅ | `/numerical` |
+| 密码学 Cryptography | ◐ | 考点：密码学 |
+| 理论计算机科学 Theoretical CS | ◐ | 考点：计算复杂性 |
 
 ## 8. 应用数学 Applied Mathematics
 
-| 分支 | 状态 | 对应页面 |
+| 分支 | 状态 | 对应入口 |
 |---|---|---|
-| 数学物理 Mathematical Physics | ◐ | 偏微分方程 |
-| 力学 Mechanics | ◐ | 考点「力学：用能量代替力」 |
-| 流体力学 | — | |
-| 运筹学 Operations Research | ◐ | 考点「线性规划：最优解在顶点」 |
-| 控制论 Control Theory | ◐ | 考点「控制论：极点决定稳定性」 |
-| 生物数学 Mathematical Biology | ◐ | 考点「生物数学：捕食者与猎物」 |
+| 数学物理 Mathematical Physics | ✅ | `/pde` |
+| 力学 Mechanics | ◐ | 考点：力学 |
+| 流体力学 Fluid Dynamics | ● | 课程包：流体力学（/course/fluid-dynamics） |
+| 生物数学 Mathematical Biology | ◐ | 考点：生物数学 |
+| 运筹学 Operations Research | ◐ | 考点：运筹学 |
+| 控制论 Control Theory | ◐ | 考点：控制论 |
 
 ## 9. 逻辑与基础 Logic & Foundations
 
-公理化集合论、模型论、递归论、证明论：**全部暂无**。
+| 分支 | 状态 | 对应入口 |
+|---|---|---|
+| 公理化集合论 Axiomatic Set Theory | ● | 课程包：公理化集合论（/course/axiomatic-set-theory） |
+| 模型论 Model Theory | ● | 课程包：模型论（/course/model-theory） |
+| 递归论 Recursion Theory | ● | 课程包：递归论（/course/logic-foundations） |
+| 证明论 Proof Theory | ● | 课程包：证明论（/course/proof-theory） |
 
 ## 10. 前沿与交叉 Frontiers & Interdiscipline
 
-高阶范畴论、几何群论、随机矩阵、拓扑数据分析、量子计算：**全部暂无**（现代数学页可作为入口）。
-
----
-
-## 课程包覆盖（按教材逐章）
-
-**线性代数**（同济第七版）已建成完整课程包：
-
-| 教材章节 | 知识点 | 练习 |
+| 分支 | 状态 | 对应入口 |
 |---|---|---|
-| 第 1 章 行列式 | 行列式三种算法、按行展开与范德蒙德 | 8 道 |
-| 第 2 章 矩阵及其运算 | 矩阵运算与逆、特殊矩阵、伴随矩阵 | 8 道 |
-| 第 3 章 初等变换与方程组 | 高斯消元、初等矩阵、克拉默法则、秩-零化度、齐次基础解系 | 8 道 |
-| 第 4 章 向量组 | 线性相关性、基与维数、施密特正交化、子空间判定 | 8 道 |
-| 第 5 章 相似矩阵与二次型 | 特征值、对角化、若尔当、矩阵幂、二次型、惯性定理、正交对角化、瑞利商 | 8 道 |
-| 第 6 章 线性空间与线性变换 | 线性空间、过渡矩阵、线性变换及其矩阵 | 6 道 |
+| 高阶范畴论 Higher Category Theory | — | 超纲 · 暂缓 |
+| 几何群论 Geometric Group Theory | — | 超纲 · 暂缓 |
+| 随机矩阵 Random Matrix Theory | — | 超纲 · 暂缓 |
+| 拓扑数据分析 Topological Data Analysis | — | 超纲 · 暂缓 |
+| 量子计算 Quantum Computation | — | 超纲 · 暂缓 |
+
 
 ## 产品层（不属于 62 分支，但决定产品定位）
 
-竞赛备战中心、原理讲解、解题流程图、练习训练、知识地图、每日盲盒、公式咒语、数学家测试、我当老师、拍照识题、实用工具、数据图表、微积分可视化。
+竞赛备战中心、原理讲解、解题流程图、练习训练、知识地图、每日盲盒、公式咒语、数学家测试、我当老师、拍照识题、AI 出题实验室、讲解实验室、实用工具、数据图表、微积分可视化。
 
-## 暂缓清单（14 个，超纲或需要大量前置）
+## 暂缓清单（5 个，超纲或需要大量前置）
 
-这 14 个分支已标记为「超纲 · 暂缓」，在 `/branches` 页面显示为灰色不可点：
+前沿交叉的五个分支仍暂缓，在 `/branches` 首页不计入「有内容」：
 
-- **代数与数论**：代数几何、代数数论、格论
-- **几何与拓扑**：微分拓扑
-- **应用数学**：流体力学
-- **逻辑与基础**：公理化集合论、模型论、递归论、证明论
 - **前沿与交叉**：高阶范畴论、几何群论、随机矩阵、拓扑数据分析、量子计算
 
 判断依据：这些内容写在「入门考点」里只能变成名词解释，对非数学 A 备考没有实际帮助，
-与其降低整体内容质量，不如明确标注"暂不覆盖"。
+与其降低整体内容质量，不如明确标注「暂不覆盖」。量子计算另有一门「量子数学基础」导论课
+（`/course/quantum-math`），可作为该方向的入口。
 
 ## 补内容的优先级建议
 
-1. **欧氏几何 / 三角学**：初高中基础，竞赛小题常考，目前只有公式手册里的零散条目。
-2. **拓扑学入门**：现代数学页已有零散内容，值得独立。
-3. **随机过程**：概率线唯一的缺口。
-4. 其余（代数几何、表示论等）超出非数学 A 考纲，暂不补。
+1. **竞赛小题**：欧氏几何、三角学仍只有考点、没有独立课程包，是初高中基础里最常考的缺口。
+2. **随机过程**：概率线唯一没有独立课程包的分支（现由「概率论与数理统计」课程承载部分内容）。
+3. **前沿五分支**：维持暂缓；除非明确要做「现代数学导论」式的科普层。
+4. 其余分支已有课程包，后续只做加厚（每章补例题与断言），不再铺新面。
