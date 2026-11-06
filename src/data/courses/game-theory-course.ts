@@ -19,7 +19,7 @@ export const GAME_THEORY_COURSE: Course = {
       textbookRef: '教材 第 1 章 / Osborne 第 2 章',
       summary: '无论对手如何都最优',
       goals: ['找占优', '剔除劣策略'],
-      lessonIds: ['dominant-strategy'],
+      lessonIds: ['dominant-strategy', 'minimax-theorem'],
       practiceTopics: ['combinatorics-basic'],
       exercises: [
         {
@@ -34,7 +34,7 @@ export const GAME_THEORY_COURSE: Course = {
       textbookRef: '教材 第 2 章 / Osborne 第 3 章',
       summary: '随机化保证均衡',
       goals: ['求混合均衡', '验证无差异'],
-      lessonIds: ['mixed-strategy'],
+      lessonIds: ['mixed-strategy', 'bayesian-games'],
       practiceTopics: ['probability-classical'],
       exercises: [
         {
@@ -49,7 +49,7 @@ export const GAME_THEORY_COURSE: Course = {
       textbookRef: '教材 第 3 章 / Osborne 第 2 章',
       summary: '无人愿意单独偏离',
       goals: ['找均衡', '理解存在性'],
-      lessonIds: ['game-nash'],
+      lessonIds: ['game-nash', 'backward-induction', 'subgame-perfect', 'repeated-games'],
       practiceTopics: ['probability-classical'],
       exercises: [
         {
@@ -64,7 +64,7 @@ export const GAME_THEORY_COURSE: Course = {
       textbookRef: '教材 第 4 章 / Osborne 第 14 章',
       summary: '联盟价值分配',
       goals: ['算夏普利值', '验证公理'],
-      lessonIds: ['cooperative-game'],
+      lessonIds: ['cooperative-game', 'core-solution'],
       practiceTopics: ['combinatorics-basic'],
       exercises: [
         {

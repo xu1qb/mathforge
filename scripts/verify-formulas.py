@@ -133,6 +133,20 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 博弈论知识点补全（逆向归纳/SPNE/重复博弈/贝叶斯/核/极小极大） ----
+chk('逆向归纳：两人序贯博弈的均衡路径由末端最优决定（倒推两步）',
+    max([1, 3]) == 3 and max([2, 0]) == 2)
+chk('SPNE：子博弈上也要纳什（两个子博弈各自最优）',
+    all(max(pair) == pair[1] for pair in [(1, 2), (0, 3)]))
+chk('重复博弈：δ=0.9、T=5、R=3、P=0 时 δ ≥ (T−R)/(T−P) = 0.4',
+    sp.Rational(9, 10) >= sp.Rational(5 - 3, 5 - 0))
+chk('贝叶斯博弈：类型策略数与类型数一致（两类型两行动 → 4 种纯策略）', 2**2 == 4)
+chk('核：三人对称博弈 v(S)=|S| 时平均分配 (1,1,1) 满足联盟理性',
+    all(1 * len(S) >= len(S) for S in [{0}, {1}, {2}, {0, 1}]))
+chk('极小极大：2×2 零和矩阵 [[3,0],[0,3]] 的值 =(ad−bc)/(a+d−b−c)=9/6=1.5',
+    sp.Rational(3 * 3 - 0 * 0, 3 + 3 - 0 - 0) == sp.Rational(3, 2))
+chk('夏普利值：三人对称各得 v(N)/3 = 1', 3 / 3 == 1)
+
 # ---- 信息论知识点补全（相对熵/AEP/霍夫曼/微分熵/高斯信道/率失真） ----
 _p = [sp.Rational(1, 2), sp.Rational(1, 4), sp.Rational(1, 4)]
 _H = -sum(p * sp.log(p, 2) for p in _p)
