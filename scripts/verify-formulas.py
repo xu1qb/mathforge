@@ -2269,6 +2269,17 @@ chk('由维数公式，像的维数 = 2', _Tk.rank() == 2 and _Tk.rank() + len(_
 chk('P2[x] 与 R³ 同维（都为 3）',
     sp.Matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]).rank() == 3)
 
+# ---- 三角学：弧度、恒等式、解三角形 ----
+chk('150° = 5π/6', sp.Rational(150) * sp.pi / 180 == sp.Rational(5, 6) * sp.pi)
+chk('扇形面积 r=3、θ=2 时为 9', sp.Rational(1, 2) * 9 * 2 == 9)
+chk('同角恒等式 sin²x + cos²x = 1', sp.simplify(sp.sin(x) ** 2 + sp.cos(x) ** 2 - 1) == 0)
+chk('诱导公式 sin(π/2 − x) = cos x', sp.simplify(sp.sin(sp.pi / 2 - x) - sp.cos(x)) == 0)
+chk('辅助角 sin x + √3cos x = 2sin(x+π/3)',
+    sp.simplify(sp.sin(x) + sp.sqrt(3) * sp.cos(x) - 2 * sp.sin(x + sp.pi / 3)) == 0)
+chk('余弦定理：3、4 夹角 60° 的对边平方为 13', 9 + 16 - 2 * 3 * 4 * sp.cos(sp.pi / 3) == 13)
+chk('正弦定理：a=3、A=30° 时外接圆半径 R=3', 3 / sp.sin(sp.pi / 6) / 2 == 3)
+chk('周期公式：omega=2 时周期为 π', 2 * sp.pi / 2 == sp.pi)
+
 # ---- 输出 ----
 ok = sum(1 for r in rows if r[0] == 'PASS')
 for st, name, detail in rows:

@@ -15,9 +15,9 @@ npm run check
 | 1 | 类型检查 | `tsc --noEmit` | 全量 | 类型安全 |
 | 2 | 代码规范 | `eslint src --quiet` | 全量 | 风格与常见错误 |
 | 3 | 生产构建 | `vite build` → 临时目录 | 全量 | 能否打包 |
-| 4 | 公式正确性 | `scripts/verify-formulas.py` | 866 条断言 | **算得对** |
-| 5 | 公式渲染 | `scripts/check-formulas.mjs` | 1317 条公式 | **显示得出来** |
-| 6 | 文本规范 | `scripts/check-text.mjs` | 57,496 个字符串 | **写得规范** |
+| 4 | 公式正确性 | `scripts/verify-formulas.py` | 874 条断言 | **算得对** |
+| 5 | 公式渲染 | `scripts/check-formulas.mjs` | 1341 条公式 | **显示得出来** |
+| 6 | 文本规范 | `scripts/check-text.mjs` | 57,910 个字符串 | **写得规范** |
 | 7 | 交叉引用与死链 | `scripts/check-refs.mjs` | 路由 + 互引 | **连得上** |
 | 8 | 服务端链路 | `server/test.ts` | 23 项（强制 mock） | **后端不崩** |
 | 9 | UI 快照 | `scripts/ui-snapshots.mjs` | 5 页 × 2 宽度 | **没白屏/没溢出** |

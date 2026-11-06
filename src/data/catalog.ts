@@ -31,6 +31,16 @@ export const DISCIPLINE: Discipline = {
   en: 'Mathematics',
   branches: [
     {
+      id: 'elementary',
+      name: '初等数学',
+      en: 'Elementary Mathematics',
+      summary: '中学与竞赛的地基：三角与平面几何',
+      courses: [
+        { id: 'trigonometry', name: '三角学', courseId: 'trigonometry' },
+        { id: 'euclidean-geometry', name: '欧氏几何', note: '待建' },
+      ],
+    },
+    {
       id: 'foundations',
       name: '基础',
       en: 'Foundations',

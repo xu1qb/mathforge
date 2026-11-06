@@ -1,9 +1,9 @@
 // 学科分支数据模型：11 个大类 × 若干分支
 // 设计原则：分支是「唯一真相」，侧栏分组、学科总览页、覆盖统计都从这里派生。
-// 覆盖状态由 pagePath / tags / courseId 推导，不手工维护：
+// 覆盖状态由 pagePath / courseId / tags 推导，不手工维护：
 //   pagePath 有值 → 有专门页面
-//   tags 非空    → 只有原理讲解考点
 //   courseId 有值 → 已有课程包（/course/:id）
+//   tags 非空    → 只有原理讲解考点
 //   三者皆无     → 待补
 
 export interface Branch {
@@ -42,7 +42,7 @@ export const BRANCH_CATEGORIES: BranchCategory[] = [
       { id: 'elementary-algebra', zh: '初等代数', en: 'Elementary Algebra', pagePath: '/symbolic' },
       { id: 'euclidean-geometry', zh: '欧氏几何', en: 'Euclidean Geometry', tags: ['欧氏几何'] },
       { id: 'elementary-number-theory', zh: '初等数论', en: 'Elementary Number Theory', pagePath: '/number-theory' },
-      { id: 'trigonometry', zh: '三角学', en: 'Trigonometry', tags: ['三角学'] },
+      { id: 'trigonometry', zh: '三角学', en: 'Trigonometry', tags: ['三角学'], courseId: 'trigonometry' },
       { id: 'analytic-geometry', zh: '解析几何', en: 'Analytic Geometry', pagePath: '/plot-2d', tags: ['空间几何'] },
       { id: 'linear-algebra', zh: '线性代数', en: 'Linear Algebra', pagePath: '/linear-algebra', tags: ['线代'] },
       { id: 'abstract-algebra', zh: '抽象代数', en: 'Abstract Algebra', pagePath: '/modern' },
@@ -124,7 +124,7 @@ export const BRANCH_CATEGORIES: BranchCategory[] = [
     branches: [
       { id: 'probability-theory', zh: '概率论', en: 'Probability Theory', pagePath: '/probability', tags: ['概率'] },
       { id: 'mathematical-statistics', zh: '数理统计', en: 'Mathematical Statistics', pagePath: '/probability' },
-      { id: 'stochastic-process', zh: '随机过程', en: 'Stochastic Processes', tags: ['概率'] },
+      { id: 'stochastic-process', zh: '随机过程', en: 'Stochastic Processes', tags: ['概率'], courseId: 'stochastic-process-course' },
       { id: 'game-theory', zh: '博弈论', en: 'Game Theory', tags: ['博弈论'] },
       { id: 'mathematical-finance', zh: '金融数学', en: 'Mathematical Finance', tags: ['金融数学'] },
     ],
@@ -199,7 +199,7 @@ export const ALL_BRANCHES: Branch[] = BRANCH_CATEGORIES.flatMap((c) => c.branche
 
 export function branchStatus(b: Branch, topicTags: Set<string>): BranchStatus {
   if (b.pagePath) return 'page';
-  if (b.tags && b.tags.some((t) => topicTags.has(t))) return 'topic';
   if (b.courseId) return 'course';
+  if (b.tags && b.tags.some((t) => topicTags.has(t))) return 'topic';
   return 'empty';
 }

@@ -420,7 +420,7 @@ export default function CoursePage() {
         </section>
 
         <CardDescription className="text-center text-xs">
-          本课程按「同济大学《线性代数》第七版」章节组织，讲解与例题为原创内容
+          本课程按「{course.textbook.name}」章节组织，讲解与例题为原创内容
         </CardDescription>
         </div>
       </div>
