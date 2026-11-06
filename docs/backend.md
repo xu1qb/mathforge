@@ -73,7 +73,8 @@ AI 生成的题**不会直接可用**：它们先入库为 `pending`，人工在
 | approved | 人工通过 | `#/ai-review` 已通过 |
 | rejected | 驳回 | `#/ai-review` 已驳回 |
 
-存储：`.cache/ai/library.json`（JSON 文件，单进程写入；按题干+答案去重）。
+存储：`.cache/ai/library.db`（SQLite，`node-sqlite3-wasm` 纯 WASM 实现，免编译；
+按 (topic, question_latex, answer) 建唯一索引去重）。旧的 `library.json` 首次启动自动迁移并改名为 `.migrated`。
 
 接口：
 
@@ -274,13 +275,14 @@ npm run app:build   # 产出 release/ 下的 .app
 ## 十六、当前边界
 
 - 讲解草稿已接页面（`/explain-lab`，接口 `POST /api/ai/explainer`）：只产出草稿，**不落盘**，入库仍要人工改 `explainers.ts`
-- 已审核题目还没有进入练习页的抽题池（下一步接）
+- 审核通过的题会自动进入预生成池（`/api/ai/pool`），练习页优先读池子；
+  池子空了才回落到实时生成
 - 双解一致只覆盖「答案可比」的题型；证明题、构造题仍需人工
 - 没有账号体系与配额，若公开部署需要加鉴权与限流
 
 ## 七、下一步
 
-1. 生成结果入库（SQLite）并去重合并到练习题库
+1. ~~生成结果入库（SQLite）并去重合并到练习题库~~ ✅ SQLite（WASM）+ 唯一索引去重；审核通过即进预生成池
 2. ~~接上讲解生成（explainer）页面~~ ✅ 已接（`/explain-lab`）
 3. 流式返回，边生成边显示
 4. 人工审核队列：AI 题默认「待审核」，通过后才进入正式题库
