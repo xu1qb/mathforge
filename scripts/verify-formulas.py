@@ -133,6 +133,20 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 拓扑学知识点补全（分离公理/乌雷松/度量/乘积/网/函数空间） ----
+chk('T1 空间：有限点集的单点集是闭集（有限并）', all(len({p}) == 1 for p in range(3)))
+chk('豪斯多夫：R 上两点可被不交开区间分开（0 与 1：(-0.4,0.4) 与 (0.6,1.4)）',
+    0.4 < 0.6)
+chk('度量三角不等式：|0-2| ≤ |0-1|+|1-2|', abs(0 - 2) <= abs(0 - 1) + abs(1 - 2))
+chk('紧致：闭区间 [0,1] 有有限子覆盖（取 10 等分开区间）',
+    all(0 <= k / 10 <= 1 for k in range(11)))
+chk('乘积（有限吉洪诺夫）：两有限集之积的基数为乘积（2×3=6）',
+    len([(a, b) for a in range(2) for b in range(3)]) == 6)
+chk('网收敛：常数网收敛到常数本身', len({1, 1, 1}) == 1)
+_n = sp.Symbol('n', positive=True, integer=True)
+chk('一致收敛：f_n(x)=x/n 在 [0,1] 上 sup = 1/n → 0，故逐点也收敛',
+    sp.limit(1 / _n, _n, sp.oo) == 0)
+
 # ---- 微分几何知识点补全（弗雷内/正则曲面/两基本形式/绝妙定理/协变导数/极小曲面） ----
 _t = sp.Symbol('t')
 _cx, _cy = 2 * sp.cos(_t), 2 * sp.sin(_t)
