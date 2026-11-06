@@ -2,7 +2,10 @@ import type { Course } from './types';
 
 export const STOCHASTIC_PROCESS_COURSE: Course = {
   id: 'stochastic-process-course', title: '随机过程', tagline: '马尔可夫链、泊松过程与鞅',
-  textbook: { name: '随机过程（教材） + Introduction to Probability Models（Ross）', edition: '第 1 版 / 第 11 版' },
+  textbook: {
+    name: 'Introduction to Probability Models（Ross） + 随机过程（刘次华）',
+    edition: '第 11 版 / 第 5 版',
+  },
   prerequisites: ['概率论'],
   hours: 32,
   intro: {
@@ -12,28 +15,28 @@ export const STOCHASTIC_PROCESS_COURSE: Course = {
   },
   chapters: [
     {
-      id: 'sp-markov', title: '马尔可夫链', textbookRef: '教材 第 1 章 / Ross 第 4 章', summary: '只看当前状态',
+      id: 'sp-markov', title: '马尔可夫链', textbookRef: 'Ross 第 1 章 / Ross 第 4 章', summary: '只看当前状态',
       goals: ['写转移矩阵', '求平稳分布'],
       lessonIds: ['markov-chains', 'renewal-process', 'ctmc'],
       practiceTopics: ['random-variable'],
       exercises: [{ id: 'sp1-1', level: '进阶', question: '平稳分布满足？', answer: 'πP=π', hint: '不动方程。', steps: ['进', '阶'] }],
     },
     {
-      id: 'sp-poisson', title: '泊松过程', textbookRef: '教材 第 2 章 / Ross 第 5 章', summary: '随机到达',
+      id: 'sp-poisson', title: '泊松过程', textbookRef: 'Ross 第 2 章 / Ross 第 5 章', summary: '随机到达',
       goals: ['算计数分布', '用无记忆性'],
       lessonIds: ['poisson-process', 'queueing-m-m-1'],
       practiceTopics: ['random-variable'],
       exercises: [{ id: 'sp2-1', level: '进阶', question: '时间 t 内期望事件数？', answer: 'λt', hint: '强度。', steps: ['进', '阶'] }],
     },
     {
-      id: 'sp-brownian', title: '布朗运动', textbookRef: '教材 第 3 章 / Ross 第 10 章', summary: '连续随机游走',
+      id: 'sp-brownian', title: '布朗运动', textbookRef: 'Ross 第 3 章 / Ross 第 10 章', summary: '连续随机游走',
       goals: ['理解性质', '模拟路径'],
       lessonIds: ['random-walk-brownian', 'brownian-properties', 'gamblers-ruin'],
       practiceTopics: ['random-variable'],
       exercises: [{ id: 'sp3-1', level: '进阶', question: '布朗运动方差与时间关系？', answer: '正比', hint: '标准性质。', steps: ['进', '阶'] }],
     },
     {
-      id: 'sp-martingale', title: '鞅', textbookRef: '教材 第 4 章 / Ross 第 3 章', summary: '公平游戏',
+      id: 'sp-martingale', title: '鞅', textbookRef: 'Ross 第 4 章 / Ross 第 3 章', summary: '公平游戏',
       goals: ['判鞅', '用停时定理'],
       lessonIds: ['martingales', 'branching-process'],
       practiceTopics: ['random-variable'],

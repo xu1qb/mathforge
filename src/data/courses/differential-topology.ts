@@ -5,8 +5,8 @@ export const DIFFERENTIAL_TOPOLOGY_COURSE: Course = {
   title: '微分拓扑',
   tagline: '光滑流形、映射度、横截性、莫尔斯与配边',
   textbook: {
-    name: 'Topology from the Differentiable Viewpoint（Milnor） + 微分拓扑讲义',
-    edition: '第 1 版 / 讲义',
+    name: 'Topology from the Differentiable Viewpoint（Milnor） + Differential Topology（Guillemin & Pollack）',
+    edition: '第 1 版 / 第 1 版',
   },
   prerequisites: ['微分几何', '拓扑学'],
   hours: 44,

@@ -2,7 +2,10 @@ import type { Course } from './types';
 
 export const SET_THEORY_LOGIC_COURSE: Course = {
   id: 'set-theory-logic-course', title: '公理化集合论（逻辑视角）', tagline: 'ZFC、序数与独立性',
-  textbook: { name: 'Set Theory（Jech） + 公理化集合论讲义', edition: '第 3 版 / 第 1 版' },
+  textbook: {
+    name: 'Set Theory（Jech） + Set Theory: An Introduction to Independence Proofs（Kunen）',
+    edition: '第 3 版 / 第 1 版',
+  },
   prerequisites: ['数理逻辑'],
   hours: 28,
   intro: {

@@ -4,7 +4,10 @@ export const APPLIED_MATH_COURSE: Course = {
   id: 'applied-math',
   title: '应用数学',
   tagline: '力学、生态、优化与控制：数学落到现实',
-  textbook: { name: '应用数学导论（自编）', edition: '第一版（自编）' },
+  textbook: {
+    name: 'Applied Mathematics（Logan） + Introduction to Operations Research（Hillier & Lieberman）',
+    edition: '第 4 版 / 第 10 版',
+  },
   prerequisites: ['高等数学', '线性代数'],
   hours: 40,
   intro: {

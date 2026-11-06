@@ -5,8 +5,8 @@ export const MODERN_MATH_COURSE: Course = {
   title: '现代数学导论',
   tagline: '一座桥：从集合到范畴，把十个分支串起来',
   textbook: {
-    name: '现代数学导论（自编，参照《数学：它的内容、方法和意义》与 Princeton Companion 的组织）',
-    edition: '第 1 版',
+    name: '数学：它的内容、方法和意义（亚历山大洛夫） + The Princeton Companion to Mathematics（Gowers）',
+    edition: '第 1 版 / 第 1 版',
   },
   prerequisites: ['高等数学'],
   hours: 36,

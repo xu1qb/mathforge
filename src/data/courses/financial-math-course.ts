@@ -4,7 +4,10 @@ export const FINANCIAL_MATH_COURSE: Course = {
   id: 'financial-math-course',
   title: '金融数学',
   tagline: '随机游走、期权定价与风险度量',
-  textbook: { name: '金融数学（教材） + Options, Futures and Other Derivatives（Hull）', edition: '第 1 版 / 第 10 版' },
+  textbook: {
+    name: 'Options, Futures and Other Derivatives（Hull） + 期权定价的数学模型和方法（姜礼尚）',
+    edition: '第 10 版 / 第 2 版',
+  },
   prerequisites: ['概率统计', '随机过程'],
   hours: 32,
   intro: {
@@ -16,7 +19,7 @@ export const FINANCIAL_MATH_COURSE: Course = {
     {
       id: 'fin-walk',
       title: '随机游走与布朗运动',
-      textbookRef: '教材 第 1 章 / Hull 第 12 章',
+      textbookRef: 'Hull 第 1 章 / Hull 第 12 章',
       summary: '价格的随机模型',
       goals: ['理解布朗运动', '模拟价格'],
       lessonIds: ['random-walk-brownian', 'ito-lemma', 'binomial-tree'],
@@ -31,7 +34,7 @@ export const FINANCIAL_MATH_COURSE: Course = {
     {
       id: 'fin-option',
       title: '期权定价',
-      textbookRef: '教材 第 2 章 / Hull 第 15 章',
+      textbookRef: 'Hull 第 2 章 / Hull 第 15 章',
       summary: '无套利定价',
       goals: ['理解 BS', '用风险中性'],
       lessonIds: ['option-pricing', 'risk-neutral-measure', 'black-scholes-pde', 'greeks'],
@@ -46,7 +49,7 @@ export const FINANCIAL_MATH_COURSE: Course = {
     {
       id: 'fin-risk',
       title: '风险度量',
-      textbookRef: '教材 第 3 章 / Hull 第 22 章',
+      textbookRef: 'Hull 第 3 章 / Hull 第 22 章',
       summary: 'VaR 与期望损失',
       goals: ['算 VaR', '理解一致性'],
       lessonIds: ['risk-measures', 'credit-risk'],
@@ -61,7 +64,7 @@ export const FINANCIAL_MATH_COURSE: Course = {
     {
       id: 'fin-rate',
       title: '利率与折现',
-      textbookRef: '教材 第 4 章 / Hull 第 4 章',
+      textbookRef: 'Hull 第 4 章 / Hull 第 4 章',
       summary: '时间的价格',
       goals: ['算现值', '理解期限结构'],
       lessonIds: ['interest-rate-models'],

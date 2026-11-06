@@ -5,8 +5,8 @@ export const LOGIC_FOUNDATIONS_COURSE: Course = {
   title: '递归论',
   tagline: '可计算性、自指、归约与算术层级',
   textbook: {
-    name: 'Computability and Logic（Boolos, Burgess & Jeffrey） + 递归论讲义',
-    edition: '第 5 版 / 讲义',
+    name: 'Computability and Logic（Boolos, Burgess & Jeffrey） + Turing Computability（Soare）',
+    edition: '第 5 版 / 第 1 版',
   },
   prerequisites: ['数理逻辑'],
   hours: 36,

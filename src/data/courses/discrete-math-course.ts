@@ -2,7 +2,10 @@ import type { Course } from './types';
 
 export const DISCRETE_MATH_COURSE: Course = {
   id: 'discrete-math-course', title: '离散数学', tagline: '集合、逻辑、计数与图',
-  textbook: { name: '离散数学（教材） + Discrete Mathematics and Its Applications（Rosen）', edition: '第 1 版 / 第 8 版' },
+  textbook: {
+    name: 'Discrete Mathematics and Its Applications（Rosen） + 离散数学（屈婉玲）',
+    edition: '第 8 版 / 第 3 版',
+  },
   prerequisites: ['集合论'],
   hours: 32,
   intro: {
@@ -12,28 +15,28 @@ export const DISCRETE_MATH_COURSE: Course = {
   },
   chapters: [
     {
-      id: 'dm-set', title: '集合与关系', textbookRef: '教材 第 1 章 / Rosen 第 2 章', summary: '笛卡尔积与函数',
+      id: 'dm-set', title: '集合与关系', textbookRef: 'Rosen 第 1 章 / Rosen 第 2 章', summary: '笛卡尔积与函数',
       goals: ['写关系', '判函数'],
       lessonIds: ['relations-functions', 'divmod-algorithms'],
       practiceTopics: ['combinatorics-basic'],
       exercises: [{ id: 'dm1-1', level: '基础', question: '两元素与三元素集合的笛卡尔积大小？', answer: '6', hint: '相乘。', steps: ['基', '础'] }],
     },
     {
-      id: 'dm-logic', title: '命题逻辑', textbookRef: '教材 第 2 章 / Rosen 第 1 章', summary: '真值表与推理',
+      id: 'dm-logic', title: '命题逻辑', textbookRef: 'Rosen 第 2 章 / Rosen 第 1 章', summary: '真值表与推理',
       goals: ['写真值表', '判重言式'],
       lessonIds: ['propositional-logic', 'proof-methods', 'mathematical-induction'],
       practiceTopics: ['combinatorics-basic'],
       exercises: [{ id: 'dm2-1', level: '基础', question: '蕴含何时为假？', answer: '真蕴含假', hint: '真值表。', steps: ['基', '础'] }],
     },
     {
-      id: 'dm-count', title: '计数方法', textbookRef: '教材 第 3 章 / Rosen 第 6 章', summary: '排列组合',
+      id: 'dm-count', title: '计数方法', textbookRef: 'Rosen 第 3 章 / Rosen 第 6 章', summary: '排列组合',
       goals: ['用乘法原理', '用容斥'],
       lessonIds: ['counting-principles', 'permutations-combinations', 'sequences-sums'],
       practiceTopics: ['combinatorics-basic'],
       exercises: [{ id: 'dm3-1', level: '基础', question: 'C(5,2) 等于？', answer: '10', hint: '组合数。', steps: ['基', '础'] }],
     },
     {
-      id: 'dm-graph', title: '图论基础', textbookRef: '教材 第 4 章 / Rosen 第 10 章', summary: '欧拉与树',
+      id: 'dm-graph', title: '图论基础', textbookRef: 'Rosen 第 4 章 / Rosen 第 10 章', summary: '欧拉与树',
       goals: ['判欧拉', '用树'],
       lessonIds: ['graph-euler', 'trees-connectivity', 'algorithms-complexity', 'boolean-functions'],
       practiceTopics: ['combinatorics-basic'],

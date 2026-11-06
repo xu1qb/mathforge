@@ -5,8 +5,8 @@ export const NON_EUCLIDEAN_COURSE: Course = {
   title: '非欧几何',
   tagline: '公理、全等、面积、尺规与双曲球面椭圆几何',
   textbook: {
-    name: 'Geometry: Euclid and Beyond（Hartshorne） + 非欧几何（教材）',
-    edition: '第 1 版 / 第 1 版',
+    name: 'Geometry: Euclid and Beyond（Hartshorne） + Euclidean and Non-Euclidean Geometries（Greenberg）',
+    edition: '第 1 版 / 第 4 版',
   },
   prerequisites: ['初等几何'],
   hours: 40,

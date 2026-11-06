@@ -5,8 +5,8 @@ export const TOPOLOGY_COURSE: Course = {
   title: '拓扑学',
   tagline: '开集、连续、紧致、连通与分离公理',
   textbook: {
-    name: '拓扑学（教材） + Topology（Munkres）',
-    edition: '第 1 版 / 第 2 版',
+    name: 'Topology（Munkres） + 基础拓扑学讲义（尤承业）',
+    edition: '第 2 版 / 第 1 版',
   },
   prerequisites: ['集合论', '实分析'],
   hours: 48,

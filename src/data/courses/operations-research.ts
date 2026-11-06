@@ -4,7 +4,10 @@ export const OPERATIONS_RESEARCH_COURSE: Course = {
   id: 'operations-research',
   title: '运筹学',
   tagline: '线性规划、单纯形、对偶与网络流',
-  textbook: { name: '运筹学（教材） + Introduction to Operations Research（Hillier & Lieberman）', edition: '第 5 版 / 第 10 版' },
+  textbook: {
+    name: 'Introduction to Operations Research（Hillier & Lieberman） + 运筹学（教材编写组，清华大学出版社）',
+    edition: '第 10 版 / 第 4 版',
+  },
   prerequisites: ['线性代数'],
   hours: 32,
   intro: {
@@ -16,7 +19,7 @@ export const OPERATIONS_RESEARCH_COURSE: Course = {
     {
       id: 'or-lp',
       title: '线性规划',
-      textbookRef: '教材 第 1 章 / Hillier 第 3 章',
+      textbookRef: 'Hillier-Lieberman 第 1 章 / Hillier 第 3 章',
       summary: '线性约束下优化',
       goals: ['建模型', '找顶点'],
       lessonIds: ['linear-programming', 'transportation-problem'],
@@ -35,7 +38,7 @@ export const OPERATIONS_RESEARCH_COURSE: Course = {
     {
       id: 'or-simplex',
       title: '单纯形法',
-      textbookRef: '教材 第 2 章 / Hillier 第 4 章',
+      textbookRef: 'Hillier-Lieberman 第 2 章 / Hillier 第 4 章',
       summary: '沿顶点迭代',
       goals: ['化标准形', '会换基'],
       lessonIds: ['simplex-method', 'integer-programming', 'dynamic-programming'],
@@ -54,7 +57,7 @@ export const OPERATIONS_RESEARCH_COURSE: Course = {
     {
       id: 'or-duality',
       title: '对偶理论',
-      textbookRef: '教材 第 3 章 / Hillier 第 6 章',
+      textbookRef: 'Hillier-Lieberman 第 3 章 / Hillier 第 6 章',
       summary: '两个问题一个答案',
       goals: ['写对偶', '用强对偶'],
       lessonIds: ['duality-theory', 'sensitivity-analysis'],
@@ -73,7 +76,7 @@ export const OPERATIONS_RESEARCH_COURSE: Course = {
     {
       id: 'or-network',
       title: '网络流',
-      textbookRef: '教材 第 4 章 / Hillier 第 7 章',
+      textbookRef: 'Hillier-Lieberman 第 4 章 / Hillier 第 7 章',
       summary: '最大流最小割',
       goals: ['找增广路', '判最优'],
       lessonIds: ['network-flow', 'network-optimization', 'queueing-or'],

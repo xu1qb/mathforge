@@ -4,7 +4,10 @@ export const COMPUTATION_COURSE: Course = {
   id: 'computation',
   title: '计算与算法',
   tagline: '可计算的边界在哪里：从图灵机到 P 与 NP',
-  textbook: { name: '计算与算法导论（自编）', edition: '第一版（自编）' },
+  textbook: {
+    name: 'Introduction to the Theory of Computation（Sipser） + Algorithm Design（Kleinberg & Tardos）',
+    edition: '第 3 版 / 第 1 版',
+  },
   prerequisites: ['离散数学'],
   hours: 36,
   intro: {

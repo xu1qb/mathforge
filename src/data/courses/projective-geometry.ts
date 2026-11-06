@@ -5,7 +5,7 @@ export const PROJECTIVE_GEOMETRY_COURSE: Course = {
   title: '射影几何',
   tagline: '齐次坐标、交比、对偶、圆锥曲线与配极',
   textbook: {
-    name: 'Projective Geometry（Coxeter） + 射影几何（教材）',
+    name: 'Projective Geometry（Coxeter） + 高等几何（周兴和）',
     edition: '第 2 版 / 第 1 版',
   },
   prerequisites: ['线性代数', '平面几何'],

@@ -4,7 +4,10 @@ export const ALGEBRA_NUMBER_COURSE: Course = {
   id: 'algebra-number',
   title: '代数与数论',
   tagline: '群环域到伽罗瓦：结构决定可解性',
-  textbook: { name: '代数与数论导论（自编）', edition: '第一版' },
+  textbook: {
+    name: '近世代数引论（冯克勤） + Abstract Algebra（Dummit & Foote）',
+    edition: '第 3 版 / 第 3 版',
+  },
   prerequisites: ['线性代数'],
   hours: 56,
   intro: {

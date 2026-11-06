@@ -4,7 +4,10 @@ export const MATHEMATICAL_BIOLOGY_COURSE: Course = {
   id: 'mathematical-biology',
   title: '生物数学',
   tagline: '种群、传染病与酶动力学',
-  textbook: { name: '生物数学（教材） + Mathematical Biology（Murray）', edition: '第 1 版 / 第 3 版' },
+  textbook: {
+    name: 'Mathematical Biology（Murray） + Mathematical Models in Biology（Edelstein-Keshet）',
+    edition: '第 3 版 / 第 1 版',
+  },
   prerequisites: ['常微分方程'],
   hours: 28,
   intro: {
@@ -16,7 +19,7 @@ export const MATHEMATICAL_BIOLOGY_COURSE: Course = {
     {
       id: 'bio-growth',
       title: '种群增长',
-      textbookRef: '教材 第 1 章 / Murray 第 1 章',
+      textbookRef: 'Murray 第 1 章 / Murray 第 1 章',
       summary: '指数与逻辑斯蒂',
       goals: ['写增长方程', '找平衡点'],
       lessonIds: ['population-growth', 'logistic-growth', 'competition-model'],
@@ -35,7 +38,7 @@ export const MATHEMATICAL_BIOLOGY_COURSE: Course = {
     {
       id: 'bioepidemic',
       title: '传染病模型',
-      textbookRef: '教材 第 2 章 / Murray 第 2 章',
+      textbookRef: 'Murray 第 2 章 / Murray 第 2 章',
       summary: 'SIR 与 R0',
       goals: ['分仓室', '算 R0'],
       lessonIds: ['epidemic-models', 'sir-model'],
@@ -54,7 +57,7 @@ export const MATHEMATICAL_BIOLOGY_COURSE: Course = {
     {
       id: 'bio-enzyme',
       title: '酶动力学',
-      textbookRef: '教材 第 3 章 / Murray 第 3 章',
+      textbookRef: 'Murray 第 3 章 / Murray 第 3 章',
       summary: '米氏方程',
       goals: ['拟合参数', '分析抑制'],
       lessonIds: ['enzyme-kinetics', 'oscillators'],
@@ -73,7 +76,7 @@ export const MATHEMATICAL_BIOLOGY_COURSE: Course = {
     {
       id: 'bio-predator',
       title: '捕食者-猎物',
-      textbookRef: '教材 第 4 章 / Murray 第 4 章',
+      textbookRef: 'Murray 第 4 章 / Murray 第 4 章',
       summary: 'Lotka-Volterra',
       goals: ['找平衡点', '看周期'],
       lessonIds: ['lotka-volterra', 'reaction-diffusion', 'turing-pattern'],

@@ -5,7 +5,7 @@ export const ALGEBRAIC_TOPOLOGY_COURSE: Course = {
   title: '代数拓扑',
   tagline: '基本群、覆叠、同调与上同调',
   textbook: {
-    name: '代数拓扑（教材） + Algebraic Topology（Hatcher）',
+    name: 'Algebraic Topology（Hatcher） + An Introduction to Algebraic Topology（Rotman）',
     edition: '第 1 版 / 第 1 版',
   },
   prerequisites: ['拓扑学', '群论'],

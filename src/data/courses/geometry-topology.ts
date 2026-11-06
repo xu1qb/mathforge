@@ -4,7 +4,10 @@ export const GEOMETRY_TOPOLOGY_COURSE: Course = {
   id: 'geometry-topology',
   title: '几何与拓扑',
   tagline: '从非欧几何到基本群：形状的不变量',
-  textbook: { name: '几何与拓扑导论（自编）', edition: '第一版' },
+  textbook: {
+    name: 'Differential Geometry of Curves and Surfaces（do Carmo） + Topology（Munkres）',
+    edition: '第 1 版 / 第 2 版',
+  },
   prerequisites: ['高等数学', '线性代数'],
   hours: 40,
   intro: {

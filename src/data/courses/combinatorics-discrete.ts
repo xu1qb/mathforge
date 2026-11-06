@@ -4,7 +4,10 @@ export const COMBINATORICS_DISCRETE_COURSE: Course = {
   id: 'combinatorics-discrete',
   title: '组合与离散',
   tagline: '有限、计数、离散结构',
-  textbook: { name: '组合与离散数学导论（自编）', edition: '第一版' },
+  textbook: {
+    name: 'Discrete Mathematics and Its Applications（Rosen） + Enumerative Combinatorics（Stanley）',
+    edition: '第 8 版 / 第 2 版',
+  },
   prerequisites: ['高等数学'],
   hours: 40,
   intro: {
