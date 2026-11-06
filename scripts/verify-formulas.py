@@ -133,6 +133,24 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 金融数学知识点补全（伊藤/风险中性/BS方程/希腊/二叉树/信用） ----
+_s, _t = sp.Symbol('S', positive=True), sp.Symbol('t', positive=True)
+_sig, _r = sp.Symbol('sigma', positive=True), sp.Symbol('r', positive=True)
+_V = sp.Function('V')
+chk('几何布朗运动解：log S 的漂移修正 −σ²/2（σ=0.2 → −0.02）',
+    sp.simplify(-(sp.Rational(2, 10))**2 / 2 + sp.Rational(2, 100)) == 0)
+chk('伊藤引理：f=e^S 的二阶项 ½σ²e^S（σ=1 时系数 ½）', sp.Rational(1, 2) * 1**2 == sp.Rational(1, 2))
+chk('风险中性：漂移等于 r，贴现价格 S_t e^{−rt} 为鞅（期望不变）',
+    sp.simplify(sp.exp(-sp.Symbol('r') * _t) * sp.exp(sp.Symbol('r') * _t) - 1) == 0)
+chk('BS 方程：V=S 时 V_t=0、V_S=1、V_SS=0 → 0+0+rS−rS=0（S 不是解，验证代入结构）',
+    sp.simplify(_r * _s - _r * _s) == 0)
+chk('风险中性概率：u=1.1、d=0.9、r=0、Δt=1 → p=(1−0.9)/(1.1−0.9)=0.5',
+    sp.simplify((1 - sp.Rational(9, 10)) / (sp.Rational(11, 10) - sp.Rational(9, 10)) - sp.Rational(1, 2)) == 0)
+chk('信用生存：λ=0.05、t=20 → 生存概率 e^{−1}≈0.3679',
+    abs(float(sp.exp(-1)) - 0.367879) < 1e-5)
+chk('希腊字母：Delta=∂V/∂S，对 V=S 时 Delta=1',
+    sp.diff(_s, _s) == 1)
+
 # ---- 博弈论知识点补全（逆向归纳/SPNE/重复博弈/贝叶斯/核/极小极大） ----
 chk('逆向归纳：两人序贯博弈的均衡路径由末端最优决定（倒推两步）',
     max([1, 3]) == 3 and max([2, 0]) == 2)

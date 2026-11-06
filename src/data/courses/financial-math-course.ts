@@ -19,7 +19,7 @@ export const FINANCIAL_MATH_COURSE: Course = {
       textbookRef: '教材 第 1 章 / Hull 第 12 章',
       summary: '价格的随机模型',
       goals: ['理解布朗运动', '模拟价格'],
-      lessonIds: ['random-walk-brownian'],
+      lessonIds: ['random-walk-brownian', 'ito-lemma', 'binomial-tree'],
       practiceTopics: ['random-variable'],
       exercises: [
         {
@@ -34,7 +34,7 @@ export const FINANCIAL_MATH_COURSE: Course = {
       textbookRef: '教材 第 2 章 / Hull 第 15 章',
       summary: '无套利定价',
       goals: ['理解 BS', '用风险中性'],
-      lessonIds: ['option-pricing'],
+      lessonIds: ['option-pricing', 'risk-neutral-measure', 'black-scholes-pde', 'greeks'],
       practiceTopics: ['random-variable'],
       exercises: [
         {
@@ -49,7 +49,7 @@ export const FINANCIAL_MATH_COURSE: Course = {
       textbookRef: '教材 第 3 章 / Hull 第 22 章',
       summary: 'VaR 与期望损失',
       goals: ['算 VaR', '理解一致性'],
-      lessonIds: ['risk-measures'],
+      lessonIds: ['risk-measures', 'credit-risk'],
       practiceTopics: ['random-variable'],
       exercises: [
         {
