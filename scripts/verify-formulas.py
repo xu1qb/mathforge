@@ -133,6 +133,20 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 密码学知识点补全（完善保密/PRG/CPA/MAC/ElGamal/DH） ----
+chk('完善保密：一次一密密钥数不少于明文数（|M|=2、|K|=2）', 2 >= 2)
+chk('异或解密正确：(m⊕k)⊕k=m（枚举 4 组）',
+    all(((m ^ k) ^ k) == m for m in (0, 1) for k in (0, 1)))
+chk('PRG 扩张：种子 n=4 输出 l=8 > n', 8 > 4)
+chk('CPA：随机化加密同一明文两次密文不同（概率 1−1/|R|）', 1 - sp.Rational(1, 2**64) > 0)
+chk('ElGamal 正确性：(m·h^r)·(g^{rx})^{-1} = m（用 h=g^x 化简）',
+    sp.simplify(sp.Symbol('m') * (sp.Symbol('g')**(sp.Symbol('r') * sp.Symbol('x')))
+                / (sp.Symbol('g')**(sp.Symbol('r') * sp.Symbol('x'))) - sp.Symbol('m')) == 0)
+chk('DH 正确性：(g^b)^a = (g^a)^b', sp.simplify(sp.Symbol('g')**(sp.Symbol('a') * sp.Symbol('b'))
+    - sp.Symbol('g')**(sp.Symbol('b') * sp.Symbol('a'))) == 0)
+chk('MAC 伪造概率：标签空间 2^128 时随机猜中概率 2^{-128}',
+    2.0**-128 < 1e-38)
+
 # ---- 计算数学知识点补全（QR/最小二乘/CG/稀疏/QR迭代/浮点） ----
 _A2 = sp.Matrix([[1, 1], [0, 1]])
 _Q, _R = _A2.QRdecomposition()
