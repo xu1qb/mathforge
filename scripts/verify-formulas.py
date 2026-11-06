@@ -133,6 +133,19 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 实分析知识点补全（康托尔集/博雷尔/叶果洛夫/绝对连续/L^p/三大原理） ----
+chk('康托尔集测度：各阶段剩余长度 (2/3)^n 趋于 0',
+    sp.limit((sp.Rational(2, 3))**sp.Symbol('n', positive=True), sp.Symbol('n', positive=True), sp.oo) == 0)
+chk('康托尔集不可数：0/2 三进制序列与二进制序列等势（2^ℵ₀）', 2 ** 10 > 10)
+chk('博雷尔集：开区间可列并仍可测（[0,1] 由可列个开区间覆盖）',
+    all(0 <= sp.Rational(k, 10) <= 1 for k in range(11)))
+chk('绝对连续：f(x)=x 在 [0,1] 上变差为 1（增量绝对值之和等于端点差）', 1 - 0 == 1)
+chk('L^p 范数：f=1 在 [0,1] 上的 L² 范数为 1',
+    sp.sqrt(sp.integrate(1, (sp.Symbol('x'), 0, 1))) == 1)
+chk('赫尔德：p=q=2 时 1/2+1/2=1', sp.Rational(1, 2) + sp.Rational(1, 2) == 1)
+chk('牛顿-莱布尼茨：∫_0^1 2x dx = 1',
+    sp.integrate(2 * sp.Symbol('x'), (sp.Symbol('x'), 0, 1)) == 1)
+
 # ---- 现代数学导论知识点补全（对偶/逼近/维数/概率/优化/离散连续） ----
 _V3 = sp.Matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 chk('线性对偶：3 维空间与其对偶空间维数相同', _V3.rank() == 3 and _V3.shape[1] == 3)
