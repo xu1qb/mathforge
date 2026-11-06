@@ -133,6 +133,31 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 格论知识点补全（布尔代数/完备格/伽罗瓦连接/闭包/模格/海廷） ----
+_B = {1, 2, 3}
+chk('布尔代数：幂集格满足分配律 A∩(B∪C)=(A∩B)∪(A∩C)',
+    ({1} & ({2} | {1})) == (({1} & {2}) | ({1} & {1})))
+chk('布尔补元：A∩Aᶜ=∅ 且 A∪Aᶜ=全集',
+    (_B - {1, 2}).isdisjoint({1, 2}) and ({1, 2} | (_B - {1, 2})) == _B)
+chk('完备格：区间 [0,1] 的任意子集有上确界（取 sup）', max([0.1, 0.4, 0.9]) == 0.9)
+_U = {1, 2, 3}
+def _c(A):
+    return A | {3} if 1 in A else set(A)
+_subs = [set(s) for k in range(4) for s in __import__('itertools').combinations(_U, k)]
+chk('闭包算子：扩张、幂等、单调三条同时成立',
+    all(A <= _c(A) for A in _subs)
+    and all(_c(_c(A)) == _c(A) for A in _subs)
+    and all(_c(A) <= _c(B) for A in _subs for B in _subs if A <= B))
+chk('伽罗瓦连接：f(p)≤q ⇔ p≤g(q)（单调例 f(x)=2x, g(y)=y/2）',
+    all((2 * p <= q) == (p <= q / 2) for p in range(5) for q in range(10)))
+chk('模格：分配格都是模格（幂集格验证 x≤z 时模律）',
+    ({1} | ({2} & {1, 2, 3})) == (({1} | {2}) & {1, 2, 3}))
+_chain = [0, 1, 2]
+def _imp(a, b):
+    return 2 if a <= b else b
+chk('海廷伴随：a∧x ≤ b ⇔ x ≤ (a→b)（三元素链验证）',
+    all((min(a, x) <= b) == (x <= _imp(a, b)) for a in _chain for b in _chain for x in _chain))
+
 # ---- 图论知识点补全（匹配/霍尔/门格尔/哈密顿/图兰/最大流） ----
 _L = ['l1', 'l2', 'l3']
 _R = ['r1', 'r2', 'r3']
