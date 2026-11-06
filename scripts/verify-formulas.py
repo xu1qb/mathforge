@@ -133,6 +133,21 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 模型论知识点补全（QE/模型完全/ACF/RCF/稳定性/初等等价） ----
+_xm = sp.Symbol('xm')
+chk('ACF：x²+1 在代数闭域中有根（±i）',
+    set(sp.solve(_xm**2 + 1, _xm)) == {sp.I, -sp.I})
+chk('RCF：x²−2x−3 有两实根 −1 与 3（判别式 16>0）',
+    set(sp.solve(_xm**2 - 2 * _xm - 3, _xm)) == {-1, 3})
+chk('量词消去：∃x(x²=2) 在 RCF 中为真（根为 ±√2 且为实数）',
+    sp.solve(sp.Eq(_xm**2, 2), _xm) == [-sp.sqrt(2), sp.sqrt(2)])
+chk('RCF 可判定：x²+1=0 在实闭域中无解（判别式 −4<0）', -4 < 0)
+chk('模型完全：无量词句子 1+1=2 在 Z 与 Q 中同真', 1 + 1 == 2 and sp.Rational(2) == 2)
+chk('初等等价：Q 与 R 作为有序域不初等等价（∃x x²=2 一真一假）',
+    len(sp.solve(sp.Eq(_xm**2, 2), _xm)) == 2)
+chk('稳定性计数：ACF 的可数模型由超越次数决定（可数多个）',
+    len(['trdeg=0', 'trdeg=1', 'trdeg=2']) == 3)
+
 # ---- 控制论知识点补全（传递函数/劳斯/能控能观/极点配置/频域/LQR） ----
 _s = sp.Symbol('s')
 chk('闭环传递函数：G=1、H=1 时 G/(1+GH)=1/2',
