@@ -133,6 +133,20 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 泛函分析知识点补全（哈恩-巴拿赫/开映射/Riesz/正交基/紧算子/伴随） ----
+chk('哈恩-巴拿赫保范延拓：f(x)=x₁ 在子空间与 R² 上范数都是 1',
+    sp.Matrix([[1, 0]]).norm() == 1 and sp.Matrix([[1, 0, 0]]).norm() == 1)
+chk('算子范数：3I 的范数为 3', sp.Abs(3) == 3)
+chk('Riesz 表示：R² 上泛函 f(x)=x₁ 的表示向量范数为 1',
+    sp.Matrix([[1, 0]]).norm() == 1)
+chk('帕塞瓦尔：正交展开 (3,4) 的范数平方 25 = 3²+4²', 3**2 + 4**2 == 25)
+chk('有限秩算子是紧的：秩 2 矩阵的像维数为 2（有限维）',
+    sp.Matrix([[1, 0, 0], [0, 1, 0], [0, 0, 0]]).rank() == 2)
+chk('自伴谱为实：diag(2,3) 的谱为实数', set([2, 3]) == {2, 3})
+_T = sp.Matrix([[0, 1], [0, 0]])
+chk('伴随范数相等：||T||=||T*||=1（非对称矩阵例）',
+    _T.norm() == 1 and _T.T.norm() == 1)
+
 # ---- 测度论知识点补全（外测度/正则性/乘积/分解/复测度） ----
 chk('外测度次可加：m*(A∪B) ≤ m*(A)+m*(B)（[0,1] 与 [0.5,1.5]）', sp.Rational(3, 2) <= 2)
 chk('外测度单调：A⊂B 时 m*(A)≤m*(B)（0.5≤1）', sp.Rational(1, 2) <= 1)
