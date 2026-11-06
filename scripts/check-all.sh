@@ -40,7 +40,7 @@ PY_TOOLING="${MATH_PY_TOOLING:-$WS/.tooling/py}"
 if [ ! -d "$PY_TOOLING" ]; then
   PY_TOOLING="$HOME/Documents/deepseek-harness/default-workspace/.tooling/py"
 fi
-if [ -d "$WS/.tooling/py" ]; then
+if [ -d "$PY_TOOLING" ]; then
   if PYTHONPATH="$PY_TOOLING" python3 scripts/verify-formulas.py >"$TMP/mf-check-formula.log" 2>&1; then
     ok "formulas（$(grep -o '[0-9]*/[0-9]* passed' "$TMP/mf-check-formula.log" | tail -1)）"
   else
