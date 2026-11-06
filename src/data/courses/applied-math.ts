@@ -79,7 +79,7 @@ export const APPLIED_MATH_COURSE: Course = {
   crossings: [
     { subject: '高等数学', relation: '微分方程是力学与生态模型的语言。', courseId: 'calculus' },
     { subject: '概率统计', relation: '期权定价依赖随机过程。', courseId: 'probability' },
-    { subject: '分析学导论', relation: '控制稳定性用特征值与极点分析。', courseId: 'analysis' },
+    { subject: '常微分方程', relation: '控制稳定性用状态方程与极点分析。', courseId: 'analysis' },
   ],
   toolPath: '/multivariable',
 };

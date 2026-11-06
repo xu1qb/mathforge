@@ -43,6 +43,6 @@ export const NUMERICAL_ANALYSIS_COURSE: Course = {
     },
   ],
   applications: [{ title: '工程设计', scene: '工业', example: '数值求解微分方程。' }, { title: '数据分析', scene: '统计', example: '插值与拟合。' }],
-  crossings: [{ subject: '分析学导论', relation: '数值分析以分析学为基础。', courseId: 'analysis' }, { subject: '计算与算法', relation: '数值分析是计算数学的核心。', courseId: 'computation' }],
+  crossings: [{ subject: '常微分方程', relation: '数值解 ODE 是数值分析的核心内容之一。', courseId: 'analysis' }, { subject: '计算与算法', relation: '数值分析是计算数学的核心。', courseId: 'computation' }],
   toolPath: '/numerical',
 };

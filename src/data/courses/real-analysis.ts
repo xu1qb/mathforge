@@ -141,7 +141,7 @@ export const REAL_ANALYSIS_COURSE: Course = {
     { title: '傅里叶分析', scene: '信号', example: 'L² 空间是傅里叶变换的舞台。' },
   ],
   crossings: [
-    { subject: '分析学导论', relation: '实分析把微积分中的积分严格化。', courseId: 'analysis' },
+    { subject: '常微分方程', relation: '实分析为 ODE 解的存在唯一性提供工具。', courseId: 'analysis' },
     { subject: '概率统计', relation: '概率空间就是测度空间。', courseId: 'probability' },
   ],
   toolPath: '/calculus',

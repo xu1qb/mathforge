@@ -103,7 +103,7 @@ export const DIFFERENTIAL_GEOMETRY_COURSE: Course = {
     { title: '广义相对论', scene: '物理', example: '时空是弯曲流形，测地线描述自由落体。' },
   ],
   crossings: [
-    { subject: '分析学导论', relation: '曲率与测地线方程都是微分计算。', courseId: 'analysis' },
+    { subject: '常微分方程', relation: '测地线方程是二阶微分方程组。', courseId: 'analysis' },
     { subject: '线性代数', relation: '基本形式是二次型，主曲率是特征值。', courseId: 'linear-algebra' },
     { subject: '几何与拓扑', relation: '高斯－博内连接曲率与拓扑。', courseId: 'geometry-topology' },
   ],

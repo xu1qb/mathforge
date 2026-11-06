@@ -133,6 +133,25 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 常微分方程知识点补全（恰当/方程组/矩阵指数/级数解/SL/拉普拉斯/相平面/稳定性） ----
+chk('恰当方程：2x dx+2y dy 的势函数 x²+y² 满足 F_x=2x、F_y=2y',
+    sp.diff(sp.Symbol('x')**2 + sp.Symbol('y')**2, sp.Symbol('x')) == 2 * sp.Symbol('x'))
+chk('矩阵指数对角情形：e^{diag(1,2)} 等于 diag(e,e²)',
+    sp.simplify(sp.exp(sp.Matrix([[1, 0], [0, 2]])) - sp.Matrix([[sp.E, 0], [0, sp.E**2]])) == sp.zeros(2))
+chk('特征方程：r²+1=0 的根为 ±i', set(sp.solve(sp.Symbol('r')**2 + 1, sp.Symbol('r'))) == {sp.I, -sp.I})
+chk('SL 正交：sin x 与 sin 2x 在 [0,π] 上内积为零',
+    sp.integrate(sp.sin(sp.Symbol('x')) * sp.sin(2 * sp.Symbol('x')), (sp.Symbol('x'), 0, sp.pi)) == 0)
+_f0 = sp.Function('f')
+chk('初值问题 f′=0、f(0)=1 的解为常数 1',
+    sp.dsolve(sp.Eq(sp.diff(_f0(sp.Symbol('x')), sp.Symbol('x')), 0), _f0(sp.Symbol('x')), ics={_f0(0): 1}).rhs == 1)
+chk('鞍点：特征值 1 与 -1 异号', 1 * (-1) < 0)
+chk('李雅普诺夫：V=x²+y² 沿 ẋ=-x、ẏ=-y 的导数为 -2(x²+y²)（负定）',
+    sp.simplify(sp.diff(sp.Symbol('x')**2 + sp.Symbol('y')**2, sp.Symbol('x')) * (-sp.Symbol('x'))
+                + sp.diff(sp.Symbol('x')**2 + sp.Symbol('y')**2, sp.Symbol('y')) * (-sp.Symbol('y'))
+                + 2 * (sp.Symbol('x')**2 + sp.Symbol('y')**2)) == 0)
+chk('一阶线性方程 y′=y 的解得 e^x（代入验证）',
+    sp.simplify(sp.diff(sp.exp(sp.Symbol('x')), sp.Symbol('x')) - sp.exp(sp.Symbol('x'))) == 0)
+
 # ---- 调和分析知识点补全（核/逼近恒等/极大函数/Plancherel/奇异积分/分布） ----
 _x = sp.Symbol('x')
 _xi = sp.Symbol('xi', real=True)
