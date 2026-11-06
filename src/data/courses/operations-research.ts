@@ -19,7 +19,7 @@ export const OPERATIONS_RESEARCH_COURSE: Course = {
       textbookRef: '教材 第 1 章 / Hillier 第 3 章',
       summary: '线性约束下优化',
       goals: ['建模型', '找顶点'],
-      lessonIds: ['linear-programming'],
+      lessonIds: ['linear-programming', 'transportation-problem'],
       practiceTopics: ['inequality-solve'],
       exercises: [
         {
@@ -38,7 +38,7 @@ export const OPERATIONS_RESEARCH_COURSE: Course = {
       textbookRef: '教材 第 2 章 / Hillier 第 4 章',
       summary: '沿顶点迭代',
       goals: ['化标准形', '会换基'],
-      lessonIds: ['simplex-method'],
+      lessonIds: ['simplex-method', 'integer-programming', 'dynamic-programming'],
       practiceTopics: ['matrix-op'],
       exercises: [
         {
@@ -57,7 +57,7 @@ export const OPERATIONS_RESEARCH_COURSE: Course = {
       textbookRef: '教材 第 3 章 / Hillier 第 6 章',
       summary: '两个问题一个答案',
       goals: ['写对偶', '用强对偶'],
-      lessonIds: ['duality-theory'],
+      lessonIds: ['duality-theory', 'sensitivity-analysis'],
       practiceTopics: ['inequality-solve'],
       exercises: [
         {
@@ -76,7 +76,7 @@ export const OPERATIONS_RESEARCH_COURSE: Course = {
       textbookRef: '教材 第 4 章 / Hillier 第 7 章',
       summary: '最大流最小割',
       goals: ['找增广路', '判最优'],
-      lessonIds: ['network-flow'],
+      lessonIds: ['network-flow', 'network-optimization', 'queueing-or'],
       practiceTopics: ['combinatorics-basic'],
       exercises: [
         {

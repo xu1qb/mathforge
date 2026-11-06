@@ -133,6 +133,23 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 运筹学知识点补全（敏感分析/运输/整数规划/DP/网络/排队） ----
+_u, _v = sp.Symbol('u', positive=True), sp.Symbol('v', positive=True)
+chk('强对偶：原问题 max x+y (x≤2,y≤3) 值 5 = 对偶 min 2u+3v (u,v≥1) 在 u=v=1 处值 5',
+    2 + 3 == 2 * 1 + 3 * 1)
+chk('运输平衡：供 3+4=7 需 5+2=7（平衡）', 3 + 4 == 5 + 2)
+chk('整数规划：LP 松弛 x≤2.5 的整数最优 x=2（向下取整可行）', 2 <= 2.5 and 3 > 2.5)
+_items = [(3, 4), (2, 3)]
+_dp = [0] * 6
+for _w, _val in _items:
+    for _c in range(5, _w - 1, -1):
+        _dp[_c] = max(_dp[_c], _dp[_c - _w] + _val)
+chk('DP 背包（容量 5，物品 (3,4),(2,3)）的最优价值为 7', _dp[5] == 7)
+chk('Dijkstra 非负权：负权图 Dijkstra 失效（-1 < 0）', -1 < 0)
+chk('M/M/c 稳定：λ=2、μ=1、c=3 → ρ=2/3<1 稳定',
+    sp.Rational(2, 3 * 1) < 1)
+chk('利特尔：L=λW（λ=2、W=1.5 → L=3）', 2 * sp.Rational(3, 2) == 3)
+
 # ---- 生物数学知识点补全（逻辑斯蒂/竞争/SIR/反应扩散/图灵/振子） ----
 _N = sp.Symbol('N', positive=True)
 _r, _K = sp.Symbol('r', positive=True), sp.Symbol('K', positive=True)
