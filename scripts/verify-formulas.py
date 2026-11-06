@@ -133,6 +133,23 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 流体力学知识点补全（连续/欧拉/涡量/雷诺数/势流/湍流） ----
+_x, _y = sp.Symbol('x'), sp.Symbol('y')
+chk('连续方程：不可压二维流 u=x, v=−y 满足 u_x+v_y=0',
+    sp.diff(_x, _x) + sp.diff(-_y, _y) == 0)
+chk('物质导数：D/Dt = ∂t + v·∇（一维例 v=2、f=x → 对流项 2）', 2 * 1 == 2)
+_p, _u = sp.Function('p')(_x), sp.Function('u')(_x)
+_dp = -sp.Symbol('rho') * _u * sp.diff(_u, _x)
+_expr = sp.diff(_p + sp.Rational(1, 2) * sp.Symbol('rho') * _u**2, _x)
+chk('欧拉→伯努利：代入 dp/dx=−ρu du/dx 后 d/dx(p+½ρu²)=0',
+    sp.simplify(_expr.subs(sp.Derivative(_p, _x), _dp)) == 0)
+chk('涡量：u=−y, v=x 的涡量 ω=2（刚体旋转）',
+    sp.diff(_x, _x) - sp.diff(-_y, _y) == 2)
+chk('雷诺数：U=1、L=1、ν=0.01 → Re=100', sp.Rational(1, 1) / sp.Rational(1, 100) == 100)
+chk('势流：φ=x²−y² 满足拉普拉斯 ∇²φ=0',
+    sp.diff(_x**2 - _y**2, _x, 2) + sp.diff(_x**2 - _y**2, _y, 2) == 0)
+chk('伯努利数值：p=100、ρ=1、v=2 → p+½ρv² = 102', 100 + sp.Rational(1, 2) * 1 * 2**2 == 102)
+
 # ---- 力学知识点补全（运动学/牛顿/动量/角动量/振动/中心力） ----
 chk('匀加速：v₀=0、a=2、t=3 → v=6，s=9', 2 * 3 == 6 and sp.Rational(1, 2) * 2 * 3**2 == 9)
 chk('法向加速度：v=2、ρ=1 → a_n=4', sp.Rational(2**2, 1) == 4)
