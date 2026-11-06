@@ -6,6 +6,7 @@ import { config, applyRuntimeConfig, hasVerifyModel } from './config.ts';
 import { generateQuestions } from './generate.ts';
 import { llmMode } from './llm.ts';
 import { validateQuestion } from './validate.ts';
+import { generateExplainer, type ExplainLevel } from './explain.ts';
 import { saveGenerated, listQueue, reviewQuestion, stats, type ReviewStatus } from './store.ts';
 import { poolStatus, listPool, startFill, getFillJob } from './pool.ts';
 import type { AiQuestionRequest } from './types.ts';
@@ -151,6 +152,20 @@ const server = createServer(async (req, res) => {
         return;
       }
       send(res, 200, { question: updated, stats: stats() });
+      return;
+    }
+
+    // 讲解草稿：只返回内容，不写库；落盘前由人工审核
+    if (url.pathname === '/api/ai/explainer' && req.method === 'POST') {
+      const body = JSON.parse(await readBody(req)) as { topic?: string; level?: string };
+      const topic = (body.topic ?? '').trim();
+      if (!topic) {
+        send(res, 400, { error: '缺少 topic' });
+        return;
+      }
+      const level = (body.level === '进阶' || body.level === '竞赛' ? body.level : '基础') as ExplainLevel;
+      const result = await generateExplainer(topic, level);
+      send(res, 200, result);
       return;
     }
 

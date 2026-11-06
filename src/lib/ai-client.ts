@@ -1,4 +1,4 @@
-// EXPORTS: fetchAiQuestions, fetchAiHealth, type AiQuestion
+// EXPORTS: fetchAiQuestions, fetchAiHealth, fetchExplainer, type AiQuestion
 // 前端调用后端的薄封装：统一超时、错误信息与类型
 
 export interface AiQuestion {
@@ -48,6 +48,8 @@ export interface AiHealth {
   mode: 'live' | 'mock';
   model: string;
   provider: string;
+  /** 配置了第二模型时返回它的名字（异构校验） */
+  verifyModel?: string | null;
 }
 
 import { Capacitor, CapacitorHttp } from '@capacitor/core';
@@ -118,6 +120,39 @@ async function request<T>(path: string, init?: RequestInit, timeoutMs = 120000):
 
 export function fetchAiHealth(): Promise<AiHealth> {
   return request<AiHealth>('/health', { method: 'GET' }, 5000);
+}
+
+export interface ExplainerStep {
+  title: string;
+  body: string;
+  formula?: string;
+}
+
+export interface ExplainerDraft {
+  title: string;
+  essence: string;
+  steps: ExplainerStep[];
+  example: { problem: string; walkthrough: string[]; result: string };
+  pitfalls: string[];
+}
+
+export interface ExplainerResult {
+  draft: ExplainerDraft;
+  mode: 'live' | 'mock';
+  model: string;
+  issues: string[];
+}
+
+/** 生成讲解草稿（只返回内容，不写库） */
+export function fetchExplainer(
+  topic: string,
+  level: '基础' | '进阶' | '竞赛' = '基础'
+): Promise<ExplainerResult> {
+  return request<ExplainerResult>(
+    '/ai/explainer',
+    { method: 'POST', body: JSON.stringify({ topic, level }) },
+    90000
+  );
 }
 
 export type ReviewStatus = 'pending' | 'approved' | 'rejected';

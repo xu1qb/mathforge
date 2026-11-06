@@ -270,6 +270,9 @@ export default function AiLabPage() {
                   {health.mode === 'live' ? '在线模型' : 'Mock 模式'}
                 </Badge>
                 <span className="text-xs text-muted-foreground">模型：{health.model}</span>
+                {health.verifyModel && (
+                  <span className="text-xs text-emerald-600">异构校验：{health.verifyModel}</span>
+                )}
                 {health.mode === 'mock' && (
                   <span className="text-xs text-amber-600">
                     未配置 LLM_API_KEY，当前用固定样例跑通链路
@@ -281,6 +284,22 @@ export default function AiLabPage() {
                 后端未启动：请在项目根目录运行 npm run server（或 npm run dev:full）
               </span>
             )}
+          </CardContent>
+        </Card>
+
+        {/* 讲解草稿入口 */}
+        <Card className="border-border/60">
+          <CardContent className="flex flex-wrap items-center justify-between gap-3 p-3">
+            <div className="min-w-0">
+              <div className="text-sm font-medium text-foreground">讲解草稿</div>
+              <div className="text-xs text-muted-foreground">
+                让模型产出定义 / 步骤 / 例题 / 易错点，人工校对后再入库
+              </div>
+            </div>
+            <Button variant="outline" size="sm" className="gap-1.5" onClick={() => navigate('/explain-lab')}>
+              <Sparkles className="size-3.5" />
+              去生成
+            </Button>
           </CardContent>
         </Card>
 

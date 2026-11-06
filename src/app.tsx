@@ -70,6 +70,7 @@ class AppErrorBoundary extends Component<{ children: React.ReactNode }, { hasErr
 // 非首屏工具页同样懒加载，避免进入首屏主包；仅首页 HomePage 保留直接 import
 const AiLabPageLazy = lazy(() => import("@/pages/AiLab/AiLabPage"));
 const AiReviewPageLazy = lazy(() => import("@/pages/AiLab/AiReviewPage"));
+const ExplainLabPageLazy = lazy(() => import("@/pages/ExplainLab/ExplainLabPage"));
 const FormulaHandbookLazy = lazy(() => import("@/pages/FormulaHandbook/FormulaHandbookPage"));
 const ScientificCalculatorLazy = lazy(() => import("@/pages/ScientificCalculator/ScientificCalculatorPage"));
 const SymbolicAlgebraLazy = lazy(() => import("@/pages/SymbolicAlgebra/SymbolicAlgebraPage"));
@@ -240,6 +241,7 @@ export default function App() {
           <Route path="about" element={<Suspense fallback={<div className="h-64" />}><AboutLazy /></Suspense>} />
           <Route path="privacy" element={<Suspense fallback={<div className="h-64" />}><PrivacyLazy /></Suspense>} />
           <Route path="ai-lab" element={<AiLabPageLazy />} />
+          <Route path="explain-lab" element={<Suspense fallback={<ModuleFallback />}><ExplainLabPageLazy /></Suspense>} />
           <Route path="ai-review" element={<AiReviewPageLazy />} />
           <Route path="integral-visualization" element={<IntegralVisPage />} />
           <Route path="knowledge-map" element={<Suspense fallback={<ModuleFallback />}><KnowledgeMapLazy /></Suspense>} />

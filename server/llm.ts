@@ -18,6 +18,31 @@ export function llmMode(): 'live' | 'mock' {
 /** mock 模式返回可被校验器接受的固定题，用于离线联调 */
 function mockReply(messages: ChatMessage[]): string {
   const user = messages.filter((m) => m.role === 'user').map((m) => m.content).join('\n');
+
+  // 讲解草稿的 mock：没配 Key 时讲解页也能跑通
+  if (user.includes('写一个考点：')) {
+    const name = (user.match(/写一个考点：(.+?)(?:，|$)/) ?? [])[1]?.trim() || '综合';
+    return JSON.stringify({
+      title: name,
+      essence: '把' + name + '拆成定义、判定、例子三步。',
+      steps: [
+        { title: '写定义', body: '先写出' + name + '的严格定义，明确对象与前提。' },
+        { title: '找判定', body: '给出一个可操作的判定方法，并说明它为什么成立。' },
+        {
+          title: '代例子',
+          body: '代入一个具体例子验证判定，并检查边界情况。',
+          formula: '\\lim_{x \\to 0} \\dfrac{\\sin x}{x} = 1',
+        },
+      ],
+      example: {
+        problem: '用' + name + '推出一个具体结论。',
+        walkthrough: ['套定义', '用判定化简', '代值检查'],
+        result: '结论成立',
+      },
+      pitfalls: ['把充分条件当必要条件', '忘记检查前提'],
+    });
+  }
+
   const topic = (user.match(/知识点：(.+)/) ?? [])[1]?.trim() ?? '综合';
   const count = Math.min(Math.max(Number((user.match(/请出 (\\d+) 道题/) ?? [])[1] ?? 3), 1), 10);
   const k = 2 + Math.floor(Math.random() * 7);

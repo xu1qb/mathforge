@@ -8,6 +8,7 @@ import { classifyIssues, buildRepairPrompt } from './feedback.ts';
 import { executeTool } from './tools.ts';
 import { runAgent } from './agent.ts';
 import { checkNovelty, loadBaseline } from './novelty.ts';
+import { generateExplainer, validateExplainerDraft } from './explain.ts';
 
 let pass = 0;
 function check(name: string, fn: () => void | Promise<void>) {
@@ -114,6 +115,42 @@ await check('agent 循环在 mock 下返回内容', async () => {
   const r = await runAgent('system', 'user');
   assert.ok(r.content.includes('questions'));
   assert.equal(r.toolCalls.length, 0);
+});
+
+await check('讲解草稿：结构完整时通过', () => {
+  const { draft, issues } = validateExplainerDraft({
+    title: '洛必达法则',
+    essence: '把未定式化成可求导的比。',
+    steps: [
+      { title: '查型', body: '先确认是 0/0 或 ∞/∞。' },
+      { title: '求导', body: '上下分别求导再取极限。', formula: '\\lim_{x \\to 0} \\dfrac{\\sin x}{x} = 1' },
+      { title: '回代', body: '把结果代回原式检查。' },
+    ],
+    example: { problem: '求 lim(x→0) sin x / x', walkthrough: ['确认 0/0', '求导'], result: '1' },
+    pitfalls: ['不是未定式就用', '求导后仍为未定式却不继续'],
+  });
+  assert.ok(draft);
+  assert.equal(draft.title, '洛必达法则');
+  assert.equal(issues.length, 0);
+});
+
+await check('讲解草稿：缺步骤 / 缺易错点要报错', () => {
+  const { draft, issues } = validateExplainerDraft({
+    title: 'x',
+    essence: 'y',
+    steps: [{ title: 'a', body: 'b' }],
+    example: { problem: 'p', walkthrough: [], result: '' },
+    pitfalls: ['只有一条'],
+  });
+  assert.equal(draft, null);
+  assert.ok(issues.length >= 3);
+});
+
+await check('讲解草稿：mock 模式能生成可渲染的结构', async () => {
+  const out = await generateExplainer('洛必达法则', '进阶');
+  assert.equal(out.mode, 'mock');
+  assert.ok(out.draft.steps.length >= 3);
+  assert.ok(out.draft.pitfalls.length >= 2);
 });
 
 await check('新颖度：同模板换数字判为重复', () => {
