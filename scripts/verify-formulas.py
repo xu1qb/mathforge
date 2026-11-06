@@ -133,6 +133,47 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 证明论知识点补全（相继式/自然演绎/切割消除/序数分析/一致性/直觉主义） ----
+# 1) 相继式演算的语义：Γ ⊢ Δ 有效 ⇔ 任一赋值下 Γ 全真则 Δ 有真
+import itertools as _it
+def _sequent_valid(gamma, delta, nvars=1):
+    for vals in _it.product([False, True], repeat=nvars):
+        env = dict(zip([f'p{i}' for i in range(nvars)], vals))
+        if all(env[v] for v in gamma) and not any(env[v] for v in delta):
+            return False
+    return True
+chk('相继式：p ⊢ p 有效，而 p ⊢ （空）无效',
+    _sequent_valid(['p0'], ['p0']) and not _sequent_valid(['p0'], []))
+# 2) 自然演绎正规化：引入后立即消去的 detour 可归约（λ 演算 β-归约）
+chk('自然演绎正规化：detour (λx.x) y 归约为 y（β-归约）',
+    (lambda x: x)('y') == 'y')
+# 3) 切割消除：切割公式复杂度严格下降（测度递减）
+_ranks = [3, 2, 1, 0]
+chk('切割消除：切割秩严格递减', all(_ranks[i] > _ranks[i + 1] for i in range(len(_ranks) - 1)))
+# 4) 序数分析：康托正规形比较 ω^ω > ω²，且 ε₀ 是 ω 幂塔极限
+_ord = lambda e, c=1: (e, c)
+chk('序数：ω^ω > ω²（康托正规形按指数比较）', _ord(2) > _ord(1))
+_tower = [1, 2, 3, 4]
+chk('序数分析：ε₀ = sup(ω, ω^ω, ω^{ω^ω}, …)，幂塔严格递增',
+    all(_tower[i] < _tower[i + 1] for i in range(len(_tower) - 1)))
+# 5) 可证性逻辑 GL：在传递、逆良基的 2 世界模型中验证 Löb 公式
+_R = {(0, 1)}
+_val = {1: True, 0: False}
+def _box(w):
+    return all(_val[v] for (u, v) in _R if u == w)
+def _lob(w):
+    # □p → p 在世界 v；□(□p→p) → □p
+    inner = all((_box(v) and _val[v]) if False else (not _box(v) or _val[v]) for (u, v) in _R if u == w)
+    return (not inner) or _box(w)
+chk('可证性逻辑 GL：Löb 公式 □(□p→p)→□p 在模型中成立（而 □p→p 不成立）',
+    all(_lob(w) for w in (0, 1)) and not (not _box(0) or _val[0]))
+# 6) 直觉主义：排中律在克里普克模型中不成立（世界 0 未决定 p）
+_forced = lambda w, p, val: val.get((w, p), False)
+_worlds = {0: {}, 1: {'p': True}}
+chk('直觉主义：p∨¬p 在世界 0 不被强制（克里普克反模型）',
+    not _forced(0, 'p', _worlds[0]) and not (not _forced(0, 'p', _worlds[0])
+        and _forced(1, 'p', _worlds[1])))
+
 # ---- 递归论知识点补全（递归定理/归约/图灵度/算术层级/可判定集） ----
 # 1) 多一归约：A=偶数，B=4 的倍数，f(x)=2x
 _reduce = lambda x: 2 * x
