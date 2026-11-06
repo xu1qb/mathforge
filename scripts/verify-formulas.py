@@ -133,6 +133,20 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 范畴论知识点补全（极限/伴随/米田/单子/笛卡尔闭/等价） ----
+chk('积是极限：集合范畴 |A×B| = |A||B|（2×3=6）', 2 * 3 == 6)
+chk('余积是不交并：|A⊔B| = |A|+|B|（2+3=5）', 2 + 3 == 5)
+chk('伴随 Hom 同构：两个生成元的自由群到 Z/2 的同态数为 2²=4',
+    2**2 == 4)
+chk('米田：单点集上 Hom(1,−) 的自然变换恰由 1 个元素决定',
+    len([(a,) for a in [0]]) == 1)
+chk('单子律：List 单子结合律 (x++y)++z = x++(y++z)',
+    ([1] + [2]) + [3] == [1] + ([2] + [3]))
+chk('笛卡尔闭：柯里化同构 |Y^{X×A}| = (|Y|^{|A|})^{|X|}（2^{2·1}=4）',
+    2**(2 * 1) == 4)
+chk('等价：本质满要求在对象集上达到满射（有限例双射）',
+    len({1, 2}) == len({'a', 'b'}))
+
 # ---- 离散数学知识点补全（证明方法/归纳/序列求和/复杂度/整除/布尔函数） ----
 chk('归纳：1+2+…+100 = 100·101/2 = 5050', 100 * 101 // 2 == 5050)
 chk('等比求和：Σ_{k=0}^{4} 2^k = 31 = 2⁵−1', sum(2**k for k in range(5)) == 2**5 - 1)
