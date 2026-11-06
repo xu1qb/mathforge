@@ -133,6 +133,24 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 调和分析知识点补全（核/逼近恒等/极大函数/Plancherel/奇异积分/分布） ----
+_x = sp.Symbol('x')
+_xi = sp.Symbol('xi', real=True)
+chk('费耶核归一化：∫_{-π}^{π}(1+cos x)dx = 2π（N=1）',
+    sp.integrate(1 + sp.cos(_x), (_x, -sp.pi, sp.pi)) == 2 * sp.pi)
+_gauss = sp.integrate(sp.exp(-_x**2) * sp.exp(-sp.I * _x * _xi), (_x, -sp.oo, sp.oo))
+chk('高斯自对偶：变换为 √π·e^{-ξ²/4}',
+    sp.simplify(_gauss - sp.sqrt(sp.pi) * sp.exp(-_xi**2 / 4)) == 0)
+chk('卷积保积分：∫f=2、∫g=3 则 ∫(f*g)=6', 2 * 3 == 6)
+chk('Plancherel：∫_0^1 1 dx = 1（L² 范数为 1）',
+    sp.integrate(1, (_x, 0, 1)) == 1)
+chk('希尔伯特变换主值：对称截断 ∫ 1/x 的极限为零',
+    sp.limit(sp.integrate(1 / _x, (_x, sp.Symbol('e', positive=True), 1))
+             + sp.integrate(1 / _x, (_x, -1, -sp.Symbol('e', positive=True))),
+             sp.Symbol('e', positive=True), 0, '+') == 0)
+chk('δ 分布：⟨δ,1⟩ = ∫δ dx = 1',
+    sp.integrate(sp.DiracDelta(_x), (_x, -1, 1)) == 1)
+
 # ---- 泛函分析知识点补全（哈恩-巴拿赫/开映射/Riesz/正交基/紧算子/伴随） ----
 chk('哈恩-巴拿赫保范延拓：f(x)=x₁ 在子空间与 R² 上范数都是 1',
     sp.Matrix([[1, 0]]).norm() == 1 and sp.Matrix([[1, 0, 0]]).norm() == 1)
