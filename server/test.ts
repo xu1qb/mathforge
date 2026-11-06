@@ -117,6 +117,17 @@ await check('agent 循环在 mock 下返回内容', async () => {
   assert.equal(r.toolCalls.length, 0);
 });
 
+await check('流式进度：生成时会推阶段事件', async () => {
+  const stages: string[] = [];
+  const batch = await generateQuestions(
+    { topic: '极限', difficulty: 'basic', count: 1, seed: 'progress-' + Date.now() } as never,
+    { onProgress: (stage) => stages.push(stage) }
+  );
+  assert.ok(batch.questions.length >= 1);
+  assert.ok(stages.includes('模型'));
+  assert.ok(stages.includes('完成'));
+});
+
 await check('讲解草稿：结构完整时通过', () => {
   const { draft, issues } = validateExplainerDraft({
     title: '洛必达法则',

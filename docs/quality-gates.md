@@ -19,7 +19,7 @@ npm run check
 | 5 | 公式渲染 | `scripts/check-formulas.mjs` | 1317 条公式 | **显示得出来** |
 | 6 | 文本规范 | `scripts/check-text.mjs` | 57,496 个字符串 | **写得规范** |
 | 7 | 交叉引用与死链 | `scripts/check-refs.mjs` | 路由 + 互引 | **连得上** |
-| 8 | 服务端链路 | `server/test.ts` | 22 项（强制 mock） | **后端不崩** |
+| 8 | 服务端链路 | `server/test.ts` | 23 项（强制 mock） | **后端不崩** |
 | 9 | UI 快照 | `scripts/ui-snapshots.mjs` | 5 页 × 2 宽度 | **没白屏/没溢出** |
 | 10 | 文档数字 | `scripts/check-docs-stats.ts` | docs 里的统计量 | **文档不漂移** |
 

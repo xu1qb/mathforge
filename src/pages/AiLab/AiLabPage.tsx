@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import {
   fetchAiHealth,
   fetchAiQuestions,
+  streamAiQuestions,
   fetchPoolStatus,
   fillPool,
   type FillJob,
@@ -200,6 +201,8 @@ export default function AiLabPage() {
   const [fusion, setFusion] = useState('');
   const [style, setStyle] = useState('');
   const [loading, setLoading] = useState(false);
+  const [stream, setStream] = useState(true);
+  const [stages, setStages] = useState<{ stage: string; detail?: string }[]>([]);
   const [error, setError] = useState('');
   const [questions, setQuestions] = useState<AiQuestion[]>([]);
   const [savedIds, setSavedIds] = useState<string[]>([]);
@@ -221,15 +224,21 @@ export default function AiLabPage() {
   const generate = async () => {
     setLoading(true);
     setError('');
+    setStages([]);
+    const req = {
+      topic,
+      difficulty,
+      count,
+      fusion: fusion.split(/[，,、\s]+/).filter(Boolean),
+      style: style.trim() || undefined,
+      verifyMode,
+    };
     try {
-      const batch = await fetchAiQuestions({
-        topic,
-        difficulty,
-        count,
-        fusion: fusion.split(/[，,、\\s]+/).filter(Boolean),
-        style: style.trim() || undefined,
-        verifyMode,
-      });
+      const batch = stream
+        ? await streamAiQuestions(req, {
+            onStatus: (stage, detail) => setStages((prev) => [...prev.slice(-6), { stage, detail }]),
+          })
+        : await fetchAiQuestions(req);
       setQuestions(batch.questions);
       setMeta({ agent: Boolean(batch.agent), toolCalls: batch.toolCalls ?? 0, autoApproved: Boolean(batch.autoApproved) });
       if (batch.cached > 0) toast('命中缓存，没有重复调用模型');
@@ -388,7 +397,16 @@ export default function AiLabPage() {
               </label>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <input
+                  type="checkbox"
+                  checked={stream}
+                  onChange={(e) => setStream(e.target.checked)}
+                  className="size-3.5 accent-primary"
+                />
+                流式进度
+              </label>
               <Button variant="outline" onClick={() => navigate('/ai-review')} className="gap-1.5">
                 审核队列
               </Button>
@@ -403,6 +421,23 @@ export default function AiLabPage() {
                 </span>
               )}
             </div>
+
+            {stages.length > 0 && (
+              <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
+                {stages.map((s, i) => (
+                  <span
+                    key={i}
+                    className={
+                      'rounded-md border border-border px-1.5 py-0.5 ' +
+                      (i === stages.length - 1 && loading ? 'border-primary/40 text-foreground' : '')
+                    }
+                  >
+                    {s.stage}
+                    {s.detail ? ' · ' + s.detail : ''}
+                  </span>
+                ))}
+              </div>
+            )}
 
             {error && (
               <div className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/5 p-2 text-xs text-destructive">

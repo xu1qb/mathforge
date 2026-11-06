@@ -44,6 +44,7 @@ npm run dev:full         # 后端 + Vite 一起起（Vite 把 /api 代理到 878
 |---|---|---|
 | GET | `/api/health` | 返回 `{ ok, mode, model, provider }` |
 | POST | `/api/ai/questions` | 生成题目，body：`{ topic, difficulty, count, fusion?, style? }` |
+| POST | `/api/ai/questions/stream` | 同上，但是 SSE：`open` → `status`（参数/模型/解析/校验/完成）→ `done` / `error` |
 | POST | `/api/ai/validate` | 校验一段题目 JSON |
 
 ## 四、质量保障：生成即校验
@@ -275,6 +276,8 @@ npm run app:build   # 产出 release/ 下的 .app
 ## 十六、当前边界
 
 - 讲解草稿已接页面（`/explain-lab`，接口 `POST /api/ai/explainer`）：只产出草稿，**不落盘**，入库仍要人工改 `explainers.ts`
+- 流式只推「阶段」，没有 token 级增量：一次生成要多次调用模型（自我复核），逐字流会被切成好几段，
+  等以后把校验链拆成单次调用再上 token 流
 - 审核通过的题会自动进入预生成池（`/api/ai/pool`），练习页优先读池子；
   池子空了才回落到实时生成
 - 双解一致只覆盖「答案可比」的题型；证明题、构造题仍需人工
@@ -284,5 +287,6 @@ npm run app:build   # 产出 release/ 下的 .app
 
 1. ~~生成结果入库（SQLite）并去重合并到练习题库~~ ✅ SQLite（WASM）+ 唯一索引去重；审核通过即进预生成池
 2. ~~接上讲解生成（explainer）页面~~ ✅ 已接（`/explain-lab`）
-3. 流式返回，边生成边显示
-4. 人工审核队列：AI 题默认「待审核」，通过后才进入正式题库
+3. ~~流式返回，边生成边显示~~ ✅ SSE 推阶段事件（`/api/ai/questions/stream`），AI 出题页可开「流式进度」
+4. ~~人工审核队列：AI 题默认「待审核」，通过后才进入正式题库~~ ✅ `/ai-review` + `/api/ai/review`，
+   通过即进预生成池（严格档机器验证通过的题才自动入库）

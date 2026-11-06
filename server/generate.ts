@@ -34,8 +34,18 @@ function normalize(req: AiQuestionRequest): Required<AiQuestionRequest> {
   };
 }
 
-export async function generateQuestions(input: AiQuestionRequest): Promise<AiQuestionBatch> {
+export interface GenerateOptions {
+  /** 进度回调：预生成池与 SSE 流式接口用它把阶段推给前端 */
+  onProgress?: (stage: string, detail?: string) => void;
+}
+
+export async function generateQuestions(
+  input: AiQuestionRequest,
+  options: GenerateOptions = {}
+): Promise<AiQuestionBatch> {
+  const notify = options.onProgress ?? (() => {});
   const req = normalize(input);
+  notify('参数', req.topic + ' · ' + req.difficulty + ' · ' + req.count + ' 道');
   const verifyMode: VerifyMode = (input.verifyMode ?? config.verifyMode) as VerifyMode;
   const useAgent = config.agentMode && llmMode() === 'live';
   const key = cacheKey({
@@ -50,6 +60,7 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
 
   const cached = readCache<AiQuestionBatch>(key);
   if (cached) {
+    notify('缓存', '命中缓存，直接返回 ' + cached.questions.length + ' 道');
     return { ...cached, cached: cached.questions.length, generatedAt: new Date().toISOString() };
   }
 
@@ -76,6 +87,7 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
         ? user + '\n\n上一版存在这些问题，请逐条修正：\n- ' + repairNotes.join('\n- ')
         : user;
 
+    notify('模型', '第 ' + attempts + ' 次调用模型');
     let reply: string;
     if (useAgent) {
       const agentResult = await runAgent(system, prompt);
@@ -93,6 +105,7 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
     try {
       parsed = parseModelJson(reply);
     } catch (err) {
+      notify('解析', 'JSON 解析失败，准备重试');
       lastIssues = ['JSON 解析失败：' + (err instanceof Error ? err.message : '未知')];
       repairNotes = classifyIssues(lastIssues).repairs;
       continue;
@@ -110,6 +123,7 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
     for (const raw of list.slice(0, req.count)) {
       const v = validateQuestion(raw);
       if (!v.ok) {
+        notify('校验', '有 ' + v.issues.length + ' 处不合格');
         lastIssues.push(...v.issues);
         continue;
       }
@@ -242,6 +256,7 @@ export async function generateQuestions(input: AiQuestionRequest): Promise<AiQue
     );
   }
 
+  notify('完成', accepted.length + ' 道通过校验');
   const batch: AiQuestionBatch = {
     questions: accepted.slice(0, req.count),
     model: config.model,

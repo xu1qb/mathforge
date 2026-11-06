@@ -80,6 +80,43 @@ const server = createServer(async (req, res) => {
       return;
     }
 
+    // 流式生成：SSE 推阶段事件，最后给完整结果（前端用 fetch 读流，不用 EventSource）
+    if (url.pathname === '/api/ai/questions/stream' && req.method === 'POST') {
+      const body = JSON.parse(await readBody(req)) as AiQuestionRequest;
+      if (!body || typeof body.topic !== 'string') {
+        send(res, 400, { error: '缺少 topic' });
+        return;
+      }
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream; charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+        Connection: 'keep-alive',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      });
+      const emit = (event: string, data: unknown) => {
+        res.write('event: ' + event + '\ndata: ' + JSON.stringify(data) + '\n\n');
+      };
+      try {
+        emit('open', { ok: true, mode: llmMode(), model: config.model });
+        const batch = await generateQuestions(body, {
+          onProgress: (stage, detail) => emit('status', { stage, detail }),
+        });
+        const allVerified =
+          (body.verifyMode ?? 'balanced') === 'strict' &&
+          batch.questions.every(
+            (q) => q.validation.dualSolve === 'match' || q.validation.dualSolve === 'judged'
+          );
+        const stored = saveGenerated(batch.questions, 'ai:' + batch.model, allVerified);
+        emit('done', { ...batch, questions: stored, saved: stored.length, autoApproved: allVerified });
+      } catch (err) {
+        emit('error', { error: err instanceof Error ? err.message : String(err) });
+      } finally {
+        res.end();
+      }
+      return;
+    }
+
     if (url.pathname === '/api/config' && req.method === 'POST') {
       const body = JSON.parse(await readBody(req)) as {
         apiKey?: string; model?: string; baseUrl?: string; agentMode?: boolean;

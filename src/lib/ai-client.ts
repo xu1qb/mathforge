@@ -1,4 +1,4 @@
-// EXPORTS: fetchAiQuestions, fetchAiHealth, fetchExplainer, type AiQuestion
+// EXPORTS: fetchAiQuestions, streamAiQuestions, fetchAiHealth, fetchExplainer, type AiQuestion
 // 前端调用后端的薄封装：统一超时、错误信息与类型
 
 export interface AiQuestion {
@@ -143,6 +143,58 @@ export interface ExplainerResult {
   issues: string[];
 }
 
+export interface AiStreamHandlers {
+  onStatus?: (stage: string, detail?: string) => void;
+}
+
+/**
+ * 流式生成：服务端用 SSE 推「参数 → 模型 → 解析 → 校验 → 完成」阶段，
+ * 结束时给完整结果。安卓 WebView 不支持流式读取，直接退回普通接口。
+ */
+export async function streamAiQuestions(
+  req: AiQuestionRequest,
+  handlers: AiStreamHandlers = {}
+): Promise<AiQuestionBatch> {
+  if (isNativeApp() || typeof window === 'undefined') {
+    return fetchAiQuestions(req);
+  }
+  const res = await fetch(resolveBase() + '/ai/questions/stream', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(req),
+  });
+  if (!res.ok || !res.body) throw new Error('流式接口不可用（' + res.status + '）');
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let final: AiQuestionBatch | null = null;
+
+  const handleChunk = (chunk: string) => {
+    const lines = chunk.split('\n');
+    const event = (lines.find((l) => l.startsWith('event: ')) ?? '').slice(7).trim();
+    const dataLine = lines.find((l) => l.startsWith('data: '));
+    const data = dataLine ? JSON.parse(dataLine.slice(6)) : null;
+    if (event === 'status') handlers.onStatus?.(data.stage, data.detail);
+    else if (event === 'done') final = data as AiQuestionBatch;
+    else if (event === 'error') throw new Error(data?.error ?? '生成失败');
+  };
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    let idx = buffer.indexOf('\n\n');
+    while (idx >= 0) {
+      handleChunk(buffer.slice(0, idx));
+      buffer = buffer.slice(idx + 2);
+      idx = buffer.indexOf('\n\n');
+    }
+  }
+  if (!final) throw new Error('流式返回里没有结果');
+  return final;
+}
+
 /** 生成讲解草稿（只返回内容，不写库） */
 export function fetchExplainer(
   topic: string,
@@ -223,13 +275,15 @@ export function fetchPoolStatus(topic?: string): Promise<{
   return request('/ai/pool/status' + qs, { method: 'GET' }, 8000);
 }
 
-export function fetchAiQuestions(req: {
+export interface AiQuestionRequest {
   topic: string;
   difficulty: 'basic' | 'advanced' | 'competition';
   count: number;
   fusion?: string[];
   style?: string;
   verifyMode?: 'strict' | 'balanced' | 'off';
-}): Promise<AiQuestionBatch> {
+}
+
+export function fetchAiQuestions(req: AiQuestionRequest): Promise<AiQuestionBatch> {
   return request<AiQuestionBatch>('/ai/questions', { method: 'POST', body: JSON.stringify(req) });
 }
