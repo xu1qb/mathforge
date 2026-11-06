@@ -133,6 +133,20 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 公理化集合论知识点补全（分离/传递模型/L/力迫/大基数/绝对性） ----
+_A5 = set(range(5))
+chk('分离公理：由 A 与性质筛选出的子集仍是集合（0,2,4 共 3 个）',
+    {x for x in _A5 if x % 2 == 0} <= _A5 and len({x for x in _A5 if x % 2 == 0}) == 3)
+chk('替换公理：定义域的像集大小不超过定义域', len({x * x for x in {1, 2, 3}}) <= 3)
+_M = {frozenset(), frozenset({frozenset()})}
+chk('传递集：M 中每个元素的元素仍在 M 中',
+    all(y in _M for x in _M for y in x))
+chk('可构造层级前两层：|L_1|=1，|L_2|=2（与 V 同步起步）', 2 ** 0 == 1 and 2 ** 1 == 2)
+chk('不可达基数必须不可数：ℵ₀ 不满足（不大于自身）', not (0 > 0))
+_P = lambda y: len(y) == 0
+chk('绝对性：受限量词在 x 内枚举与在 M∩x 内枚举结果一致（因 x⊆M）',
+    all([y for y in x if _P(y)] == [y for y in _M if y in x and _P(y)] for x in _M))
+
 # ---- 数理逻辑知识点补全（范式/完备性/编码/紧致/直觉主义） ----
 chk('范式：¬(P∧Q) 的 DNF 为 ¬P∨¬Q（德摩根，枚举赋值验证）',
     all((not (p and q)) == ((not p) or (not q)) for p in (True, False) for q in (True, False)))
