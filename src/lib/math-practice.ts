@@ -81,6 +81,10 @@ export interface PracticeQuestion {
   answerType: 'numeric' | 'expression';
   /** 解析步骤（数组，每行一段，支持 LaTeX 公式） */
   steps: string[];
+  /** 课程题专属：所属课程名（用于错题本/统计展示） */
+  courseTitle?: string;
+  /** 课程题专属：所属章节名 */
+  chapterTitle?: string;
   /** 难度 */
   difficulty: Difficulty;
   /**

@@ -9,11 +9,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useLearningStats, useWrongBook } from '@/hooks/use-learning';
-import { PRACTICE_TOPICS } from '@/data/practice-topics';
+import { topicLabelOf } from '@/lib/topic-label';
 import { Flame, Target, TrendingUp, AlertTriangle, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const TOPIC_LABEL = new Map(PRACTICE_TOPICS.map((t) => [t.key, t.label]));
 
 export default function ProgressPage() {
   const navigate = useNavigate();
@@ -23,7 +22,7 @@ export default function ProgressPage() {
   const rows = useMemo(() => {
     return Object.entries(topicMastery)
       .filter(([, v]) => v.attempts > 0)
-      .map(([key, v]) => ({ key, label: TOPIC_LABEL.get(key) ?? key, ...v }))
+      .map(([key, v]) => ({ key, label: topicLabelOf(key), ...v }))
       .sort((a, b) => a.accuracy - b.accuracy);
   }, [topicMastery]);
 

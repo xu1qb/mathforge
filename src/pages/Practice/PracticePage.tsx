@@ -138,6 +138,9 @@ export default function PracticePage() {
   // 支持 /practice?topic=xxx 深链（从原理讲解的「配套练习」进来）
   // 注意：HashRouter 下参数在 hash 内，必须用 useSearchParams 而不是 window.location.search
   const [searchParams] = useSearchParams();
+  // 从课程章节跳过来时带 ?course=...&chapter=...，直接进入课程题模式并按章过滤
+  const courseFilter = searchParams.get('course');
+  const chapterFilter = searchParams.get('chapter');
   const [activeTopic, setActiveTopic] = useState(() => {
     const fromUrl = searchParams.get('topic');
     if (fromUrl && PRACTICE_TOPICS.some((t) => t.key === fromUrl)) return fromUrl;
@@ -151,7 +154,7 @@ export default function PracticePage() {
   const [aiCursor, setAiCursor] = useState(0);
   const [fillJob, setFillJob] = useState<FillJob | null>(null);
   // 课程习题模式：直接刷三门课程的课后题
-  const [courseMode, setCourseMode] = useState(false);
+  const [courseMode, setCourseMode] = useState(Boolean(courseFilter));
   const [userAnswer, setUserAnswer] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -237,6 +240,14 @@ export default function PracticePage() {
     }
   }, []);
 
+  // 课程题池：带课程/章节参数时只取对应的题
+  const pickCoursePool = useCallback(() => {
+    let pool = getCourseExercises();
+    if (courseFilter) pool = pool.filter((e) => e.courseId === courseFilter);
+    if (chapterFilter) pool = pool.filter((e) => e.chapterId === chapterFilter);
+    return pool.length > 0 ? pool : getCourseExercises();
+  }, [courseFilter, chapterFilter]);
+
   // 统一应用一道题：重置答题状态
   const applyQuestion = useCallback(
     (q: PracticeQuestion) => {
@@ -252,16 +263,17 @@ export default function PracticePage() {
       setCurrentWrongKey(null);
       setTimeLeft(180);
       questionStartTimeRef.current = Date.now();
-      recordQuestion(activeTopic);
+      // 课程题按课程归属统计，不混进当前选中的通用知识点
+      recordQuestion(q.topicKey);
     },
-    [activeTopic, recordQuestion]
+    [recordQuestion]
   );
 
   // 生成新题目
   const newQuestion = useCallback(() => {
     let q: PracticeQuestion;
     if (courseMode) {
-      const pool = getCourseExercises();
+      const pool = pickCoursePool();
       const item = pool[Math.floor(Math.random() * pool.length)];
       q = { ...item };
     } else if (aiEnabled && aiPool.length > 0) {
@@ -282,7 +294,7 @@ export default function PracticePage() {
       q = generatePracticeQuestion(activeTopic, difficulty);
     }
     applyQuestion(q);
-  }, [activeTopic, difficulty, recordQuestion, aiEnabled, aiPool, aiCursor, courseMode, applyQuestion]);
+  }, [activeTopic, difficulty, recordQuestion, aiEnabled, aiPool, aiCursor, courseMode, applyQuestion, pickCoursePool]);
 
   // 切换课程题模式时立刻换题（setState 异步，不能在同一次点击里读新值）
   const prevCourseModeRef = useRef(courseMode);
@@ -290,14 +302,14 @@ export default function PracticePage() {
     if (courseMode === prevCourseModeRef.current) return;
     prevCourseModeRef.current = courseMode;
     if (courseMode) {
-      const pool = getCourseExercises();
+      const pool = pickCoursePool();
       if (pool.length > 0) {
         applyQuestion({ ...pool[Math.floor(Math.random() * pool.length)] });
       }
     } else {
       applyQuestion(generatePracticeQuestion(activeTopic, difficulty));
     }
-  }, [courseMode, applyQuestion, activeTopic, difficulty]);
+  }, [courseMode, applyQuestion, activeTopic, difficulty, pickCoursePool]);
 
   // 拉取「当前知识点」审核通过的 AI 题
   // 后台补题：预生成 10 道，跑完自动刷新题库

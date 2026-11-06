@@ -357,7 +357,7 @@ export default function CoursePage() {
                             size="sm"
                             className="gap-1.5"
                             onClick={() =>
-                              navigate('/practice?topic=' + (ch.practiceTopics[0] ?? 'matrix-op'))
+                              navigate('/practice?course=' + course.id + '&chapter=' + ch.id)
                             }
                           >
                             <Target className="size-3.5" />

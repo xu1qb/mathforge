@@ -36,6 +36,7 @@ function toPlainText(src: string): string {
 
 export interface CourseExerciseItem extends PracticeQuestion {
   courseId: string;
+  chapterId: string;
   courseTitle: string;
   chapterTitle: string;
 }
@@ -54,6 +55,7 @@ export const COURSE_EXERCISES: CourseExerciseItem[] = COURSES.flatMap((course) =
       steps: ex.steps,
       difficulty: LEVEL_TO_DIFF[ex.level],
       courseId: course.id,
+      chapterId: chapter.id,
       courseTitle: course.title,
       chapterTitle: chapter.title,
     })),

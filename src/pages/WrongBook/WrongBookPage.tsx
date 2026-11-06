@@ -16,13 +16,12 @@ import {
   WRONG_REASON_LABELS,
   type WrongItem,
 } from '@/hooks/use-learning';
-import { PRACTICE_TOPICS } from '@/data/practice-topics';
+import { topicLabelOf } from '@/lib/topic-label';
 import { AlertTriangle, CheckCircle2, RotateCcw, Sparkles, Trash2, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type Tab = 'due' | 'pending' | 'mastered';
 
-const TOPIC_LABEL = new Map(PRACTICE_TOPICS.map((t) => [t.key, t.label]));
 
 export default function WrongBookPage() {
   const navigate = useNavigate();
@@ -105,7 +104,7 @@ export default function WrongBookPage() {
                   topic === key ? 'border-primary text-foreground' : 'border-border text-muted-foreground',
                 )}
               >
-                {TOPIC_LABEL.get(key) ?? key}
+                {topicLabelOf(key)}
                 <span className="ml-1 opacity-60">{count}</span>
               </button>
             ))}
@@ -186,7 +185,7 @@ function WrongCard({
     <Card>
       <CardContent className="space-y-3 p-4">
         <div className="flex flex-wrap items-center gap-2 text-xs">
-          <Badge variant="secondary">{TOPIC_LABEL.get(item.topicKey) ?? item.topicKey}</Badge>
+          <Badge variant="secondary">{topicLabelOf(item.topicKey, item.question)}</Badge>
           {item.wrongReason && (
             <Badge variant="outline" className="gap-1">
               <AlertTriangle className="size-3" />
