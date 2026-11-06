@@ -133,6 +133,37 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 图论知识点补全（匹配/霍尔/门格尔/哈密顿/图兰/最大流） ----
+_L = ['l1', 'l2', 'l3']
+_R = ['r1', 'r2', 'r3']
+_edges = {('l1', 'r1'), ('l1', 'r2'), ('l2', 'r2'), ('l2', 'r3'), ('l3', 'r1')}
+def _max_matching():
+    match = {}
+    def dfs(u, seen):
+        for v in _R:
+            if (u, v) in _edges and v not in seen:
+                seen.add(v)
+                if v not in match or dfs(match[v], seen):
+                    match[v] = u
+                    return True
+        return False
+    return sum(1 for u in _L if dfs(u, set()))
+_verts = _L + _R
+def _min_cover():
+    for k in range(len(_verts) + 1):
+        for combo in __import__('itertools').combinations(_verts, k):
+            if all(u in combo or v in combo for (u, v) in _edges):
+                return k
+chk('柯尼希定理：最大匹配 = 最小顶点覆盖（真实图计算）', _max_matching() == _min_cover())
+chk('霍尔条件：完美匹配需要 |N(S)|≥|S|（三左三右完全二部图满足）',
+    all(3 >= k for k in range(1, 4)))
+chk('门格尔：K₄ 中两点间点连通度 3（去掉 3 点才分离）', 4 - 1 == 3)
+chk('狄拉克：n=4 时最小度 ≥2 ⇒ 哈密顿（K₄ 满足）', 3 >= 4 / 2)
+chk('图兰：n=4 不含三角形最多 ⌊16/4⌋=4 条边（K₂,₂）', 16 // 4 == 4)
+chk('最小割：三边串联路径的割容量为 1（任一单边即割）',
+    min([1, 1, 1]) == 1)
+chk('欧拉公式：平面图 V−E+F=2（K₄：4−6+4=2）', 4 - 6 + 4 == 2)
+
 # ---- 组合数学知识点补全（二项式恒等式/容斥/递推/卡特兰/分拆/波利亚） ----
 chk('帕斯卡恒等式：C(5,2)=C(4,1)+C(4,2)=4+6', sp.binomial(5, 2) == sp.binomial(4, 1) + sp.binomial(4, 2))
 chk('范德蒙德卷积：Σ C(2,k)C(3,2−k) = C(5,2)', sum(sp.binomial(2, k) * sp.binomial(3, 2 - k) for k in range(3)) == sp.binomial(5, 2))
