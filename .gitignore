@@ -87,3 +87,6 @@ pnpm-lock.yaml
 
 # Agent files
 .agent/
+
+# 临时构建配置
+vite.testtmp.mjs

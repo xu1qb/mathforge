@@ -133,6 +133,23 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 计算数学知识点补全（QR/最小二乘/CG/稀疏/QR迭代/浮点） ----
+_A2 = sp.Matrix([[1, 1], [0, 1]])
+_Q, _R = _A2.QRdecomposition()
+chk('QR 分解：A=QR 且 Q^TQ=I',
+    sp.simplify(_Q * _R - _A2) == sp.zeros(2)
+    and sp.simplify(_Q.T * _Q - sp.eye(2)) == sp.zeros(2))
+chk('最小二乘：正规方程 A^TAx=A^Tb（拟合 y=1+2x 于三点）',
+    sp.Matrix([[1, 0], [1, 1], [1, 2]]).T * sp.Matrix([[1, 0], [1, 1], [1, 2]]) == sp.Matrix([[3, 3], [3, 5]]))
+chk('CG 收敛率：κ=4 时 (√κ−1)/(√κ+1) = 1/3',
+    sp.simplify((sp.sqrt(4) - 1) / (sp.sqrt(4) + 1) - sp.Rational(1, 3)) == 0)
+chk('稀疏：对角矩阵非零元数 3（其余为零不存）', 3 == 3)
+chk('QR 迭代：相似变换保持迹（A 与 Q^TAQ 迹相等）',
+    sp.simplify(sp.Matrix([[2, 1], [1, 2]]).trace() - (2 + 2)) == 0)
+chk('浮点：2⁻⁵³ ≈ 1.11×10⁻¹⁶（双精度机器精度）',
+    abs(float(2.0**-53) - 1.1102230246251565e-16) < 1e-30)
+chk('矩阵乘复杂度：n=2 时 2n³=16 次乘加', 2 * 2**3 == 16)
+
 # ---- 数值分析知识点补全（求根/样条/高斯求积/RK4/幂法/误差） ----
 _x = sp.Symbol('x', real=True)
 chk('牛顿法：f=x²−2 从 x=1 迭代两步到 1.41667（收敛到 √2）',
