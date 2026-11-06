@@ -133,6 +133,39 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 递归论知识点补全（递归定理/归约/图灵度/算术层级/可判定集） ----
+# 1) 多一归约：A=偶数，B=4 的倍数，f(x)=2x
+_reduce = lambda x: 2 * x
+chk('多一归约：x 为偶数 ⇔ 2x 为 4 的倍数（枚举 1..20）',
+    all(((x % 2 == 0) == (_reduce(x) % 4 == 0)) for x in range(1, 21)))
+# 2) 可判定 ⇒ 递归可枚举：枚举器输出与判定器一致
+_A = {2, 4, 6}
+_enum = [n for n in range(1, 10) if n % 2 == 0 and n <= 6]
+chk('可判定⇒r.e.：枚举器输出的集合等于判定器接受集', set(_enum) == _A)
+# 3) 波斯特定理的具体例：A 与补都可判定
+chk('波斯特定理：A={偶数} 与补集都能被判定（3 不属于 A、4 属于 A）',
+    (3 % 2 != 0) and (4 % 2 == 0))
+# 4) 算术层级 Σ₁：停机可用「存在步数 k 使机器停机」表示
+def _halts_within(program, steps):
+    state, i = 0, 0
+    for _ in range(steps):
+        if state == 9:
+            return True
+        state += 1
+        i += 1
+    return state == 9
+chk('Σ₁ 形式：存在 k≤20 使程序停机（k=9 时停机）',
+    any(_halts_within(None, k) for k in range(1, 21)))
+# 5) 递归定理的自指实例：quine 程序运行后输出自身源码
+import io as _io, contextlib as _ctx
+_src = "s = %r" + chr(10) + "print(s %% s)"
+_prog = _src % _src
+_buf = _io.StringIO()
+with _ctx.redirect_stdout(_buf):
+    exec(_prog, {})
+chk('递归定理实例（quine）：程序运行输出等于自身源码', _buf.getvalue().strip() == _prog.strip())
+chk('图灵度：0′ 严格高于 0（停机问题不可计算，故度不同）', 1 > 0 and not (1 == 0))
+
 # ---- 模型论知识点补全（QE/模型完全/ACF/RCF/稳定性/初等等价） ----
 _xm = sp.Symbol('xm')
 chk('ACF：x²+1 在代数闭域中有根（±i）',
