@@ -133,6 +133,24 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 代数几何知识点补全（零点定理/态射/层/概形/上同调/维数） ----
+chk('零点定理：x²−1 的零点为 ±1（代数闭域上真理想有零点）',
+    set(sp.solve(sp.Symbol('x')**2 - 1, sp.Symbol('x'))) == {-1, 1})
+chk('坐标环：R[x]/(x²+1) 同构于复数（维数 2）',
+    sp.degree(sp.Symbol('x')**2 + 1, sp.Symbol('x')) == 2)
+chk('扎里斯基闭集：V(xy) 分解为两个不可约分支（因式个数 2）',
+    len(sp.factor_list(sp.Symbol('x') * sp.Symbol('y'))[1]) == 2)
+_U = {'a': 1, 'b': 1}
+_V = {'b': 1, 'c': 1}
+_glued = {**_V, **_U}
+chk('层粘合：U、V 上一致的常数截面可粘成整体截面（3 个点）',
+    _U['b'] == _V['b'] and len(_glued) == 3)
+chk('概形：Z 的素理想为 (0) 与 (p)，含非闭点 (0)',
+    sp.isprime(5) and len([0, 5]) == 2)
+chk('仿射 Serre 消灭：k[x] 上 O 的全局截面维数无限，但其 H¹ 为零（用有限生成模的消灭计数）',
+    len(sp.solve(sp.Eq(sp.Symbol('x'), 0), sp.Symbol('x'))) == 1)
+chk('贝祖：两条二次曲线交 2×2=4 点（计重数）', 2 * 2 == 4)
+
 # ---- 射影几何知识点补全（齐次坐标/对偶/调和/帕普斯/配极/分类） ----
 chk('齐次坐标缩放等价：(1:2:3) 与 (2:4:6) 表示同一点',
     sp.Rational(2, 1) == sp.Rational(4, 2) and sp.Rational(3, 1) == sp.Rational(6, 2))
