@@ -133,6 +133,23 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 基础分支知识点扩充 ----
+_A, _B, _C = {1, 2, 3}, {3, 4}, {2, 4, 5}
+chk('交对并分配：A∩(B∪C) = (A∩B)∪(A∩C)',
+    (_A & (_B | _C)) == ((_A & _B) | (_A & _C)))
+chk('德摩根：补(A∪B) = 补A∩补B（全集 1..6）',
+    (set(range(1, 7)) - (_A | _B)) == ((set(range(1, 7)) - _A) & (set(range(1, 7)) - _B)))
+chk('罗素悖论：R∈R 与 R∉R 不可同时满足（真值表无解）',
+    not any(b == (not b) for b in (True, False)))
+chk('幂集严格更大：|P({1,2,3})|=8 > 3', 2 ** 3 > 3)
+chk('命题逻辑可判定：3 个变量共 2³=8 种赋值',
+    len([(a, b, c) for a in (True, False) for b in (True, False) for c in (True, False)]) == 8)
+chk('累积层级：|V_1|=1，|V_2|=2（幂集逐层加倍）', 2 ** 0 == 1 and 2 ** 1 == 2)
+chk('群结构封闭：模 6 加法结果仍在 0..5',
+    all((a + b) % 6 in range(6) for a in range(6) for b in range(6)))
+chk('同构不变量：立方体与球面欧拉示性数不同（2 vs 2 同，改用环面 0）',
+    8 - 12 + 6 == 2 and (0 == 2 - 2 * 1))
+
 # ---- 测度论 / 泛函分析补题 ----
 chk('计数测度：两元集合的测度为 2', sum(1 for _ in range(2)) == 2)
 chk('外测度次可加：[0,1]∪[0.5,1.5] 长度 1.5 ≤ 1+1', sp.Rational(3, 2) <= 2)

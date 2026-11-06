@@ -59,7 +59,7 @@ export const MODERN_MATH_COURSE: Course = {
       textbookRef: '第 2 章',
       summary: '群、环、域与它们的同态，是抽象代数的骨架',
       goals: ['理解群同态与商群', '知道伽罗瓦理论的结论', '了解范畴论的语言'],
-      lessonIds: ['group-homomorphism', 'ring-ideal', 'galois-theory', 'representation-theory', 'category-theory'],
+      lessonIds: ['group-homomorphism', 'ring-ideal', 'galois-theory', 'representation-theory', 'category-theory', 'structure-view'],
       practiceTopics: ['matrix-op', 'inequality-amgm'],
       exercises: [
         {
@@ -94,7 +94,7 @@ export const MODERN_MATH_COURSE: Course = {
       textbookRef: '第 3 章',
       summary: '拓扑用开集刻画连续，几何则研究不变量',
       goals: ['理解开集与紧致', '会用基本群区分空间', '了解非欧与射影几何'],
-      lessonIds: ['topology-intro', 'compactness', 'fundamental-group', 'non-euclidean', 'projective-geometry'],
+      lessonIds: ['topology-intro', 'compactness', 'fundamental-group', 'non-euclidean', 'projective-geometry', 'invariant-view'],
       practiceTopics: ['vector-op', 'solid-geometry'],
       exercises: [
         {
@@ -164,7 +164,7 @@ export const MODERN_MATH_COURSE: Course = {
       textbookRef: '第 5 章',
       summary: '可计算性划出能算的边界，复杂度刻画算得多快',
       goals: ['理解停机问题不可判定', '知道 P 与 NP 的含义', '会算信息熵'],
-      lessonIds: ['computability', 'p-vs-np', 'np-reduction', 'information-entropy', 'crypto-rsa'],
+      lessonIds: ['computability', 'p-vs-np', 'np-reduction', 'information-entropy', 'crypto-rsa', 'abstraction-levels'],
       practiceTopics: ['matrix-op', 'combinatorics-basic'],
       exercises: [
         {

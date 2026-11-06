@@ -27,7 +27,7 @@ export const AXIOMATIC_SET_COURSE: Course = {
       textbookRef: 'Jech 第 1 章 / Kunen 第 1 章',
       summary: '用公理规定哪些集合存在',
       goals: ['掌握分离与替换公理', '理解正则公理的作用', '判断构造是否合法'],
-      lessonIds: ['zfc-axioms'],
+      lessonIds: ['zfc-axioms', 'reflection-principle'],
       practiceTopics: ['combinatorics-basic'],
       exercises: [
         {
@@ -46,7 +46,7 @@ export const AXIOMATIC_SET_COURSE: Course = {
       textbookRef: 'Jech 第 2 章 / Kunen 第 2 章',
       summary: '数到无穷的刻度',
       goals: ['理解冯·诺依曼序数', '掌握超限归纳', '区分后继与极限序数'],
-      lessonIds: ['ordinals'],
+      lessonIds: ['ordinals', 'cumulative-hierarchy', 'ordinal-arithmetic'],
       practiceTopics: ['combinatorics-basic'],
       exercises: [
         {

@@ -27,7 +27,7 @@ export const SET_THEORY_COURSE: Course = {
       textbookRef: '徐森林 第 1 章 / Halmos 第 1–2 节',
       summary: '集合的运算与幂集，是全部内容的地基',
       goals: ['掌握包含与相等的证明', '会算并交差与幂集', '理解空集的特殊性'],
-      lessonIds: ['set-basics'],
+      lessonIds: ['set-basics', 'set-operations', 'russell-paradox'],
       practiceTopics: ['combinatorics-basic'],
       exercises: [
         {
@@ -103,7 +103,7 @@ export const SET_THEORY_COURSE: Course = {
       textbookRef: '徐森林 第 5 章 / Halmos 第 9–11 节',
       summary: '用双射比较无限集的大小',
       goals: ['理解等势与基数', '会证可数与不可数', '知道康托尔定理'],
-      lessonIds: ['set-cardinality'],
+      lessonIds: ['set-cardinality', 'countable-uncountable'],
       practiceTopics: ['combinatorics-basic'],
       exercises: [
         {

@@ -46,7 +46,7 @@ export const LOGIC_COURSE: Course = {
       textbookRef: '汪芳庭 第 2 章 / Enderton 第 2 章',
       summary: '量词、解释与结构',
       goals: ['会形式化数学命题', '区分语法与语义', '掌握量词否定'],
-      lessonIds: ['first-order-logic'],
+      lessonIds: ['first-order-logic', 'formal-semantics'],
       practiceTopics: ['combinatorics-basic'],
       exercises: [
         {
@@ -65,7 +65,7 @@ export const LOGIC_COURSE: Course = {
       textbookRef: '汪芳庭 第 3 章 / Enderton 第 2 章后半',
       summary: '可证性与真理性由两个定理连接',
       goals: ['理解形式证明', '掌握分离规则', '知道可靠性与完备性'],
-      lessonIds: ['proof-systems'],
+      lessonIds: ['proof-systems', 'deduction-theorem'],
       practiceTopics: ['combinatorics-basic'],
       exercises: [
         {
@@ -84,7 +84,7 @@ export const LOGIC_COURSE: Course = {
       textbookRef: '汪芳庭 第 4–5 章 / Enderton 第 3 章',
       summary: '哥德尔编码与自指句子',
       goals: ['理解哥德尔句', '知道两个不完备定理', '区分真与可证'],
-      lessonIds: ['godel-incompleteness'],
+      lessonIds: ['godel-incompleteness', 'decidability'],
       practiceTopics: ['combinatorics-basic'],
       exercises: [
         {
