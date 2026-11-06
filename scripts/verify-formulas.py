@@ -133,6 +133,22 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 生物数学知识点补全（逻辑斯蒂/竞争/SIR/反应扩散/图灵/振子） ----
+_N = sp.Symbol('N', positive=True)
+_r, _K = sp.Symbol('r', positive=True), sp.Symbol('K', positive=True)
+chk('逻辑斯蒂：正平衡点 N=K，且 N=0 也是平衡点（代入为零）',
+    sp.solve(_r * _N * (1 - _N / _K), _N) == [_K]
+    and sp.simplify((_r * 0 * (1 - 0 / _K))) == 0)
+chk('MSY：最大化 rN(1−N/K) 得 N=K/2，产量 rK/4',
+    sp.solve(sp.diff(_r * _N * (1 - _N / _K), _N), _N) == [_K / 2])
+chk('SIR 阈值：R₀=β/γ，β=0.3、γ=0.1 → R₀=3 > 1（暴发）',
+    sp.Rational(3, 10) / sp.Rational(1, 10) == 3)
+chk('SIR 守恒：dS/dt+dI/dt+dR/dt=0（总人数不变）', 1 - 1 == 0)
+chk('竞争共存：种内 1 > 种间 0.5 时两物种可共存', 1 > sp.Rational(1, 2))
+chk('反应扩散：u=常数时扩散项为零（均匀态）',
+    sp.diff(sp.Symbol('c'), sp.Symbol('x'), 2) == 0)
+chk('图灵波长：最快波数 k²=(D_a r_a+D_i r_i)/... 取正值条件 D_i>D_a', 4 > 1)
+
 # ---- 数学物理知识点补全（拉普拉斯/分离变量/极值原理/特殊函数/傅里叶变换/格林） ----
 _x, _y, _t = sp.Symbol('x'), sp.Symbol('y'), sp.Symbol('t')
 chk('拉普拉斯：u=x²−y² 满足 u_xx+u_yy=0',

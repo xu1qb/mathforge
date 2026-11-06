@@ -19,7 +19,7 @@ export const MATHEMATICAL_BIOLOGY_COURSE: Course = {
       textbookRef: '教材 第 1 章 / Murray 第 1 章',
       summary: '指数与逻辑斯蒂',
       goals: ['写增长方程', '找平衡点'],
-      lessonIds: ['population-growth'],
+      lessonIds: ['population-growth', 'logistic-growth', 'competition-model'],
       practiceTopics: ['ode-solving'],
       exercises: [
         {
@@ -38,7 +38,7 @@ export const MATHEMATICAL_BIOLOGY_COURSE: Course = {
       textbookRef: '教材 第 2 章 / Murray 第 2 章',
       summary: 'SIR 与 R0',
       goals: ['分仓室', '算 R0'],
-      lessonIds: ['epidemic-models'],
+      lessonIds: ['epidemic-models', 'sir-model'],
       practiceTopics: ['ode-solving'],
       exercises: [
         {
@@ -57,7 +57,7 @@ export const MATHEMATICAL_BIOLOGY_COURSE: Course = {
       textbookRef: '教材 第 3 章 / Murray 第 3 章',
       summary: '米氏方程',
       goals: ['拟合参数', '分析抑制'],
-      lessonIds: ['enzyme-kinetics'],
+      lessonIds: ['enzyme-kinetics', 'oscillators'],
       practiceTopics: ['function-property'],
       exercises: [
         {
@@ -76,7 +76,7 @@ export const MATHEMATICAL_BIOLOGY_COURSE: Course = {
       textbookRef: '教材 第 4 章 / Murray 第 4 章',
       summary: 'Lotka-Volterra',
       goals: ['找平衡点', '看周期'],
-      lessonIds: ['lotka-volterra'],
+      lessonIds: ['lotka-volterra', 'reaction-diffusion', 'turing-pattern'],
       practiceTopics: ['ode-solving'],
       exercises: [
         {
