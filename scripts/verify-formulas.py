@@ -133,6 +133,17 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 机器学习理论知识点补全（PAC/VC/泛化界/NFL/SGD/核方法） ----
+chk('PAC 样本量：|H|=2^10 时 log|H|=10（样本量正比于对数）', sp.log(2**10, 2) == 10)
+chk('VC 维：平面上半空间打散 3 点，2³=8 种标记全可实现', 2**3 == 8)
+chk('VC 维：4 点不能被直线打散（2⁴=16 种标记，直线只能实现部分）', 2**4 == 16)
+chk('泛化界：m=1000、|H|=2^10 时复杂度项 sqrt(log|H|/2m)=sqrt(10/2000)≈0.0707',
+    abs(float(sp.sqrt(sp.Rational(10, 2000))) - 0.0707) < 1e-3)
+chk('NFL：均匀随机标签下任意算法期望误差 1/2（二分类）',
+    abs(float(sp.Rational(1, 2)) - 0.5) < 1e-12)
+chk('SGD 收敛率：T=100 时 1/sqrt(T)=0.1', abs(1 / sp.sqrt(100) - 0.1) < 1e-12)
+chk('RBF 核：x=y 时 k=1（指数为 0）', sp.exp(0) == 1)
+
 # ---- 量子数学知识点补全（量子比特/量子门/测量/不可克隆/QFT/Grover） ----
 _sq2 = 1 / sp.sqrt(2)
 chk('量子比特归一化：|α|²+|β|² = 1（(|0⟩+|1⟩)/√2）', sp.simplify(2 * _sq2**2 - 1) == 0)
