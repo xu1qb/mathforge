@@ -71,6 +71,7 @@ class AppErrorBoundary extends Component<{ children: React.ReactNode }, { hasErr
 const AiLabPageLazy = lazy(() => import("@/pages/AiLab/AiLabPage"));
 const AiReviewPageLazy = lazy(() => import("@/pages/AiLab/AiReviewPage"));
 const ExplainLabPageLazy = lazy(() => import("@/pages/ExplainLab/ExplainLabPage"));
+const GeometryDrillPageLazy = lazy(() => import("@/pages/GeometryDrill/GeometryDrillPage"));
 const FormulaHandbookLazy = lazy(() => import("@/pages/FormulaHandbook/FormulaHandbookPage"));
 const ScientificCalculatorLazy = lazy(() => import("@/pages/ScientificCalculator/ScientificCalculatorPage"));
 const SymbolicAlgebraLazy = lazy(() => import("@/pages/SymbolicAlgebra/SymbolicAlgebraPage"));
@@ -242,6 +243,7 @@ export default function App() {
           <Route path="privacy" element={<Suspense fallback={<div className="h-64" />}><PrivacyLazy /></Suspense>} />
           <Route path="ai-lab" element={<AiLabPageLazy />} />
           <Route path="explain-lab" element={<Suspense fallback={<ModuleFallback />}><ExplainLabPageLazy /></Suspense>} />
+          <Route path="geometry-drill" element={<Suspense fallback={<ModuleFallback />}><GeometryDrillPageLazy /></Suspense>} />
           <Route path="ai-review" element={<AiReviewPageLazy />} />
           <Route path="integral-visualization" element={<IntegralVisPage />} />
           <Route path="knowledge-map" element={<Suspense fallback={<ModuleFallback />}><KnowledgeMapLazy /></Suspense>} />

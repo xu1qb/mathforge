@@ -22,6 +22,7 @@ import {
   Sparkles,
   ShieldCheck,
   FlaskConical,
+  Triangle,
   Waves,
   Globe,
   Trophy,
@@ -106,6 +107,7 @@ const NAV_GROUPS: NavGroup[] = [
       { path: '/linear-algebra', label: '线性代数', icon: Grid3x3 },
       { path: '/probability', label: '概率统计', icon: BarChart3 },
       { path: '/numerical', label: '数值分析', icon: Target },
+      { path: '/geometry-drill', label: '几何攻坚', icon: Triangle },
     ],
   },
   {

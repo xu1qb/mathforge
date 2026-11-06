@@ -565,3 +565,24 @@ export const FLOW_CHARTS: FlowChart[] = [
 export function getFlowChart(id: string): FlowChart {
   return FLOW_CHARTS.find((c) => c.id === id) ?? FLOW_CHARTS[0];
 }
+
+/**
+ * 流程图 → 配套练习知识点（practice-topics 的 key）。
+ * 这张图讲思路，练习页给具体题目，二者用这个映射绑定。
+ */
+export const FLOW_PRACTICE: Record<string, string[]> = {
+  limit: ['limit-basic', 'sequence-limit'],
+  mvt: ['derivative-basic'],
+  integral: ['integral-basic'],
+  series: ['series-convergence', 'sequence-limit'],
+  matrix: ['matrix-op', 'vector-op'],
+  probability: ['probability-classical', 'random-variable'],
+  'multivar-extreme': ['derivative-basic', 'inequality-amgm'],
+  'ode-first-order': ['ode-solving'],
+  'multiple-integral': ['integral-basic'],
+};
+
+/** 取某张流程图的配套练习 key（缺省回落到极限） */
+export function flowPracticeTopics(chartId: string): string[] {
+  return FLOW_PRACTICE[chartId] ?? [];
+}

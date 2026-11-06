@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight, CheckCircle2, Printer, XCircle } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import MathRenderer from '@/components/MathRenderer';
 import PageShell from '@/components/PageShell';
-import { FLOW_CHARTS, getFlowChart, type FlowKind } from '@/data/flows';
+import { FLOW_CHARTS, getFlowChart, flowPracticeTopics, type FlowKind } from '@/data/flows';
+import { PRACTICE_TOPICS } from '@/data/practice-topics';
 import { cn } from '@/lib/utils';
 
 const KIND_STYLE: Record<FlowKind, string> = {
@@ -150,6 +151,29 @@ export default function FlowPage() {
               <span className="font-medium text-foreground">数竞提醒：</span>
               {chart.examNote}
             </p>
+
+            {/* 这张图对应的练习题：点进去直接刷同类题 */}
+            {(() => {
+              const keys = flowPracticeTopics(chart.id);
+              if (keys.length === 0) return null;
+              return (
+                <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                  <span className="text-xs text-muted-foreground">配套练习：</span>
+                  {keys.map((key) => {
+                    const topic = PRACTICE_TOPICS.find((t) => t.key === key);
+                    return (
+                      <Link
+                        key={key}
+                        to={'/practice?topic=' + key}
+                        className="rounded-md border border-border px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                      >
+                        {topic?.label ?? key}
+                      </Link>
+                    );
+                  })}
+                </div>
+              );
+            })()}
           </CardContent>
         </Card>
 

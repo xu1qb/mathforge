@@ -80,10 +80,23 @@ export default function CoursePage() {
       width="wide"
       back
       actions={
-        <Button variant="outline" size="sm" className="gap-1.5" onClick={() => navigate(course.toolPath)}>
-          <Wrench className="size-4" />
-          <span className="hidden sm:inline">打开工具箱</span>
-        </Button>
+        <div className="flex items-center gap-2">
+          {course.drillPath && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={() => navigate(course.drillPath as string)}
+            >
+              <Compass className="size-4" />
+              <span className="hidden sm:inline">专题训练</span>
+            </Button>
+          )}
+          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => navigate(course.toolPath)}>
+            <Wrench className="size-4" />
+            <span className="hidden sm:inline">打开工具箱</span>
+          </Button>
+        </div>
       }
     >
       <div className="space-y-6 lg:grid lg:h-[calc(100dvh-7rem)] lg:grid-cols-[220px_minmax(0,1fr)] lg:items-stretch lg:gap-6 lg:space-y-0 lg:overflow-hidden">

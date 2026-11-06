@@ -61,4 +61,6 @@ export interface Course {
   crossings: CourseCrossing[];
   /** 对应的工具页 */
   toolPath: string;
+  /** 可选：配套的专题训练页（例如几何攻坚） */
+  drillPath?: string;
 }

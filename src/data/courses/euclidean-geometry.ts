@@ -133,4 +133,5 @@ export const EUCLIDEAN_GEOMETRY_COURSE: Course = {
     { subject: '微分几何', relation: '曲线的曲率是平面几何的推广。', courseId: 'differential-geometry' },
   ],
   toolPath: '/plot-2d',
+  drillPath: '/geometry-drill',
 };

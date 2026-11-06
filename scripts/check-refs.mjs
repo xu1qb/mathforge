@@ -82,6 +82,7 @@ for (const t of practice.PRACTICE_TOPICS) {
 // 3) 课程
 for (const c of courses.COURSES) {
   if (!routeExists(c.toolPath)) push('课程工具箱路径不存在', c.id + ' -> ' + c.toolPath);
+  if (c.drillPath && !routeExists(c.drillPath)) push('课程专题训练路径不存在', c.id + ' -> ' + c.drillPath);
   for (const ch of c.chapters) {
     for (const id of ch.lessonIds) if (!topicIds.has(id)) push('课程引用了不存在的考点', c.id + '/' + ch.id + ' -> ' + id);
     for (const k of ch.practiceTopics) if (!practiceKeys.has(k)) push('课程引用了不存在的练习知识点', c.id + '/' + ch.id + ' -> ' + k);
@@ -113,6 +114,27 @@ for (const [id, keys] of Object.entries(links.PRACTICE_LINKS_BY_ID)) {
 for (const [tag, keys] of Object.entries(links.PRACTICE_LINKS_BY_TAG)) {
   if (!tagSet.has(tag)) push('映射表引用了不存在的标签', tag);
   for (const k of keys) if (!practiceKeys.has(k)) push('映射表引用了不存在的练习知识点', tag + ' -> ' + k);
+}
+
+// 5.5) 流程图 → 练习知识点绑定
+const flows = load(dataFile('flows.ts'));
+const chartIds = new Set((flows.FLOW_CHARTS ?? []).map((c) => c.id));
+for (const [chartId, keys] of Object.entries(flows.FLOW_PRACTICE ?? {})) {
+  if (!chartIds.has(chartId)) push('流程图绑定引用了不存在的图', chartId);
+  for (const k of keys) if (!practiceKeys.has(k)) push('流程图绑定引用了不存在的练习知识点', chartId + ' -> ' + k);
+}
+
+// 5.6) 几何专题训练
+const drills = load(dataFile('geometry-drills.ts'));
+for (const d of drills.GEOMETRY_DRILLS ?? []) {
+  if (d.explainerId && !topicIds.has(d.explainerId)) push('专题引用了不存在的考点', d.id + ' -> ' + d.explainerId);
+  const seen = new Set();
+  for (const p of d.problems ?? []) {
+    if (seen.has(p.id)) push('专题题目 id 重复', d.id + ' -> ' + p.id);
+    seen.add(p.id);
+    if (!p.statement || !p.hint || !p.steps?.length || !p.answer) push('专题题目缺字段', d.id + '/' + p.id);
+    if (!['基础', '进阶', '竞赛'].includes(p.level)) push('专题题目难度非法', d.id + '/' + p.id);
+  }
 }
 
 // 6) navigate() 死链
