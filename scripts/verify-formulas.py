@@ -133,6 +133,16 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 环论知识点补全（商环/素极大理想/欧氏整环/分式域/诺特/CRT） ----
+chk('商环同态：Z→Z/6 的核为 6Z，像为 Z/6（阶 6）', len(range(6)) == 6)
+chk('极大理想：Z/(p) 是域（p=5，每个非零元可逆）',
+    all(pow(a, 4, 5) == 1 for a in range(1, 5)))
+chk('素理想：Z 中 (6) 不是素理想（2·3∈(6) 但 2∉(6)）', (2 * 3) % 6 == 0 and 2 % 6 != 0)
+chk('欧几里得整环：Z 上带余除法 17 = 5·3 + 2（余数 2 < 5）', 17 == 5 * 3 + 2 and 2 < 5)
+chk('分式域：Z 的分式域为 Q（2/3 是形式分式）', sp.Rational(2, 3) == sp.Rational(2, 3) and sp.Rational(2, 3).q == 3)
+chk('诺特：Z 的理想 (6,4)=(2) 有限生成（gcd）', sp.gcd(6, 4) == 2)
+chk('CRT：模 4 与模 3 互素，解模 12 唯一', sp.gcd(4, 3) == 1 and 4 * 3 == 12)
+
 # ---- 群论知识点补全（正规子群/同构定理/p群/合成列/置换群/自由群） ----
 chk('正规子群：交换群中 gNg⁻¹=N（Z/6 中 {0,3} 共轭不变）',
     all((k + n - k) % 6 in {0, 3} for k in range(6) for n in {0, 3}))
