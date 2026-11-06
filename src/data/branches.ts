@@ -40,7 +40,7 @@ export const BRANCH_CATEGORIES: BranchCategory[] = [
     branches: [
       { id: 'arithmetic', zh: '算术', en: 'Arithmetic', pagePath: '/calculator' },
       { id: 'elementary-algebra', zh: '初等代数', en: 'Elementary Algebra', pagePath: '/symbolic' },
-      { id: 'euclidean-geometry', zh: '欧氏几何', en: 'Euclidean Geometry', tags: ['欧氏几何'] },
+      { id: 'euclidean-geometry', zh: '欧氏几何', en: 'Euclidean Geometry', tags: ['欧氏几何'], courseId: 'euclidean-geometry' },
       { id: 'elementary-number-theory', zh: '初等数论', en: 'Elementary Number Theory', pagePath: '/number-theory' },
       { id: 'trigonometry', zh: '三角学', en: 'Trigonometry', tags: ['三角学'], courseId: 'trigonometry' },
       { id: 'analytic-geometry', zh: '解析几何', en: 'Analytic Geometry', pagePath: '/plot-2d', tags: ['空间几何'] },

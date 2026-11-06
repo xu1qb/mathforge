@@ -37,7 +37,7 @@ export const DISCIPLINE: Discipline = {
       summary: '中学与竞赛的地基：三角与平面几何',
       courses: [
         { id: 'trigonometry', name: '三角学', courseId: 'trigonometry' },
-        { id: 'euclidean-geometry', name: '欧氏几何', note: '待建' },
+        { id: 'euclidean-geometry', name: '欧氏几何', courseId: 'euclidean-geometry' },
       ],
     },
     {

@@ -63,6 +63,7 @@ import { LOGIC_AND_REASONING_COURSE } from './logic-and-reasoning-course';
 import { SET_THEORY_LOGIC_COURSE } from './set-theory-logic-course';
 import { CATEGORY_THEORY_COURSE } from './category-theory-course';
 import { TRIGONOMETRY_COURSE } from './trigonometry';
+import { EUCLIDEAN_GEOMETRY_COURSE } from './euclidean-geometry';
 
 export const COURSES: Course[] = [
   LINEAR_ALGEBRA_COURSE,
@@ -128,6 +129,7 @@ export const COURSES: Course[] = [
   SET_THEORY_LOGIC_COURSE,
   CATEGORY_THEORY_COURSE,
   TRIGONOMETRY_COURSE,
+  EUCLIDEAN_GEOMETRY_COURSE,
 ];
 
 export function getCourse(id: string | undefined): Course | undefined {
