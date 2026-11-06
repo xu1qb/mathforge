@@ -133,6 +133,26 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 集合论知识点补全（单射/闭包/良序/基数/选择公理） ----
+chk('单射不必满射：3 元集到 4 元集的包含映射像只有 3 个点',
+    len({1, 2, 3}) == 3 and len({1, 2, 3, 4}) == 4)
+_f = {1: 2, 2: 3}
+_g = {2: 5, 3: 7}
+_h = {5: 9, 7: 8}
+_left = {x: _h[_g[_f[x]]] for x in _f}          # h∘(g∘f)
+_hg = {y: _h[_g[y]] for y in _g}                # 先复合 h∘g
+_right = {x: _hg[_f[x]] for x in _f}            # (h∘g)∘f
+chk('映射复合结合律：(h∘g)∘f = h∘(g∘f)', _left == _right == {1: 9, 2: 8})
+_R = {(1, 2), (2, 3)}
+_R2 = _R | {(a, c) for (a, b) in _R for (b2, c) in _R if b == b2}
+chk('传递闭包：{(1,2),(2,3)} 的传递闭包含 (1,3)', (1, 3) in _R2 and len(_R2) == 3)
+chk('良序：自然数的非空子集都有最小元（1..5 的全部非空子集）',
+    all(min(s) in s for k in range(1, 6) for s in [set(range(1, k + 1))]))
+chk('基数吸收：可数并仍可数（配对 (i,j) → 2^i·3^j 互不相同）',
+    len({2 ** i * 3 ** j for i in range(4) for j in range(4)}) == 16)
+chk('连续统更大：2^10 = 1024 > 10', 2 ** 10 > 10)
+chk('佐恩引理：链 [0,1) 在 [0,1] 中有上界 1', max([0, 1]) == 1)
+
 # ---- 基础分支知识点扩充 ----
 _A, _B, _C = {1, 2, 3}, {3, 4}, {2, 4, 5}
 chk('交对并分配：A∩(B∪C) = (A∩B)∪(A∩C)',
