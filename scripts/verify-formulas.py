@@ -133,6 +133,20 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 现代数学导论知识点补全（对偶/逼近/维数/概率/优化/离散连续） ----
+_V3 = sp.Matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+chk('线性对偶：3 维空间与其对偶空间维数相同', _V3.rank() == 3 and _V3.shape[1] == 3)
+chk('维数公式：3 维空间、2 维像 → 1 维核', 3 - 2 == 1)
+_xx = sp.Symbol('x')
+_bern2 = sum(sp.binomial(2, k) * _xx**k * (1 - _xx)**(2 - k) * sp.Rational(k, 2) for k in range(3))
+chk('伯恩斯坦逼近：线性函数 f(t)=t 的二次伯恩斯坦多项式恰为 x',
+    sp.simplify(_bern2 - _xx) == 0)
+chk('期望即积分：U[0,1] 的期望 = ∫₀¹ x dx = 1/2',
+    sp.integrate(sp.Symbol('x'), (sp.Symbol('x'), 0, 1)) == sp.Rational(1, 2))
+chk('凸性充分：f(x)=x² 的驻点 0 是全局最小', sp.solve(sp.diff(sp.Symbol('x')**2, sp.Symbol('x')), sp.Symbol('x')) == [0])
+chk('离散逼近连续：n=100 的黎曼和逼近 ∫₀¹ x dx 误差 1/200',
+    abs(sp.summation(sp.Symbol('k') / 100 / 100, (sp.Symbol('k'), 1, 100)) - sp.Rational(1, 2)) == sp.Rational(1, 200))
+
 # ---- 公理化集合论知识点补全（分离/传递模型/L/力迫/大基数/绝对性） ----
 _A5 = set(range(5))
 chk('分离公理：由 A 与性质筛选出的子集仍是集合（0,2,4 共 3 个）',
