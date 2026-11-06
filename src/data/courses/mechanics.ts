@@ -19,7 +19,7 @@ export const MECHANICS_COURSE: Course = {
       textbookRef: '舒幼生 第 1 章 / Taylor 第 1 章',
       summary: '力与加速度',
       goals: ['画受力图', '写运动方程'],
-      lessonIds: ['newtonian-mechanics'],
+      lessonIds: ['newtonian-mechanics', 'kinematics', 'newton-laws'],
       practiceTopics: ['derivative-basic'],
       exercises: [
         {
@@ -38,7 +38,7 @@ export const MECHANICS_COURSE: Course = {
       textbookRef: '舒幼生 第 2 章 / Taylor 第 2 章',
       summary: '守恒律',
       goals: ['判断守恒', '联立求解'],
-      lessonIds: ['energy-momentum'],
+      lessonIds: ['energy-momentum', 'momentum-conservation', 'angular-momentum'],
       practiceTopics: ['integral-basic'],
       exercises: [
         {
@@ -57,7 +57,7 @@ export const MECHANICS_COURSE: Course = {
       textbookRef: '舒幼生 第 3 章 / Taylor 第 3 章',
       summary: '转动惯量与角动量',
       goals: ['算转动惯量', '用转动定律'],
-      lessonIds: ['rigid-body-dynamics'],
+      lessonIds: ['rigid-body-dynamics', 'oscillations'],
       practiceTopics: ['integral-basic'],
       exercises: [
         {
@@ -76,7 +76,7 @@ export const MECHANICS_COURSE: Course = {
       textbookRef: '舒幼生 第 4 章 / Taylor 第 4 章',
       summary: '能量方法',
       goals: ['写拉格朗日量', '用欧拉-拉格朗日方程'],
-      lessonIds: ['lagrangian-mechanics'],
+      lessonIds: ['lagrangian-mechanics', 'central-force'],
       practiceTopics: ['ode-solving'],
       exercises: [
         {

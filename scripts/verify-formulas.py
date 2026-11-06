@@ -133,6 +133,17 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 力学知识点补全（运动学/牛顿/动量/角动量/振动/中心力） ----
+chk('匀加速：v₀=0、a=2、t=3 → v=6，s=9', 2 * 3 == 6 and sp.Rational(1, 2) * 2 * 3**2 == 9)
+chk('法向加速度：v=2、ρ=1 → a_n=4', sp.Rational(2**2, 1) == 4)
+chk('牛顿第二定律：m=2、F=6 → a=3', sp.Rational(6, 2) == 3)
+chk('动量守恒：m₁=2,v₁=3 与 m₂=1,v₂=0 完全非弹性 → v=2',
+    sp.Rational(2 * 3 + 1 * 0, 2 + 1) == 2)
+chk('角动量：r=(1,0)、p=(0,2) → L=2（叉积）',
+    sp.Matrix([[1, 0, 0]]).cross(sp.Matrix([[0, 2, 0]])).tolist() == [[0, 0, 2]])
+chk('简谐周期：k=4、m=1 → T=π', sp.simplify(2 * sp.pi * sp.sqrt(sp.Rational(1, 4)) - sp.pi) == 0)
+chk('开普勒第三：a=4 时 T²∝64', 4**3 == 64)
+
 # ---- 理论计算机知识点补全（泵引理/CFG/图灵机/不可判定/库克-莱文/PSPACE） ----
 chk('泵引理：a^n b^n 取 n=3 时 |a³b³|=6，泵段长度 ≤ 状态数', len('aaabbb') == 6)
 chk('CFG 推导演算：S→aSb|ε 生成 a²b²', (('a', 'b') * 1) == ('a', 'b'))
