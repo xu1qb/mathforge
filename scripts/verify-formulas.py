@@ -142,8 +142,13 @@ chk('哥德尔编码可用素数幂：2^1·3^2 ≠ 2^2·3^1（唯一性）',
     2**1 * 3**2 != 2**2 * 3**1)
 chk('紧致性：自然数加新常元 c>n 的每个有限子集都可满足（取 c=n+1 的模型）',
     all(n + 1 > n for n in range(1, 6)))
-chk('直觉主义：排中律在构造性证明下不可普遍断言（三值反例：未知）',
-    not (True or not True) == False)
+_neg = lambda a: None if a is None else (not a)
+def _disj(a, b):
+    if a is True or b is True: return True
+    if a is None or b is None: return None
+    return False
+chk('克莱尼三值：未知∨¬未知 = 未知（不是真），排中律不普遍成立',
+    _disj(None, _neg(None)) is None)
 chk('双重否定在经典逻辑成立：¬¬A = A', all((not (not a)) == a for a in (True, False)))
 
 # ---- 集合论知识点补全（单射/闭包/良序/基数/选择公理） ----
