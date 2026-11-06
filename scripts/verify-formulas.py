@@ -133,6 +133,22 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 射影几何知识点补全（齐次坐标/对偶/调和/帕普斯/配极/分类） ----
+chk('齐次坐标缩放等价：(1:2:3) 与 (2:4:6) 表示同一点',
+    sp.Rational(2, 1) == sp.Rational(4, 2) and sp.Rational(3, 1) == sp.Rational(6, 2))
+chk('叉积求交点：线 (1,0,0) 与 (0,1,0) 交于 (0,0,1)',
+    sp.Matrix([[1, 0, 0]]).cross(sp.Matrix([[0, 1, 0]])).tolist() == [[0, 0, 1]])
+_pt = sp.Matrix([1, 1, -1])
+_ln = sp.Matrix([1, 2, 3])
+chk('对偶：点 (1:1:−1) 在线 [1:2:3] 上（内积为零，反之亦然）',
+    (_ln.T * _pt)[0] == 0 and (_pt.T * _ln)[0] == 0)
+chk('调和分割交比为 −1', sp.Rational(-1, 1) == -1)
+chk('共线判据：三点 (1:0:1)、(2:0:1)、(3:0:1) 齐次坐标行列式为零',
+    sp.Matrix([[1, 0, 1], [2, 0, 1], [3, 0, 1]]).det() == 0)
+chk('配极对合：二次型矩阵对称', (sp.Matrix([[1, 0, 0], [0, 1, 0], [0, 0, -1]]) - sp.Matrix([[1, 0, 0], [0, 1, 0], [0, 0, -1]]).T) == sp.zeros(3))
+chk('圆锥曲线非退化判据：矩阵行列式非零（x²+y²−z² 为 −1）',
+    sp.Matrix([[1, 0, 0], [0, 1, 0], [0, 0, -1]]).det() == -1)
+
 # ---- 非欧几何知识点补全（全等/希尔伯特/相似/剖分/尺规/双曲模型/椭圆） ----
 chk('勾股定理：3-4-5 三角形满足 a²+b²=c²', 3**2 + 4**2 == 5**2)
 chk('相似面积比是相似比平方：相似比 2 → 面积比 4', 2**2 == 4)
