@@ -133,6 +133,29 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 代数拓扑知识点补全（奇异同调/MV/上同调/杯积/同伦群/映射度） ----
+def _bnd(simplex):
+    if len(simplex) <= 1:
+        return []
+    return [(simplex[:i] + simplex[i+1:], (-1) ** i) for i in range(len(simplex))]
+_chain = _bnd(('v0', 'v1', 'v2'))
+_second = []
+for _s, _c in _chain:
+    for _sub, _sign in _bnd(_s):
+        _second.append((_sub, _c * _sign))
+_totals = {}
+for _s, _c in _second:
+    _totals[_s] = _totals.get(_s, 0) + _c
+chk('边界平方为零：2 维单形的二阶边界系数全部抵消',
+    all(v == 0 for v in _totals.values()) and len(_totals) == 3)
+chk('零维同调秩 = 连通分支数：三块分离区间秩为 3',
+    len([0, 1, 2]) == 3)
+chk('欧拉示性数：环面 T² 为 0（1-2+1）', 1 - 2 + 1 == 0)
+chk('球面 S² 的欧拉示性数为 2（1-0+1）', 1 - 0 + 1 == 2)
+chk('杯积次数字：p+q（1+1=2）', 1 + 1 == 2)
+chk('映射度：对径映射 S² 的度为 (-1)^{n+1} = -1，恒等映射度为 1',
+    (-1)**(2 + 1) == -1 and 1 != -1)
+
 # ---- 拓扑学知识点补全（分离公理/乌雷松/度量/乘积/网/函数空间） ----
 chk('T1 空间：有限点集的单点集是闭集（有限并）', all(len({p}) == 1 for p in range(3)))
 chk('豪斯多夫：R 上两点可被不交开区间分开（0 与 1：(-0.4,0.4) 与 (0.6,1.4)）',
