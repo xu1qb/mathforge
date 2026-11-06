@@ -15,6 +15,7 @@
     "build": "vite build",
     "typecheck": "tsc -p tsconfig.app.json --noEmit",
     "check": "bash scripts/check-all.sh",
+    "docs:check": "tsx scripts/check-docs-stats.ts",
     "lint": "eslint src --quiet",
     "app:dev": "npm run build:server && concurrently \"vite --port 5176\" \"wait-on http://localhost:5176 && electron .\"",
     "app:build": "vite build && npm run build:server && electron-builder --mac",

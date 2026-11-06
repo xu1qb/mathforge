@@ -18,13 +18,13 @@ ok()   { printf '  \033[32m✓\033[0m %s\n' "$1"; }
 bad()  { printf '  \033[31m✗\033[0m %s\n' "$1"; FAIL=1; }
 dump() { tail -15 "$1" 2>/dev/null | sed 's/^/    /'; }
 
-step "1/9 类型检查"
+step "1/10 类型检查"
 if npm run typecheck >"$TMP/mf-check-ts.log" 2>&1; then ok "typecheck"; else bad "typecheck"; dump "$TMP/mf-check-ts.log"; fi
 
-step "2/9 代码规范"
+step "2/10 代码规范"
 if npm run lint >"$TMP/mf-check-lint.log" 2>&1; then ok "lint"; else bad "lint"; dump "$TMP/mf-check-lint.log"; fi
 
-step "3/9 生产构建"
+step "3/10 生产构建"
 OUT="$TMP/mf-check-dist"
 rm -rf "$OUT" 2>/dev/null || true
 if npx vite build --outDir "$OUT" --emptyOutDir >"$TMP/mf-check-build.log" 2>&1; then
@@ -33,7 +33,7 @@ else
   bad "build"; dump "$TMP/mf-check-build.log"
 fi
 
-step "4/9 公式正确性（数学断言 + 生成器复核）"
+step "4/10 公式正确性（数学断言 + 生成器复核）"
 WS="$(cd .. && pwd)"
 # sympy 工具链不在仓库内：优先用同级 .tooling/py，其次回退到原 workspace 路径
 PY_TOOLING="${MATH_PY_TOOLING:-$WS/.tooling/py}"
@@ -56,7 +56,7 @@ else
   printf '  - 跳过：没找到 %s/.tooling/py\n' "$WS"
 fi
 
-step "5/9 公式渲染（KaTeX strict）"
+step "5/10 公式渲染（KaTeX strict）"
 if node scripts/check-formulas.mjs >"$TMP/mf-check-render.log" 2>&1; then
   ok "render（$(grep -o '[0-9]*$' <<< "$(head -1 "$TMP/mf-check-render.log")") 条公式）"
 else
@@ -87,14 +87,14 @@ else
   bad "difficulty"; head -6 "$TMP/mf-check-diff.log" | sed 's/^/    /'
 fi
 
-step "6/9 文本规范（标点 / 术语 / 占位符）"
+step "6/10 文本规范（标点 / 术语 / 占位符）"
 if node scripts/check-text.mjs >"$TMP/mf-check-text.log" 2>&1; then
   ok "text（$(grep -o '扫描字符串: [0-9]*' "$TMP/mf-check-text.log" | head -1)）"
 else
   bad "text"; grep -E '问题数|^  - ' "$TMP/mf-check-text.log" | head -8 | sed 's/^/    /'
 fi
 
-step "7/9 交叉引用与死链"
+step "7/10 交叉引用与死链"
 if node scripts/check-refs.mjs >"$TMP/mf-check-refs.log" 2>&1; then
   ok "refs（$(grep -o '问题数: 0' "$TMP/mf-check-refs.log" | head -1)）"
 else
@@ -102,7 +102,7 @@ else
 fi
 
 
-step "8/9 服务端（校验与生成链路）"
+step "8/10 服务端（校验与生成链路）"
 # 强制 mock：测试绝不能打到真实模型（会花钱且结果不稳定）
 if LLM_API_KEY= DUAL_SOLVE=0 AGENT_MODE=0 CACHE_DIR=/tmp/mf-test-cache MATH_PYTHON_PATH="$PY_TOOLING" ./node_modules/.bin/tsx server/test.ts >"$TMP/mf-check-server.log" 2>&1; then
   ok "server（$(tail -1 "$TMP/mf-check-server.log")）"
@@ -110,7 +110,7 @@ else
   bad "server"; tail -6 "$TMP/mf-check-server.log" | sed 's/^/    /'
 fi
 
-step "9/9 UI 快照（空白页 / 横向溢出 / 控制台报错）"
+step "9/10 UI 快照（空白页 / 横向溢出 / 控制台报错）"
 CHROME_BIN="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 if [ "${SKIP_UI_SNAP:-0}" = "1" ]; then
   ok "ui-snap（已跳过：SKIP_UI_SNAP=1）"
@@ -120,6 +120,13 @@ elif node --experimental-websocket scripts/ui-snapshots.mjs >"$TMP/mf-check-ui.l
   ok "ui-snap（$(grep -o '页面: [0-9]* 张' "$TMP/mf-check-ui.log" | head -1)，$(grep -oE '与基线一致|基线已更新' "$TMP/mf-check-ui.log" | head -1)）"
 else
   bad "ui-snap"; grep -E '^  ✗|发现问题' "$TMP/mf-check-ui.log" | head -8 | sed 's/^/    /'
+fi
+
+step "10/10 文档数字（docs 与数据层一致）"
+if ./node_modules/.bin/tsx scripts/check-docs-stats.ts >"$TMP/mf-check-docs.log" 2>&1; then
+  ok "docs-stats（$(tail -1 "$TMP/mf-check-docs.log")）"
+else
+  bad "docs-stats"; grep '✗' "$TMP/mf-check-docs.log" | head -8 | sed 's/^/    /'
 fi
 
 echo

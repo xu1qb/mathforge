@@ -8,22 +8,26 @@
 npm run check
 ```
 
-依次跑 9 项，**任何一项失败都不能提交**。git pre-commit 钩子也会执行同一套。
+依次跑 10 项，**任何一项失败都不能提交**。git pre-commit 钩子也会执行同一套。
 
 | # | 检查 | 脚本 | 现在覆盖 | 管什么 |
 |---|---|---|---|---|
 | 1 | 类型检查 | `tsc --noEmit` | 全量 | 类型安全 |
 | 2 | 代码规范 | `eslint src --quiet` | 全量 | 风格与常见错误 |
 | 3 | 生产构建 | `vite build` → 临时目录 | 全量 | 能否打包 |
-| 4 | 公式正确性 | `scripts/verify-formulas.py` | 166 条断言 | **算得对** |
-| 5 | 公式渲染 | `scripts/check-formulas.mjs` | 649 条公式 | **显示得出来** |
-| 6 | 文本规范 | `scripts/check-text.mjs` | 30,445 个字符串 | **写得规范** |
+| 4 | 公式正确性 | `scripts/verify-formulas.py` | 866 条断言 | **算得对** |
+| 5 | 公式渲染 | `scripts/check-formulas.mjs` | 1317 条公式 | **显示得出来** |
+| 6 | 文本规范 | `scripts/check-text.mjs` | 57,496 个字符串 | **写得规范** |
 | 7 | 交叉引用与死链 | `scripts/check-refs.mjs` | 路由 + 互引 | **连得上** |
-| 8 | 服务端链路 | `server/test.ts` | 18 项（强制 mock） | **后端不崩** |
+| 8 | 服务端链路 | `server/test.ts` | 22 项（强制 mock） | **后端不崩** |
 | 9 | UI 快照 | `scripts/ui-snapshots.mjs` | 5 页 × 2 宽度 | **没白屏/没溢出** |
+| 10 | 文档数字 | `scripts/check-docs-stats.ts` | docs 里的统计量 | **文档不漂移** |
 
 第 9 关会自己拉起 dev server 和无头 Chrome，约 30–40 秒。
 没有 Chrome 或设了 `SKIP_UI_SNAP=1` 时会跳过（不算失败）。
+
+第 10 关只读数据层和 docs，几秒钟跑完：内容扩写后忘了改 README 里的数字，
+这一关会直接指出「文档 96 / 实际 633」这样的偏差。
 
 单独跑某一项：
 
@@ -35,6 +39,7 @@ node scripts/check-text.mjs
 node scripts/check-refs.mjs
 PYTHONPATH=../.tooling/py python3 scripts/verify-formulas.py
 npm run ui:snap
+./node_modules/.bin/tsx scripts/check-docs-stats.ts
 ```
 
 ## 每道关具体查什么
@@ -128,6 +133,19 @@ node scripts/audit-site.mjs
 ```
 
 检查项：横向溢出、重复 `h1`、固定浮层相交、控制台报错、`.katex-error`、页面上的裸 LaTeX。
+
+### 10. 文档数字核对（check-docs-stats.ts）
+
+从数据层重新数一遍，再和 docs 里写的数字比对：
+
+- 考点数 / 练习知识点数 / 流程图数 / 课程包数 / 章节数 / 知识点挂载数
+- 公式数（与第 5 关共用 `scripts/lib/formula-scan.mjs`，不会各数各的）
+- 断言数（`verify-formulas.py` 里的 `chk(` 条数）
+- 字符串数（与第 6 关共用 `scripts/lib/text-scan.mjs`）
+- 服务端测试项数、快照页数
+- 分支覆盖数、暂缓分支数
+
+**改了内容就要同步 docs 里的数字**，否则提交会被这一关拦下。
 
 ## 拦不住的部分
 

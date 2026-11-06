@@ -1,21 +1,8 @@
 // 文本规范体检：中文标点、全半角、术语一致性、占位符残留
-import fs from 'node:fs';
-import path from 'node:path';
+// 字符串收集口径在 ./lib/text-scan.mjs，check-docs-stats 复用同一份。
+import { forEachDataString } from './lib/text-scan.mjs';
 
 const ROOT = process.cwd();
-const DATA_DIR = path.join(ROOT, 'src/data');
-
-function walk(dir, out = []) {
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    const p = path.join(dir, entry.name);
-    if (entry.isDirectory()) walk(p, out);
-    else if (entry.name.endsWith('.ts') || entry.name.endsWith('.tsx')) out.push(p);
-  }
-  return out;
-}
-
-// 字符串字面量：单引号 / 双引号 / 反引号（反引号用 \u0060 表示，避免与外层冲突）
-const STRING_RE = /'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)"|\u0060((?:[^\u0060\\]|\\.)*)\u0060/g;
 
 const CJK = /[\u4e00-\u9fa5]/;
 const issues = [];
@@ -65,21 +52,7 @@ function checkString(text, file, line) {
   if (/[\u4e00-\u9fa5] +[，。；：]/.test(text)) push('标点前有空格', '');
 }
 
-let scanned = 0;
-for (const file of walk(DATA_DIR)) {
-  const rel = path.relative(ROOT, file);
-  const src = fs.readFileSync(file, 'utf8');
-  src.split('\n').forEach((lineText, i) => {
-    if (/^\s*(import|export|type|interface|\/\/)/.test(lineText)) return;
-    let m;
-    STRING_RE.lastIndex = 0;
-    while ((m = STRING_RE.exec(lineText))) {
-      const text = m[1] ?? m[2] ?? m[3] ?? '';
-      scanned++;
-      checkString(text, rel, i + 1);
-    }
-  });
-}
+const scanned = forEachDataString(ROOT, (text, file, line) => checkString(text, file, line));
 
 console.log('扫描字符串:', scanned);
 console.log('问题数:', issues.length);
