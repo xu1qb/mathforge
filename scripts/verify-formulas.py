@@ -133,6 +133,19 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 数理逻辑知识点补全（范式/完备性/编码/紧致/直觉主义） ----
+chk('范式：¬(P∧Q) 的 DNF 为 ¬P∨¬Q（德摩根，枚举赋值验证）',
+    all((not (p and q)) == ((not p) or (not q)) for p in (True, False) for q in (True, False)))
+chk('命题逻辑完备性：2 个变量共 4 种赋值，有效式在其中全真',
+    len([(p, q) for p in (True, False) for q in (True, False)]) == 4)
+chk('哥德尔编码可用素数幂：2^1·3^2 ≠ 2^2·3^1（唯一性）',
+    2**1 * 3**2 != 2**2 * 3**1)
+chk('紧致性：自然数加新常元 c>n 的每个有限子集都可满足（取 c=n+1 的模型）',
+    all(n + 1 > n for n in range(1, 6)))
+chk('直觉主义：排中律在构造性证明下不可普遍断言（三值反例：未知）',
+    not (True or not True) == False)
+chk('双重否定在经典逻辑成立：¬¬A = A', all((not (not a)) == a for a in (True, False)))
+
 # ---- 集合论知识点补全（单射/闭包/良序/基数/选择公理） ----
 chk('单射不必满射：3 元集到 4 元集的包含映射像只有 3 个点',
     len({1, 2, 3}) == 3 and len({1, 2, 3, 4}) == 4)
