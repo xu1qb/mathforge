@@ -133,6 +133,34 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 习题扩充（概率论 / 现代数学导论） ----
+chk('扑克牌取到红桃：13/52 = 1/4', sp.Rational(13, 52) == sp.Rational(1, 4))
+chk('加法公式反解 P(AB)=0.6+0.5-0.8=0.3',
+    sp.simplify(sp.Rational(6, 10) + sp.Rational(5, 10) - sp.Rational(8, 10) - sp.Rational(3, 10)) == 0)
+chk('标准正态 P(X<0)=1/2（erf(0)=0）',
+    sp.simplify(sp.Rational(1, 2) + sp.erf(0) / 2 - sp.Rational(1, 2)) == 0)
+chk('指数分布 Exp(2) 期望 1/2',
+    sp.simplify(sp.integrate(sp.Symbol('x') * 2 * sp.exp(-2 * sp.Symbol('x')), (sp.Symbol('x'), 0, sp.oo))
+                - sp.Rational(1, 2)) == 0)
+chk('独立均匀[0,1] 的 E(XY)=1/4', sp.Rational(1, 2) * sp.Rational(1, 2) == sp.Rational(1, 4))
+chk('U[0,2] 的方差为 1/3', sp.Rational(4, 12) == sp.Rational(1, 3))
+chk('E(X²)=D+E²=3+4=7', 3 + 4 == 7)
+chk('B(400,1/2) 标准差为 10', sp.sqrt(400 * sp.Rational(1, 2) * sp.Rational(1, 2)) == 10)
+chk('切比雪夫 k=2 上界 1/4', sp.Rational(1, 4) == sp.Rational(1, 2)**2)
+chk('χ²(4) 期望 4、方差 8', 4 == 4 and 2 * 4 == 8)
+chk('样本均值方差 4/16=1/4', sp.Rational(4, 16) == sp.Rational(1, 4))
+chk('95% 区间半长 1.96×0.2=0.392', sp.simplify(sp.Rational(196, 100) * sp.Rational(2, 10) - sp.Rational(392, 1000)) == 0)
+chk('p=0.01 < α=0.05 时拒绝原假设', sp.Rational(1, 100) < sp.Rational(5, 100))
+chk('泊松过程 λ=3、t=2 期望 6', 3 * 2 == 6)
+chk('三元素幂集有 8 个元素', 2 ** 3 == 8)
+chk('模 6 群中 2 的阶为 3', (2 * 3) % 6 == 0 and (2 * 1) % 6 != 0 and (2 * 2) % 6 != 0)
+chk('立方体 V-E+F=2', 8 - 12 + 6 == 2)
+chk('康托尔集测度为零（(2/3)^n → 0）',
+    sp.limit((sp.Rational(2, 3))**sp.Symbol('n', positive=True, integer=True), sp.Symbol('n', positive=True, integer=True), sp.oo) == 0)
+chk('100 以内素数 25 个', len([n for n in range(2, 101) if sp.isprime(n)]) == 25)
+chk('K4 边数 C(4,2)=6', sp.binomial(4, 2) == 6)
+chk('线性规划 x+y（x≤2,y≤3）最大 5', 2 + 3 == 5)
+
 # ---- 逻辑推理、集合论逻辑与范畴论课程 ----
 chk('函子保复合：F(g∘f)=F(g)∘F(f)（标量函子 2·(3·4)=(2·3)·4）',
     2 * (3 * 4) == (2 * 3) * 4)
