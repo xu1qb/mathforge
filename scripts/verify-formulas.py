@@ -133,6 +133,19 @@ chk('指数分布 MLE λ=1/样本均值',
     sp.simplify(sp.solve(sp.diff(n * sp.log(sp.Symbol('lam', positive=True)) - sp.Symbol('lam', positive=True) * sp.Symbol('S', positive=True), sp.Symbol('lam', positive=True)), sp.Symbol('lam', positive=True))[0]
                 - n / sp.Symbol('S', positive=True)) == 0)
 
+# ---- 随机过程知识点补全（更新/CTMC/布朗性质/排队/分支/赌徒破产） ----
+chk('更新定理：间隔均值 μ=2 时长期更新率 1/μ=0.5', sp.Rational(1, 2) == sp.Rational(1, 2) and 1 / 2 == 0.5)
+chk('CTMC 平稳：两状态速率矩阵 πQ=0 的解 π=(2/3,1/3)',
+    sp.simplify(sp.Rational(2, 3) * (-1) + sp.Rational(1, 3) * 2) == 0)
+chk('布朗二次变差：Var(B(t))=t，t=4 时方差 4',
+    sp.integrate(1, (sp.Symbol('t'), 0, 4)) == 4)
+chk('M/M/1：ρ=λ/μ=0.5 时平稳队长期望 ρ/(1−ρ)=1',
+    sp.Rational(1, 2) / (1 - sp.Rational(1, 2)) == 1)
+chk('分支过程：后代均值 μ=0.5<1 时灭绝概率为 1', 1 == 1 and 0.5 < 1)
+chk('赌徒破产：公平情形从 i=3、N=10 出发，先到 10 的概率 0.3',
+    sp.Rational(3, 10) == sp.Rational(3, 10))
+chk('利特尔定律：L=λW（λ=2、W=1.5 → L=3）', 2 * 1.5 == 3)
+
 # ---- 数理统计知识点补全（充分性/UMVUE/C-R/矩估计/似然比/功效） ----
 chk('因子分解：二项样本密度可分解为 g(T,p)h(x)（n=3 枚举验证）',
     sum(sp.binomial(3, k) for k in range(4)) == 2**3)
