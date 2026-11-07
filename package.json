@@ -125,12 +125,32 @@
       {
         "from": "server-dist",
         "to": "server-dist"
+      },
+      {
+        "from": "server-dist/node_modules",
+        "to": "server-dist/node_modules"
       }
     ],
     "mac": {
       "icon": "build/icon.icns",
       "category": "public.app-category.education",
       "target": "dir"
+    },
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "artifactName": "MathForge-Setup-${version}.exe",
+      "shortcutName": "MathForge"
     }
   }
 }

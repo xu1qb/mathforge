@@ -8,6 +8,8 @@ dist/
 dist*/
 release/
 build/
+!build/icon.ico
+!build/icon.icns
 */build/
 
 # Environment files
