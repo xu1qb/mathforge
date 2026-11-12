@@ -32,13 +32,13 @@ MathForge 是数学学习工作台，为 2026-11-14 全国大学生数学竞赛�
 - 首页有竞赛倒计时 D-day，按考试日期倒排每日计划
 - 当前数据 localStorage，不登录、不云同步
 - 开发命令：`npm run dev` / `npm run build` / `npm run typecheck` / `npm run lint`
-- 源码在妙搭 builder 沙箱编辑（app_id=app_17f1dj9snn6），本地副本在 `/Users/xuqiubo/Desktop/mathforge-source`，要求代码公开、随时可导出、本地能跑
+- 源码在 GitHub 公开维护：https://github.com/xu1qb/mathforge；本地副本在 `/Users/xuqiubo/dev/mathforge-source`，要求代码公开、随时可导出、本地能跑
 
 ## Capabilities and Constraints
 
-- 30 个页面：首页、公式手册、科学计算器、符号代数、微积分、线代、概率统计、数论、2D/3D 绘图、多元微积分、ODE、数值分析、傅里叶级数、复变、离散数学、现代数学、PDE、微分几何、竞赛专区（20+ 子面板）、刷题（错题本/统计/挑战模式）、知识图谱、工具箱、拍照解题、盲盒图鉴、公式咒语、数学家测试
+- 44 个页面目录（46 条路由）：首页、公式手册、科学计算器、符号代数、微积分、线代、概率统计、数论、2D/3D 绘图、多元微积分、ODE、数值分析、傅里叶级数、复变、离散数学、现代数学、PDE、微分几何、竞赛专区（20+ 子面板）、刷题（错题本/统计/挑战模式）、知识图谱、工具箱、拍照解题、盲盒图鉴、公式咒语、数学家测试
 - **硬 UI 规范**：全站 KaTeX 公式渲染（行内 $...$、块 $$...$$，不得出现裸 LaTeX 源码）；深浅双主题（light/dark/system）；卡片圆角 12px；间距 16px；主内容居中排版；禁用紫/靛色渐变
-- **四套皮肤全保留**：夜航（深色琥珀）/ 草稿纸（米色手账）/ 像素闯关（8-bit 游戏）/ 手账拼贴，以后可加新皮肤
+- **两套皮肤**：夜航（深色琥珀）/ 草稿纸（米色手账）；旧像素/手账皮肤已迁移，新皮肤通过 CSS 变量 token 扩展
 - 已实现功能：苏格拉底分层提示、错因标签（计算失误/概念不清/方法不会/审题错）、艾宾浩斯 1/3/7/15 天重做、母题派生 3 道变式、TTS 听题、蒙对检测器（<8 秒标记+3 天重考）、知识大陆战争迷雾地图、数学家人格测试、每日盲盒图鉴、公式咒语默写点亮、GitHub 式刷题热力图+年度报告
 - 未做功能：你出题 AI 来做、桌角学习搭子
 - 符号风格：卡西欧计算器式（√ 不写 sqrt，分数竖排，π/∞/∫ 用符号），默认精确形式，不主动给小数近似
@@ -52,8 +52,8 @@ MathForge 是数学学习工作台，为 2026-11-14 全国大学生数学竞赛�
 ## Evidence on Hand
 
 - `src/data/`：competition.ts、competition-sprint.ts、competition-topic-detail.ts、competition-formulas.ts、competition-questions.ts、competition-traps.ts、cheatsheets.ts、blind-box.ts、mathematician-quiz.ts 等数据文件
-- `src/pages/`：30 个页面目录
-- 源码直链：https://4m38kum7wurzg.doubao.link/app/app_17f1dj9snn6/dl/mathforge-source.zip
+- `src/pages/`：44 个页面目录
+- 源码直链：https://github.com/xu1qb/mathforge
 - 无真实用户数据、无外部 testimonials、无第三方统计——不要编造
 
 ## Product Principles
@@ -62,7 +62,7 @@ MathForge 是数学学习工作台，为 2026-11-14 全国大学生数学竞赛�
 2. 精确优先：给符号不给近似，给推导不给跳步
 3. KaTeX 零裸源码：渲染失败只显示"公式渲染失败"，源码打 console
 4. 手机电脑两端同等重要，不做移动端附属
-5. 四套皮肤是身份不是换皮：颜色走 CSS 变量 token，新皮肤能加、旧皮肤不丢
+5. 两套皮肤是身份不是换皮：颜色走 CSS 变量 token，新皮肤能加、旧皮肤不丢
 6. 代码公开：本地能 `npm install && npm run dev` 跑起来
 
 ## Accessibility & Inclusion

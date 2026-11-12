@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { VitePWA } from 'vite-plugin-pwa'
 import { fileURLToPath } from 'url'
 import { dirname, resolve } from 'path'
 
@@ -8,7 +9,40 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.svg', 'icon.svg', 'icon-180.png', 'icon-192.png', 'icon-512.png'],
+      manifest: {
+        name: 'MathForge 数学计算工作台',
+        short_name: 'MathForge',
+        description: '公式速查、科学计算、符号代数、2D/3D 绘图、刷题与错题复习。',
+        lang: 'zh-CN',
+        theme_color: '#0b0f19',
+        background_color: '#0b0f19',
+        display: 'standalone',
+        orientation: 'any',
+        start_url: './',
+        scope: './',
+        icons: [
+          { src: './icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: './icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: './icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff,woff2,ttf}'],
+        globIgnores: ['**/icon-1024.png'],
+        navigateFallback: 'index.html',
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
+      },
+    }),
+  ],
   base: './',
   // 开发期把 /api 转发到本地后端（server/index.ts）
   server: {
