@@ -15,6 +15,8 @@ BUNDLE="${MF_BACKUP_BUNDLE:-$ROOT/../mathforge-backup.bundle}"
 mkdir -p "$DEST"
 rsync -a --delete --delete-excluded \
   --exclude '.git' \
+  --exclude '.env' \
+  --exclude '.env.local' \
   --exclude 'node_modules' \
   --exclude 'dist' \
   --exclude 'dist-*' \

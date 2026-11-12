@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",
@@ -26,7 +29,8 @@
     "ai:fill:batch": "node scripts/ai-fill-batch.mjs",
     "ai:audit": "node scripts/ai-audit.mjs",
     "content:depth": "tsx scripts/content-depth.mjs",
-    "ai:crosscheck": "tsx scripts/ai-crosscheck.mjs"
+    "ai:crosscheck": "tsx scripts/ai-crosscheck.mjs",
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "dependencies": {
     "@capacitor/android": "^8.6.0",
@@ -34,7 +38,6 @@
     "@capacitor/core": "^8.6.0",
     "@formkit/auto-animate": "^0.9.0",
     "@hookform/resolvers": "^5.2.2",
-    "@lark-apaas/client-toolkit-lite": "^1.1.33",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.14",
     "@radix-ui/react-aspect-ratio": "^1.1.7",
@@ -94,7 +97,6 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@rolldown/binding-darwin-arm64": "^1.2.15",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^24",
     "@types/react": "^19",
@@ -141,7 +143,9 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },
