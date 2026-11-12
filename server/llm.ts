@@ -128,7 +128,6 @@ export async function chatSecondary(messages: ChatMessage[]): Promise<string> {
       body: JSON.stringify({
         model: config.verifyModel,
         messages,
-        temperature: 0.3,
         max_tokens: 2000,
       }),
       signal: controller.signal,
