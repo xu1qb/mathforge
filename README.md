@@ -1,8 +1,12 @@
 # MathForge 数学计算工作台
 
+[![check](https://github.com/xu1qb/mathforge/actions/workflows/check.yml/badge.svg)](https://github.com/xu1qb/mathforge/actions/workflows/check.yml)
+[![pages](https://github.com/xu1qb/mathforge/actions/workflows/pages.yml/badge.svg)](https://github.com/xu1qb/mathforge/actions/workflows/pages.yml)
+[在线 Demo](https://xu1qb.github.io/mathforge/)
+
 面向数学学习与竞赛备考的纯前端工作台。公式速查、科学计算、符号代数、2D/3D 绘图、刷题、错题复习、知识图谱，全部在一个 SPA 里。
 
-![数学键盘](docs/assets/math-keyboard.png)
+![MathForge 首页](docs/assets/screenshots/home.png)
 
 ## 特性
 
@@ -12,6 +16,20 @@
 - **可验证题目**：881 条 sympy 断言、参数化生成器、双解一致性校验
 - **多端可用**：响应式 Web、Electron 桌面端、Android APK（离线可用）
 - **双皮肤**：夜航（深色）/ 草稿纸（浅色），支持 light / dark / system
+
+## 界面
+
+| 公式速查 | 科学计算 |
+| --- | --- |
+| ![公式速查](docs/assets/screenshots/formulas.png) | ![科学计算](docs/assets/screenshots/calculator.png) |
+
+| 2D 绘图 | 刷题 |
+| --- | --- |
+| ![2D 绘图](docs/assets/screenshots/plot-2d.png) | ![刷题](docs/assets/screenshots/practice.png) |
+
+| 知识图谱 | 学习进度 |
+| --- | --- |
+| ![知识图谱](docs/assets/screenshots/knowledge-map.png) | ![学习进度](docs/assets/screenshots/progress.png) |
 
 ## 技术栈
 
