@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import NotFoundPage from "@/pages/NotFoundPage/NotFoundPage";
 import HomePage from "@/pages/Home/HomePage";
-import { ThemeProvider } from "@/hooks/useTheme";
 import { logger } from "@/lib/lark-mock";
 
 /** 根级 ErrorBoundary：任何子页面渲染异常都兜住，不白屏 */
@@ -211,9 +210,8 @@ function TeacherPage() {
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AppErrorBoundary>
-        <Routes>
+    <AppErrorBoundary>
+      <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="formulas" element={<FormulaHandbookPage />} />
@@ -262,8 +260,7 @@ export default function App() {
           <Route path="flow" element={<Suspense fallback={<ModuleFallback />}><FlowLazy /></Suspense>} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </AppErrorBoundary>
-    </ThemeProvider>
+      </Routes>
+    </AppErrorBoundary>
   );
 }

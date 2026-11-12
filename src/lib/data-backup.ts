@@ -200,43 +200,88 @@ export function exportFormulaFavoritesAsMarkdown(): void {
 
 const BACKUP_APP = 'mathforge';
 const BACKUP_VERSION = 2;
-const APP_KEY_PREFIXES = ['mathforge', '__mathforge'];
+const APP_KEY_PREFIXES = ['mathforge', '__mathforge', 'competition:'];
+const APP_META_PREFIX = 'mathforge:meta:';
+const UI_ONLY_KEYS = new Set(['mathforge_theme', 'mathforge_skin']);
 
-function collectAppKeys(): string[] {
+export interface LocalSnapshot {
+  app: 'mathforge';
+  version: number;
+  exportedAt: string;
+  keyCount: number;
+  entries: Record<string, string>;
+}
+
+export function collectAppKeys(): string[] {
   const keys: string[] = [];
   for (let i = 0; i < localStorage.length; i += 1) {
     const key = localStorage.key(i);
-    if (key && APP_KEY_PREFIXES.some((p) => key.startsWith(p))) keys.push(key);
+    if (!key || key.startsWith(APP_META_PREFIX)) continue;
+    if (APP_KEY_PREFIXES.some((p) => key.startsWith(p))) keys.push(key);
   }
   return keys.sort();
+}
+
+/**
+ * 把当前 localStorage 里的应用数据打包成快照（云同步与手动备份共用）。
+ * excludeUi 用于云同步：主题/皮肤是设备偏好，不参与云端冲突判断。
+ */
+export function buildLocalSnapshot(options: { excludeUi?: boolean } = {}): LocalSnapshot {
+  const entries: Record<string, string> = {};
+  for (const key of collectAppKeys()) {
+    if (options.excludeUi && UI_ONLY_KEYS.has(key)) continue;
+    const value = localStorage.getItem(key);
+    if (value !== null) entries[key] = value;
+  }
+  return {
+    app: BACKUP_APP,
+    version: BACKUP_VERSION,
+    exportedAt: new Date().toISOString(),
+    keyCount: Object.keys(entries).length,
+    entries,
+  };
+}
+
+/** 用快照覆盖本地应用数据（云恢复与手动恢复共用），默认保留本机主题/皮肤 */
+export function applyLocalSnapshot(
+  entries: Record<string, unknown>,
+  options: { preserveUi?: boolean } = {}
+): number {
+  const preserved: Record<string, string> = {};
+  if (options.preserveUi !== false) {
+    for (const key of UI_ONLY_KEYS) {
+      const value = localStorage.getItem(key);
+      if (value !== null) preserved[key] = value;
+    }
+  }
+  const merged = { ...preserved, ...entries };
+  const keys = Object.keys(merged);
+  for (const key of collectAppKeys()) localStorage.removeItem(key);
+  for (const key of keys) {
+    const value = merged[key];
+    localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+  }
+  return keys.length;
+}
+
+export function clearLocalAppData(): void {
+  for (const key of collectAppKeys()) localStorage.removeItem(key);
 }
 
 /** 导出全部本地数据为一份 JSON 快照 */
 export function exportAllData(): void {
   try {
-    const entries: Record<string, string> = {};
-    for (const key of collectAppKeys()) {
-      const value = localStorage.getItem(key);
-      if (value !== null) entries[key] = value;
-    }
-    const count = Object.keys(entries).length;
-    if (count === 0) {
+    const payload = buildLocalSnapshot();
+    if (payload.keyCount === 0) {
       toast.info('还没有可备份的数据');
       return;
     }
-    const payload = {
-      app: BACKUP_APP,
-      version: BACKUP_VERSION,
-      exportedAt: new Date().toISOString(),
-      keyCount: count,
-      entries,
-    };
     downloadFile(
       JSON.stringify(payload, null, 2),
       'mathforge-backup-' + dateStamp() + '.json',
       'application/json'
     );
-    toast.success('已备份 ' + count + ' 项数据');
+    toast.success('已备份 ' + payload.keyCount + ' 项数据');
   } catch {
     toast.error('备份失败');
   }
@@ -272,12 +317,8 @@ export function importAllData(file: File): Promise<AllDataImportResult> {
           resolve({ ok: false, error: '备份文件是空的' });
           return;
         }
-        for (const key of collectAppKeys()) localStorage.removeItem(key);
-        for (const key of keys) {
-          const value = entries[key];
-          localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
-        }
-        resolve({ ok: true, count: keys.length });
+        const count = applyLocalSnapshot(entries);
+        resolve({ ok: true, count });
       } catch {
         resolve({ ok: false, error: 'JSON 解析失败' });
       }

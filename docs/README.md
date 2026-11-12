@@ -7,6 +7,7 @@
 | [quality-gates.md](./quality-gates.md) | 七道质量关、加内容检查清单、已知坑 | 改代码前必读 |
 | [course-plan.md](./course-plan.md) | 学科课程化方案：六件套模型、数据模型、P0–P3 路线 | 做课程化时 |
 | [coverage.md](./coverage.md) | 62 个数学分支的覆盖状态、暂缓清单 | 补内容时 |
+| [cloud-sync.md](./cloud-sync.md) | Supabase 账号、云同步、部署与 RLS | 接账号或部署时 |
 
 ## 三条最常忘的规矩
 

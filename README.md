@@ -15,6 +15,7 @@
 - **课程化内容**：647 个考点、64 个课程包、313 章、733 个知识点挂载
 - **可验证题目**：881 条 sympy 断言、参数化生成器、双解一致性校验
 - **多端可用**：响应式 Web（PWA 可安装、离线可用）、Electron 桌面端、Android APK
+- **账号云同步**：Supabase 邮箱登录，学习数据自动同步，换设备继续
 - **双皮肤**：夜航（深色）/ 草稿纸（浅色），支持 light / dark / system
 
 ## 界面
@@ -35,7 +36,7 @@
 
 React 19 · Vite 8 · TypeScript 5.9 · Tailwind CSS 4 · KaTeX · math.js · Plotly · ECharts · Radix UI · react-router-dom 7
 
-后端是本地 Node 服务（`server/`），只负责 AI 出题、讲解草稿、题目池与审核；不登录、不云同步，学习数据存在浏览器 localStorage。
+后端是本地 Node 服务（`server/`），只负责 AI 出题、讲解草稿、题目池与审核；账号与学习数据同步由 Supabase 承担，本地 localStorage 继续作为缓存。
 
 ## 环境要求
 
@@ -52,7 +53,19 @@ npm run server       # 本地后端 http://127.0.0.1:8787
 npm run dev:full     # 同时启动前端和后端
 ```
 
+应用需要登录后使用，首次启动前先按下面的「账号与云同步」配置 Supabase；只想看 UI 可设 `VITE_AUTH_BYPASS=1`。
+
 AI 功能需要模型配置：复制 `.env.example` 为 `.env`，填入任意 OpenAI 风格接口的 `LLM_BASE_URL` / `LLM_API_KEY` / `LLM_MODEL`。不配置也能用计算、绘图、题库和课程。
+
+账号与云同步需要 Supabase（本地开发需要 Docker）：
+
+```bash
+npx supabase start
+npx supabase db reset   # 建 user_data 表与 RLS
+# 把 npx supabase status -o env 的 API_URL / ANON_KEY 写进 .env
+```
+
+生产部署、GitHub Pages 变量与安全说明见 [docs/cloud-sync.md](docs/cloud-sync.md)。
 
 ## 质量关
 
@@ -99,6 +112,7 @@ npm run build:android  # Android APK
 - [学科覆盖](docs/coverage.md)：62 个数学分支的覆盖状态
 - [公式规范](docs/notation.md)：LaTeX 书写与检查规则
 - [后端说明](docs/backend.md)：AI 出题、审核、题目池与桌面打包
+- [账号与云同步](docs/cloud-sync.md)：Supabase 登录、数据同步、部署与 RLS
 
 ## License
 

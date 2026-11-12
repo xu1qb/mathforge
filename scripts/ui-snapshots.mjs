@@ -41,7 +41,11 @@ async function ensureDevServer() {
     const res = await fetch(BASE, { signal: AbortSignal.timeout(1500) });
     if (res.ok) return { started: false };
   } catch {}
-  const child = spawn('node', ['scripts/dev-server.mjs'], { stdio: 'ignore', detached: true });
+  const child = spawn('node', ['scripts/dev-server.mjs'], {
+    stdio: 'ignore',
+    detached: true,
+    env: { ...process.env, VITE_AUTH_BYPASS: '1' },
+  });
   for (let i = 0; i < 40; i++) {
     await sleep(500);
     try {

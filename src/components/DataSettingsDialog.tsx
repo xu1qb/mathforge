@@ -12,7 +12,11 @@ import {
   exportFormulaFavoritesAsMarkdown,
   exportAllData,
   importAllData,
+  clearLocalAppData,
 } from '@/lib/data-backup';
+import { LAST_USER_KEY } from '@/lib/cloud-sync';
+import { useAuth } from '@/auth/AuthProvider';
+import { useCloudSync, type CloudSyncStatus } from '@/auth/CloudSyncProvider';
 import { toast } from 'sonner';
 import {
   Database,
@@ -23,6 +27,10 @@ import {
   GraduationCap,
   Star,
   AlertTriangle,
+  Cloud,
+  LogOut,
+  RefreshCw,
+  UserRound,
 } from 'lucide-react';
 
 interface DataSettingsDialogProps {
@@ -30,11 +38,48 @@ interface DataSettingsDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const SYNC_LABEL: Record<CloudSyncStatus, string> = {
+  idle: '待同步',
+  syncing: '同步中…',
+  synced: '已同步',
+  offline: '离线',
+  error: '同步失败',
+};
+
 export default function DataSettingsDialog({ open, onOpenChange }: DataSettingsDialogProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const favFileInputRef = useRef<HTMLInputElement>(null);
   const allFileInputRef = useRef<HTMLInputElement>(null);
   const [importing, setImporting] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const { user, signOut } = useAuth();
+  const { status, lastSyncedAt, lastError, syncNow } = useCloudSync();
+
+  const handleSignOut = async () => {
+    const confirmed = window.confirm(
+      '退出登录后会清除本机缓存，云端数据会保留。下次登录会重新从云端恢复，确定退出吗？'
+    );
+    if (!confirmed) return;
+    setSigningOut(true);
+    try {
+      await signOut();
+      clearLocalAppData();
+      localStorage.removeItem(LAST_USER_KEY);
+      window.location.reload();
+    } finally {
+      setSigningOut(false);
+    }
+  };
+
+  const handleSyncNow = async () => {
+    setSyncing(true);
+    try {
+      await syncNow();
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const handleImportLearning = async (file: File) => {
     setImporting(true);
@@ -91,11 +136,65 @@ export default function DataSettingsDialog({ open, onOpenChange }: DataSettingsD
         <DialogHeader>
           <DialogTitle className="text-lg">数据备份与恢复</DialogTitle>
           <DialogDescription>
-            导出或导入你的学习数据、收藏夹、公式收藏。数据以 JSON 格式存储在本地浏览器中。
+            导出或导入你的学习数据、收藏夹、公式收藏。登录后学习数据会自动同步到云端，本地仍保留一份缓存。
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-2">
+          {/* 账号与云同步 */}
+          <div className="p-4 rounded-xl border border-border bg-card/50 space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="size-10 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center">
+                <Cloud className="size-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-medium text-foreground">账号与云同步</div>
+                <div className="truncate text-xs text-muted-foreground">
+                  {user ? user.email : '未登录'}
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span
+                  className={`size-2 rounded-full ${
+                    status === 'error'
+                      ? 'bg-destructive'
+                      : status === 'syncing'
+                        ? 'bg-amber-500'
+                        : status === 'offline'
+                          ? 'bg-muted-foreground'
+                          : 'bg-emerald-500'
+                  }`}
+                />
+                {SYNC_LABEL[status]}
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleSyncNow}
+                disabled={syncing || status === 'syncing' || !user}
+              >
+                <RefreshCw
+                  className={`size-4 mr-1.5 ${syncing || status === 'syncing' ? 'animate-spin' : ''}`}
+                />
+                立即同步
+              </Button>
+              <Button size="sm" variant="ghost" onClick={handleSignOut} disabled={signingOut || !user}>
+                <LogOut className="size-4 mr-1.5" />
+                {signingOut ? '正在退出…' : '退出登录'}
+              </Button>
+              <span className="text-xs text-muted-foreground">
+                上次同步：{lastSyncedAt ? lastSyncedAt.toLocaleString() : '尚未同步'}
+              </span>
+            </div>
+            {lastError && <div className="text-xs text-destructive">同步失败：{lastError}</div>}
+            <div className="flex items-start gap-1.5 text-xs text-muted-foreground">
+              <UserRound className="size-3.5 mt-0.5 shrink-0" />
+              退出登录会清除本机缓存，云端数据保留。
+            </div>
+          </div>
+
           {/* 完整备份 */}
           <div className="p-4 rounded-xl border border-primary/40 bg-primary/5 space-y-3">
             <div className="flex items-center gap-3">
