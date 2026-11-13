@@ -1,15 +1,16 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
+import { Checkbox } from '@/components/ui/checkbox';
 import MathInputField from '@/components/MathInputField';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Sparkles } from 'lucide-react';
-import Plot from '@/lib/plotly-instance';
+import Plot, { Plotly } from '@/lib/plotly-instance';
 import { usePlotlyPalette } from '@/lib/plotly-theme';
 import { evaluate } from 'mathjs';
 import {
@@ -44,6 +45,48 @@ const QUADRIC_PRESETS = [
   { name: '椭圆抛物面', A: 1, B: 1, C: 0, D: 0, E: 0, F: 0, G: 0, H: 0, I: -0.5, J: 0 },
   { name: '马鞍面', A: 1, B: -1, C: 0, D: 0, E: 0, F: 0, G: 0, H: 0, I: -1, J: 0 },
 ];
+
+/**
+ * Marching Squares：在网格 z[j][i] 上提取 z=level 的等值线，返回可直接喂给
+ * scatter3d 的带 null 分隔的折线坐标。
+ */
+function contourAtLevel(x: number[], y: number[], z: number[][], level: number) {
+  const px: (number | null)[] = [];
+  const py: (number | null)[] = [];
+  const pz: (number | null)[] = [];
+  const push = (x1: number, y1: number, x2: number, y2: number) => {
+    px.push(x1, x2, null);
+    py.push(y1, y2, null);
+    pz.push(level, level, null);
+  };
+  const interp = (
+    x1: number, y1: number, v1: number,
+    x2: number, y2: number, v2: number,
+  ): [number, number] => {
+    const t = (level - v1) / (v2 - v1 || 1e-12);
+    return [x1 + (x2 - x1) * t, y1 + (y2 - y1) * t];
+  };
+  for (let j = 0; j < y.length - 1; j++) {
+    for (let i = 0; i < x.length - 1; i++) {
+      const v00 = z[j]?.[i];
+      const v10 = z[j]?.[i + 1];
+      const v11 = z[j + 1]?.[i + 1];
+      const v01 = z[j + 1]?.[i];
+      if (![v00, v10, v11, v01].every((v) => Number.isFinite(v))) continue;
+      const pts: [number, number][] = [];
+      if ((v00 >= level) !== (v10 >= level)) pts.push(interp(x[i], y[j], v00, x[i + 1], y[j], v10));
+      if ((v10 >= level) !== (v11 >= level)) pts.push(interp(x[i + 1], y[j], v10, x[i + 1], y[j + 1], v11));
+      if ((v11 >= level) !== (v01 >= level)) pts.push(interp(x[i + 1], y[j + 1], v11, x[i], y[j + 1], v01));
+      if ((v01 >= level) !== (v00 >= level)) pts.push(interp(x[i], y[j + 1], v01, x[i], y[j], v00));
+      if (pts.length === 2) push(pts[0][0], pts[0][1], pts[1][0], pts[1][1]);
+      else if (pts.length === 4) {
+        push(pts[0][0], pts[0][1], pts[1][0], pts[1][1]);
+        push(pts[2][0], pts[2][1], pts[3][0], pts[3][1]);
+      }
+    }
+  }
+  return { x: px, y: py, z: pz };
+}
 
 export default function Plot3DPage() {
   const [activeTab, setActiveTab] = useState('explicit');
@@ -84,6 +127,15 @@ export default function Plot3DPage() {
   // section plane
   const [sectionK, setSectionK] = useState(0.5);
 
+  // 切平面与法向量
+  const [showTangent, setShowTangent] = useState(false);
+  const [tanX0, setTanX0] = useState('1');
+  const [tanY0, setTanY0] = useState('1');
+
+  // 自动旋转
+  const [autoRotate, setAutoRotate] = useState(false);
+  const plotBoxRef = useRef<HTMLDivElement>(null);
+
   // normal vectors
   const [normExpr, setNormExpr] = useState('x^2 + y^2');
   const [normXMin, setNormXMin] = useState('-3');
@@ -104,6 +156,25 @@ export default function Plot3DPage() {
   const [qJ, setQJ] = useState('-1');
 
   const palette = usePlotlyPalette();
+
+  // 自动旋转：定时 relayout 相机位置
+  useEffect(() => {
+    if (!autoRotate) return;
+    const el = plotBoxRef.current?.querySelector('.js-plotly-plot') as HTMLElement | null;
+    if (!el) return;
+    let angle = 1.2;
+    const id = window.setInterval(() => {
+      angle += 0.035;
+      try {
+        (Plotly as unknown as { relayout: (el: HTMLElement, update: unknown) => void }).relayout(el, {
+          'scene.camera.eye': { x: 1.7 * Math.cos(angle), y: 1.7 * Math.sin(angle), z: 1.0 },
+        });
+      } catch {
+        // ignore
+      }
+    }, 70);
+    return () => window.clearInterval(id);
+  }, [autoRotate]);
 
   const surface3DLayout = useMemo(() => ({
     autosize: true,
@@ -142,12 +213,71 @@ export default function Plot3DPage() {
       const yMaxV = evaluate(yMax) as number;
       const n = adaptiveSamplePoints3D(xMinV, xMaxV, yMinV, yMaxV, 60, 20);
       const data = sampleSurface(expr, xMinV, xMaxV, yMinV, yMaxV, n);
-      return [{ z: data.z, x: data.x, y: data.y, type: 'surface', colorscale: 'Viridis' as const, name: `z = ${expr}`, showscale: false }];
+      const traces: any[] = [
+        { z: data.z, x: data.x, y: data.y, type: 'surface', colorscale: 'Viridis' as const, name: `z = ${expr}`, showscale: false },
+      ];
+
+      // 切平面 + 法向量（在 (x0, y0) 处）
+      if (showTangent) {
+        const x0 = evaluate(tanX0) as number;
+        const y0 = evaluate(tanY0) as number;
+        if (Number.isFinite(x0) && Number.isFinite(y0)) {
+          const f = (xv: number, yv: number) => {
+            const v = evaluate(expr, { x: xv, y: yv });
+            return typeof v === 'number' ? v : NaN;
+          };
+          const h = 1e-5;
+          const z0 = f(x0, y0);
+          const fx = (f(x0 + h, y0) - f(x0 - h, y0)) / (2 * h);
+          const fy = (f(x0, y0 + h) - f(x0, y0 - h)) / (2 * h);
+          if ([z0, fx, fy].every((v) => Number.isFinite(v))) {
+            const d = Math.min(2, Math.abs(xMaxV - xMinV) / 5, Math.abs(yMaxV - yMinV) / 5) || 1;
+            const xg = [x0 - d, x0 + d];
+            const yg = [y0 - d, y0 + d];
+            const zg = yg.map((yy) => xg.map((xx) => z0 + fx * (xx - x0) + fy * (yy - y0)));
+            traces.push({
+              type: 'surface',
+              x: xg,
+              y: yg,
+              z: zg,
+              colorscale: [[0, '#f59e0b'], [1, '#f59e0b']],
+              opacity: 0.55,
+              showscale: false,
+              name: '切平面',
+              hoverinfo: 'skip',
+            });
+            const norm = Math.sqrt(fx * fx + fy * fy + 1);
+            const L = Math.min(2.2, Math.max(1, (Math.abs(xMaxV - xMinV) + Math.abs(yMaxV - yMinV)) / 8));
+            traces.push({
+              type: 'scatter3d',
+              mode: 'lines+markers',
+              x: [x0, x0 + (fx / norm) * L],
+              y: [y0, y0 + (fy / norm) * L],
+              z: [z0, z0 - (1 / norm) * L],
+              line: { color: '#dc2626', width: 7 },
+              marker: { color: '#dc2626', size: [2, 6] },
+              name: '法向量',
+            });
+            traces.push({
+              type: 'scatter3d',
+              mode: 'markers',
+              x: [x0],
+              y: [y0],
+              z: [z0],
+              marker: { color: '#f59e0b', size: 5 },
+              name: '切点',
+              hovertext: [`切点 (${Number(x0.toPrecision(4))}, ${Number(y0.toPrecision(4))}, ${Number(z0.toPrecision(4))})`],
+              hoverinfo: 'text',
+            });
+          }
+        }
+      }
+      return traces;
     } catch (e) {
       setError((e as Error).message);
       return [];
     }
-  }, [expr, xMin, xMax, yMin, yMax, activeTab]);
+  }, [expr, xMin, xMax, yMin, yMax, activeTab, showTangent, tanX0, tanY0]);
 
   const contourData = useMemo(() => {
     if (activeTab !== 'explicit' || !contours || explicitData.length === 0) return [];
@@ -245,11 +375,38 @@ export default function Plot3DPage() {
       const yMaxV = evaluate(yMax) as number;
       const nSect = adaptiveSamplePoints3D(xMinV, xMaxV, yMinV, yMaxV, 60, 20);
       const data = sampleSurface(expr, xMinV, xMaxV, yMinV, yMaxV, nSect);
-      // 截面 z=k：在等高线上标 z=k 的线
-      return [
-        { z: data.z, x: data.x, y: data.y, type: 'surface', colorscale: 'Viridis' as const, name: '曲面', opacity: 0.7, showscale: false },
-        { z: data.z, x: data.x, y: data.y, type: 'contour', contours: { start: sectionK, end: sectionK, size: 0.01 }, showscale: false, line: { color: '#dc2626', width: 4 }, name: `z = ${sectionK.toFixed(2)}`, ncontours: 1 },
+      const traces: any[] = [
+        { z: data.z, x: data.x, y: data.y, type: 'surface', colorscale: 'Viridis' as const, name: '曲面', opacity: 0.55, showscale: false },
       ];
+      // 切割平面 z = k（半透明灰色）
+      traces.push({
+        type: 'mesh3d',
+        x: [xMinV, xMaxV, xMaxV, xMinV],
+        y: [yMinV, yMinV, yMaxV, yMaxV],
+        z: [sectionK, sectionK, sectionK, sectionK],
+        i: [0, 0],
+        j: [1, 2],
+        k: [2, 3],
+        color: '#64748b',
+        opacity: 0.16,
+        hoverinfo: 'skip',
+        name: '截面平面',
+        showlegend: true,
+      });
+      // 曲面与平面 z=k 的交线（Marching Squares 提取真实三维曲线）
+      const curve = contourAtLevel(data.x, data.y, data.z, sectionK);
+      if (curve.x.length > 0) {
+        traces.push({
+          type: 'scatter3d',
+          mode: 'lines',
+          x: curve.x,
+          y: curve.y,
+          z: curve.z,
+          line: { color: '#dc2626', width: 6 },
+          name: `交线 z = ${sectionK.toFixed(2)}`,
+        });
+      }
+      return traces;
     } catch (e) {
       setError((e as Error).message);
       return [];
@@ -403,10 +560,27 @@ export default function Plot3DPage() {
                     defaultPreview
                   />
                   <Range2x2 xMinV={xMin} setXMinV={setXMin} xMaxV={xMax} setXMaxV={setXMax} yMinV={yMin} setYMinV={setYMin} yMaxV={yMax} setYMaxV={setYMax} />
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 flex-wrap">
                     <Button onClick={() => setContours(!contours)} variant={contours ? 'default' : 'outline'} className={contours ? 'bg-primary hover:bg-primary/90' : ''}>
                       {contours ? '✓ ' : ''}等高线模式
                     </Button>
+                    <label className="flex items-center gap-2 text-sm cursor-pointer">
+                      <Checkbox checked={showTangent} onCheckedChange={(v) => setShowTangent(v === true)} />
+                      切平面与法向量
+                    </label>
+                    {showTangent && (
+                      <div className="flex items-end gap-3">
+                        <div>
+                          <label className="text-xs text-muted-foreground mb-1 block">x₀</label>
+                          <Input value={tanX0} onChange={(e) => setTanX0(e.target.value)} className="font-mono h-8 w-20 text-sm" />
+                        </div>
+                        <div>
+                          <label className="text-xs text-muted-foreground mb-1 block">y₀</label>
+                          <Input value={tanY0} onChange={(e) => setTanY0(e.target.value)} className="font-mono h-8 w-20 text-sm" />
+                        </div>
+                        <span className="pb-1.5 text-xs text-muted-foreground">橙色面为切平面，红线为法向量</span>
+                      </div>
+                    )}
                   </div>
                   <div>
                     <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
@@ -632,7 +806,14 @@ export default function Plot3DPage() {
 
         <Card className="shadow-sm overflow-hidden">
            <CardContent className="p-0">
-             <div className="w-full min-h-[500px] md:min-h-[550px]">
+             <div className="flex items-center justify-between border-b border-border/60 px-4 py-2">
+               <span className="text-xs text-muted-foreground">拖动旋转 · 滚轮缩放 · 双击复位</span>
+               <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
+                 <Checkbox checked={autoRotate} onCheckedChange={(v) => setAutoRotate(v === true)} />
+                 自动旋转
+               </label>
+             </div>
+             <div ref={plotBoxRef} className="w-full min-h-[500px] md:min-h-[550px]">
                <Plot
                  data={getData() as any[]}
                  layout={getLayout()}

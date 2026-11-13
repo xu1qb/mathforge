@@ -9,10 +9,8 @@ import MathInputField from '@/components/MathInputField';
 import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Plus, Trash2, Sparkles, Eye, EyeOff } from 'lucide-react';
-import ReactEChartsImport from 'echarts-for-react/lib/core';
-const ReactECharts = (ReactEChartsImport as unknown as { default: typeof ReactEChartsImport }).default ?? ReactEChartsImport;
-import { echarts } from '@/lib/echarts';
 import type { EChartsOption, SeriesOption } from 'echarts';
+import EChart from '@/components/learning/EChart';
 import { usePlotlyPalette } from '@/lib/plotly-theme';
 import { evaluate, parse } from 'mathjs';
 import {
@@ -262,7 +260,7 @@ export default function Plot2DPage() {
                   name: '拐点',
                   type: 'scatter',
                   mode: 'markers',
-                  marker: { color: '#7c3aed', size: 8, symbol: 'square' },
+                  marker: { color: palette.line_colors[(colorIdx + 2) % palette.line_colors.length], size: 8, symbol: 'square' },
                   text: infl.map((i) => `拐点 (${formatResult(i.x)}, ${formatResult(i.y)})`),
                   hoverinfo: 'text',
                   legendgroup: 'analysis-inflection',
@@ -283,7 +281,7 @@ export default function Plot2DPage() {
                   name: 'y截距',
                   type: 'scatter',
                   mode: 'markers',
-                  marker: { color: '#0891b2', size: 8, symbol: 'triangle-down' },
+                  marker: { color: palette.line_colors[(colorIdx + 1) % palette.line_colors.length], size: 8, symbol: 'triangle-down' },
                   text: [`y截距 (0, ${formatResult(yint.y)})`],
                   hoverinfo: 'text',
                   legendgroup: 'analysis-yint',
@@ -303,7 +301,7 @@ export default function Plot2DPage() {
                 name: "f'(x)（一阶导）",
                 type: 'scatter',
                 mode: 'lines',
-                line: { color: '#0891b2', width: 1.5, dash: 'dash' },
+                line: { color: palette.line_colors[(colorIdx + 1) % palette.line_colors.length], width: 1.5, dash: 'dash' },
                 legendgroup: 'deriv-1',
                 showlegend: true,
               });
@@ -320,7 +318,7 @@ export default function Plot2DPage() {
                 name: "f''(x)（二阶导）",
                 type: 'scatter',
                 mode: 'lines',
-                line: { color: '#7c3aed', width: 1.5, dash: 'dot' },
+                line: { color: palette.line_colors[(colorIdx + 2) % palette.line_colors.length], width: 1.5, dash: 'dot' },
                 legendgroup: 'deriv-2',
                 showlegend: true,
               });
@@ -394,6 +392,53 @@ export default function Plot2DPage() {
       return Number.isFinite(val) ? formatResult(val) : null;
     } catch { return null; }
   }, [plots, showIntegral, integralA, integralB, activeTab]);
+
+  // 关键点表格：便于抄写与核对，不依赖悬停
+  const keyPoints = useMemo(() => {
+    if (activeTab !== 'cartesian') return [];
+    const first = plots.find((p) => p.visible && p.expr.trim());
+    if (!first) return [];
+    const [xmin, xmax] = getRange(xMin, xMax);
+    const rows: { type: string; x: number; y: number }[] = [];
+    try {
+      if (showZeros) {
+        findFunctionZeros(first.expr, xmin, xmax, 1000, 10).forEach((z) =>
+          rows.push({ type: '零点', x: z.x, y: 0 }),
+        );
+      }
+    } catch { /* ignore */ }
+    try {
+      if (showExtrema) {
+        findExtrema(first.expr, xmin, xmax, 1000).forEach((e) =>
+          rows.push({ type: e.type === 'max' ? '极大值' : e.type === 'min' ? '极小值' : '驻点', x: e.x, y: e.y }),
+        );
+      }
+    } catch { /* ignore */ }
+    try {
+      if (showInflection) {
+        findInflectionPoints(first.expr, xmin, xmax, 1000).forEach((p) =>
+          rows.push({ type: '拐点', x: p.x, y: p.y }),
+        );
+      }
+    } catch { /* ignore */ }
+    try {
+      if (showYIntercept && xmin <= 0 && xmax >= 0) {
+        const yi = findYIntercept(first.expr);
+        if (yi) rows.push({ type: 'y 截距', x: 0, y: yi.y });
+      }
+    } catch { /* ignore */ }
+    try {
+      if (showIntersections) {
+        const visible = plots.filter((p) => p.visible && p.expr.trim());
+        if (visible.length >= 2) {
+          findIntersections(visible[0].expr, visible[1].expr, xmin, xmax, 1000, 8).forEach((p) =>
+            rows.push({ type: '交点', x: p.x, y: p.y }),
+          );
+        }
+      }
+    } catch { /* ignore */ }
+    return rows.slice(0, 40);
+  }, [activeTab, plots, xMin, xMax, showZeros, showExtrema, showInflection, showYIntercept, showIntersections, getRange]);
 
   const parametricData = useMemo(() => {
     if (activeTab !== 'parametric') return [];
@@ -945,11 +990,31 @@ export default function Plot2DPage() {
       color: palette.line_colors,
       tooltip: {
         trigger: 'axis',
+        axisPointer: {
+          type: 'cross',
+          label: { backgroundColor: palette.tickfont_color, color: palette.plot_bgcolor, fontSize: 10 },
+        },
         backgroundColor: palette.plot_bgcolor,
         borderWidth: 1,
         borderColor: palette.gridcolor,
         textStyle: { color: palette.font_color, fontSize: 12 },
       },
+      toolbox: {
+        right: 8,
+        top: 0,
+        iconStyle: { borderColor: palette.tickfont_color },
+        feature: {
+          dataZoom: { title: { zoom: '框选缩放', back: '撤销缩放' }, brushStyle: { borderColor: palette.line_colors[0] } },
+          restore: { title: '重置视图' },
+          saveAsImage: { title: '保存图片', pixelRatio: 2, backgroundColor: palette.plot_bgcolor },
+        },
+      },
+      dataZoom: isMulti
+        ? undefined
+        : [
+            { type: 'inside', xAxisIndex: 0, filterMode: 'none', zoomOnMouseWheel: 'ctrl' },
+            { type: 'inside', yAxisIndex: 0, filterMode: 'none', zoomOnMouseWheel: 'ctrl' },
+          ],
       legend: {
         bottom: 0,
         textStyle: { fontSize: 11, color: palette.font_color },
@@ -1052,6 +1117,25 @@ export default function Plot2DPage() {
                     ))}
                   </div>
                   <RangeInput minVal={xMin} setMinVal={setXMin} maxVal={xMax} setMaxVal={setXMax} />
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-xs text-muted-foreground">快捷区间</span>
+                    {[
+                      ['-2π, 2π', '-2*pi', '2*pi'],
+                      ['-5, 5', '-5', '5'],
+                      ['-10, 10', '-10', '10'],
+                      ['-1, 1', '-1', '1'],
+                    ].map(([label, lo, hi]) => (
+                      <Button
+                        key={label}
+                        variant="outline"
+                        size="sm"
+                        className="h-7 px-2 text-xs"
+                        onClick={() => { setXMin(lo); setXMax(hi); }}
+                      >
+                        {label}
+                      </Button>
+                    ))}
+                  </div>
 
                   {/* 分析功能区 */}
                   <div className="border border-border/60 rounded-xl p-4 space-y-3 bg-muted/30">
@@ -1115,6 +1199,34 @@ export default function Plot2DPage() {
                         </div>
                       )}
                     </div>
+
+                    {keyPoints.length > 0 && (
+                      <div className="border-t border-border/50 pt-3">
+                        <div className="mb-2 text-xs font-medium text-muted-foreground">
+                          关键点列表（{keyPoints.length}）
+                        </div>
+                        <div className="max-h-40 overflow-y-auto rounded-lg border border-border/60">
+                          <table className="w-full text-xs">
+                            <thead className="sticky top-0 bg-muted/80 backdrop-blur">
+                              <tr className="text-left text-muted-foreground">
+                                <th className="px-2.5 py-1.5 font-medium">类型</th>
+                                <th className="px-2.5 py-1.5 font-medium">x</th>
+                                <th className="px-2.5 py-1.5 font-medium">y</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {keyPoints.map((r, i) => (
+                                <tr key={i} className="border-t border-border/40">
+                                  <td className="px-2.5 py-1 text-foreground">{r.type}</td>
+                                  <td className="px-2.5 py-1 font-mono text-foreground">{formatResult(r.x)}</td>
+                                  <td className="px-2.5 py-1 font-mono text-foreground">{formatResult(r.y)}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div>
@@ -1333,13 +1445,8 @@ export default function Plot2DPage() {
 
         <Card className="shadow-sm overflow-hidden">
            <CardContent className="p-0">
-             <div className="w-full min-h-[450px] md:min-h-[500px]">
-               <ReactECharts
-                 echarts={echarts}
-                 option={echartsOption}
-                 style={{ width: '100%', height: '100%', minHeight: '450px' }}
-                 notMerge
-               />
+             <div className="w-full">
+               <EChart option={echartsOption} height={500} />
              </div>
            </CardContent>
          </Card>

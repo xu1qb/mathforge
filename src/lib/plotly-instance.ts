@@ -14,4 +14,5 @@ Plotly.register([contour]);
 
 const Plot = createPlotlyComponent(Plotly);
 
+export { Plotly };
 export default Plot;
