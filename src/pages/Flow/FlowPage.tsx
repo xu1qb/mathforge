@@ -1,5 +1,16 @@
-import { useEffect, useState } from 'react';
-import { ArrowRight, CheckCircle2, Printer, XCircle } from 'lucide-react';
+import { Fragment, useEffect, useState } from 'react';
+import {
+  AlertTriangle,
+  ArrowRight,
+  CheckCircle2,
+  ChevronDown,
+  Flag,
+  GitBranch,
+  ListChecks,
+  Play,
+  Printer,
+  XCircle,
+} from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -18,6 +29,15 @@ const KIND_STYLE: Record<FlowKind, string> = {
   end: 'border-emerald-500/60 bg-emerald-500/10',
 };
 
+/** 每个节点类型左侧的色条（token 色，不用渐变） */
+const KIND_BAR: Record<FlowKind, string> = {
+  start: 'bg-primary',
+  decision: 'bg-amber-500',
+  process: 'bg-border',
+  warn: 'bg-red-500',
+  end: 'bg-emerald-500',
+};
+
 const KIND_LABEL: Record<FlowKind, string> = {
   start: '起点',
   decision: '判断',
@@ -25,6 +45,25 @@ const KIND_LABEL: Record<FlowKind, string> = {
   warn: '易错',
   end: '结论',
 };
+
+const KIND_ICON: Record<FlowKind, typeof Play> = {
+  start: Play,
+  decision: GitBranch,
+  process: ListChecks,
+  warn: AlertTriangle,
+  end: Flag,
+};
+
+/** 图例用的小圆点颜色 */
+const KIND_DOT: Record<FlowKind, string> = {
+  start: 'bg-primary',
+  decision: 'bg-amber-500',
+  process: 'bg-border',
+  warn: 'bg-red-500',
+  end: 'bg-emerald-500',
+};
+
+const KIND_ORDER: FlowKind[] = ['start', 'decision', 'process', 'warn', 'end'];
 
 /** 题型切换条：手机上横向滚动，桌面上整排铺开 */
 function ChartPicker({
@@ -52,6 +91,25 @@ function ChartPicker({
           </button>
         ))}
       </div>
+    </div>
+  );
+}
+
+/** 节点类型图例：一眼看懂五种节点颜色 */
+function KindLegend() {
+  return (
+    <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
+      <span className="font-medium text-foreground">图例</span>
+      {KIND_ORDER.map((k) => {
+        const Icon = KIND_ICON[k];
+        return (
+          <span key={k} className="inline-flex items-center gap-1.5">
+            <span className={cn('h-2.5 w-2.5 rounded-full', KIND_DOT[k])} />
+            <Icon className="h-3 w-3" />
+            {KIND_LABEL[k]}
+          </span>
+        );
+      })}
     </div>
   );
 }
@@ -109,6 +167,12 @@ export default function FlowPage() {
       window.removeEventListener('afterprint', reset);
     };
   }, [printScope]);
+
+  const jumpToNode = (i: number) => {
+    document
+      .getElementById('flow-node-' + i)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
 
   return (
     <PageShell
@@ -177,44 +241,128 @@ export default function FlowPage() {
           </CardContent>
         </Card>
 
-        <div className="flex flex-col items-center">
-          {chart.nodes.map((n, i) => (
-            <div key={n.id} className="flex w-full flex-col items-center">
-              <Card className={cn('flow-node w-full border-2', KIND_STYLE[n.kind])}>
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-3">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
-                      {i + 1}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-sm font-medium">{n.title}</span>
-                        {n.tag && (
-                          <Badge variant="outline" className="text-xs">
-                            {n.tag}
-                          </Badge>
-                        )}
-                        <span className="text-xs text-muted-foreground">{KIND_LABEL[n.kind]}</span>
-                      </div>
-                      <p className="mt-1 text-sm text-muted-foreground">{n.desc}</p>
-                      {n.formula && (
-                        <div className="mt-2 overflow-x-auto rounded-md bg-background/60 p-2">
-                          <MathRenderer expression={n.formula} displayMode />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+        <KindLegend />
 
-              {i < chart.nodes.length - 1 && (
-                <div className="my-1 flex flex-col items-center">
-                  <div className="h-5 w-px bg-border" />
-                  <ArrowRight className="h-4 w-4 rotate-90 text-muted-foreground" />
-                </div>
-              )}
-            </div>
-          ))}
+        {/* 路线总览：整条思路的迷你地图，点击直达对应节点 */}
+        <div className="mb-5 overflow-x-auto rounded-xl border border-border/60 bg-card p-3">
+          <div className="flex w-max items-start gap-0.5">
+            {chart.nodes.map((n, i) => {
+              const Icon = KIND_ICON[n.kind];
+              return (
+                <Fragment key={n.id}>
+                  {i > 0 && <div className="mt-3 h-px w-4 shrink-0 bg-border" />}
+                  <button
+                    onClick={() => jumpToNode(i)}
+                    title={'第 ' + (i + 1) + ' 步 · ' + n.title}
+                    className="group flex w-16 flex-col items-center gap-1"
+                  >
+                    <span
+                      className={cn(
+                        'flex h-6 w-6 items-center justify-center rounded-full border-2 text-[11px] font-medium transition-colors',
+                        n.kind === 'warn' && 'border-red-500/60 bg-red-500/10 text-foreground',
+                        n.kind === 'decision' && 'border-amber-500/60 bg-amber-500/10 text-foreground',
+                        n.kind === 'end' && 'border-emerald-500/60 bg-emerald-500/10 text-foreground',
+                        n.kind === 'start' && 'border-primary bg-primary text-primary-foreground',
+                        n.kind === 'process' && 'border-border bg-muted/40 text-muted-foreground group-hover:border-primary/50 group-hover:text-foreground'
+                      )}
+                    >
+                      {n.kind === 'warn' || n.kind === 'decision' ? (
+                        <Icon className="h-3.5 w-3.5" />
+                      ) : (
+                        i + 1
+                      )}
+                    </span>
+                    <span className="w-full truncate text-center text-[11px] leading-tight text-muted-foreground group-hover:text-foreground">
+                      {n.title}
+                    </span>
+                  </button>
+                </Fragment>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center">
+          {chart.nodes.map((n, i) => {
+            const Icon = KIND_ICON[n.kind];
+            return (
+              <div key={n.id} id={'flow-node-' + i} className="flex w-full scroll-mt-24 flex-col items-center">
+                <Card className={cn('flow-node relative w-full border-2', KIND_STYLE[n.kind])}>
+                  {/* 左侧类型色条 */}
+                  <span
+                    className={cn('absolute left-0 top-3 bottom-3 w-1 rounded-r-full', KIND_BAR[n.kind])}
+                    aria-hidden
+                  />
+                  <CardContent className="p-4 pl-5">
+                    <div className="flex items-start gap-3">
+                      <span
+                        className={cn(
+                          'flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold',
+                          n.kind === 'warn' || n.kind === 'end'
+                            ? 'bg-background text-foreground'
+                            : 'bg-primary text-primary-foreground'
+                        )}
+                      >
+                        {n.kind === 'decision' ? <GitBranch className="h-3.5 w-3.5" /> : i + 1}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-sm font-medium">{n.title}</span>
+                          {n.tag && (
+                            <Badge variant="outline" className="text-xs">
+                              {n.tag}
+                            </Badge>
+                          )}
+                          <span
+                            className={cn(
+                              'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px]',
+                              n.kind === 'warn'
+                                ? 'bg-red-500/10 text-foreground'
+                                : n.kind === 'end'
+                                  ? 'bg-emerald-500/10 text-foreground'
+                                  : n.kind === 'decision'
+                                    ? 'bg-amber-500/10 text-foreground'
+                                    : 'bg-muted/60 text-muted-foreground'
+                            )}
+                          >
+                            <Icon className="h-3 w-3" />
+                            {KIND_LABEL[n.kind]}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-sm text-muted-foreground">{n.desc}</p>
+                        {n.formula && (
+                          <div className="mt-2 overflow-x-auto rounded-md bg-background/60 p-2">
+                            <MathRenderer expression={n.formula} displayMode />
+                          </div>
+                        )}
+                        {/* 判断节点的分支出口：可视化“分岔” */}
+                        {n.kind === 'decision' && (
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-1 text-xs text-foreground">
+                              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                              对上号 → 沿这条路走
+                            </span>
+                            <span className="inline-flex items-center gap-1 rounded-md bg-red-500/10 px-2 py-1 text-xs text-foreground">
+                              <XCircle className="h-3.5 w-3.5 text-red-500" />
+                              对不上 → 退回换一条路
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {i < chart.nodes.length - 1 && (
+                  <div className="flex flex-col items-center py-0.5">
+                    <div className="h-4 w-px bg-border" />
+                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    <div className="h-4 w-px bg-border" />
+                  </div>
+                )}
+              </div>
+            );
+          })}
 
           <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <XCircle className="h-3.5 w-3.5 text-red-500" />
