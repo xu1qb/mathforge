@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -10,6 +10,7 @@ import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Play, Sparkles, Calculator, Type } from 'lucide-react';
 import MathRenderer from '@/components/MathRenderer';
 import LearningSection from '@/components/LearningSection';
+import DistributionChart from '@/components/stats/DistributionChart';
 import { useHistory } from '@/hooks/useHistory';
 import HistoryPanel from '@/components/HistoryPanel';
 import { calcStatistics, binomPMF, normalPDF, poissonPMF, formatResult, geometricPMF, uniformPDF, uniformCDF, exponentialPDF, exponentialCDF, chiSquarePDF, tDistPDF, fDistPDF, bayesTheorem, covariance, pearsonCorrelation, linearRegression, confidenceIntervalMean, zTest, tTestOneSample, conditionalProbability, discreteExpectation, discreteVariance, classicalProbability, chebyshevBound, coinFlipSimulation } from '@/lib/math-utils';
@@ -98,7 +99,7 @@ export default function ProbabilityStatsPage() {
   const [simN, setSimN] = useState('10000');
 
   const [statsResult, setStatsResult] = useState<Record<string, string>>({});
-  const [distResult, setDistResult] = useState('');
+  const [distResult, setDistResult] = useState<{ tab: string; text: string } | null>(null);
   const [ncrResult, setNcrResult] = useState('');
   const [result, setResult] = useState('');
   const [viewMode, setViewMode] = useState<'formatted' | 'text'>('formatted');
@@ -167,6 +168,170 @@ export default function ProbabilityStatsPage() {
     }
   };
 
+  // ===== 分布实时预览（输入即更新，不必点计算）=====
+  const descriptiveChart = useMemo(() => {
+    try {
+      const data = parseArr(dataInput).filter((v) => Number.isFinite(v));
+      if (data.length < 2) return null;
+      const min = Math.min(...data);
+      const max = Math.max(...data);
+      const binCount = Math.min(12, Math.max(5, Math.ceil(Math.sqrt(data.length))));
+      const width = (max - min) / binCount || 1;
+      const counts = new Array(binCount).fill(0);
+      for (const v of data) {
+        let idx = Math.floor((v - min) / width);
+        if (idx >= binCount) idx = binCount - 1;
+        if (idx < 0) idx = 0;
+        counts[idx]++;
+      }
+      const points = counts.map((c, i) => ({ x: min + (i + 0.5) * width, y: c }));
+      const sorted = [...data].sort((a, b) => a - b);
+      const median =
+        sorted.length % 2 === 1
+          ? sorted[(sorted.length - 1) / 2]
+          : (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2;
+      const mean = data.reduce((s, v) => s + v, 0) / data.length;
+      return { points, markers: [mean, median] };
+    } catch {
+      return null;
+    }
+  }, [dataInput]);
+
+  const discreteChart = useMemo(() => {
+    try {
+      const xs = parseArr(discX).filter((v) => Number.isFinite(v));
+      const ps = parseArr(discP).filter((v) => Number.isFinite(v));
+      if (xs.length === 0 || xs.length !== ps.length) return null;
+      return { points: xs.map((x, i) => ({ x, y: ps[i] })) };
+    } catch {
+      return null;
+    }
+  }, [discX, discP]);
+
+  const binomialChart = useMemo(() => {
+    const n = parseInt(binomN, 10);
+    const k = parseInt(binomK, 10);
+    const p = parseFloat(binomP);
+    if (!Number.isFinite(n) || n < 1 || n > 60 || !Number.isFinite(p) || p <= 0 || p >= 1) return null;
+    const points = Array.from({ length: n + 1 }, (_, i) => ({ x: i, y: binomPMF(i, n, p) }));
+    const markers = Number.isFinite(k) && k >= 0 && k <= n ? [k] : [];
+    return { points, markers };
+  }, [binomN, binomK, binomP]);
+
+  const normalChart = useMemo(() => {
+    const x = parseFloat(normX);
+    const mu = parseFloat(normMu);
+    const sigma = parseFloat(normSigma);
+    if (![x, mu, sigma].every(Number.isFinite) || sigma <= 0) return null;
+    const lo = mu - 4 * sigma;
+    const hi = mu + 4 * sigma;
+    const points = Array.from({ length: 121 }, (_, i) => {
+      const t = lo + ((hi - lo) * i) / 120;
+      return { x: t, y: normalPDF(t, mu, sigma) };
+    });
+    const xc = Math.min(Math.max(x, lo), hi);
+    return { points, shade: [lo, xc] as [number, number], markers: [x] };
+  }, [normX, normMu, normSigma]);
+
+  const poissonChart = useMemo(() => {
+    const k = parseInt(poissK, 10);
+    const lambda = parseFloat(poissLambda);
+    if (!Number.isFinite(lambda) || lambda <= 0) return null;
+    const maxK = Math.min(60, Math.max(8, Math.ceil(lambda + 4 * Math.sqrt(lambda))));
+    const points = Array.from({ length: maxK + 1 }, (_, i) => ({ x: i, y: poissonPMF(i, lambda) }));
+    const markers = Number.isFinite(k) && k >= 0 && k <= maxK ? [k] : [];
+    return { points, markers };
+  }, [poissK, poissLambda]);
+
+  const geometricChart = useMemo(() => {
+    const k = parseInt(geomK, 10);
+    const p = parseFloat(geomP);
+    if (!Number.isFinite(p) || p <= 0 || p > 1) return null;
+    const maxK = Math.min(50, Math.max(10, Math.ceil(6 / p)));
+    const points = Array.from({ length: maxK }, (_, i) => ({ x: i + 1, y: geometricPMF(i + 1, p) }));
+    const markers = Number.isFinite(k) && k >= 1 && k <= maxK ? [k] : [];
+    return { points, markers };
+  }, [geomK, geomP]);
+
+  const uniformChart = useMemo(() => {
+    const x = parseFloat(distX);
+    const a = parseFloat(distA);
+    const b = parseFloat(distB);
+    if (![x, a, b].every(Number.isFinite) || b <= a) return null;
+    const pad = (b - a) * 0.25;
+    const lo = a - pad;
+    const hi = b + pad;
+    const points = Array.from({ length: 161 }, (_, i) => {
+      const t = lo + ((hi - lo) * i) / 160;
+      const inRange = t >= a && t <= b;
+      return { x: t, y: inRange ? 1 / (b - a) : 0 };
+    });
+    return { points, shade: [a, b] as [number, number], markers: [x] };
+  }, [distX, distA, distB]);
+
+  const exponentialChart = useMemo(() => {
+    const x = parseFloat(expX);
+    const lambda = parseFloat(expLambda);
+    if (![x, lambda].every(Number.isFinite) || lambda <= 0) return null;
+    const hi = Math.max(5 / lambda, x * 1.3, 1 / lambda);
+    const points = Array.from({ length: 121 }, (_, i) => {
+      const t = (hi * i) / 120;
+      return { x: t, y: exponentialPDF(t, lambda) };
+    });
+    const xc = Math.min(Math.max(x, 0), hi);
+    return { points, shade: [0, xc] as [number, number], markers: [x] };
+  }, [expX, expLambda]);
+
+  const cltChart = useMemo(() => {
+    if (!cltResult?.counts?.length || !Array.isArray(cltResult.bins)) return null;
+    const points = cltResult.bins.map((b: number, i: number) => ({ x: b, y: cltResult.counts[i] ?? 0 }));
+    const overlay = Array.isArray(cltResult.cltNormal?.x)
+      ? cltResult.cltNormal.x.map((x: number, i: number) => ({ x, y: cltResult.cltNormal.y[i] ?? 0 }))
+      : [];
+    return { points, overlay, markers: [cltResult.theoreticalMean] };
+  }, [cltResult]);
+
+  const chiChart = useMemo(() => {
+    const n = parseInt(chiN, 10);
+    const x = parseFloat(chiX);
+    if (!Number.isFinite(n) || n < 1 || n > 100) return null;
+    const hi = Math.max(n * 3, x * 1.3, 1);
+    const points = Array.from({ length: 121 }, (_, i) => {
+      const t = (hi * i) / 120;
+      return { x: t, y: chiSquarePDF(t, n) };
+    });
+    const xc = Math.min(Math.max(x, 0), hi);
+    return { points, shade: [0, xc] as [number, number], markers: [x] };
+  }, [chiX, chiN]);
+
+  const tChart = useMemo(() => {
+    const df = parseInt(tDf, 10);
+    const t = parseFloat(tVal);
+    if (!Number.isFinite(df) || df < 1 || df > 200) return null;
+    const hi = Math.max(4, Math.abs(t) * 1.5);
+    const lo = -hi;
+    const points = Array.from({ length: 121 }, (_, i) => {
+      const v = lo + ((hi - lo) * i) / 120;
+      return { x: v, y: tDistPDF(v, df) };
+    });
+    const tc = Math.min(Math.max(t, lo), hi);
+    return { points, shade: [lo, tc] as [number, number], markers: [t] };
+  }, [tVal, tDf]);
+
+  const fChart = useMemo(() => {
+    const df1 = parseInt(fDf1, 10);
+    const df2 = parseInt(fDf2, 10);
+    const x = parseFloat(fX);
+    if (!Number.isFinite(df1) || !Number.isFinite(df2) || df1 < 1 || df2 < 1) return null;
+    const hi = Math.max(4, x * 1.5);
+    const points = Array.from({ length: 121 }, (_, i) => {
+      const t = 0.001 + (hi * i) / 120;
+      return { x: t, y: fDistPDF(t, df1, df2) };
+    });
+    const xc = Math.min(Math.max(x, 0.001), hi);
+    return { points, shade: [0.001, xc] as [number, number], markers: [x] };
+  }, [fX, fDf1, fDf2]);
+
   const computeDist = () => {
     setError(null);
     try {
@@ -174,32 +339,32 @@ export default function ProbabilityStatsPage() {
         const n = parseInt(binomN, 10), k = parseInt(binomK, 10), p = parseFloat(binomP);
         if (isNaN(n) || isNaN(k) || isNaN(p)) throw new Error('请输入有效数字');
         const res = binomPMF(k, n, p);
-        setDistResult(`P(X = ${k}) = ${formatResult(res)}\nE(X) = np = ${formatResult(n * p)}\nVar(X) = np(1-p) = ${formatResult(n * p * (1 - p))}`);
+        setDistResult({ tab: activeTab, text: `P(X = ${k}) = ${formatResult(res)}\nE(X) = np = ${formatResult(n * p)}\nVar(X) = np(1-p) = ${formatResult(n * p * (1 - p))}` });
       } else if (activeTab === 'normal') {
         const x = parseFloat(normX), mu = parseFloat(normMu), sigma = parseFloat(normSigma);
         if (isNaN(x) || isNaN(mu) || isNaN(sigma)) throw new Error('请输入有效数字');
         const res = normalPDF(x, mu, sigma);
-        setDistResult(`f(${x}) = ${formatResult(res)}`);
+        setDistResult({ tab: activeTab, text: `f(${x}) = ${formatResult(res)}` });
       } else if (activeTab === 'poisson') {
         const k = parseInt(poissK, 10), lambda = parseFloat(poissLambda);
         if (isNaN(k) || isNaN(lambda)) throw new Error('请输入有效数字');
         const res = poissonPMF(k, lambda);
-        setDistResult(`P(X = ${k}) = ${formatResult(res)}`);
+        setDistResult({ tab: activeTab, text: `P(X = ${k}) = ${formatResult(res)}` });
       } else if (activeTab === 'uniform') {
         const x = parseFloat(distX), a = parseFloat(distA), b = parseFloat(distB);
         if (isNaN(x) || isNaN(a) || isNaN(b)) throw new Error('请输入有效数字');
         const pdf = uniformPDF(x, a, b), cdf = uniformCDF(x, a, b);
-        setDistResult(`f(x) = ${formatResult(pdf)}\nF(x) = P(X ≤ x) = ${formatResult(cdf)}\nE(X) = (a+b)/2 = ${formatResult((a + b) / 2)}\nVar(X) = (b-a)²/12 = ${formatResult((b - a) ** 2 / 12)}`);
+        setDistResult({ tab: activeTab, text: `f(x) = ${formatResult(pdf)}\nF(x) = P(X ≤ x) = ${formatResult(cdf)}\nE(X) = (a+b)/2 = ${formatResult((a + b) / 2)}\nVar(X) = (b-a)²/12 = ${formatResult((b - a) ** 2 / 12)}` });
       } else if (activeTab === 'exponential') {
         const x = parseFloat(expX), lambda = parseFloat(expLambda);
         if (isNaN(x) || isNaN(lambda)) throw new Error('请输入有效数字');
         const pdf = exponentialPDF(x, lambda), cdf = exponentialCDF(x, lambda);
-        setDistResult(`f(x) = ${formatResult(pdf)}\nF(x) = P(X ≤ x) = ${formatResult(cdf)}\nE(X) = 1/λ = ${formatResult(1 / lambda)}\nVar(X) = 1/λ² = ${formatResult(1 / (lambda * lambda))}`);
+        setDistResult({ tab: activeTab, text: `f(x) = ${formatResult(pdf)}\nF(x) = P(X ≤ x) = ${formatResult(cdf)}\nE(X) = 1/λ = ${formatResult(1 / lambda)}\nVar(X) = 1/λ² = ${formatResult(1 / (lambda * lambda))}` });
       } else if (activeTab === 'geometric') {
         const k = parseInt(geomK, 10), p = parseFloat(geomP);
         if (isNaN(k) || isNaN(p)) throw new Error('请输入有效数字');
         const res = geometricPMF(k, p);
-        setDistResult(`P(X = ${k}) = ${formatResult(res)}\n首次成功在第 ${k} 次\nE(X) = 1/p = ${formatResult(1 / p)}\nVar(X) = (1-p)/p² = ${formatResult((1 - p) / (p * p))}`);
+        setDistResult({ tab: activeTab, text: `P(X = ${k}) = ${formatResult(res)}\n首次成功在第 ${k} 次\nE(X) = 1/p = ${formatResult(1 / p)}\nVar(X) = (1-p)/p² = ${formatResult((1 - p) / (p * p))}` });
       } else if (activeTab === 'sampling') {
         const x = parseFloat(chiX), n = parseInt(chiN, 10);
         const t = parseFloat(tVal), tdf = parseInt(tDf, 10);
@@ -208,11 +373,11 @@ export default function ProbabilityStatsPage() {
         const chiPdf = chiSquarePDF(x, n);
         const tPdf = tDistPDF(t, tdf);
         const fPdf = fDistPDF(fx, df1, df2);
-        setDistResult(`χ²(${n}) 在 x=${x} 处 PDF = ${formatResult(chiPdf)}\n\nt(${tdf}) 在 t=${t} 处 PDF = ${formatResult(tPdf)}\n\nF(${df1},${df2}) 在 x=${fx} 处 PDF = ${formatResult(fPdf)}`);
+        setDistResult({ tab: activeTab, text: `χ²(${n}) 在 x=${x} 处 PDF = ${formatResult(chiPdf)}\n\nt(${tdf}) 在 t=${t} 处 PDF = ${formatResult(tPdf)}\n\nF(${df1},${df2}) 在 x=${fx} 处 PDF = ${formatResult(fPdf)}` });
       }
     } catch (e) {
       setError((e as Error).message || '计算错误');
-      setDistResult('');
+      setDistResult(null);
       toast.error('计算错误');
     }
   };
@@ -495,6 +660,12 @@ export default function ProbabilityStatsPage() {
                       ))}
                     </div>
                   )}
+                  {descriptiveChart && (
+                    <div className="rounded-xl border border-border/60 bg-card p-3">
+                      <div className="mb-1 text-xs text-muted-foreground">数据直方图 · 虚线为均值与中位数</div>
+                      <DistributionChart kind="histogram" points={descriptiveChart.points} markers={descriptiveChart.markers} height={200} yLabel="频数" />
+                    </div>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="discrete" className="space-y-4">
@@ -511,6 +682,12 @@ export default function ProbabilityStatsPage() {
                   <Button onClick={calcDiscrete} className="bg-emerald-700 hover:bg-emerald-800 text-white">
                     <Play className="size-4 mr-2" />计算 E(X), Var(X)
                   </Button>
+                  {discreteChart && (
+                    <div className="rounded-xl border border-border/60 bg-card p-3">
+                      <div className="mb-1 text-xs text-muted-foreground">分布律 P(X=x)</div>
+                      <DistributionChart kind="pmf" points={discreteChart.points} height={200} xLabel="x" yLabel="P" />
+                    </div>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="binomial" className="space-y-4">
@@ -522,7 +699,13 @@ export default function ProbabilityStatsPage() {
                   <Button onClick={computeDist} className="bg-emerald-700 hover:bg-emerald-800 text-white">
                     <Play className="size-4 mr-2" />计算 P(X=k)
                   </Button>
-                  {distResult && <ResultBox text={distResult} />}
+                  {distResult?.tab === 'binomial' && <ResultBox text={distResult.text} />}
+                  {binomialChart && (
+                    <div className="rounded-xl border border-border/60 bg-card p-3">
+                      <div className="mb-1 text-xs text-muted-foreground">B(n, p) 分布律 · 虚线为当前 k</div>
+                      <DistributionChart kind="pmf" points={binomialChart.points} markers={binomialChart.markers} height={220} xLabel="k" yLabel="P(X=k)" />
+                    </div>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="normal" className="space-y-4">
@@ -534,7 +717,13 @@ export default function ProbabilityStatsPage() {
                   <Button onClick={computeDist} className="bg-emerald-700 hover:bg-emerald-800 text-white">
                     <Play className="size-4 mr-2" />计算概率密度
                   </Button>
-                  {distResult && <ResultBox text={distResult} />}
+                  {distResult?.tab === 'normal' && <ResultBox text={distResult.text} />}
+                  {normalChart && (
+                    <div className="rounded-xl border border-border/60 bg-card p-3">
+                      <div className="mb-1 text-xs text-muted-foreground">N(μ, σ²) 密度曲线 · 阴影为 P(X ≤ x)</div>
+                      <DistributionChart kind="pdf" points={normalChart.points} shade={normalChart.shade} markers={normalChart.markers} height={220} xLabel="x" yLabel="f(x)" />
+                    </div>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="poisson" className="space-y-4">
@@ -545,7 +734,13 @@ export default function ProbabilityStatsPage() {
                   <Button onClick={computeDist} className="bg-emerald-700 hover:bg-emerald-800 text-white">
                     <Play className="size-4 mr-2" />计算 P(X=k)
                   </Button>
-                  {distResult && <ResultBox text={distResult} />}
+                  {distResult?.tab === 'poisson' && <ResultBox text={distResult.text} />}
+                  {poissonChart && (
+                    <div className="rounded-xl border border-border/60 bg-card p-3">
+                      <div className="mb-1 text-xs text-muted-foreground">Poisson(λ) 分布律 · 虚线为当前 k</div>
+                      <DistributionChart kind="pmf" points={poissonChart.points} markers={poissonChart.markers} height={220} xLabel="k" yLabel="P(X=k)" />
+                    </div>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="geometric" className="space-y-4">
@@ -556,7 +751,13 @@ export default function ProbabilityStatsPage() {
                   <Button onClick={computeDist} className="bg-emerald-700 hover:bg-emerald-800 text-white">
                     <Play className="size-4 mr-2" />计算 P(X=k)
                   </Button>
-                  {distResult && <ResultBox text={distResult} />}
+                  {distResult?.tab === 'geometric' && <ResultBox text={distResult.text} />}
+                  {geometricChart && (
+                    <div className="rounded-xl border border-border/60 bg-card p-3">
+                      <div className="mb-1 text-xs text-muted-foreground">Geometric(p) 分布律 · 虚线为当前 k</div>
+                      <DistributionChart kind="pmf" points={geometricChart.points} markers={geometricChart.markers} height={220} xLabel="k" yLabel="P(X=k)" />
+                    </div>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="uniform" className="space-y-4">
@@ -568,7 +769,13 @@ export default function ProbabilityStatsPage() {
                   <Button onClick={computeDist} className="bg-emerald-700 hover:bg-emerald-800 text-white">
                     <Play className="size-4 mr-2" />计算 PDF/CDF
                   </Button>
-                  {distResult && <ResultBox text={distResult} />}
+                  {distResult?.tab === 'uniform' && <ResultBox text={distResult.text} />}
+                  {uniformChart && (
+                    <div className="rounded-xl border border-border/60 bg-card p-3">
+                      <div className="mb-1 text-xs text-muted-foreground">U(a, b) 密度函数 · 阴影为 [a, b]</div>
+                      <DistributionChart kind="pdf" points={uniformChart.points} shade={uniformChart.shade} markers={uniformChart.markers} height={200} xLabel="x" yLabel="f(x)" />
+                    </div>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="exponential" className="space-y-4">
@@ -579,7 +786,13 @@ export default function ProbabilityStatsPage() {
                   <Button onClick={computeDist} className="bg-emerald-700 hover:bg-emerald-800 text-white">
                     <Play className="size-4 mr-2" />计算 PDF/CDF
                   </Button>
-                  {distResult && <ResultBox text={distResult} />}
+                  {distResult?.tab === 'exponential' && <ResultBox text={distResult.text} />}
+                  {exponentialChart && (
+                    <div className="rounded-xl border border-border/60 bg-card p-3">
+                      <div className="mb-1 text-xs text-muted-foreground">Exp(λ) 密度曲线 · 阴影为 P(X ≤ x)</div>
+                      <DistributionChart kind="pdf" points={exponentialChart.points} shade={exponentialChart.shade} markers={exponentialChart.markers} height={200} xLabel="x" yLabel="f(x)" />
+                    </div>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="sampling" className="space-y-4">
@@ -601,7 +814,27 @@ export default function ProbabilityStatsPage() {
                   <Button onClick={computeDist} className="bg-emerald-700 hover:bg-emerald-800 text-white">
                     <Play className="size-4 mr-2" />计算概率密度
                   </Button>
-                  {distResult && <ResultBox text={distResult} />}
+                  {distResult?.tab === 'sampling' && <ResultBox text={distResult.text} />}
+                  <div className="grid gap-3 md:grid-cols-3">
+                    {chiChart && (
+                      <div className="rounded-xl border border-border/60 bg-card p-3">
+                        <div className="mb-1 text-xs text-muted-foreground">χ²({chiN}) 密度</div>
+                        <DistributionChart kind="pdf" points={chiChart.points} shade={chiChart.shade} markers={chiChart.markers} height={150} />
+                      </div>
+                    )}
+                    {tChart && (
+                      <div className="rounded-xl border border-border/60 bg-card p-3">
+                        <div className="mb-1 text-xs text-muted-foreground">t({tDf}) 密度</div>
+                        <DistributionChart kind="pdf" points={tChart.points} shade={tChart.shade} markers={tChart.markers} height={150} />
+                      </div>
+                    )}
+                    {fChart && (
+                      <div className="rounded-xl border border-border/60 bg-card p-3">
+                        <div className="mb-1 text-xs text-muted-foreground">F({fDf1},{fDf2}) 密度</div>
+                        <DistributionChart kind="pdf" points={fChart.points} shade={fChart.shade} markers={fChart.markers} height={150} />
+                      </div>
+                    )}
+                  </div>
                 </TabsContent>
 
                 <TabsContent value="bayes" className="space-y-4">
@@ -807,6 +1040,22 @@ export default function ProbabilityStatsPage() {
                   {cltResult && (
                     <div className="text-xs text-muted-foreground">
                       直方图分箱数：{cltResult.counts?.length || 0}，理论均值 μ = {formatResult(cltResult.theoreticalMean)}，理论 σ = {formatResult(cltResult.theoreticalStd)}
+                    </div>
+                  )}
+                  {cltChart && (
+                    <div className="rounded-xl border border-border/60 bg-card p-3">
+                      <div className="mb-1 text-xs text-muted-foreground">
+                        样本均值分布直方图 · 第三条曲线为正态近似，虚线为理论均值 μ
+                      </div>
+                      <DistributionChart
+                        kind="histogram"
+                        points={cltChart.points}
+                        overlay={cltChart.overlay}
+                        markers={cltChart.markers}
+                        height={280}
+                        xLabel="样本均值"
+                        yLabel="频数"
+                      />
                     </div>
                   )}
                 </TabsContent>

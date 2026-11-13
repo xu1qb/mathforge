@@ -2,16 +2,13 @@
 // 支持柱状图、折线图、饼图、散点图
 // 数据格式：CSV，第一行表头，逗号或制表符分隔
 import { useState, useMemo } from 'react';
-import ReactEChartsImport from 'echarts-for-react/lib/core';
-// echarts-for-react/lib/core 为 CJS：Vite dev 预打包下默认导出经 interop 挂在 .default，生产打包后即组件本身；解包兜底以兼容两种环境
-const ReactECharts = (ReactEChartsImport as unknown as { default: typeof ReactEChartsImport }).default ?? ReactEChartsImport;
-import { echarts } from '@/lib/echarts';
 import type { EChartsOption } from 'echarts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import PageShell from '@/components/PageShell';
+import EChart from '@/components/learning/EChart';
 import { BarChart3, LineChart as LineChartIcon, PieChart as PieChartIcon, ScatterChart as ScatterChartIcon, Sparkles, Wand2 } from 'lucide-react';
 
 // 示例数据：月度销售对比
@@ -58,8 +55,15 @@ function parseCSV(text: string) {
   return { headers, rows };
 }
 
-// 图表配色（跟随项目主色，墨绿系）
-const CHART_COLORS = ['#2D7A6C', '#0891B2', '#D97706', '#DC2626', '#7C3AED', '#DB2777'];
+// 图表配色（全部走皮肤 token，深浅色/皮肤切换自动适配）
+const CHART_COLORS = [
+  'hsl(var(--chart-1))',
+  'hsl(var(--chart-2))',
+  'hsl(var(--chart-3))',
+  'hsl(var(--chart-4))',
+  'hsl(var(--chart-5))',
+  'hsl(var(--primary))',
+];
 
 export default function DataChartPage() {
   const [dataText, setDataText] = useState(SAMPLE_CSV);
@@ -74,14 +78,18 @@ export default function DataChartPage() {
 
     const baseOption: EChartsOption = {
       color: CHART_COLORS,
+      textStyle: { color: 'hsl(var(--muted-foreground))' },
       tooltip: {
         trigger: 'axis',
-        backgroundColor: 'rgba(255,255,255,0.95)',
+        backgroundColor: 'hsl(var(--popover))',
         borderWidth: 1,
-        borderColor: '#e5e7eb',
-        textStyle: { color: '#1f2937', fontSize: 12 },
+        borderColor: 'hsl(var(--border))',
+        textStyle: { color: 'hsl(var(--popover-foreground))', fontSize: 12 },
       },
-      legend: { bottom: 0, textStyle: { fontSize: 12 } },
+      legend: {
+        bottom: 0,
+        textStyle: { fontSize: 12, color: 'hsl(var(--muted-foreground))' },
+      },
       grid: { left: 60, right: 20, top: 30, bottom: 60 },
     };
 
@@ -93,12 +101,12 @@ export default function DataChartPage() {
       })).filter(d => d.name);
       return {
         ...baseOption,
-        tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
+        tooltip: { ...baseOption.tooltip, trigger: 'item', formatter: '{b}: {c} ({d}%)' },
         series: [{
           type: 'pie',
           radius: ['40%', '65%'],
           center: ['50%', '45%'],
-          itemStyle: { borderRadius: 6, borderColor: '#fff', borderWidth: 2 },
+          itemStyle: { borderRadius: 6, borderColor: 'hsl(var(--card))', borderWidth: 2 },
           label: { fontSize: 12 },
           data: pieData,
         }],
@@ -123,9 +131,20 @@ export default function DataChartPage() {
       }
       return {
         ...baseOption,
-        tooltip: { trigger: 'item' },
-        xAxis: { type: 'value', name: headers[0], scale: true },
-        yAxis: { type: 'value', scale: true },
+        tooltip: { ...baseOption.tooltip, trigger: 'item' },
+        xAxis: {
+          type: 'value',
+          name: headers[0],
+          scale: true,
+          axisLabel: { color: 'hsl(var(--muted-foreground))', fontSize: 11 },
+          splitLine: { lineStyle: { color: 'hsl(var(--border) / 0.6)' } },
+        },
+        yAxis: {
+          type: 'value',
+          scale: true,
+          axisLabel: { color: 'hsl(var(--muted-foreground))', fontSize: 11 },
+          splitLine: { lineStyle: { color: 'hsl(var(--border) / 0.6)' } },
+        },
         series,
       };
     }
@@ -155,12 +174,13 @@ export default function DataChartPage() {
       xAxis: {
         type: 'category',
         data: categories,
-        axisLabel: { fontSize: 11 },
+        axisLabel: { fontSize: 11, color: 'hsl(var(--muted-foreground))' },
+        axisLine: { lineStyle: { color: 'hsl(var(--border))' } },
       },
       yAxis: {
         type: 'value',
-        axisLabel: { fontSize: 11 },
-        splitLine: { lineStyle: { type: 'dashed', color: '#e5e7eb' } },
+        axisLabel: { fontSize: 11, color: 'hsl(var(--muted-foreground))' },
+        splitLine: { lineStyle: { type: 'dashed', color: 'hsl(var(--border) / 0.6)' } },
       },
       series,
     };
@@ -245,12 +265,7 @@ export default function DataChartPage() {
         <Card className="overflow-hidden">
           <CardContent className="p-0">
             {parsed ? (
-              <ReactECharts
-                echarts={echarts}
-                option={option}
-                style={{ height: '500px', width: '100%' }}
-                notMerge
-              />
+              <EChart option={option} height={500} />
             ) : (
               <div className="h-[500px] flex flex-col items-center justify-center text-muted-foreground gap-2">
                 <Sparkles className="size-8 opacity-30" />

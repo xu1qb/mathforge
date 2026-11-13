@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -9,6 +9,7 @@ import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Play, Sparkles, History, Trash2, Clock, Calculator, Type, Lightbulb, ChevronDown, ChevronUp, ListOrdered } from 'lucide-react';
 import MathRenderer from '@/components/MathRenderer';
 import { useHistory } from '@/hooks/useHistory';
+import FunctionPlotCard from '@/components/calculus/FunctionPlotCard';
 import { symSimplify, symExpand, symDerivative, symSolve, safeEvaluate, formatResult, symFactor } from '@/lib/math-utils';
 import { stepByStepQuadratic, stepByStepGauss, type StepItem } from '@/lib/step-by-step';
 import { copyAsText } from '@/lib/export-utils';
@@ -77,6 +78,23 @@ export default function SymbolicAlgebraPage() {
   const [binomN, setBinomN] = useState('3');
   // 余数定理
   const [remainderA, setRemainderA] = useState('2');
+
+  // 求导 tab 的函数配图
+  const plot = useMemo(() => {
+    if (activeTab !== 'derivative' || variable !== 'x' || expr.includes('=')) return null;
+    const base = normalizeMathInput(expr);
+    if (!base.trim()) return null;
+    try {
+      return {
+        curves: [
+          { label: 'f(x)', expr: base },
+          { label: 'f′(x)', expr: symDerivative(base, 'x'), dashed: true },
+        ] as { label: string; expr: string; dashed?: boolean }[],
+      };
+    } catch {
+      return null;
+    }
+  }, [activeTab, expr, variable]);
 
   const compute = (op: string) => {
     setError(null);
@@ -581,6 +599,16 @@ export default function SymbolicAlgebraPage() {
              )}
           </CardContent>
         </Card>
+
+        {plot && (
+          <FunctionPlotCard
+            title="函数图像"
+            description="实线为 f(x)，虚线为导函数 f′(x)"
+            curves={plot.curves}
+            xMin={-10}
+            xMax={10}
+          />
+        )}
 
         {/* 示例 */}
         <Card className="bg-card border-border shadow-sm">

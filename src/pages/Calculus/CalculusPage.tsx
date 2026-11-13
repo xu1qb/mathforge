@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -9,6 +9,7 @@ import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Play, Sparkles, History, Trash2, Clock, Calculator, Type, Lightbulb, ChevronDown, ChevronUp, ListOrdered } from 'lucide-react';
 import MathRenderer from '@/components/MathRenderer';
 import LearningSection from '@/components/LearningSection';
+import FunctionPlotCard, { type PlotCurve } from '@/components/calculus/FunctionPlotCard';
 import { useHistory } from '@/hooks/useHistory';
 import { stepByStepDerivative, stepByStepIntegrate, stepByStepLimit, stepByStepSumExpand, type StepItem } from '@/lib/step-by-step';
 import { copyAsText } from '@/lib/export-utils';
@@ -95,6 +96,70 @@ export default function CalculusPage() {
   const [yVar, setYVar] = useState('y');   // 隐函数 y
   const [paramY, setParamY] = useState('t^3'); // 参数方程 y(t)
   const [FExpr, setFExpr] = useState('x^3/3'); // 原函数验证
+
+  // ===== 结果配图（随输入实时更新）=====
+  const plot = useMemo(() => {
+    if (variable !== 'x') return null;
+    const base = normalizeMathInput(expr);
+    if (!base.trim()) return null;
+    const aNum = parseFloat(a);
+    const bNum = parseFloat(b);
+    const x0Num = parseFloat(x0);
+    const abTabs = ['definite', 'arcLength', 'volume', 'verifyAnti'];
+    const useAB =
+      abTabs.includes(activeTab) && Number.isFinite(aNum) && Number.isFinite(bNum) && bNum > aNum;
+    const range: [number, number] = useAB
+      ? [aNum, bNum]
+      : activeTab === 'limit' && Number.isFinite(x0Num)
+        ? [x0Num - 2, x0Num + 2]
+        : [-10, 10];
+
+    const curves: PlotCurve[] = [{ label: 'f(x)', expr: base }];
+    let shade: { from: number; to: number; label: string } | undefined;
+    let markers: { x: number; label?: string }[] = [];
+
+    try {
+      if (activeTab === 'derivative') {
+        curves.push({ label: 'f′(x)', expr: symDerivative(base, 'x'), dashed: true });
+      } else if (activeTab === 'higherOrder') {
+        const n = Math.min(8, Math.max(1, parseInt(order, 10) || 1));
+        curves.push({
+          label: `f${['′', '″', '‴'][n - 1] ?? `(${n})`}(x)`,
+          expr: higherOrderDerivative(base, 'x', n),
+          dashed: true,
+        });
+      } else if (activeTab === 'concavity') {
+        curves.push({
+          label: 'f″(x)',
+          expr: symDerivative(symDerivative(base, 'x'), 'x'),
+          dashed: true,
+        });
+      } else if (activeTab === 'taylor') {
+        const n = Math.min(10, Math.max(1, parseInt(order, 10) || 5));
+        curves.push({
+          label: `T${n}(x)`,
+          expr: taylorSeries(base, 'x', Number.isFinite(x0Num) ? x0Num : 0, n),
+          dashed: true,
+        });
+      } else if (activeTab === 'extrema') {
+        const { maxima, minima } = findExtrema(base, 'x', range[0], range[1]);
+        markers = [
+          ...maxima.map((x) => ({ x, label: `极大 ${Number(x.toFixed(2))}` })),
+          ...minima.map((x) => ({ x, label: `极小 ${Number(x.toFixed(2))}` })),
+        ];
+      } else if (activeTab === 'area') {
+        curves.push({ label: 'g(x)', expr: normalizeMathInput(gExpr), dashed: true });
+      } else if (activeTab === 'definite' && useAB) {
+        shade = { from: aNum, to: bNum, label: '积分区域' };
+      } else if (activeTab === 'arcLength' && useAB) {
+        shade = { from: aNum, to: bNum, label: '弧段' };
+      }
+    } catch {
+      // 派生表达式失败时只画原函数
+    }
+
+    return { curves, range, shade, markers };
+  }, [activeTab, expr, variable, a, b, x0, order, gExpr]);
 
   const compute = (op: string) => {
     setError(null);
@@ -767,6 +832,36 @@ export default function CalculusPage() {
             )}
           </CardContent>
         </Card>
+
+        {plot && (
+          <FunctionPlotCard
+            title="函数图像"
+            description={
+              activeTab === 'derivative'
+                ? '实线为 f(x)，虚线为导函数 f′(x)'
+                : activeTab === 'higherOrder'
+                  ? '实线为 f(x)，虚线为指定阶导数'
+                  : activeTab === 'concavity'
+                    ? '实线为 f(x)，虚线为二阶导数 f″(x)'
+                    : activeTab === 'taylor'
+                      ? '实线为 f(x)，虚线为泰勒多项式近似'
+                      : activeTab === 'extrema'
+                        ? '虚线标记为区间内的极大 / 极小点'
+                        : activeTab === 'definite'
+                          ? '阴影为积分区间内的曲边梯形面积'
+                          : activeTab === 'arcLength'
+                            ? '阴影为所求弧段对应的曲边区域'
+                            : activeTab === 'area'
+                              ? '实线 f(x) 与虚线 g(x) 围成的区域即所求面积'
+                              : undefined
+            }
+            curves={plot.curves}
+            xMin={plot.range[0]}
+            xMax={plot.range[1]}
+            shade={plot.shade}
+            markers={plot.markers}
+          />
+        )}
 
         <Card className="bg-card border-border shadow-sm">
           <CardContent className="p-5">
