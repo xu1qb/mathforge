@@ -19,16 +19,20 @@ import { checkNovelty } from './novelty.ts';
 import { saveRejected } from './store.ts';
 import type { AiQuestion, AiQuestionBatch, AiQuestionRequest } from './types.ts';
 
-const PROMPT_VERSION = 8;
+const PROMPT_VERSION = 9;
 
 type VerifyMode = 'strict' | 'balanced' | 'off';
 
 function normalize(req: AiQuestionRequest): Required<AiQuestionRequest> {
+  const type = req.questionType;
   return {
     topic: (req.topic ?? '').trim() || '综合',
     difficulty: req.difficulty ?? 'basic',
     count: Math.min(Math.max(req.count ?? 3, 1), 10),
     fusion: Array.isArray(req.fusion) ? req.fusion.filter(Boolean).slice(0, 3) : [],
+    questionType:
+      type === 'calculation' || type === 'proof' || type === 'comprehensive' ? type : 'auto',
+    parts: Math.min(4, Math.max(2, req.parts ?? 3)),
     style: (req.style ?? '').trim(),
     verifyMode: req.verifyMode,
   };
@@ -139,8 +143,23 @@ export async function generateQuestions(
       let unverified = false;
       let unverifiedReason: string | undefined;
 
+      // 证明题/综合大题没有唯一数值答案，不做独立求解核验，直接转人工复核
+      const rawType: 'calculation' | 'proof' | 'comprehensive' =
+        raw.questionType === 'proof' || raw.questionType === 'comprehensive'
+          ? raw.questionType
+          : raw.questionType === 'calculation'
+            ? 'calculation'
+            : req.questionType === 'proof' || req.questionType === 'comprehensive'
+              ? req.questionType
+              : 'calculation';
+      const isEssay = rawType === 'proof' || rawType === 'comprehensive';
+      if (isEssay) {
+        unverified = true;
+        unverifiedReason = '证明/综合大题不做数值核验，转人工复核';
+      }
+
       // ---------- 语义校验 ----------
-      if (verifyMode !== 'off' && config.dualSolve && llmMode() === 'live') {
+      if (!isEssay && verifyMode !== 'off' && config.dualSolve && llmMode() === 'live') {
         let second = await independentSolve(latex).catch(() => null);
         if (!second) second = await independentSolve(latex).catch(() => null);
 
@@ -219,6 +238,11 @@ export async function generateQuestions(
         id: 'ai-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6),
         topic: req.topic,
         difficulty: req.difficulty,
+        questionType: rawType,
+        parts:
+          rawType === 'comprehensive'
+            ? Math.min(4, Math.max(2, Number(raw.parts) || req.parts))
+            : undefined,
         question: String(raw.question),
         questionLatex: latex,
         answer,

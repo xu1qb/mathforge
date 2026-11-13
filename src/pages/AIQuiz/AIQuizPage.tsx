@@ -15,6 +15,9 @@ import {
 } from '@/components/ui/select';
 import ProblemText from '@/components/ProblemText';
 import { toast } from 'sonner';
+import { generatePracticeQuestion, type Difficulty } from '@/lib/math-practice';
+import { generateComprehensiveQuiz } from '@/lib/comprehensive-quiz';
+import { AI_TOPICS, matchAiTopic } from '@/data/ai-topics';
 
 const PLUGIN_ID = 'math_ai_quiz_maker_1';
 
@@ -169,10 +172,56 @@ const DEFAULT_BANK: Record<Tier, BankItem> = {
   },
 };
 
-/** 本地兜底：按关键词选知识点、按难度取对应题，保证本地开发不白屏 */
+/** 关键词 → 可程序化随机生成的练习知识点（题库无限） */
+const PRACTICE_HINTS: { key: string; words: string[] }[] = [
+  { key: 'limit-basic', words: ['极限', '洛必达', '无穷小', '连续'] },
+  { key: 'derivative-basic', words: ['导数', '求导', '切线', '微分'] },
+  { key: 'integral-basic', words: ['不定积分', '原函数', '积分'] },
+  { key: 'series-convergence', words: ['级数', '收敛', '幂级数'] },
+  { key: 'sequence-limit', words: ['数列极限', '夹逼'] },
+  { key: 'sequence-recurrence', words: ['递推', '数列'] },
+  { key: 'matrix-op', words: ['矩阵', '行列式', '线性代数'] },
+  { key: 'probability-classical', words: ['概率', '古典概型', '贝叶斯', '条件概率'] },
+  { key: 'random-variable', words: ['随机变量', '期望', '方差', '分布'] },
+  { key: 'geometry-basic', words: ['平面几何', '三角形', '圆'] },
+  { key: 'conic-sections', words: ['椭圆', '双曲线', '抛物线', '圆锥曲线'] },
+  { key: 'nt-gcd', words: ['数论', 'gcd', '最大公约', '同余', '整除'] },
+  { key: 'combinatorics-basic', words: ['组合', '排列', '计数', '鸽巢', '容斥'] },
+  { key: 'trig-identity', words: ['三角', '恒等式'] },
+  { key: 'complex-equation', words: ['复数'] },
+  { key: 'ode-solving', words: ['微分方程'] },
+  { key: 'inequality-amgm', words: ['不等式', '均值', '最值'] },
+  { key: 'fusion', words: ['融合', '综合创新'] },
+];
+
+function tierOf(difficulty: string): Difficulty {
+  return difficulty === '简单' ? 'basic' : difficulty === '竞赛' ? 'competition' : 'advanced';
+}
+
+/** 本地兜底：综合大题走多问生成器；其他从程序化题库随机出题，关键词匹配失败再用固定 BANK */
 function localFallback(prompt: string, difficulty: string): QuizResult {
+  if (difficulty === '综合大题') {
+    const q = generateComprehensiveQuiz();
+    return { topic: q.topic, question: q.question, solution: q.solution, answer: q.answer };
+  }
+
   const p = prompt.toLowerCase();
-  const tier: Tier = difficulty === '简单' ? 'basic' : difficulty === '竞赛' ? 'competition' : 'advanced';
+  const tier = tierOf(difficulty);
+  const hint = PRACTICE_HINTS.find((h) => h.words.some((w) => p.includes(w)));
+  if (hint) {
+    try {
+      const q = generatePracticeQuestion(hint.key, tier);
+      return {
+        topic: matchAiTopic(prompt)?.label ?? hint.key,
+        question: q.question,
+        solution: q.steps.map((s, i) => `${i + 1}. ${s}`).join('\n'),
+        answer: q.answerDisplay ?? q.answer,
+      };
+    } catch {
+      // 生成失败时继续走 BANK
+    }
+  }
+
   const tierLabel = tier === 'basic' ? '基础' : tier === 'competition' ? '竞赛难度' : '中等';
   const group = BANK.find((g) => g.keys.some((k) => p.includes(k)));
   const item = group ? group[tier] : DEFAULT_BANK[tier];
@@ -278,7 +327,11 @@ export default function AIQuizPage() {
     if (typeof client?.load === 'function') {
       try {
         const executor = client.load(PLUGIN_ID);
-        const systemPrompt = `你是大学数学竞赛出题老师。根据用户要求出一道全国大学生数学竞赛（非数学类 A 类）风格的题目，难度：${difficulty}。\n请按以下 markdown 结构输出：\n## 题目\n（含 $...$ LaTeX 行内公式）\n## 解答\n（分步，含 LaTeX）\n## 答案\n（最终结果）\n## 专题\n（所属知识点）`;
+        const systemPrompt = `你是大学数学竞赛出题老师。根据用户要求出一道全国大学生数学竞赛（非数学类 A 类）风格的题目，难度：${difficulty}。${
+          difficulty === '综合大题'
+            ? '请出多问综合大题：写成 (1)(2)(3) 小问，融合两个以上知识点，最后一问综合前两问的方法。'
+            : '若用户要求融合多个知识点，请让它们真正耦合，而不是简单拼接。'
+        }\n请按以下 markdown 结构输出：\n## 题目\n（含 $...$ LaTeX 行内公式）\n## 解答\n（分步，含 LaTeX）\n## 答案\n（最终结果；综合大题按小问分隔）\n## 专题\n（所属知识点）`;
         const stream = executor.callStream('textGeneration', {
           prompt: systemPrompt + '\n\n用户要求：' + need,
           ...(imageFile ? { question_image: [imageFile] } : {}),
@@ -311,7 +364,7 @@ export default function AIQuizPage() {
       <div className="max-w-3xl mx-auto px-4 md:px-6 py-8 md:py-10">
         <PageShell
           title="你出题，AI 来做"
-          description="文字描述、拍照或语音说出想要的题型，AI 现场出题并给出完整解答。"
+          description="文字描述、拍照或语音说出想要的题型；支持计算题、证明题与多问综合大题，覆盖 80+ 考点，题库随机不重复。"
           eyebrow="成长与趣味"
           width="reading"
         />
@@ -325,10 +378,28 @@ export default function AIQuizPage() {
             <Textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="描述你想要的知识点、题型或难度…"
+              placeholder="描述你想要的知识点、题型或难度，例如：出一道数列与数论融合的综合大题"
               rows={3}
               className="resize-none"
             />
+
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-xs text-muted-foreground">常用考点（{AI_TOPICS.length} 个可选）</span>
+              {[
+                '极限与连续', '泰勒展开', '微分中值定理', '定积分应用', '无穷级数',
+                '多元函数极值', '特征值与特征向量', '古典概型', '同余与模运算', '鸽巢原理',
+                '复数运算', '一阶微分方程', '多知识点融合',
+              ].map((label) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => setPrompt(`出一道「${label}」题目`)}
+                  className="rounded-full border border-border px-2 py-0.5 text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
 
             <div className="flex flex-wrap items-center gap-2">
               <Button
@@ -347,13 +418,14 @@ export default function AIQuizPage() {
                 <Upload className="size-4 mr-1.5" />上传图片
               </Button>
               <Select value={difficulty} onValueChange={setDifficulty}>
-                <SelectTrigger className="w-32 h-9">
-                  <SelectValue placeholder="难度" />
+                <SelectTrigger className="w-36 h-9">
+                  <SelectValue placeholder="题型" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="简单">基础</SelectItem>
-                  <SelectItem value="中等">中等</SelectItem>
+                  <SelectItem value="简单">基础计算题</SelectItem>
+                  <SelectItem value="中等">中等计算题</SelectItem>
                   <SelectItem value="竞赛">竞赛难度</SelectItem>
+                  <SelectItem value="综合大题">综合大题（多问）</SelectItem>
                 </SelectContent>
               </Select>
             </div>

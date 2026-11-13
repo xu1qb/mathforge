@@ -5,6 +5,10 @@ export interface AiQuestion {
   id: string;
   topic: string;
   difficulty: 'basic' | 'advanced' | 'competition';
+  /** 题型：计算 / 证明 / 综合大题（缺省按计算题处理） */
+  questionType?: 'calculation' | 'proof' | 'comprehensive';
+  /** 综合大题的小问数（2–4） */
+  parts?: number;
   question: string;
   questionLatex: string;
   answer: string;
@@ -52,6 +56,10 @@ export interface AiQuestionRequest {
   count?: number;
   /** 可选：指定融合的知识点，空则单点 */
   fusion?: string[];
+  /** 可选：题型；缺省 auto 由模型决定 */
+  questionType?: 'auto' | 'calculation' | 'proof' | 'comprehensive';
+  /** 可选：综合大题小问数（2–4），仅 questionType=comprehensive 生效 */
+  parts?: number;
   /** 可选：额外的风格要求，如「应用题背景」 */
   style?: string;
   /** 可选：本次请求的校验档位，覆盖服务端默认 */

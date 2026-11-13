@@ -5,6 +5,10 @@ export interface AiQuestion {
   id: string;
   topic: string;
   difficulty: 'basic' | 'advanced' | 'competition';
+  /** 题型：计算 / 证明 / 综合大题 */
+  questionType?: 'calculation' | 'proof' | 'comprehensive';
+  /** 综合大题的小问数 */
+  parts?: number;
   question: string;
   questionLatex: string;
   answer: string;
@@ -280,6 +284,8 @@ export interface AiQuestionRequest {
   difficulty: 'basic' | 'advanced' | 'competition';
   count: number;
   fusion?: string[];
+  questionType?: 'auto' | 'calculation' | 'proof' | 'comprehensive';
+  parts?: number;
   style?: string;
   verifyMode?: 'strict' | 'balanced' | 'off';
 }

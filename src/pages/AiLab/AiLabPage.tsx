@@ -24,6 +24,7 @@ import {
   type AiHealth,
 } from '@/lib/ai-client';
 import { PRACTICE_TOPICS } from '@/data/practice-topics';
+import { AI_TOPICS, FUSION_COMBOS, INNOVATION_STYLES } from '@/data/ai-topics';
 import { toast } from 'sonner';
 
 const STORAGE_KEY = 'mathforge_ai_questions';
@@ -200,6 +201,8 @@ export default function AiLabPage() {
   const [verifyMode, setVerifyMode] = useState<'strict' | 'balanced' | 'off'>('balanced');
   const [fusion, setFusion] = useState('');
   const [style, setStyle] = useState('');
+  const [questionType, setQuestionType] = useState<'auto' | 'calculation' | 'proof' | 'comprehensive'>('auto');
+  const [parts, setParts] = useState(3);
   const [loading, setLoading] = useState(false);
   const [stream, setStream] = useState(true);
   const [stages, setStages] = useState<{ stage: string; detail?: string }[]>([]);
@@ -212,7 +215,12 @@ export default function AiLabPage() {
     autoApproved: false,
   });
 
-  const topics = useMemo(() => PRACTICE_TOPICS.map((t) => t.label), []);
+  const topics = useMemo(() => {
+    const set = new Set<string>();
+    for (const t of AI_TOPICS) set.add(t.label);
+    for (const t of PRACTICE_TOPICS) set.add(t.label);
+    return [...set];
+  }, []);
 
   useEffect(() => {
     fetchAiHealth()
@@ -229,7 +237,9 @@ export default function AiLabPage() {
       topic,
       difficulty,
       count,
-      fusion: fusion.split(/[，,、\s]+/).filter(Boolean),
+      fusion: fusion.split(/[，,、\s×]+/).filter(Boolean),
+      questionType,
+      parts: questionType === 'comprehensive' ? parts : undefined,
       style: style.trim() || undefined,
       verifyMode,
     };
@@ -351,6 +361,20 @@ export default function AiLabPage() {
               </label>
 
               <label className="space-y-1 text-xs">
+                <span className="text-muted-foreground">题型</span>
+                <select
+                  value={questionType}
+                  onChange={(e) => setQuestionType(e.target.value as typeof questionType)}
+                  className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm"
+                >
+                  <option value="auto">自动（融合时优先大题）</option>
+                  <option value="calculation">计算/求值题</option>
+                  <option value="proof">证明题</option>
+                  <option value="comprehensive">综合大题（多问）</option>
+                </select>
+              </label>
+
+              <label className="space-y-1 text-xs">
                 <span className="text-muted-foreground">校验档位</span>
                 <select
                   value={verifyMode}
@@ -374,27 +398,79 @@ export default function AiLabPage() {
                   className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm"
                 />
               </label>
+
+              <label className="space-y-1 text-xs">
+                <span className="text-muted-foreground">综合大题小问数</span>
+                <input
+                  type="number"
+                  min={2}
+                  max={4}
+                  value={parts}
+                  disabled={questionType !== 'comprehensive'}
+                  onChange={(e) => setParts(Math.min(4, Math.max(2, Number(e.target.value) || 3)))}
+                  className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm disabled:opacity-50"
+                />
+              </label>
             </div>
 
             <div className="grid gap-3 md:grid-cols-2">
-              <label className="space-y-1 text-xs">
-                <span className="text-muted-foreground">融合知识点（可选，用逗号分隔）</span>
-                <input
-                  value={fusion}
-                  onChange={(e) => setFusion(e.target.value)}
-                  placeholder="例如：数列, 数论"
-                  className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm"
-                />
-              </label>
-              <label className="space-y-1 text-xs">
-                <span className="text-muted-foreground">风格要求（可选）</span>
-                <input
-                  value={style}
-                  onChange={(e) => setStyle(e.target.value)}
-                  placeholder="例如：应用题背景 / 含参数讨论"
-                  className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm"
-                />
-              </label>
+              <div className="space-y-1.5">
+                <label className="space-y-1 text-xs">
+                  <span className="text-muted-foreground">融合知识点（可选，用逗号分隔）</span>
+                  <input
+                    value={fusion}
+                    onChange={(e) => setFusion(e.target.value)}
+                    placeholder="例如：数列, 数论"
+                    className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm"
+                  />
+                </label>
+                <div className="flex flex-wrap gap-1">
+                  {FUSION_COMBOS.map((c) => (
+                    <button
+                      key={c.label}
+                      type="button"
+                      onClick={() => setFusion(c.parts.join(', '))}
+                      className="rounded-full border border-border px-2 py-0.5 text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+                    >
+                      {c.label}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const combo = FUSION_COMBOS[Math.floor(Math.random() * FUSION_COMBOS.length)];
+                      setFusion(combo.parts.join(', '));
+                      setStyle('多问综合');
+                    }}
+                    className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-[11px] text-primary transition-colors hover:bg-primary/15"
+                  >
+                    随机融合
+                  </button>
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <label className="space-y-1 text-xs">
+                  <span className="text-muted-foreground">创新风格（可选）</span>
+                  <input
+                    value={style}
+                    onChange={(e) => setStyle(e.target.value)}
+                    placeholder="例如：应用题背景 / 含参数讨论"
+                    className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm"
+                  />
+                </label>
+                <div className="flex flex-wrap gap-1">
+                  {INNOVATION_STYLES.map((s) => (
+                    <button
+                      key={s.label}
+                      type="button"
+                      onClick={() => setStyle(s.text)}
+                      className="rounded-full border border-border px-2 py-0.5 text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
@@ -540,6 +616,14 @@ export default function AiLabPage() {
               <CardContent className="space-y-3 p-4">
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge variant="outline" className="text-[10px]">{q.difficulty}</Badge>
+                  {q.questionType === 'proof' && (
+                    <Badge variant="outline" className="border-sky-500/50 text-[10px] text-sky-600">证明题</Badge>
+                  )}
+                  {q.questionType === 'comprehensive' && (
+                    <Badge variant="outline" className="border-amber-500/50 text-[10px] text-amber-600">
+                      综合大题{q.parts ? ` · ${q.parts} 问` : ''}
+                    </Badge>
+                  )}
                   {q.fusion?.map((f) => (
                     <Badge key={f} variant="secondary" className="text-[10px]">{f}</Badge>
                   ))}

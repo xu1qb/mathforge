@@ -10,6 +10,8 @@ export interface RawQuestion {
   answerType?: unknown;
   steps?: unknown;
   fusion?: unknown;
+  questionType?: unknown;
+  parts?: unknown;
 }
 
 export interface ValidationResult {
