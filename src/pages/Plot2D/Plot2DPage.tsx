@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
 import MathInputField from '@/components/MathInputField';
@@ -12,7 +13,8 @@ import { Plus, Trash2, Sparkles, Eye, EyeOff } from 'lucide-react';
 import type { EChartsOption, SeriesOption } from 'echarts';
 import EChart from '@/components/learning/EChart';
 import { usePlotlyPalette } from '@/lib/plotly-theme';
-import { evaluate, parse } from 'mathjs';
+import { contourSegments } from '@/lib/contour';
+import { evaluate, parse, compile } from 'mathjs';
 import {
   sampleFunction, sampleParametric, samplePolar,
   identifyConic, tangentLine, asymptotes,
@@ -148,6 +150,13 @@ export default function Plot2DPage() {
 
   // rose
   const [roseExpr, setRoseExpr] = useState('sin(4*t)');
+
+  // 不等式区域
+  const [ineqText, setIneqText] = useState('y > x^2\ny < 2 - x^2');
+  const [ineqXMin, setIneqXMin] = useState('-3');
+  const [ineqXMax, setIneqXMax] = useState('3');
+  const [ineqYMin, setIneqYMin] = useState('-2');
+  const [ineqYMax, setIneqYMax] = useState('4');
 
   const [cheatsheetOpen, setCheatsheetOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -734,6 +743,187 @@ export default function Plot2DPage() {
     }
   }, [roseExpr, activeTab]);
 
+  // ===== 不等式区域 =====
+  type IneqRegion = { runs: number[][]; boundary: (number | null)[][]; color: string; label: string };
+  const ineqChart = useMemo<{
+    ok: boolean;
+    error?: string;
+    x0?: number; x1?: number; y0?: number; y1?: number;
+    regions?: IneqRegion[];
+  } | null>(() => {
+    if (activeTab !== 'ineq') return null;
+    const x0 = evaluate(ineqXMin) as number;
+    const x1 = evaluate(ineqXMax) as number;
+    const y0 = evaluate(ineqYMin) as number;
+    const y1 = evaluate(ineqYMax) as number;
+    if (![x0, x1, y0, y1].every(Number.isFinite) || x1 <= x0 || y1 <= y0) {
+      return { ok: false, error: '绘图范围无效：请保证 x/y 最大值大于最小值' };
+    }
+
+    const lines = ineqText.split(/[\n;]/).map((s) => s.trim()).filter(Boolean).slice(0, 3);
+    const parsed = lines
+      .map((line) => {
+        const m = line.match(/^(.+?)(<=|>=|<|>)(.+)$/);
+        if (!m) return null;
+        return { op: m[2], expr: `(${m[1]}) - (${m[3]})` };
+      })
+      .filter(Boolean) as { op: string; expr: string }[];
+    if (parsed.length === 0) {
+      return { ok: false, error: '请输入不等式，例如 y > x^2 或 x^2 + y^2 < 4' };
+    }
+
+    const N = 90;
+    const xs = Array.from({ length: N }, (_, i) => x0 + ((x1 - x0) * i) / (N - 1));
+    const ys = Array.from({ length: N }, (_, i) => y0 + ((y1 - y0) * i) / (N - 1));
+    const dx = (x1 - x0) / (N - 1);
+    const dy = (y1 - y0) / (N - 1);
+
+    const regions: IneqRegion[] = [];
+    parsed.forEach((p, idx) => {
+      let test: (v: number) => boolean;
+      try {
+        const node = compile(p.expr);
+        const z: number[][] = ys.map((yv) =>
+          xs.map((xv) => {
+            try {
+              const v = node.evaluate({ x: xv, y: yv });
+              return typeof v === 'number' ? v : NaN;
+            } catch {
+              return NaN;
+            }
+          }),
+        );
+        test = (v: number) =>
+          Number.isFinite(v) &&
+          (p.op === '>' ? v > 0 : p.op === '>=' ? v >= 0 : p.op === '<' ? v < 0 : v <= 0);
+
+        // 行内连续区间合并，减少绘图元素
+        const runs: number[][] = [];
+        for (let j = 0; j < N; j++) {
+          let start = -1;
+          for (let i = 0; i <= N; i++) {
+            const inside = i < N && test(z[j][i]);
+            if (inside && start < 0) start = i;
+            if (!inside && start >= 0) {
+              runs.push([xs[start] - dx / 2, ys[j] - dy / 2, xs[i - 1] + dx / 2, ys[j] + dy / 2]);
+              start = -1;
+            }
+          }
+        }
+
+        const seg = contourSegments(xs, ys, z, 0);
+        const boundary: (number | null)[][] = [];
+        for (let i = 0; i < seg.x.length; i++) boundary.push([seg.x[i], seg.y[i]]);
+        regions.push({
+          runs,
+          boundary,
+          color: palette.line_colors[idx % palette.line_colors.length],
+          label: lines[idx],
+        });
+      } catch {
+        // 单条不等式解析失败时跳过
+      }
+    });
+
+    if (regions.length === 0) {
+      return { ok: false, error: '不等式解析失败，请检查表达式（变量用 x 和 y）' };
+    }
+    return { ok: true, x0, x1, y0, y1, regions };
+  }, [activeTab, ineqText, ineqXMin, ineqXMax, ineqYMin, ineqYMax, palette]);
+
+  const ineqOption = useMemo<EChartsOption>(() => {
+    if (!ineqChart?.ok || !ineqChart.regions) return {};
+    const { x0 = -5, x1 = 5, y0 = -5, y1 = 5, regions } = ineqChart;
+
+    const series: any[] = [];
+    for (const region of regions) {
+      series.push({
+        type: 'custom',
+        silent: true,
+        name: region.label,
+        data: region.runs,
+        renderItem: (_params: unknown, api: any) => {
+          const p1 = api.coord([api.value(0), api.value(1)]);
+          const p2 = api.coord([api.value(2), api.value(3)]);
+          const x = Math.min(p1[0], p2[0]);
+          const y = Math.min(p1[1], p2[1]);
+          return {
+            type: 'rect',
+            shape: {
+              x,
+              y,
+              width: Math.max(0.5, Math.abs(p2[0] - p1[0])),
+              height: Math.max(0.5, Math.abs(p2[1] - p1[1])),
+            },
+            style: { fill: region.color, opacity: 0.22 },
+          };
+        },
+      });
+      series.push({
+        type: 'line',
+        name: '边界',
+        data: region.boundary,
+        showSymbol: false,
+        connectNulls: false,
+        lineStyle: { width: 2, color: region.color },
+        itemStyle: { color: region.color },
+        emphasis: { disabled: true },
+      });
+    }
+
+    return {
+      color: palette.line_colors,
+      grid: { left: 60, right: 20, top: 30, bottom: 50 },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross',
+          label: { backgroundColor: palette.tickfont_color, color: palette.plot_bgcolor, fontSize: 10 },
+        },
+        backgroundColor: palette.plot_bgcolor,
+        borderWidth: 1,
+        borderColor: palette.gridcolor,
+        textStyle: { color: palette.font_color, fontSize: 12 },
+        formatter: (params: unknown) => {
+          const arr = (params as { seriesType: string; seriesName: string; value: [number, number] }[]).filter(
+            (p) => p.seriesType !== 'custom' && Array.isArray(p.value) && Number.isFinite(p.value[1]),
+          );
+          if (arr.length === 0) return '';
+          return arr.map((p) => `${p.seriesName}：(${Number(p.value[0].toPrecision(4))}, ${Number(p.value[1].toPrecision(4))})`).join('<br/>');
+        },
+      },
+      toolbox: {
+        right: 8,
+        top: 0,
+        iconStyle: { borderColor: palette.tickfont_color },
+        feature: {
+          restore: { title: '重置视图' },
+          saveAsImage: { title: '保存图片', pixelRatio: 2, backgroundColor: palette.plot_bgcolor },
+        },
+      },
+      xAxis: {
+        type: 'value',
+        min: x0,
+        max: x1,
+        name: 'x',
+        axisLine: { lineStyle: { color: palette.gridcolor } },
+        splitLine: { lineStyle: { color: palette.gridcolor, opacity: 0.5 } },
+        axisLabel: { fontSize: 11, color: palette.tickfont_color },
+      },
+      yAxis: {
+        type: 'value',
+        min: y0,
+        max: y1,
+        name: 'y',
+        axisLine: { lineStyle: { color: palette.gridcolor } },
+        splitLine: { lineStyle: { color: palette.gridcolor, opacity: 0.5 } },
+        axisLabel: { fontSize: 11, color: palette.tickfont_color },
+      },
+      series,
+      animation: false,
+    };
+  }, [ineqChart, palette]);
+
   const layout = useMemo(() => {
     const base: any = {
       autosize: true,
@@ -1048,7 +1238,7 @@ export default function Plot2DPage() {
     <div className="min-h-screen page-fade-in">
       <PageShell
         title="二维绘图"
-        description="数学函数可视化：笛卡尔、参数方程、极坐标、隐函数、二次曲线、切线、渐近线、积分面积、反函数、多窗口对比、参数动画、玫瑰线。"
+        description="数学函数可视化：笛卡尔、参数方程、极坐标、隐函数、二次曲线、切线、渐近线、积分面积、反函数、多窗口对比、参数动画、玫瑰线、不等式区域填充。"
         eyebrow="工具 · 可视化"
         width="wide"
         onCheatsheet={() => setCheatsheetOpen(true)}
@@ -1071,6 +1261,7 @@ export default function Plot2DPage() {
                 <TabsTrigger value="multi">2×2子图</TabsTrigger>
                 <TabsTrigger value="animation">参数动画</TabsTrigger>
                 <TabsTrigger value="rose">玫瑰线</TabsTrigger>
+                <TabsTrigger value="ineq">不等式区域</TabsTrigger>
               </TabsList>
 
               <div className="mt-5 space-y-4">
@@ -1432,6 +1623,55 @@ export default function Plot2DPage() {
                     ))}
                   </div>
                 </TabsContent>
+
+                <TabsContent value="ineq" className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground mb-2 block">
+                      不等式（每行一条，最多 3 条）
+                    </label>
+                    <Textarea
+                      value={ineqText}
+                      onChange={(e) => setIneqText(e.target.value)}
+                      rows={3}
+                      className="font-mono"
+                      placeholder={'y > x^2\nx^2 + y^2 < 4'}
+                      spellCheck={false}
+                    />
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      支持 &lt; &gt; &lt;= &gt;=，变量用 x 和 y；区域自动填充并描出边界
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div><label className="text-sm font-medium text-muted-foreground mb-2 block">x 最小</label><Input value={ineqXMin} onChange={(e) => setIneqXMin(e.target.value)} className="font-mono" /></div>
+                    <div><label className="text-sm font-medium text-muted-foreground mb-2 block">x 最大</label><Input value={ineqXMax} onChange={(e) => setIneqXMax(e.target.value)} className="font-mono" /></div>
+                    <div><label className="text-sm font-medium text-muted-foreground mb-2 block">y 最小</label><Input value={ineqYMin} onChange={(e) => setIneqYMin(e.target.value)} className="font-mono" /></div>
+                    <div><label className="text-sm font-medium text-muted-foreground mb-2 block">y 最大</label><Input value={ineqYMax} onChange={(e) => setIneqYMax(e.target.value)} className="font-mono" /></div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="self-center text-xs text-muted-foreground">示例</span>
+                    {[
+                      { label: '抛物线之间', text: 'y > x^2\ny < 2 - x^2', r: ['-3', '3', '-2', '4'] },
+                      { label: '圆盘', text: 'x^2 + y^2 < 4', r: ['-3', '3', '-3', '3'] },
+                      { label: '正弦带', text: 'y > sin(x)\ny < 1', r: ['-2*pi', '2*pi', '-2', '2'] },
+                      { label: '椭圆', text: 'x^2/9 + y^2/4 <= 1', r: ['-4', '4', '-3', '3'] },
+                    ].map((p) => (
+                      <Button
+                        key={p.label}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setIneqText(p.text);
+                          setIneqXMin(p.r[0]);
+                          setIneqXMax(p.r[1]);
+                          setIneqYMin(p.r[2]);
+                          setIneqYMax(p.r[3]);
+                        }}
+                      >
+                        {p.label}
+                      </Button>
+                    ))}
+                  </div>
+                </TabsContent>
               </div>
             </Tabs>
           </CardContent>
@@ -1446,7 +1686,13 @@ export default function Plot2DPage() {
         <Card className="shadow-sm overflow-hidden">
            <CardContent className="p-0">
              <div className="w-full">
-               <EChart option={echartsOption} height={500} />
+               {activeTab === 'ineq' && ineqChart && !ineqChart.ok ? (
+                 <div className="flex h-[500px] items-center justify-center px-6 text-center text-sm text-muted-foreground">
+                   {ineqChart.error}
+                 </div>
+               ) : (
+                 <EChart option={activeTab === 'ineq' ? ineqOption : echartsOption} height={500} />
+               )}
              </div>
            </CardContent>
          </Card>

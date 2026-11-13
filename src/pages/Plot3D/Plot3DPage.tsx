@@ -11,6 +11,7 @@ import PageShell from '@/components/PageShell';
 import CheatsheetDialog from '@/components/CheatsheetDialog';
 import { Sparkles } from 'lucide-react';
 import Plot, { Plotly } from '@/lib/plotly-instance';
+import { contourSegments } from '@/lib/contour';
 import { usePlotlyPalette } from '@/lib/plotly-theme';
 import { evaluate } from 'mathjs';
 import {
@@ -45,48 +46,6 @@ const QUADRIC_PRESETS = [
   { name: '椭圆抛物面', A: 1, B: 1, C: 0, D: 0, E: 0, F: 0, G: 0, H: 0, I: -0.5, J: 0 },
   { name: '马鞍面', A: 1, B: -1, C: 0, D: 0, E: 0, F: 0, G: 0, H: 0, I: -1, J: 0 },
 ];
-
-/**
- * Marching Squares：在网格 z[j][i] 上提取 z=level 的等值线，返回可直接喂给
- * scatter3d 的带 null 分隔的折线坐标。
- */
-function contourAtLevel(x: number[], y: number[], z: number[][], level: number) {
-  const px: (number | null)[] = [];
-  const py: (number | null)[] = [];
-  const pz: (number | null)[] = [];
-  const push = (x1: number, y1: number, x2: number, y2: number) => {
-    px.push(x1, x2, null);
-    py.push(y1, y2, null);
-    pz.push(level, level, null);
-  };
-  const interp = (
-    x1: number, y1: number, v1: number,
-    x2: number, y2: number, v2: number,
-  ): [number, number] => {
-    const t = (level - v1) / (v2 - v1 || 1e-12);
-    return [x1 + (x2 - x1) * t, y1 + (y2 - y1) * t];
-  };
-  for (let j = 0; j < y.length - 1; j++) {
-    for (let i = 0; i < x.length - 1; i++) {
-      const v00 = z[j]?.[i];
-      const v10 = z[j]?.[i + 1];
-      const v11 = z[j + 1]?.[i + 1];
-      const v01 = z[j + 1]?.[i];
-      if (![v00, v10, v11, v01].every((v) => Number.isFinite(v))) continue;
-      const pts: [number, number][] = [];
-      if ((v00 >= level) !== (v10 >= level)) pts.push(interp(x[i], y[j], v00, x[i + 1], y[j], v10));
-      if ((v10 >= level) !== (v11 >= level)) pts.push(interp(x[i + 1], y[j], v10, x[i + 1], y[j + 1], v11));
-      if ((v11 >= level) !== (v01 >= level)) pts.push(interp(x[i + 1], y[j + 1], v11, x[i], y[j + 1], v01));
-      if ((v01 >= level) !== (v00 >= level)) pts.push(interp(x[i], y[j + 1], v01, x[i], y[j], v00));
-      if (pts.length === 2) push(pts[0][0], pts[0][1], pts[1][0], pts[1][1]);
-      else if (pts.length === 4) {
-        push(pts[0][0], pts[0][1], pts[1][0], pts[1][1]);
-        push(pts[2][0], pts[2][1], pts[3][0], pts[3][1]);
-      }
-    }
-  }
-  return { x: px, y: py, z: pz };
-}
 
 export default function Plot3DPage() {
   const [activeTab, setActiveTab] = useState('explicit');
@@ -135,6 +94,11 @@ export default function Plot3DPage() {
   // 自动旋转
   const [autoRotate, setAutoRotate] = useState(false);
   const plotBoxRef = useRef<HTMLDivElement>(null);
+
+  // 参数曲面扫描动画
+  const [paramAnim, setParamAnim] = useState(false);
+  const [paramPlaying, setParamPlaying] = useState(false);
+  const [paramSweep, setParamSweep] = useState(1);
 
   // normal vectors
   const [normExpr, setNormExpr] = useState('x^2 + y^2');
@@ -202,6 +166,19 @@ export default function Plot3DPage() {
     xaxis: { title: { text: 'x' }, exponentformat: 'power', showexponent: 'all', nticks: 8, gridcolor: palette.gridcolor, tickfont: { color: palette.tickfont_color } },
     yaxis: { title: { text: 'y' }, exponentformat: 'power', showexponent: 'all', nticks: 8, gridcolor: palette.gridcolor, tickfont: { color: palette.tickfont_color } },
   }), [palette]);
+
+  // 参数曲面动画播放：循环推进扫描进度
+  useEffect(() => {
+    if (!paramPlaying || !paramAnim) return;
+    const id = window.setInterval(() => {
+      setParamSweep((s) => (s + 0.015 >= 1 ? 0 : s + 0.015));
+    }, 60);
+    return () => window.clearInterval(id);
+  }, [paramPlaying, paramAnim]);
+
+  useEffect(() => {
+    if (!paramAnim) setParamPlaying(false);
+  }, [paramAnim]);
 
   const explicitData = useMemo(() => {
     if (activeTab !== 'explicit') return [];
@@ -324,14 +301,16 @@ export default function Plot3DPage() {
       const umax = evaluate(puMax) as number;
       const vmin = evaluate(pvMin) as number;
       const vmax = evaluate(pvMax) as number;
-      const nParam = adaptiveSamplePoints3D(umin, umax, vmin, vmax, 60, 20);
-      const data = sampleParametricSurface(paramX, paramY, paramZ, umin, umax, vmin, vmax, nParam);
+      // 扫描动画：按进度截断 v 方向范围
+      const vmaxEff = paramAnim ? vmin + (vmax - vmin) * Math.max(0.02, paramSweep) : vmax;
+      const nParam = adaptiveSamplePoints3D(umin, umax, vmin, vmaxEff, 60, 20);
+      const data = sampleParametricSurface(paramX, paramY, paramZ, umin, umax, vmin, vmaxEff, nParam);
       return [{ z: data.z, x: data.x, y: data.y, type: 'surface', colorscale: 'Viridis' as const, name: '参数曲面', showscale: false }];
     } catch (e) {
       setError((e as Error).message);
       return [];
     }
-  }, [paramX, paramY, paramZ, puMin, puMax, pvMin, pvMax, activeTab]);
+  }, [paramX, paramY, paramZ, puMin, puMax, pvMin, pvMax, activeTab, paramAnim, paramSweep]);
 
   const normalData = useMemo(() => {
     if (activeTab !== 'normal') return [];
@@ -394,7 +373,7 @@ export default function Plot3DPage() {
         showlegend: true,
       });
       // 曲面与平面 z=k 的交线（Marching Squares 提取真实三维曲线）
-      const curve = contourAtLevel(data.x, data.y, data.z, sectionK);
+      const curve = contourSegments(data.x, data.y, data.z, sectionK);
       if (curve.x.length > 0) {
         traces.push({
           type: 'scatter3d',
@@ -720,6 +699,38 @@ export default function Plot3DPage() {
                         setPuMin(p.uMin); setPuMax(p.uMax); setPvMin(p.vMin); setPvMax(p.vMax);
                       }}>{p.name}</Button>
                     ))}
+                  </div>
+
+                  <div className="space-y-3 rounded-xl border border-border/60 bg-muted/30 p-4">
+                    <label className="flex cursor-pointer items-center gap-2 text-sm">
+                      <Checkbox checked={paramAnim} onCheckedChange={(v) => setParamAnim(v === true)} />
+                      参数扫描动画（沿 v 方向逐步生成曲面）
+                    </label>
+                    {paramAnim && (
+                      <div className="flex flex-wrap items-center gap-3">
+                        <Button size="sm" onClick={() => setParamPlaying((p) => !p)}>
+                          {paramPlaying ? '暂停' : '播放'}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => { setParamSweep(0.02); setParamPlaying(true); }}
+                        >
+                          重播
+                        </Button>
+                        <Slider
+                          value={[paramSweep]}
+                          min={0.02}
+                          max={1}
+                          step={0.01}
+                          onValueChange={(v) => { setParamSweep(v[0]); setParamPlaying(false); }}
+                          className="w-48"
+                        />
+                        <span className="text-xs tabular-nums text-muted-foreground">
+                          v 完成 {Math.round(paramSweep * 100)}%
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
 

@@ -1,7 +1,7 @@
 // 数据图表生成器
 // 支持柱状图、折线图、饼图、散点图
 // 数据格式：CSV，第一行表头，逗号或制表符分隔
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import type { EChartsOption } from 'echarts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -42,18 +42,53 @@ const SAMPLE_SCATTER = `x,y
 7,11
 8,15`;
 
-// 解析 CSV：支持逗号、中文逗号、制表符分隔
+// 解析 CSV：支持逗号、中文逗号、制表符、引号包裹与 CRLF
 function parseCSV(text: string) {
-  const lines = text.trim().split('\n').filter(l => l.trim());
-  if (lines.length < 2) return null;
+  const rowsRaw: string[][] = [];
+  let cur: string[] = [];
+  let field = '';
+  let inQuotes = false;
 
-  const headers = lines[0].split(/[,，\t]/).map(h => h.trim()).filter(h => h);
-  const rows = lines.slice(1).map(line =>
-    line.split(/[,，\t]/).map(cell => cell.trim())
-  );
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (text[i + 1] === '"') {
+          field += '"';
+          i++;
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        field += ch;
+      }
+    } else if (ch === '"') {
+      inQuotes = true;
+    } else if (ch === ',' || ch === '，' || ch === '\t') {
+      cur.push(field);
+      field = '';
+    } else if (ch === '\n') {
+      cur.push(field);
+      field = '';
+      rowsRaw.push(cur);
+      cur = [];
+    } else if (ch !== '\r') {
+      field += ch;
+    }
+  }
+  if (field.length > 0 || cur.length > 0) {
+    cur.push(field);
+    rowsRaw.push(cur);
+  }
 
-  if (headers.length === 0 || rows.length === 0) return null;
-  return { headers, rows };
+  const rows = rowsRaw
+    .map((r) => r.map((c) => c.trim()))
+    .filter((r) => r.some((c) => c.length > 0));
+  if (rows.length < 2) return null;
+
+  const headers = rows[0].filter((h) => h);
+  if (headers.length === 0) return null;
+  return { headers, rows: rows.slice(1) };
 }
 
 // 图表配色（全部走皮肤 token，深浅色/皮肤切换自动适配）
@@ -70,8 +105,27 @@ export default function DataChartPage() {
   const [dataText, setDataText] = useState(SAMPLE_CSV);
   const [chartType, setChartType] = useState<'bar' | 'stacked' | 'line' | 'area' | 'pie' | 'scatter'>('bar');
   const [chartTitle, setChartTitle] = useState('');
+  const [fileName, setFileName] = useState('');
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const parsed = useMemo(() => parseCSV(dataText), [dataText]);
+
+  const handleFile = async (file: File) => {
+    try {
+      const buf = await file.arrayBuffer();
+      let text: string;
+      try {
+        text = new TextDecoder('utf-8', { fatal: true }).decode(buf);
+      } catch {
+        // 中文 CSV 常见 GBK 编码，UTF-8 解码失败时回退
+        text = new TextDecoder('gbk').decode(buf);
+      }
+      setDataText(text.replace(/^\uFEFF/, ''));
+      setFileName(file.name);
+    } catch {
+      setFileName('读取失败，请检查文件');
+    }
+  };
 
   // 构建 ECharts option
   const option = useMemo(() => {
@@ -228,14 +282,21 @@ export default function DataChartPage() {
 
       <div className="px-4 md:px-6 lg:px-8 py-8 md:py-10 max-w-6xl mx-auto space-y-6">
         {/* 数据输入 */}
-        <Card>
+        <Card
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const f = e.dataTransfer.files?.[0];
+            if (f) void handleFile(f);
+          }}
+        >
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Wand2 className="size-5 text-primary" />
               数据输入
             </CardTitle>
             <CardDescription>
-              粘贴 CSV 格式数据，第一行为表头，用逗号或制表符分隔
+              粘贴 CSV 数据，或导入 .csv / .txt 文件（也可直接拖到本卡片上）；第一行为表头，逗号或制表符分隔
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -248,7 +309,21 @@ export default function DataChartPage() {
 1月,120,80
 2月,200,150"
             />
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                ref={fileRef}
+                type="file"
+                accept=".csv,.txt,text/csv,text/plain"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) void handleFile(f);
+                  e.target.value = '';
+                }}
+              />
+              <Button variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
+                导入 CSV 文件
+              </Button>
               <Button variant="outline" size="sm" onClick={() => setDataText(SAMPLE_CSV)}>
                 填充柱/线示例
               </Button>
@@ -258,6 +333,9 @@ export default function DataChartPage() {
               <Button variant="outline" size="sm" onClick={() => setDataText(SAMPLE_SCATTER)}>
                 填充散点示例
               </Button>
+              <span className="text-xs text-muted-foreground">
+                {fileName ? `已导入：${fileName}` : '支持 UTF-8 / GBK 编码，带引号的字段也能解析'}
+              </span>
             </div>
           </CardContent>
         </Card>

@@ -8,6 +8,7 @@ import {
   RadarChart,
   ScatterChart,
   HeatmapChart,
+  CustomChart,
 } from 'echarts/charts';
 import {
   GridComponent,
@@ -17,6 +18,7 @@ import {
   VisualMapComponent,
   TitleComponent,
   DataZoomComponent,
+  ToolboxComponent,
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 
@@ -27,6 +29,7 @@ echarts.use([
   RadarChart,
   ScatterChart,
   HeatmapChart,
+  CustomChart,
   GridComponent,
   TooltipComponent,
   LegendComponent,
@@ -34,6 +37,7 @@ echarts.use([
   VisualMapComponent,
   TitleComponent,
   DataZoomComponent,
+  ToolboxComponent,
   CanvasRenderer,
 ]);
 
