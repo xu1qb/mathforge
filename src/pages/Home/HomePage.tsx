@@ -46,7 +46,7 @@ import KnowledgeContinentMap from '@/components/KnowledgeContinentMap';
 import { daysUntilRetake, loadHistory } from '@/pages/MathematicianQuiz/quiz-history';
 import { useBlindBox } from '@/hooks/use-blind-box';
 import { useSpellbook } from '@/hooks/use-spellbook';
-import { useLearningStats } from '@/hooks/use-learning';
+import { useLearningStats, formatDateKey } from '@/hooks/use-learning';
 import AnnualReportCard from '@/components/AnnualReportCard';
 import MathQuoteCard from '@/components/MathQuoteCard';
 // 考前冲刺首页仅在考试前 60 天内渲染，按需懒加载，避免把冲刺看板数据打进首屏主包
@@ -133,7 +133,7 @@ function HomePageInner() {
   } = useBlindBox();
   const { totalProgress: spellProgress, unlockedTitles } = useSpellbook();
   const { stats } = useLearningStats();
-  const today = new Date().toDateString();
+  const today = formatDateKey(new Date());
   const todayRecord = stats.dailyRecords?.[today];
   const todayTotal = todayRecord?.total ?? 0;
   const todayCorrect = todayRecord?.correct ?? 0;
@@ -155,7 +155,7 @@ function HomePageInner() {
     for (let i = 0; i < 7; i++) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const key = d.toDateString();
+      const key = formatDateKey(d);
       const rec = stats.dailyRecords?.[key];
       if (rec) { total += rec.total; correct += rec.correct; }
     }
@@ -168,7 +168,7 @@ function HomePageInner() {
     for (let i = 0; i < 365; i++) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const key = d.toDateString();
+      const key = formatDateKey(d);
       const rec = stats.dailyRecords?.[key];
       if (rec && rec.total > 0) streak++;
       else if (i === 0) continue; // 今天还没做不算断

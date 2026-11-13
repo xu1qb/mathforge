@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useLearningStats, useWrongBook, useFavorites } from '@/hooks/use-learning';
+import { useLearningStats, useWrongBook, useFavorites, formatDateKey } from '@/hooks/use-learning';
 import {
   Award, Target, Flame, Star, BookOpen, Trophy, Sword, Brain, Crown
 } from 'lucide-react';
@@ -30,7 +30,7 @@ export default function AchievementWall() {
     for (let i = 0; i < 365; i++) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const rec = stats.dailyRecords?.[d.toDateString()];
+      const rec = stats.dailyRecords?.[formatDateKey(d)];
       if (rec && rec.total > 0) streak++;
       else if (i === 0) continue;
       else break;

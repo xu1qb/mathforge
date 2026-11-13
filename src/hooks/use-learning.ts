@@ -1,4 +1,4 @@
-// EXPORTS: useWrongBook, useLearningStats, useFavorites, useQuestionFavorites, usePracticeSettings, WRONG_BOOK_KEY, STATS_KEY, FAVORITES_KEY, QUESTION_FAVORITES_KEY, FAVORITES_LIMIT, QUESTION_FAVORITES_LIMIT, PRACTICE_SETTINGS_KEY, type WrongItem, type WrongReason, WRONG_REASON_LABELS, WRONG_REASON_COLORS, type WrongItemSource, type ReviewStage, REVIEW_STAGE_LABELS, REVIEW_INTERVALS_DAYS, computeNextReviewDate, isReviewDue, advanceReviewStage, resetReviewStage, type StatsRecord, type DailyRecord, type PracticeSettings, type AnswerMode, type FavoriteItem, type QuestionFavoriteItem, generateHeatmapData, computeStreakInfo, computeAnnualReport
+// EXPORTS: useWrongBook, useLearningStats, useFavorites, useQuestionFavorites, usePracticeSettings, WRONG_BOOK_KEY, STATS_KEY, FAVORITES_KEY, QUESTION_FAVORITES_KEY, FAVORITES_LIMIT, QUESTION_FAVORITES_LIMIT, PRACTICE_SETTINGS_KEY, formatDateKey, type WrongItem, type WrongReason, WRONG_REASON_LABELS, WRONG_REASON_COLORS, type WrongItemSource, type ReviewStage, REVIEW_STAGE_LABELS, REVIEW_INTERVALS_DAYS, computeNextReviewDate, isReviewDue, advanceReviewStage, resetReviewStage, type StatsRecord, type DailyRecord, type PracticeSettings, type AnswerMode, type FavoriteItem, type QuestionFavoriteItem, generateHeatmapData, computeStreakInfo, computeAnnualReport
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { scopedStorage } from '@/lib/lark-mock';
@@ -1196,7 +1196,7 @@ export function useQuestionFavorites() {
 
 // ===== 热力图 & 年度报告 工具函数 =====
 
-function formatDateKey(d: Date): string {
+export function formatDateKey(d: Date): string {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
