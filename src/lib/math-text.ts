@@ -27,8 +27,17 @@ export function wrapNakedLatex(text: string): string {
   if (!text) return text;
   // 有反斜杠命令，或出现 ^{ / _{ 才可能有裸公式
   if (!text.includes('\\') && !/\^\{|_\{/.test(text)) return text;
-  const parts = text.split(/(\$[^$]*\$)/g);
-  return parts
+
+  // 先抽出 $$...$$ 块级公式占位保护：块内的 LaTeX 命令不能被当成“裸公式”再包一层 $，
+  // 否则 $$ 会被拆成 $ 边界，KaTeX 收到带 $ 的非法表达式，页面直接显示源码
+  const blocks: string[] = [];
+  const shielded = text.replace(/\$\$([\s\S]*?)\$\$/g, (_m, body: string) => {
+    blocks.push(body);
+    return '\u0000' + (blocks.length - 1) + '\u0000';
+  });
+
+  const parts = shielded.split(/(\$[^$]*\$)/g);
+  const wrapped = parts
     .map((seg) => {
       if (seg.startsWith('$') && seg.endsWith('$')) return seg;
       const ranges: Array<[number, number]> = [];
@@ -71,4 +80,9 @@ export function wrapNakedLatex(text: string): string {
       return out + seg.slice(cursor);
     })
     .join('');
+
+  // 还原 $$...$$ 块
+  return wrapped.replace(/\u0000(\d+)\u0000/g, (_m, idx: string) => {
+    return '$$' + blocks[Number(idx)] + '$$';
+  });
 }
