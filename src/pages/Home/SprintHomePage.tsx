@@ -26,7 +26,8 @@ import { BRANCH_CATEGORIES } from '@/data/branches';
 import { useRecentModules } from '@/hooks/use-recent-modules';
 import { MUST_MEMO_ITEMS, KNOWLEDGE_CARDS } from '@/data/competition-knowledge';
 import { computeDashboardData } from '@/data/competition-dashboard';
-import { useWrongBook } from '@/hooks/use-learning';
+import { useLearningStats, useWrongBook } from '@/hooks/use-learning';
+import LearningTrendChart from '@/components/learning/LearningTrendChart';
 import { WeaknessTop3 } from '@/pages/Competition/sections/WeaknessHeatmap';
 import WrongReasonChart from '@/components/WrongReasonChart';
 import KnowledgeContinentMap from '@/components/KnowledgeContinentMap';
@@ -71,6 +72,7 @@ function getPhase(daysLeft: number): { label: string; color: string; messages: s
 export default function SprintHomePage() {
   const navigate = useNavigate();
   const { dueToday, wrongReasonStats } = useWrongBook();
+  const { stats: learningStats } = useLearningStats();
   const recentModules = useRecentModules(6);
   const examDate = startOfDay(new Date(EXAM_DATE));
   const today = startOfDay(new Date());
@@ -429,6 +431,18 @@ export default function SprintHomePage() {
                 <CardContent className="space-y-3">
                   {dashboardData?.hasData ? (
                     <>
+                      <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                        <span>近 14 天答题节奏</span>
+                        <span>柱=题量 · 线=正确率</span>
+                      </div>
+                      <div className="-mx-1 -mt-2">
+                        <LearningTrendChart
+                          dailyRecords={learningStats.dailyRecords}
+                          days={14}
+                          height={64}
+                          compact
+                        />
+                      </div>
                       <StatRow
                         icon={Target}
                         label="累计做题"
@@ -459,6 +473,12 @@ export default function SprintHomePage() {
                           />
                         </div>
                       )}
+                      <button
+                        onClick={() => navigate('/progress')}
+                        className="flex w-full items-center justify-center gap-1 pt-1 text-xs text-primary hover:underline"
+                      >
+                        查看完整学习报告 <ArrowRight className="size-3" />
+                      </button>
                     </>
                   ) : (
                     <div className="text-sm text-muted-foreground text-center py-4">

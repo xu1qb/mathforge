@@ -2,7 +2,7 @@
 // 错题本：待复习 / 待重做 / 已掌握，按知识点筛选，支持"记住了/还是不会"推进复习阶段
 
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import PageShell from '@/components/PageShell';
 import ProblemText from '@/components/ProblemText';
 import MathInputField from '@/components/MathInputField';
@@ -15,9 +15,10 @@ import {
   REVIEW_STAGE_LABELS,
   WRONG_REASON_LABELS,
   type WrongItem,
+  type WrongReason,
 } from '@/hooks/use-learning';
 import { topicLabelOf } from '@/lib/topic-label';
-import { AlertTriangle, CheckCircle2, RotateCcw, Sparkles, Trash2, BookOpen } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, RotateCcw, Sparkles, Trash2, BookOpen, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type Tab = 'due' | 'pending' | 'mastered';
@@ -38,10 +39,23 @@ export default function WrongBookPage() {
   const [tab, setTab] = useState<Tab>('due');
   const [topic, setTopic] = useState('all');
 
+  // 从学习报告错因图下钻：/wrong-book?reason=concept
+  const [searchParams, setSearchParams] = useSearchParams();
+  const reasonParam = searchParams.get('reason') as WrongReason | null;
+  const reasonFilter = reasonParam && reasonParam in WRONG_REASON_LABELS ? reasonParam : null;
+  const clearReason = () => {
+    const next = new URLSearchParams(searchParams);
+    next.delete('reason');
+    setSearchParams(next, { replace: true });
+  };
+
   const list = tab === 'due' ? dueToday : tab === 'pending' ? pending : trulyMastered;
   const filtered = useMemo(
-    () => (topic === 'all' ? list : list.filter((w) => w.topicKey === topic)),
-    [list, topic],
+    () =>
+      list
+        .filter((w) => (topic === 'all' ? true : w.topicKey === topic))
+        .filter((w) => (reasonFilter ? w.wrongReason === reasonFilter : true)),
+    [list, topic, reasonFilter],
   );
   const topics = useMemo(() => {
     const set = new Map<string, number>();
@@ -84,6 +98,18 @@ export default function WrongBookPage() {
           ))}
         </div>
 
+        {reasonFilter && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={clearReason}
+              className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs text-foreground transition-colors hover:bg-primary/15"
+            >
+              只看错因：{WRONG_REASON_LABELS[reasonFilter]}
+              <X className="size-3" />
+            </button>
+          </div>
+        )}
+
         {topics.length > 1 && (
           <div className="flex flex-wrap gap-1.5">
             <button
@@ -115,7 +141,9 @@ export default function WrongBookPage() {
           <Card className="border-dashed">
             <CardContent className="flex flex-col items-center gap-2 py-12 text-center text-sm text-muted-foreground">
               <BookOpen className="size-8 opacity-40" />
-              {tab === 'due'
+              {reasonFilter
+                ? '没有该错因的错题，换个错因或清除筛选看看'
+                : tab === 'due'
                 ? '今天没有到期的错题，去练几道新题吧'
                 : tab === 'pending'
                   ? '没有待重做的错题'
